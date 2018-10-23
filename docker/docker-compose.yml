@@ -1,0 +1,16 @@
+version: '3'
+services:
+  node:
+    build: ./node
+    volumes:
+      - ../angular.json:/app/angular.json
+      - ../tsconfig.json:/app/tsconfig.json
+      - ../tsling.json:/app/tslint.json
+      - ../src:/app/src
+      - ../dest:/app/dest
+    ports:
+      - 80:80
+      - 4200:4200
+    command: [npm, run, start, --, "--host", "0.0.0.0"]
+
+
