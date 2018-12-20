@@ -1,15 +1,12 @@
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 
-import { Card } from '../../class/card';
-import { EventSystem, Network } from '../../class/core/system/system';
-import { DataElement } from '../../class/data-element';
-import { GameCharacter } from '../../class/game-character';
-import { TabletopObject } from '../../class/tabletop-object';
-import { Terrain } from '../../class/terrain';
-import { ModalService } from '../../service/modal.service';
-import { PanelService } from '../../service/panel.service';
-import { SaveDataService } from '../../service/save-data.service';
-import { FileSelecterComponent } from '../file-selecter/file-selecter.component';
+import { EventSystem, Network } from '@udonarium/core/system/system';
+import { DataElement } from '@udonarium/data-element';
+import { TabletopObject } from '@udonarium/tabletop-object';
+
+import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component';
+import { ModalService } from 'service/modal.service';
+import { SaveDataService } from 'service/save-data.service';
 
 @Component({
   selector: 'game-character-sheet',
@@ -21,34 +18,14 @@ export class GameCharacterSheetComponent implements OnInit, OnDestroy, AfterView
   @Input() tabletopObject: TabletopObject = null;
   private isEdit: boolean = false;
 
-  //private gameRoomService: GameRoomService,
-  private networkService = Network;
-
-  get isCharacter(): boolean {
-    return this.tabletopObject instanceof GameCharacter;
-  }
-
-  get isCard(): boolean {
-    return this.tabletopObject instanceof Card;
-  }
-
-  get isTerrain(): boolean {
-    return this.tabletopObject instanceof Terrain;
-  }
+  networkService = Network;
 
   constructor(
-    private changeDetector: ChangeDetectorRef,
-    private viewContainerRef: ViewContainerRef,
     private saveDataService: SaveDataService,
-    private modalService: ModalService,
-    private panelService: PanelService
+    private modalService: ModalService
   ) { }
 
   ngOnInit() {
-    this.panelService.title = 'キャラクターシート';
-    if (this.tabletopObject instanceof GameCharacter && 0 < this.tabletopObject.name.length) {
-      this.panelService.title += ' - ' + this.tabletopObject.name;
-    }
     EventSystem.register(this)
       .on('DELETE_GAME_OBJECT', -1000, event => {
         if (this.tabletopObject && this.tabletopObject.identifier === event.data.identifier) {
@@ -91,7 +68,7 @@ export class GameCharacterSheetComponent implements OnInit, OnDestroy, AfterView
     this.tabletopObject.setLocation(locationName);
   }
 
-  openModal(name: string) {
+  openModal(name: string = '') {
     this.modalService.open<string>(FileSelecterComponent).then(value => {
       if (!this.tabletopObject || !this.tabletopObject.imageDataElement || !value) return;
       let element = this.tabletopObject.imageDataElement.getFirstElementByName(name);

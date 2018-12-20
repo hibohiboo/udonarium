@@ -1,21 +1,20 @@
-import { Component, OnInit, OnDestroy, NgZone, AfterViewInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
+import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
-import { TextViewComponent } from '../text-view/text-view.component';
+import { ChatMessageContext } from '@udonarium/chat-message';
+import { ChatTab } from '@udonarium/chat-tab';
+import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
+import { PeerContext } from '@udonarium/core/system/network/peer-context';
+import { EventSystem, Network } from '@udonarium/core/system/system';
+import { DiceBot } from '@udonarium/dice-bot';
+import { GameCharacter } from '@udonarium/game-character';
+import { PeerCursor } from '@udonarium/peer-cursor';
 
-import { ChatMessageService } from '../../service/chat-message.service';
-import { PanelService, PanelOption } from '../../service/panel.service';
-import { PointerDeviceService } from '../../service/pointer-device.service';
-
-import { ChatTab } from '../../class/chat-tab';
-import { ChatMessage, ChatMessageContext } from '../../class/chat-message';
-import { GameCharacter } from '../../class/game-character';
-import { PeerCursor } from '../../class/peer-cursor';
-import { DiceBot } from '../../class/dice-bot';
-import { Network, EventSystem } from '../../class/core/system/system';
-import { PeerContext } from '../../class/core/system/network/peer-context';
-import { ObjectStore } from '../../class/core/synchronize-object/object-store';
-import { ChatTabSettingComponent } from '../chat-tab-setting/chat-tab-setting.component';
+import { ChatTabSettingComponent } from 'component/chat-tab-setting/chat-tab-setting.component';
+import { TextViewComponent } from 'component/text-view/text-view.component';
+import { ChatMessageService } from 'service/chat-message.service';
+import { PanelOption, PanelService } from 'service/panel.service';
+import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
   selector: 'chat-window',
@@ -25,8 +24,6 @@ import { ChatTabSettingComponent } from '../chat-tab-setting/chat-tab-setting.co
     trigger('flyInOut', [
       state('in', style({ transform: 'scale3d(1, 1, 1)' })),
       transition('void => *', [
-        //style({ transform: 'scale3d(0, 0, 0)' }),
-        //animate(100)
         animate('600ms ease', keyframes([
           style({ transform: 'scale3d(0, 0, 0)', offset: 0 }),
           style({ transform: 'scale3d(1.5, 1.5, 1.5)', offset: 0.5 }),
@@ -49,7 +46,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   text: string = '';
   sendTo: string = '';
   get isDirect(): boolean { return this.sendTo != null && this.sendTo.length ? true : false }
-  //gameType: string = '';
   get gameType(): string { return this.chatMessageService.gameType; }
   set gameType(gameType: string) { this.chatMessageService.gameType = gameType; }
   gameHelp: string = '';
@@ -83,7 +79,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
   eventSystem = EventSystem;
   objectStore = ObjectStore.instance;
-  //network = Network;
 
   private writingEventInterval: NodeJS.Timer = null;
   private previousWritingLength: number = 0;
@@ -92,14 +87,11 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
   get network() { return Network; };
   get diceBotInfos() { return DiceBot.diceBotInfos }
-  get myPeer(): PeerCursor { return PeerCursor.myCursor; }//this.objectStore.get<PeerCursor>(this.network.peerId); }
+  get myPeer(): PeerCursor { return PeerCursor.myCursor; }
   get otherPeers(): PeerCursor[] { return ObjectStore.instance.getObjects(PeerCursor); }
 
   constructor(
     private ngZone: NgZone,
-    //private eventSystem: EventSystem,
-    //private objectStore: objectStore,
-    //private network: Network,
     public chatMessageService: ChatMessageService,
     private panelService: PanelService,
     private pointerDeviceService: PointerDeviceService
@@ -130,7 +122,8 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
           this.gameCharacter = null;
           this.sender = this.myPeer.identifier;
         }
-      }).on('CLOSE_OTHER_PEER', event => {
+      })
+      .on('CLOSE_OTHER_PEER', event => {
         let object = this.objectStore.get(this.sendTo);
         if (object instanceof PeerCursor && object.peerId === event.data.peer) {
           this.sendTo = '';
@@ -186,7 +179,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   checkAutoScroll() {
     if (!this.panelService.scrollablePanel) return;
     let top = this.panelService.scrollablePanel.scrollHeight - this.panelService.scrollablePanel.clientHeight;
-    if (top <= this.panelService.scrollablePanel.scrollTop) {
+    if (top - 150 <= this.panelService.scrollablePanel.scrollTop) {
       this.isAutoScroll = true;
     } else {
       this.isAutoScroll = false;
@@ -202,7 +195,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSelectedTab(identifier: string) {
-    //this.chatTabidentifier = identifier;
     this.updatePanelTitle();
   }
 
@@ -305,7 +297,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     console.log(chatMessage);
 
-    //this.eventSystem.call('BROADCAST_MESSAGE', chatMessage);
     if (this.chatTab) {
       let latestTimeStamp: number = 0 < this.chatTab.chatMessages.length
         ? this.chatTab.chatMessages[this.chatTab.chatMessages.length - 1].timestamp
@@ -314,7 +305,6 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.chatTab.addMessage(chatMessage);
     }
-    //this.scrollToBottom(true);
     this.text = '';
     this.previousWritingLength = this.text.length;
     let textArea: HTMLTextAreaElement = this.textAreaElementRef.nativeElement;

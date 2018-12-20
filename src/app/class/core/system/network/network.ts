@@ -1,7 +1,7 @@
-import { Connection, ConnectionCallback } from './connection';
-import { SkyWayConnection } from './skyway-connection';
-import { IPeerContext } from './peer-context';
 import { setZeroTimeout } from '../util/zero-timeout';
+import { Connection, ConnectionCallback } from './connection';
+import { IPeerContext } from './peer-context';
+import { SkyWayConnection } from './skyway-connection';
 
 export class Network {
   private static _instance: Network
@@ -80,10 +80,9 @@ export class Network {
     let unicast: { [sendTo: string]: any[] } = {};
     let echocast: any[] = [];
 
-    let loop = this.queue.length < 128 ? this.queue.length : 128;
-    //console.warn(this.queue.length);
-    for (let i = 0; i < loop; i++) {
-      let event = this.queue[i];
+    let length = this.queue.length < 128 ? this.queue.length : 128;
+    let events = this.queue.splice(0, length);
+    for (let event of events) {
       if (event.sendTo == null) {
         broadcast.push(event);
       } else if (event.sendTo === this.peerId) {
@@ -93,7 +92,7 @@ export class Network {
         unicast[event.sendTo].push(event);
       }
     }
-    this.queue.splice(0, loop);
+
     // できるだけ一纏めにして送る
     if (this.connection) {
       if (broadcast.length) this.connection.send(broadcast);

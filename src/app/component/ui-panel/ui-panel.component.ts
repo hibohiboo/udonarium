@@ -1,12 +1,18 @@
-import { Component, ComponentRef, ViewRef, ViewContainerRef, OnInit, OnDestroy, AfterViewInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
-import { PanelService } from '../../service/panel.service';
-import { PointerDeviceService } from '../../service/pointer-device.service';
+import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 
-/*
-import * as $ from 'jquery';
-import { } from 'jqueryui';
-*/
+import { PanelService } from 'service/panel.service';
+import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
   selector: 'ui-panel',
@@ -44,14 +50,6 @@ export class UIPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('scrollablePanel') scrollablePanel: ElementRef;
   @ViewChild('content', { read: ViewContainerRef }) content: ViewContainerRef;
 
-  /*
-  @Input() title: string = '無名のパネル';
-  @Input() left: number = 0;
-  @Input() top: number = 0;
-  @Input() width: number = 100;
-  @Input() height: number = 100;
-  */
-
   @Input() set title(title: string) { this.panelService.title = title; }
   @Input() set left(left: number) { this.panelService.left = left; }
   @Input() set top(top: number) { this.panelService.top = top; }
@@ -72,15 +70,15 @@ export class UIPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   private isFullScreen: boolean = false;
 
   private $draggablePanel: JQuery;
-  private $scrollablePanel: JQuery;
 
-  private callbackOnScrollablePanelMouseDown: any = null;
-  private callbackOnDraggablePanelMouseDown: any = null;
+  private callbackOnScrollablePanelMouseDown = (e) => this.onScrollablePanelMouseDown(e);
+  private callbackOnDraggablePanelMouseDown = (e) => this.onDraggablePanelMouseDown(e);
   private callbackOnMouseUp: any = (e) => this.onMouseUp(e);
 
   get isPointerDragging(): boolean { return this.pointerDeviceService.isDragging; }
 
   constructor(
+    private ngZone: NgZone,
     public panelService: PanelService,
     private pointerDeviceService: PointerDeviceService
   ) { }
@@ -90,15 +88,18 @@ export class UIPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // TODO ウィンドウタイトルって下側のほうがいい？
+    this.ngZone.runOutsideAngular(() => {
+      this.initDraggablePanel();
+    });
+    this.setForeground();
+    this.adjustPosition();
+  }
+
+  private initDraggablePanel() {
     this.$draggablePanel = $(this.draggablePanel.nativeElement);
-    this.$scrollablePanel = $(this.scrollablePanel.nativeElement);
 
     this.$draggablePanel.draggable({ containment: 'body', cancel: 'input,textarea,button,select,option,span', stack: '.draggable-panel', opacity: 0.7 });
     this.$draggablePanel.resizable({ handles: 'all', minHeight: 100, minWidth: 100 });
-
-    this.callbackOnScrollablePanelMouseDown = (e) => this.onScrollablePanelMouseDown(e);
-    this.callbackOnDraggablePanelMouseDown = (e) => this.onDraggablePanelMouseDown(e);
 
     this.scrollablePanel.nativeElement.addEventListener('mousedown', this.callbackOnScrollablePanelMouseDown, false);
     this.draggablePanel.nativeElement.addEventListener('mousedown', this.callbackOnDraggablePanelMouseDown, false);
@@ -109,16 +110,11 @@ export class UIPanelComponent implements OnInit, OnDestroy, AfterViewInit {
     this.preHeight = this.height;
 
     this.panelService.scrollablePanel = this.scrollablePanel.nativeElement;
-
-    this.setForeground();
-    this.adjustPosition();
   }
 
   ngOnDestroy() {
     this.scrollablePanel.nativeElement.removeEventListener('mousedown', this.callbackOnScrollablePanelMouseDown, false);
     this.draggablePanel.nativeElement.removeEventListener('mousedown', this.callbackOnDraggablePanelMouseDown, false);
-    this.callbackOnScrollablePanelMouseDown = null;
-    this.callbackOnDraggablePanelMouseDown = null;
   }
 
   private adjustPosition() {
@@ -169,8 +165,6 @@ export class UIPanelComponent implements OnInit, OnDestroy, AfterViewInit {
   private onMouseUp(e: any) {
     console.log('onMouseUp');
     this.$draggablePanel.draggable('option', 'handle', false);
-    //this.$draggablePanel.draggable('option', 'handle', '.draggable-panel');
-    //this.$scrollablePanel.draggable('option', 'handle', true);
     document.body.removeEventListener('mouseup', this.callbackOnMouseUp, false);
   }
 

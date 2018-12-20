@@ -1,13 +1,14 @@
-import { GameTable, GameTableDataContainer } from './game-table';
-import { EventSystem } from './core/system/system';
-import { ObjectStore } from './core/synchronize-object/object-store';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { GameObject } from './core/synchronize-object/game-object';
+import { ObjectStore } from './core/synchronize-object/object-store';
+import { EventSystem } from './core/system/system';
+import { GameTable } from './game-table';
 
 @SyncObject('TableSelecter')
 export class TableSelecter extends GameObject {
   @SyncVar() viewTableIdentifier: string = '';
   gridShow: boolean = false; // true=常時グリッド表示
+  gridSnap: boolean = true;
 
   initialize(needUpdate: boolean = true) {
     super.initialize(needUpdate);

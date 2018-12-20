@@ -1,15 +1,16 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 
-import { ImageFile } from '../../class/core/file-storage/image-file';
-import { EventSystem } from '../../class/core/system/system';
-import { Terrain, TerrainViewState } from '../../class/terrain';
-import { ContextMenuService } from '../../service/context-menu.service';
-import { PanelOption, PanelService } from '../../service/panel.service';
-import { PointerCoordinate, PointerDeviceService } from '../../service/pointer-device.service';
-import { GameCharacterSheetComponent } from '../game-character-sheet/game-character-sheet.component';
-import { MovableOption } from '../../directive/movable.directive';
-import { RotableOption } from '../../directive/rotable.directive';
-import { SoundEffect, PresetSound } from '../../class/sound-effect';
+import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { EventSystem } from '@udonarium/core/system/system';
+import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
+import { Terrain, TerrainViewState } from '@udonarium/terrain';
+
+import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
+import { MovableOption } from 'directive/movable.directive';
+import { RotableOption } from 'directive/rotable.directive';
+import { ContextMenuService } from 'service/context-menu.service';
+import { PanelOption, PanelService } from 'service/panel.service';
+import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
   selector: 'terrain',
@@ -44,7 +45,6 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
-    private elementRef: ElementRef,
     private pointerDeviceService: PointerDeviceService
   ) { }
 
@@ -158,7 +158,9 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('onSelectedGameObject <' + gameObject.aliasName + '>', gameObject.identifier);
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: gameObject.identifier, className: gameObject.aliasName });
     let coordinate = this.pointerDeviceService.pointers[0];
-    let option: PanelOption = { left: coordinate.x - 250, top: coordinate.y - 150, width: 500, height: 300 };
+    let title = '地形設定';
+    if (gameObject.name.length) title += ' - ' + gameObject.name;
+    let option: PanelOption = { title: title, left: coordinate.x - 250, top: coordinate.y - 150, width: 500, height: 300 };
     let component = this.panelService.open<GameCharacterSheetComponent>(GameCharacterSheetComponent, option);
     component.tabletopObject = gameObject;
   }

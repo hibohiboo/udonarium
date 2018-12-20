@@ -1,29 +1,31 @@
 import { AfterViewInit, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
-import { Card } from '../../class/card';
-import { CardStack } from '../../class/card-stack';
-import { ImageStorage } from '../../class/core/file-storage/image-storage';
-import { ImageContext, ImageFile } from '../../class/core/file-storage/image-file';
-import { ObjectSerializer } from '../../class/core/synchronize-object/object-serializer';
-import { ObjectStore } from '../../class/core/synchronize-object/object-store';
-import { EventSystem } from '../../class/core/system/system';
-import { GameCharacter } from '../../class/game-character';
-import { GameTable, GridType } from '../../class/game-table';
-import { GameTableMask } from '../../class/game-table-mask';
-import { PeerCursor } from '../../class/peer-cursor';
-import { TableSelecter } from '../../class/table-selecter';
-import { TabletopObject } from '../../class/tabletop-object';
-import { Terrain } from '../../class/terrain';
-import { ContextMenuService } from '../../service/context-menu.service';
-import { ModalService } from '../../service/modal.service';
-import { PanelOption, PanelService } from '../../service/panel.service';
-import { PointerCoordinate, PointerDeviceService } from '../../service/pointer-device.service';
-import { GameCharacterSheetComponent } from '../game-character-sheet/game-character-sheet.component';
-import { GameTableSettingComponent } from '../game-table-setting/game-table-setting.component';
-import { TextNote } from '../../class/text-note';
-import { TabletopService, } from '../../service/tabletop.service';
-import { SoundEffect, PresetSound } from '../../class/sound-effect';
-import { GameObject } from '../../class/core/synchronize-object/game-object';
+import { Card } from '@udonarium/card';
+import { CardStack } from '@udonarium/card-stack';
+import { ImageContext, ImageFile } from '@udonarium/core/file-storage/image-file';
+import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
+import { GameObject } from '@udonarium/core/synchronize-object/game-object';
+import { ObjectSerializer } from '@udonarium/core/synchronize-object/object-serializer';
+import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
+import { EventSystem } from '@udonarium/core/system/system';
+import { DiceSymbol, DiceType } from '@udonarium/dice-symbol';
+import { GameCharacter } from '@udonarium/game-character';
+import { GameTable, GridType } from '@udonarium/game-table';
+import { GameTableMask } from '@udonarium/game-table-mask';
+import { PeerCursor } from '@udonarium/peer-cursor';
+import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
+import { TableSelecter } from '@udonarium/table-selecter';
+import { TabletopObject } from '@udonarium/tabletop-object';
+import { Terrain } from '@udonarium/terrain';
+import { TextNote } from '@udonarium/text-note';
+
+import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
+import { GameTableSettingComponent } from 'component/game-table-setting/game-table-setting.component';
+import { ContextMenuService } from 'service/context-menu.service';
+import { ModalService } from 'service/modal.service';
+import { PanelOption, PanelService } from 'service/panel.service';
+import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service';
+import { TabletopService } from 'service/tabletop.service';
 
 @Component({
   selector: 'game-table',
@@ -74,8 +76,6 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private buttonCode: number = 0;
 
-  private isAllowedToOpenContextMenu: boolean = true;
-
   private needUpdateList: { [aliasName: string]: boolean } = {};
   private _tabletopCharacters: GameCharacter[] = [];
   private _gameTableMasks: GameTableMask[] = [];
@@ -84,6 +84,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   private _terrains: Terrain[] = [];
   private _peerCursors: PeerCursor[] = [];
   private _textNotes: TextNote[] = [];
+  private _diceSymbols: DiceSymbol[] = [];
   get tabletopCharacters(): GameCharacter[] { this.updateTabletopObjects(); return this._tabletopCharacters; }
   get gameTableMasks(): GameTableMask[] { this.updateTabletopObjects(); return this._gameTableMasks; }
   get cards(): Card[] { this.updateTabletopObjects(); return this._cards; }
@@ -91,6 +92,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   get terrains(): Terrain[] { this.updateTabletopObjects(); return this._terrains; }
   get peerCursors(): PeerCursor[] { this.updateTabletopObjects(); return this._peerCursors; }
   get textNotes(): TextNote[] { this.updateTabletopObjects(); return this._textNotes; }
+  get diceSymbols(): DiceSymbol[] { this.updateTabletopObjects(); return this._diceSymbols; }
 
   constructor(
     private ngZone: NgZone,
@@ -139,7 +141,8 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
           gameObject.update();
           SoundEffect.play(PresetSound.put);
         }
-      }).on('DRAG_LOCKED_OBJECT', event => {
+      })
+      .on('DRAG_LOCKED_OBJECT', event => {
         this.isTransformMode = true;
         this.pointerDeviceService.isDragging = false;
         let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
@@ -165,9 +168,6 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   onMouseDown(e: any) {
     this.mouseDownPositionX = this.pointerDeviceService.pointerX;
     this.mouseDownPositionY = this.pointerDeviceService.pointerY;
-
-    this.isAllowedToOpenContextMenu = true;
-    console.log('onMouseDown isAllowedToOpenContextMenu', this.isAllowedToOpenContextMenu);
 
     if (e.target.contains(this.gameObjects.nativeElement) || e.button === 1 || e.button === 2) {
       this.isTransformMode = true;
@@ -217,11 +217,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         transformY = -(this.mouseDownPositionY - y) * scale;
       }
 
-      if (this.mouseDownPositionX !== x || this.mouseDownPositionY !== y) {
-        this.isAllowedToOpenContextMenu = false;
-      }
-
-      if (!this.isAllowedToOpenContextMenu && this.contextMenuService.isShow) {
+      if (!this.pointerDeviceService.isAllowedToOpenContextMenu && this.contextMenuService.isShow) {
         this.ngZone.run(() => { this.contextMenuService.close(); });
       }
 
@@ -303,8 +299,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     e.stopPropagation();
     e.preventDefault();
 
-    if (this.isAllowedToOpenContextMenu) {
-      this.isAllowedToOpenContextMenu = false;
+    if (this.pointerDeviceService.isAllowedToOpenContextMenu) {
       let potison = this.pointerDeviceService.pointers[0];
       console.log('mouseCursor A', potison);
       this.contextMenuService.open(potison, [
@@ -333,14 +328,61 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         },
         {
-          name: 'テーブル設定', action: () => {
-            this.modalService.open(GameTableSettingComponent);
+          name: 'トランプの山札を作成', action: () => {
+            this.createTrump(potison);
+            SoundEffect.play(PresetSound.cardPut);
           }
         },
         {
-          name: 'トランプの山札を作る', action: () => {
-            this.createTrump(potison);
-            SoundEffect.play(PresetSound.cardPut);
+          name: 'ダイスを作成', action: null, subActions: [
+            {
+              name: 'D4', action: () => {
+                this.createDiceSymbol(potison, 'D4', DiceType.D4, '4_dice');
+                SoundEffect.play(PresetSound.put);
+              }
+            },
+            {
+              name: 'D6', action: () => {
+                this.createDiceSymbol(potison, 'D6', DiceType.D6, '6_dice');
+                SoundEffect.play(PresetSound.put);
+              }
+            },
+            {
+              name: 'D8', action: () => {
+                this.createDiceSymbol(potison, 'D8', DiceType.D8, '8_dice');
+                SoundEffect.play(PresetSound.put);
+              }
+            },
+            {
+              name: 'D10', action: () => {
+                this.createDiceSymbol(potison, 'D10', DiceType.D10, '10_dice');
+                SoundEffect.play(PresetSound.put);
+              }
+            },
+            {
+              name: 'D10 (00-90)', action: () => {
+                this.createDiceSymbol(potison, 'D10', DiceType.D10_10TIMES, '100_dice');
+                SoundEffect.play(PresetSound.put);
+              }
+            },
+            {
+              name: 'D12', action: () => {
+                this.createDiceSymbol(potison, 'D12', DiceType.D12, '12_dice');
+                SoundEffect.play(PresetSound.put);
+              }
+            },
+            {
+              name: 'D20', action: () => {
+                this.createDiceSymbol(potison, 'D20', DiceType.D20, '20_dice');
+                SoundEffect.play(PresetSound.put);
+              }
+            }
+
+          ]
+        },
+        {
+          name: 'テーブル設定', action: () => {
+            this.modalService.open(GameTableSettingComponent);
           }
         }
       ], this.gameTableObject.name);
@@ -370,6 +412,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.needUpdateList[Terrain.aliasName] = false;
     this.needUpdateList[PeerCursor.aliasName] = false;
     this.needUpdateList[TextNote.aliasName] = false;
+    this.needUpdateList[DiceSymbol.aliasName] = false;
   }
 
   private updateTabletopObjects() {
@@ -402,6 +445,10 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!this.needUpdateList[TextNote.aliasName]) {
       this.needUpdateList[TextNote.aliasName] = true;
       this._textNotes = ObjectStore.instance.getObjects<TextNote>(TextNote);
+    }
+    if (!this.needUpdateList[DiceSymbol.aliasName]) {
+      this.needUpdateList[DiceSymbol.aliasName] = true;
+      this._diceSymbols = ObjectStore.instance.getObjects<DiceSymbol>(DiceSymbol);
     }
   }
 
@@ -466,6 +513,24 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     textNote.location.x = pointer.x;
     textNote.location.y = pointer.y;
     textNote.update();
+  }
+
+  createDiceSymbol(potison: PointerCoordinate, name: string, diceType: DiceType, imagePathPrefix: string) {
+    console.log('createDiceSymbol');
+    let diceSymbol = DiceSymbol.create(name, diceType, 1);
+    let image: ImageFile = null;
+
+    diceSymbol.faces.forEach(face => {
+      let url: string = `./assets/images/dice/${imagePathPrefix}/${imagePathPrefix}[${face}].png`;
+      image = ImageStorage.instance.get(url)
+      if (!image) { image = ImageStorage.instance.add(url); }
+      diceSymbol.imageDataElement.getFirstElementByName(face).value = image.identifier;
+    });
+
+    let pointer = PointerDeviceService.convertToLocal(potison, this.gameObjects.nativeElement);
+    diceSymbol.location.x = pointer.x - 25;
+    diceSymbol.location.y = pointer.y - 25;
+    diceSymbol.update();
   }
 
   setTransform(transformX: number, transformY: number, transformZ: number, rotateX: number, rotateY: number, rotateZ: number) {

@@ -1,17 +1,18 @@
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 
-import { ImageFile } from '../../class/core/file-storage/image-file';
-import { EventSystem, Network } from '../../class/core/system/system';
-import { GameCharacter } from '../../class/game-character';
-import { ContextMenuService } from '../../service/context-menu.service';
-import { PanelOption, PanelService } from '../../service/panel.service';
-import { PointerCoordinate, PointerDeviceService } from '../../service/pointer-device.service';
-import { ChatPaletteComponent } from '../chat-palette/chat-palette.component';
-import { GameCharacterSheetComponent } from '../game-character-sheet/game-character-sheet.component';
-import { MovableOption } from '../../directive/movable.directive';
-import { RotableOption } from '../../directive/rotable.directive';
-import { SoundEffect, PresetSound } from '../../class/sound-effect';
+import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { EventSystem, Network } from '@udonarium/core/system/system';
+import { GameCharacter } from '@udonarium/game-character';
+import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
+
+import { ChatPaletteComponent } from 'component/chat-palette/chat-palette.component';
+import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
+import { MovableOption } from 'directive/movable.directive';
+import { RotableOption } from 'directive/rotable.directive';
+import { ContextMenuService } from 'service/context-menu.service';
+import { PanelOption, PanelService } from 'service/panel.service';
+import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
   selector: 'game-character',
@@ -55,7 +56,6 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   constructor(
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
-    private elementRef: ElementRef,
     private pointerDeviceService: PointerDeviceService
   ) { }
 
@@ -153,7 +153,9 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
 
   private showDetail(gameObject: GameCharacter) {
     let coordinate = this.pointerDeviceService.pointers[0];
-    let option: PanelOption = { left: coordinate.x - 400, top: coordinate.y - 300, width: 800, height: 600 };
+    let title = 'キャラクターシート';
+    if (gameObject.name.length) title += ' - ' + gameObject.name;
+    let option: PanelOption = { title: title, left: coordinate.x - 400, top: coordinate.y - 300, width: 800, height: 600 };
     let component = this.panelService.open<GameCharacterSheetComponent>(GameCharacterSheetComponent, option);
     component.tabletopObject = gameObject;
   }

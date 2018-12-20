@@ -1,8 +1,7 @@
+import { ChatPalette } from './chat-palette';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
-import { GameObject } from './core/synchronize-object/game-object';
 import { DataElement } from './data-element';
 import { TabletopObject } from './tabletop-object';
-import { ChatPalette } from './chat-palette';
 
 @SyncObject('character')
 export class GameCharacter extends TabletopObject {
@@ -96,18 +95,4 @@ export class GameCharacter extends TabletopObject {
 
     this.update();
   }
-}
-
-export interface GameCharacterContainer {
-  name: string;
-  size: number;
-  imageIdentifier: string;
-  dataElementIdentifier: string;
-  location: GameObjectLocationContainer;
-}
-
-export interface GameObjectLocationContainer {
-  locationName: string;
-  x: number;
-  y: number;
 }

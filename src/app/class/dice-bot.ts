@@ -1,38 +1,26 @@
 import { ChatMessage, ChatMessageContext } from './chat-message';
-import { Network, EventSystem } from './core/system/system';
-import { ObjectStore } from './core/synchronize-object/object-store';
 import { SyncObject } from './core/synchronize-object/decorator';
 import { GameObject } from './core/synchronize-object/game-object';
-import { ChatTab } from './chat-tab';
+import { ObjectStore } from './core/synchronize-object/object-store';
+import { EventSystem } from './core/system/system';
+import { PromiseQueue } from './core/system/util/promise-queue';
 
 declare var Opal
 
-type Callback<T> = () => T;
+interface DiceBotInfo {
+  script: string;
+  game: string;
+}
 
-class PromiseQueue {
-  private length: number = 0;
-  private queue: Promise<any> = Promise.resolve();
-
-  add<T>(task: Callback<T>): Promise<T> {
-    this.length++
-    console.log('PromiseQueue Add:' + this.length)
-    this.queue = this.queue.then(task);
-    let ret = this.queue;
-    this.queue = this.queue.catch((reason) => {
-      console.error(reason);
-    });
-    this.queue = this.queue.then(() => {
-      this.length--;
-      console.log('PromiseQueue Done:' + this.length);
-    });
-    return ret;
-  }
+interface DiceRollResult {
+  result: string;
+  isSecret: boolean;
 }
 
 @SyncObject('dice-bot')
 export class DiceBot extends GameObject {
   private static loadedDiceBots: { [gameType: string]: boolean } = {};
-  private static queue: PromiseQueue = new PromiseQueue();
+  private static queue: PromiseQueue = new PromiseQueue('DiceBotQueue');
 
   public static diceBotInfos: DiceBotInfo[] = [
     { script: 'EarthDawn', game: 'アースドーン' },
@@ -286,8 +274,7 @@ export class DiceBot extends GameObject {
 
   initialize(needUpdate: boolean = true) {
     super.initialize(needUpdate);
-    //DiceBot.queue.add(() => DiceBot.loadScriptAsync('./assets/bcdice.js'));
-    DiceBot.queue.add(() => DiceBot.loadScriptAsync('./assets/cgiDiceBot.js'));
+    DiceBot.queue.add(DiceBot.loadScriptAsync('./assets/cgiDiceBot.js'));
     EventSystem.register(this)
       .on<ChatMessageContext>('BROADCAST_MESSAGE', 100, async event => {
         if (!event.isSendFromSelf) return;
@@ -345,7 +332,7 @@ export class DiceBot extends GameObject {
   }
 
   static diceRollAsync(message: string, gameType: string): Promise<DiceRollResult> {
-    DiceBot.queue.add(() => DiceBot.loadDiceBotAsync(gameType));
+    DiceBot.queue.add(DiceBot.loadDiceBotAsync(gameType));
     return DiceBot.queue.add(() => {
       if ('Opal' in window === false) {
         console.warn('Opal is not loaded...');
@@ -369,7 +356,7 @@ export class DiceBot extends GameObject {
   }
 
   static getHelpMessage(gameType: string): Promise<string> {
-    DiceBot.queue.add(() => DiceBot.loadDiceBotAsync(gameType));
+    DiceBot.queue.add(DiceBot.loadDiceBotAsync(gameType));
     return DiceBot.queue.add(() => {
       console.log('getHelpMessage');
       if ('Opal' in window === false) {
@@ -434,13 +421,7 @@ export class DiceBot extends GameObject {
         resolve();
       };
 
-      script.onabort = (e) => {
-        if (head && script.parentNode) head.removeChild(script);
-        console.error(e);
-        resolve();
-      }
-
-      script.onerror = (e) => {
+      script.onabort = script.onerror = (e) => {
         if (head && script.parentNode) head.removeChild(script);
         console.error(e);
         resolve();
@@ -473,14 +454,4 @@ export class DiceBot extends GameObject {
       http.send(null);
     });
   }
-}
-
-interface DiceBotInfo {
-  script: string;
-  game: string;
-}
-
-interface DiceRollResult {
-  result: string;
-  isSecret: boolean;
 }

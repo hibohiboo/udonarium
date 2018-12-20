@@ -8,21 +8,21 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  ViewChild,
 } from '@angular/core';
 
-import { Card, CardState } from '../../class/card';
-import { CardStack } from '../../class/card-stack';
-import { ImageFile } from '../../class/core/file-storage/image-file';
-import { ObjectStore } from '../../class/core/synchronize-object/object-store';
-import { EventSystem, Network } from '../../class/core/system/system';
-import { ContextMenuService } from '../../service/context-menu.service';
-import { PanelOption, PanelService } from '../../service/panel.service';
-import { PointerCoordinate, PointerDeviceService } from '../../service/pointer-device.service';
-import { GameCharacterSheetComponent } from '../game-character-sheet/game-character-sheet.component';
-import { MovableOption } from '../../directive/movable.directive';
-import { RotableOption } from '../../directive/rotable.directive';
-import { SoundEffect, PresetSound } from '../../class/sound-effect';
+import { Card, CardState } from '@udonarium/card';
+import { CardStack } from '@udonarium/card-stack';
+import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
+import { EventSystem, Network } from '@udonarium/core/system/system';
+import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
+
+import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
+import { MovableOption } from 'directive/movable.directive';
+import { RotableOption } from 'directive/rotable.directive';
+import { ContextMenuService } from 'service/context-menu.service';
+import { PanelOption, PanelService } from 'service/panel.service';
+import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
   selector: 'card',
@@ -81,7 +81,8 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
           this.changeDetector.markForCheck();
         }
         if (event.isSendFromSelf || event.data.identifier !== this.card.identifier) return;
-      }).on('UPDATE_GAME_OBJECT', 1000, event => {
+      })
+      .on('UPDATE_GAME_OBJECT', 1000, event => {
         if (event.isSendFromSelf || event.data.aliasName !== 'card') return;
         let object = ObjectStore.instance.get(event.data.identifier);
         if (!object) this.changeDetector.markForCheck();
@@ -311,7 +312,9 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('onSelectedGameObject <' + gameObject.aliasName + '>', gameObject.identifier);
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: gameObject.identifier, className: gameObject.aliasName });
     let coordinate = this.pointerDeviceService.pointers[0];
-    let option: PanelOption = { left: coordinate.x - 300, top: coordinate.y - 300, width: 600, height: 600 };
+    let title = 'カード設定';
+    if (gameObject.name.length) title += ' - ' + gameObject.name;
+    let option: PanelOption = { title: title, left: coordinate.x - 300, top: coordinate.y - 300, width: 600, height: 600 };
     let component = this.panelService.open<GameCharacterSheetComponent>(GameCharacterSheetComponent, option);
     component.tabletopObject = gameObject;
   }

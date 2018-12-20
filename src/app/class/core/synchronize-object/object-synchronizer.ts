@@ -1,7 +1,7 @@
-import { EventSystem, Network } from '../system/system';
-import { ObjectFactory } from './object-factory';
+import { EventSystem } from '../system/system';
 import { GameObject, ObjectContext } from './game-object';
-import { ObjectStore, CatalogItem } from './object-store';
+import { ObjectFactory } from './object-factory';
+import { CatalogItem, ObjectStore } from './object-store';
 import { SynchronizeRequest, SynchronizeTask } from './synchronize-task';
 
 export class ObjectSynchronizer {
@@ -72,9 +72,7 @@ export class ObjectSynchronizer {
   }
 
   private updateObject(object: GameObject, context: ObjectContext) {
-    if (context.majorVersion + context.minorVersion < object.version) {
-      object.update(false);
-    } else if (context.majorVersion + context.minorVersion > object.version) {
+    if (context.majorVersion + context.minorVersion > object.version) {
       object.apply(context);
     }
   }

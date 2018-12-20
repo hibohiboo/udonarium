@@ -1,25 +1,21 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, OnInit, OnDestroy, NgZone, Input, ViewChild, AfterViewInit, ElementRef, HostListener } from '@angular/core';
-import { trigger, state, style, transition, animate, keyframes } from '@angular/animations';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { RoomSettingComponent } from '../room-setting/room-setting.component';
-import { PasswordCheckComponent } from '../password-check/password-check.component';
+import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
+import { PeerContext } from '@udonarium/core/system/network/peer-context';
+import { EventSystem, Network } from '@udonarium/core/system/system';
+import { PeerCursor } from '@udonarium/peer-cursor';
 
-import { ModalService } from '../../service/modal.service';
-import { PanelService, PanelOption } from '../../service/panel.service';
-import { PointerDeviceService } from '../../service/pointer-device.service';
-
-import { Network, EventSystem } from '../../class/core/system/system';
-import { ObjectStore } from '../../class/core/synchronize-object/object-store';
-import { PeerContext } from '../../class/core/system/network/peer-context';
-import { PeerCursor } from '../../class/peer-cursor';
+import { PasswordCheckComponent } from 'component/password-check/password-check.component';
+import { RoomSettingComponent } from 'component/room-setting/room-setting.component';
+import { ModalService } from 'service/modal.service';
+import { PanelService } from 'service/panel.service';
 
 @Component({
   selector: 'lobby',
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.css'],
-  //changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LobbyComponent implements OnInit {
+export class LobbyComponent implements OnInit, OnDestroy {
   rooms: { room: string, roomName: string, peers: PeerContext[] }[] = [];
 
   isReloading: boolean = false;
@@ -32,12 +28,8 @@ export class LobbyComponent implements OnInit {
     return Network.peerIds.length <= 1 ? false : true;
   }
   constructor(
-    private ngZone: NgZone,
     private panelService: PanelService,
-    private modalService: ModalService,
-    private elementRef: ElementRef,
-    private changeDetector: ChangeDetectorRef,
-    private pointerDeviceService: PointerDeviceService
+    private modalService: ModalService
   ) { }
 
   ngOnInit() {
@@ -49,7 +41,7 @@ export class LobbyComponent implements OnInit {
       .on('OTHER_PEERS', event => {
         this.changeTitle();
       });
-      this.reload();
+    this.reload();
   }
 
   private changeTitle() {
@@ -87,7 +79,6 @@ export class LobbyComponent implements OnInit {
   }
 
   async connect(peerContexts: PeerContext[]) {
-    //Network.connect(peer);
     let context = peerContexts[0];
 
     if (context.password.length) {

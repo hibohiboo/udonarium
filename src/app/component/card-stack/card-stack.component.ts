@@ -1,19 +1,19 @@
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 
-import { Card } from '../../class/card';
-import { CardStack } from '../../class/card-stack';
-import { ImageFile } from '../../class/core/file-storage/image-file';
-import { EventSystem, Network } from '../../class/core/system/system';
-import { ContextMenuService } from '../../service/context-menu.service';
-import { ModalService } from '../../service/modal.service';
-import { PanelOption, PanelService } from '../../service/panel.service';
-import { PointerCoordinate, PointerDeviceService } from '../../service/pointer-device.service';
-import { CardStackListComponent } from '../card-stack-list/card-stack-list.component';
-import { GameCharacterSheetComponent } from '../game-character-sheet/game-character-sheet.component';
-import { MovableOption } from '../../directive/movable.directive';
-import { RotableOption } from '../../directive/rotable.directive';
-import { SoundEffect, PresetSound } from '../../class/sound-effect';
+import { Card } from '@udonarium/card';
+import { CardStack } from '@udonarium/card-stack';
+import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { EventSystem, Network } from '@udonarium/core/system/system';
+import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
+
+import { CardStackListComponent } from 'component/card-stack-list/card-stack-list.component';
+import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
+import { MovableOption } from 'directive/movable.directive';
+import { RotableOption } from 'directive/rotable.directive';
+import { ContextMenuService } from 'service/context-menu.service';
+import { PanelOption, PanelService } from 'service/panel.service';
+import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
   selector: 'card-stack',
@@ -34,7 +34,7 @@ import { SoundEffect, PresetSound } from '../../class/sound-effect';
     ])
   ]
 })
-export class CardStackComponent implements OnInit {
+export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() cardStack: CardStack = null;
   @Input() is3D: boolean = false;
 
@@ -70,7 +70,6 @@ export class CardStackComponent implements OnInit {
 
   constructor(
     private contextMenuService: ContextMenuService,
-    private modalService: ModalService,
     private panelService: PanelService,
     private elementRef: ElementRef,
     private pointerDeviceService: PointerDeviceService
@@ -362,7 +361,9 @@ export class CardStackComponent implements OnInit {
     console.log('onSelectedGameObject <' + gameObject.aliasName + '>', gameObject.identifier);
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: gameObject.identifier, className: gameObject.aliasName });
     let coordinate = this.pointerDeviceService.pointers[0];
-    let option: PanelOption = { left: coordinate.x - 300, top: coordinate.y - 300, width: 600, height: 600 };
+    let title = '山札設定';
+    if (gameObject.name.length) title += ' - ' + gameObject.name;
+    let option: PanelOption = { title: title, left: coordinate.x - 300, top: coordinate.y - 300, width: 600, height: 600 };
     let component = this.panelService.open<GameCharacterSheetComponent>(GameCharacterSheetComponent, option);
     component.tabletopObject = gameObject;
   }

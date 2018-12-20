@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
-import * as Beautify from 'vkbeautify';
 
-import { ChatTabList } from '../class/chat-tab-list';
-import { FileArchiver } from '../class/core/file-storage/file-archiver';
-import { ImageStorage } from '../class/core/file-storage/image-storage';
-import { ImageFile } from '../class/core/file-storage/image-file';
-import { MimeType } from '../class/core/file-storage/mime-type';
-import { XmlUtil } from '../class/core/synchronize-object/xml-util';
-import { Room } from '../class/room';
-import { GameObject } from '../class/core/synchronize-object/game-object';
+import { ChatTabList } from '@udonarium/chat-tab-list';
+import { FileArchiver } from '@udonarium/core/file-storage/file-archiver';
+import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
+import { MimeType } from '@udonarium/core/file-storage/mime-type';
+import { GameObject } from '@udonarium/core/synchronize-object/game-object';
+import { XmlUtil } from '@udonarium/core/synchronize-object/xml-util';
+import { DataSummarySetting } from '@udonarium/data-summary-setting';
+import { Room } from '@udonarium/room';
+
+import * as Beautify from 'vkbeautify';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +21,10 @@ export class SaveDataService {
     let files: File[] = [];
     let roomXml = this.convertToXml(new Room());
     let chatXml = this.convertToXml(new ChatTabList());
+    let summarySetting = this.convertToXml(DataSummarySetting.instance);
     files.push(new File([roomXml], 'data.xml', { type: 'text/plain' }));
     files.push(new File([chatXml], 'chat.xml', { type: 'text/plain' }));
+    files.push(new File([summarySetting], 'summary.xml', { type: 'text/plain' }));
 
     files = files.concat(this.searchImageFiles(roomXml));
     files = files.concat(this.searchImageFiles(chatXml));

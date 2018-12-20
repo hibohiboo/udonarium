@@ -1,29 +1,26 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, OnInit, OnDestroy, NgZone, Input, ViewChild, AfterViewInit, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
-import { TextViewComponent } from '../text-view/text-view.component';
+import { ChatMessageContext } from '@udonarium/chat-message';
+import { ChatPalette } from '@udonarium/chat-palette';
+import { ChatTab } from '@udonarium/chat-tab';
+import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
+import { PeerContext } from '@udonarium/core/system/network/peer-context';
+import { EventSystem, Network } from '@udonarium/core/system/system';
+import { DiceBot } from '@udonarium/dice-bot';
+import { GameCharacter } from '@udonarium/game-character';
+import { PeerCursor } from '@udonarium/peer-cursor';
 
-import { ModalService } from '../../service/modal.service';
-import { PanelService, PanelOption } from '../../service/panel.service';
-import { PointerDeviceService } from '../../service/pointer-device.service';
-import { ChatMessageService } from '../../service/chat-message.service';
-
-import { ChatTab } from '../../class/chat-tab';
-import { ChatPalette } from '../../class/chat-palette';
-import { ChatMessage, ChatMessageContext } from '../../class/chat-message';
-import { PeerCursor } from '../../class/peer-cursor';
-import { DiceBot } from '../../class/dice-bot';
-import { GameCharacter, GameCharacterContainer } from '../../class/game-character';
-import { Network, EventSystem } from '../../class/core/system/system';
-import { PeerContext } from '../../class/core/system/network/peer-context';
-import { ObjectStore } from '../../class/core/synchronize-object/object-store';
-import { ImageFile } from '../../class/core/file-storage/image-file';
+import { TextViewComponent } from 'component/text-view/text-view.component';
+import { ChatMessageService } from 'service/chat-message.service';
+import { PanelOption, PanelService } from 'service/panel.service';
+import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
   selector: 'chat-palette',
   templateUrl: './chat-palette.component.html',
   styleUrls: ['./chat-palette.component.css']
 })
-export class ChatPaletteComponent implements OnInit {
+export class ChatPaletteComponent implements OnInit, OnDestroy {
   @ViewChild('textArea') textAreaElementRef: ElementRef;
   @Input() character: GameCharacter = null;
 
@@ -54,14 +51,8 @@ export class ChatPaletteComponent implements OnInit {
   get otherPeers(): PeerCursor[] { return ObjectStore.instance.getObjects(PeerCursor); }
 
   constructor(
-    private ngZone: NgZone,
-    //private gameRoomService: GameRoomService,
-    //private contextMenuService: ContextMenuService,
-    //private modalService: ModalService,
     public chatMessageService: ChatMessageService,
     private panelService: PanelService,
-    private elementRef: ElementRef,
-    private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService
   ) { }
 

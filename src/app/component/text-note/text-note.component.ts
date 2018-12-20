@@ -1,24 +1,34 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild, NgZone } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 
-import { ImageFile } from '../../class/core/file-storage/image-file';
-import { EventSystem } from '../../class/core/system/system';
-import { Terrain, TerrainViewState } from '../../class/terrain';
-import { ContextMenuService } from '../../service/context-menu.service';
-import { PanelOption, PanelService } from '../../service/panel.service';
-import { PointerCoordinate, PointerDeviceService } from '../../service/pointer-device.service';
-import { GameCharacterSheetComponent } from '../game-character-sheet/game-character-sheet.component';
-import { TextNote } from '../../class/text-note';
-import { TabletopObject } from '../../class/tabletop-object';
-import { MovableOption } from '../../directive/movable.directive';
-import { RotableOption } from '../../directive/rotable.directive';
-import { SoundEffect, PresetSound } from '../../class/sound-effect';
+import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { EventSystem } from '@udonarium/core/system/system';
+import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
+import { TabletopObject } from '@udonarium/tabletop-object';
+import { TextNote } from '@udonarium/text-note';
+
+import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
+import { MovableOption } from 'directive/movable.directive';
+import { RotableOption } from 'directive/rotable.directive';
+import { ContextMenuService } from 'service/context-menu.service';
+import { PanelOption, PanelService } from 'service/panel.service';
+import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
   selector: 'text-note',
   templateUrl: './text-note.component.html',
   styleUrls: ['./text-note.component.css']
 })
-export class TextNoteComponent implements OnInit {
+export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('textArea') textAreaElementRef: ElementRef;
 
   @Input() textNote: TextNote = null;
@@ -40,9 +50,6 @@ export class TextNoteComponent implements OnInit {
 
   gridSize: number = 50;
 
-  private doubleClickTimer: NodeJS.Timer = null;
-  private doubleClickPoint = { x: 0, y: 0 };
-
   private calcFitHeightTimer: NodeJS.Timer = null;
 
   movableOption: MovableOption = {};
@@ -52,7 +59,6 @@ export class TextNoteComponent implements OnInit {
     private ngZone: NgZone,
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
-    private elementRef: ElementRef,
     private pointerDeviceService: PointerDeviceService
   ) { }
 
@@ -96,7 +102,6 @@ export class TextNoteComponent implements OnInit {
   }
 
   onMouseUp(e: any) {
-    //if (!this.movable.isDragging && !this.rotable.isDragging) {
     if (this.pointerDeviceService.isAllowedToOpenContextMenu) {
       console.log('this.textAreaElementRef.nativeElement.focus() !!!!');
       let selection = window.getSelection();
@@ -176,19 +181,19 @@ export class TextNoteComponent implements OnInit {
 
   private addMouseEventListeners() {
     document.body.addEventListener('mouseup', this.callbackOnMouseUp, false);
-    //document.body.addEventListener('mousemove', this.callbackOnMouseMove, false);
   }
 
   private removeMouseEventListeners() {
     document.body.removeEventListener('mouseup', this.callbackOnMouseUp, false);
-    //document.body.removeEventListener('mousemove', this.callbackOnMouseMove, false);
   }
 
-  private showDetail(gameObject: TabletopObject) {
+  private showDetail(gameObject: TextNote) {
     console.log('onSelectedGameObject <' + gameObject.aliasName + '>', gameObject.identifier);
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: gameObject.identifier, className: gameObject.aliasName });
     let coordinate = this.pointerDeviceService.pointers[0];
-    let option: PanelOption = { left: coordinate.x - 350, top: coordinate.y - 200, width: 700, height: 400 };
+    let title = '共有メモ設定';
+    if (gameObject.title.length) title += ' - ' + gameObject.title;
+    let option: PanelOption = { title: title, left: coordinate.x - 350, top: coordinate.y - 200, width: 700, height: 400 };
     let component = this.panelService.open<GameCharacterSheetComponent>(GameCharacterSheetComponent, option);
     component.tabletopObject = gameObject;
   }

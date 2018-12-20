@@ -1,14 +1,9 @@
-import { GameTableMask } from './game-table-mask';
-import { TabletopObject } from './tabletop-object';
-
-import { AudioFile, AudioFileContext } from './core/file-storage/audio-file';
+import { AudioFile } from './core/file-storage/audio-file';
+import { AudioPlayer } from './core/file-storage/audio-player';
 import { AudioStorage } from './core/file-storage/audio-storage';
-import { Network, EventSystem } from './core/system/system';
-import { ObjectStore } from './core/synchronize-object/object-store';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { GameObject, ObjectContext } from './core/synchronize-object/game-object';
-import { FileReaderUtil } from './core/file-storage/file-reader-util';
-import { AudioPlayer } from './core/file-storage/audio-player';
+import { EventSystem } from './core/system/system';
 
 @SyncObject('jukebox')
 export class Jukebox extends GameObject {
@@ -29,7 +24,7 @@ export class Jukebox extends GameObject {
 
   play(identifier: string, isLoop: boolean = false) {
     let audio = AudioStorage.instance.get(identifier);
-    if (!audio) return;
+    if (!audio || !audio.isReady) return;
     this.audioIdentifier = identifier;
     this.isPlaying = true;
     this.isLoop = isLoop;
@@ -37,18 +32,13 @@ export class Jukebox extends GameObject {
   }
 
   private _play() {
-    if (!this.isPlaying) return;
-    let audio = this.audio;
-    EventSystem.unregister(this, 'UPDATE_AUDIO_RESOURE');
-    if (!audio || !audio.isReady) {
-      EventSystem.register(this)
-        .on('UPDATE_AUDIO_RESOURE', -100, event => {
-          this.play(this.audioIdentifier, this.isLoop);
-        });
+    this._stop();
+    if (!this.audio || !this.audio.isReady) {
+      this.playAfterFileUpdate();
       return;
     }
     this.audioPlayer.loop = true;
-    this.audioPlayer.play(audio);
+    this.audioPlayer.play(this.audio);
   }
 
   stop() {
@@ -58,7 +48,19 @@ export class Jukebox extends GameObject {
   }
 
   private _stop() {
+    this.unregisterEvent()
     this.audioPlayer.stop();
+  }
+
+  private playAfterFileUpdate() {
+    EventSystem.register(this)
+      .on('UPDATE_AUDIO_RESOURE', -100, event => {
+        this._play();
+      });
+  }
+
+  private unregisterEvent() {
+    EventSystem.unregister(this, 'UPDATE_AUDIO_RESOURE');
   }
 
   // override
@@ -67,9 +69,8 @@ export class Jukebox extends GameObject {
     let isPlaying = this.isPlaying;
     super.apply(context);
     if ((audioIdentifier !== this.audioIdentifier || !isPlaying) && this.isPlaying) {
-      this._stop();
       this._play();
-    } else if (this.isPlaying === false && isPlaying !== this.isPlaying) {
+    } else if (isPlaying !== this.isPlaying && !this.isPlaying) {
       this._stop();
     }
   }

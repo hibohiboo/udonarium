@@ -18,8 +18,8 @@ export class BufferSharingTask<T> {
   private data: T;
   private arrayBuffer: ArrayBuffer;
   private chanks: ArrayBuffer[] = [];
-  private chankSize: number = 14 * 1024;
-  private sendChankTimer: number;
+  private chankSize: number = 8 * 1024;
+  private sendChankTimer: NodeJS.Timer;
 
   private sentChankLength = 0;
   private completedChankLength = 0;
@@ -78,7 +78,7 @@ export class BufferSharingTask<T> {
         this.completedChankLength = event.data;
         if (this.sendChankTimer == null) {
           clearTimeout(this.timeoutTimer);
-          this.sendChank(this.sentChankLength);
+          this.sendChank(this.sentChankLength + 1);
         }
       })
       .on('CLOSE_OTHER_PEER', 0, event => {
@@ -89,37 +89,36 @@ export class BufferSharingTask<T> {
         this.cancel();
       });
     this.sentChankLength = this.completedChankLength = 0;
-    this.sendChank(0);
+    setTimeout(() => this.sendChank(0));
   }
 
   private sendChank(index: number) {
-    this.sendChankTimer = setTimeout(async () => {
-      let data = { index: index, length: this.chanks.length, chank: this.chanks[index] };
-      EventSystem.call('FILE_SEND_CHANK_' + this.identifier, data, this.sendTo);
-      this.sentChankLength = index;
-      if (this.completedChankLength + 16 <= index + 1) {
-        this.sendChankTimer = null;
-        this.resetTimeout();
-      } else if (index + 1 < this.chanks.length) {
-        this.sendChank(index + 1);
-      } else {
-        EventSystem.call('FILE_SEND_END_' + this.identifier, null, this.sendTo);
-        console.log('バッファ送信完了', this.identifier);
-        if (this.onfinish) this.onfinish(this, this.data);
-        this.cancel();
-      }
-    });
+    let data = { index: index, length: this.chanks.length, chank: this.chanks[index] };
+    EventSystem.call('FILE_SEND_CHANK_' + this.identifier, data, this.sendTo);
+    this.sentChankLength = index;
+    if (this.chanks.length <= index + 1) {
+      EventSystem.call('FILE_SEND_END_' + this.identifier, null, this.sendTo);
+      console.log('バッファ送信完了', this.identifier);
+      if (this.onfinish) this.onfinish(this, this.data);
+      this.cancel();
+    } else if (this.completedChankLength + 8 <= index + 1) {
+      this.sendChankTimer = null;
+      this.resetTimeout();
+    } else {
+      this.sendChankTimer = setTimeout(() => { this.sendChank(this.sentChankLength + 1); }, 0);
+    }
   }
 
   private initializeReceive() {
     this.resetTimeout();
+    let startTime = performance.now();
     EventSystem.register(this)
       .on<ChankData>('FILE_SEND_CHANK_' + this.identifier, 0, event => {
         this.chanks[event.data.index] = event.data.chank;
         if (this.onprogress) this.onprogress(this, event.data.index, event.data.length);
         this.resetTimeout();
-        if ((event.data.index + 1) % 8 === 0) {
-          EventSystem.call('FILE_MORE_CHANK_' + this.identifier, event.data.index + 1, event.sendFrom);
+        if ((event.data.index + 1) % 4 === 0) {
+          EventSystem.call('FILE_MORE_CHANK_' + this.identifier, event.data.index, event.sendFrom);
         }
       })
       .on('FILE_SEND_END_' + this.identifier, 0, event => {
@@ -127,8 +126,12 @@ export class BufferSharingTask<T> {
         if (this.timeoutTimer) clearTimeout(this.timeoutTimer);
         EventSystem.unregister(this);
 
-        var sumLength = 0;
+        let sumLength = 0;
         this.chanks.forEach(chank => sumLength += chank.byteLength);
+
+        let time = performance.now() - startTime;
+        let rate = (sumLength / 1024 / 1024) / (time / 1000);
+        console.log(`${(time / 1000).toFixed(2)}秒 転送速度: ${rate.toFixed(2)}MB/s`);
 
         let uint8Array = new Uint8Array(sumLength);
         let pos = 0;

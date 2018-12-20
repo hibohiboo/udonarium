@@ -1,9 +1,13 @@
 import { AfterViewInit, Directive, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 
-import { EventSystem } from '../class/core/system/system';
-import { TabletopObject } from '../class/tabletop-object';
-import { PointerCoordinate, PointerDeviceService } from '../service/pointer-device.service';
-import { TabletopService } from '../service/tabletop.service';
+import { EventSystem } from '@udonarium/core/system/system';
+import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
+import { TabletopObject } from '@udonarium/tabletop-object';
+import { TableSelecter } from '@udonarium/table-selecter';
+
+import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service';
+import { TabletopService } from 'service/tabletop.service';
+
 import { Grabbable } from './grabbable';
 
 export interface MovableOption {
@@ -72,7 +76,7 @@ export class MovableDirective extends Grabbable implements OnInit, OnDestroy, Af
   ngAfterViewInit() {
     EventSystem.register(this)
       .on('UPDATE_GAME_OBJECT', -1000, event => {
-        if (event.isSendFromSelf || event.data.identifier !== this.tabletopObject.identifier) return;
+        if ((event.isSendFromSelf && this.isGrabbing) || event.data.identifier !== this.tabletopObject.identifier || !this.shouldTransition(this.tabletopObject)) return;
         this.cancel();
         this.stopTransition();
         this.setPosition(this.tabletopObject);
@@ -161,19 +165,23 @@ export class MovableDirective extends Grabbable implements OnInit, OnDestroy, Af
   }
 
   protected onMouseUp(e: PointerEvent) {
+    let tableSelecter = ObjectStore.instance.get<TableSelecter>('tableSelecter');
+
     if (this.isDisable) return this.cancel();
     e.preventDefault();
     if (this.isDragging) this.ondragend.emit(e);
     this.cancel();
-    this.stickToGrid();
+    if (tableSelecter.gridSnap) this.snapToGrid();
     this.onend.emit(e);
   }
 
   protected onContextMenu(e: PointerEvent) {
+    let tableSelecter = ObjectStore.instance.get<TableSelecter>('tableSelecter');
+
     if (this.isDisable) return this.cancel();
     e.preventDefault();
     this.cancel();
-    this.stickToGrid();
+    if (tableSelecter.gridSnap) this.snapToGrid();
   }
 
   private calcLocalCoordinate(target: HTMLElement): PointerCoordinate {
@@ -201,12 +209,13 @@ export class MovableDirective extends Grabbable implements OnInit, OnDestroy, Af
     return ratio / (distance + ratio);
   }
 
-  stickToGrid(gridSize: number = 25) {
-    this.posX = this.calcStickNum(this.posX, gridSize);
-    this.posY = this.calcStickNum(this.posY, gridSize);
+  snapToGrid(gridSize: number = 25) {
+    this.posX = this.calcSnapNum(this.posX, gridSize);
+    this.posY = this.calcSnapNum(this.posY, gridSize);
   }
 
-  private calcStickNum(num: number, interval: number): number {
+  private calcSnapNum(num: number, interval: number): number {
+    if (interval <= 0) return num;
     num = num < 0 ? num - interval / 2 : num + interval / 2;
     return num - (num % interval);
   }
@@ -266,6 +275,10 @@ export class MovableDirective extends Grabbable implements OnInit, OnDestroy, Af
   private setAnimatedTransition(isEnable: boolean) {
     if (!this.transformElement) return;
     this.transformElement.style.transition = isEnable ? 'transform 132ms linear' : '';
+  }
+
+  private shouldTransition(object: TabletopObject): boolean {
+    return object.location.x !== this.posX || object.location.y !== this.posY || object.posZ !== this.posZ;
   }
 
   private stopTransition() {

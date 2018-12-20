@@ -1,11 +1,22 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, OnDestroy, OnChanges, ChangeDetectorRef, AfterViewChecked } from '@angular/core';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 
-import { ChatMessageService } from '../../service/chat-message.service';
+import { ChatMessage, ChatMessageContext } from '@udonarium/chat-message';
+import { ChatTab } from '@udonarium/chat-tab';
+import { EventSystem } from '@udonarium/core/system/system';
 
-import { ChatTab } from '../../class/chat-tab';
-import { ChatMessage, ChatMessageContext } from '../../class/chat-message';
-import { EventSystem } from '../../class/core/system/system';
-import { PanelService } from '../../service/panel.service';
+import { PanelService } from 'service/panel.service';
 
 @Component({
   selector: 'chat-tab',
@@ -13,8 +24,8 @@ import { PanelService } from '../../service/panel.service';
   styleUrls: ['./chat-tab.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChatTabComponent implements OnInit, OnDestroy, OnChanges, AfterViewChecked {
-  maxMessages: number = 200;
+export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges, AfterViewChecked {
+  maxMessages: number = 20;
   preScrollBottom: number = -1;
 
   sampleMessages: ChatMessageContext[] = [
@@ -46,13 +57,14 @@ export class ChatTabComponent implements OnInit, OnDestroy, OnChanges, AfterView
     return this.maxMessages < this.chatTab.chatMessages.length;
   };
 
+  private callbackOnScroll: any = (e) => this.onScroll(e);
+
   @Input() chatTab: ChatTab;
   @Output() onAddMessage: EventEmitter<null> = new EventEmitter();
 
   constructor(
     private changeDetector: ChangeDetectorRef,
-    private panelService: PanelService,
-    private chatMessageService: ChatMessageService
+    private panelService: PanelService
   ) { }
 
   ngOnInit() {
@@ -82,13 +94,20 @@ export class ChatTabComponent implements OnInit, OnDestroy, OnChanges, AfterView
       });
   }
 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.panelService.scrollablePanel.addEventListener('scroll', this.callbackOnScroll, false);
+    });
+  }
+
   ngOnDestroy() {
     EventSystem.unregister(this);
+    this.panelService.scrollablePanel.removeEventListener('scroll', this.callbackOnScroll, false);
   }
 
   ngOnChanges() {
     this.needUpdate = true;
-    this.maxMessages = 200;
+    this.maxMessages = 20;
   }
 
   ngAfterViewChecked() {
@@ -98,9 +117,12 @@ export class ChatTabComponent implements OnInit, OnDestroy, OnChanges, AfterView
     }
   }
 
-  moreMessages() {
-    this.maxMessages += 100;
-    if (this.chatTab && this.chatTab.chatMessages.length < this.maxMessages) this.maxMessages = this.chatTab.chatMessages.length;
+  moreMessages(length: number = 100) {
+    if (!this.hasMany) return;
+
+    this.maxMessages += length;
+    let maxLength = this.chatTab.chatMessages.length;
+    if (this.chatTab && maxLength < this.maxMessages) this.maxMessages = maxLength;
     this.changeDetector.markForCheck();
     this.needUpdate = true;
 
@@ -117,5 +139,10 @@ export class ChatTabComponent implements OnInit, OnDestroy, OnChanges, AfterView
 
   trackByChatMessage(index: number, message: ChatMessage) {
     return message.identifier;
+  }
+
+  private onScroll(e: Event) {
+    if (200 < this.panelService.scrollablePanel.scrollTop) return;
+    this.moreMessages(4);
   }
 }

@@ -1,9 +1,10 @@
 import { AfterViewInit, Directive, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 
-import { EventSystem } from '../class/core/system/system';
-import { TabletopObject } from '../class/tabletop-object';
-import { PointerCoordinate, PointerDeviceService } from '../service/pointer-device.service';
-import { TabletopService } from '../service/tabletop.service';
+import { EventSystem } from '@udonarium/core/system/system';
+import { TabletopObject } from '@udonarium/tabletop-object';
+import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service';
+import { TabletopService } from 'service/tabletop.service';
+
 import { Grabbable } from './grabbable';
 
 export interface RotableTabletopObject extends TabletopObject {
@@ -75,7 +76,7 @@ export class RotableDirective extends Grabbable implements OnInit, OnDestroy, Af
     if (this.tabletopObject) {
       EventSystem.register(this)
         .on('UPDATE_GAME_OBJECT', -1000, event => {
-          if (event.isSendFromSelf || event.data.identifier !== this.tabletopObject.identifier) return;
+          if ((event.isSendFromSelf && this.isGrabbing) || event.data.identifier !== this.tabletopObject.identifier || !this.shouldTransition(this.tabletopObject)) return;
           this.cancel();
           this.stopTransition();
           this.setRotate(this.tabletopObject);
@@ -133,7 +134,7 @@ export class RotableDirective extends Grabbable implements OnInit, OnDestroy, Af
     e.preventDefault();
     if (this.isDragging) this.ondragend.emit(e);
     this.cancel();
-    this.stickToPolygonal();
+    this.snapToPolygonal();
     this.onend.emit(e);
   }
 
@@ -141,7 +142,7 @@ export class RotableDirective extends Grabbable implements OnInit, OnDestroy, Af
     if (this.isDisable) return this.cancel();
     e.preventDefault();
     this.cancel();
-    this.stickToPolygonal();
+    this.snapToPolygonal();
   }
 
   private calcRotate(pointer: PointerCoordinate, rotateOffset: number): number {
@@ -153,7 +154,8 @@ export class RotableDirective extends Grabbable implements OnInit, OnDestroy, Af
     return ((rad * 180 / Math.PI) - rotateOffset) % 360;
   }
 
-  stickToPolygonal(polygonal: number = 24) {
+  snapToPolygonal(polygonal: number = 24) {
+    if (polygonal <= 1) return;
     this.rotate = this.rotate < 0 ? this.rotate - (180 / polygonal) : this.rotate + (180 / polygonal);
     this.rotate -= (this.rotate) % (360 / polygonal);
   }
@@ -177,6 +179,10 @@ export class RotableDirective extends Grabbable implements OnInit, OnDestroy, Af
   private setAnimatedTransition(isEnable: boolean) {
     if (!this.transformElement) return;
     this.transformElement.style.transition = isEnable ? 'transform 132ms linear' : '';
+  }
+
+  private shouldTransition(object: RotableTabletopObject): boolean {
+    return object.rotate !== this.rotate;
   }
 
   private stopTransition() {

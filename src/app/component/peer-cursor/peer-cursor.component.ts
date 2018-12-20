@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild, NgZone } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
-import { PointerDeviceService, PointerCoordinate } from '../../service/pointer-device.service';
-import { EventSystem } from '../../class/core/system/system';
-import { ObjectStore } from '../../class/core/synchronize-object/object-store';
-import { PeerCursor } from '../../class/peer-cursor';
+import { EventSystem } from '@udonarium/core/system/system';
+import { PeerCursor } from '@udonarium/peer-cursor';
+
+import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
   selector: 'peer-cursor, [peer-cursor]',
@@ -30,11 +30,10 @@ export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private _x: number = 0;
   private _y: number = 0;
+  private _target: HTMLElement;
 
   constructor(
-    private elementRef: ElementRef,
-    private ngZone: NgZone,
-    private pointerDeviceService: PointerDeviceService
+    private ngZone: NgZone
   ) { }
 
   ngOnInit() {
@@ -80,11 +79,12 @@ export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
     if (x === this._x && y === this._y) return;
     this._x = x;
     this._y = y;
+    this._target = e.target;
     if (!this.updateInterval && this.isAllowedToUpdate) {
       this.isAllowedToUpdate = false;
       this.updateInterval = setTimeout(() => {
         this.updateInterval = null;
-        this.calcLocalCoordinate(this._x, this._y, e.target);
+        this.calcLocalCoordinate(this._x, this._y, this._target);
       }, 100);
     }
   }
