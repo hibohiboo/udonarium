@@ -5,7 +5,7 @@ services:
     volumes:
       - ../angular.json:/app/angular.json
       - ../tsconfig.json:/app/tsconfig.json
-      - ../tsling.json:/app/tslint.json
+      - ../tslint.json:/app/tslint.json
       - ../src:/app/src
       - ../dest:/app/dest
     ports:
