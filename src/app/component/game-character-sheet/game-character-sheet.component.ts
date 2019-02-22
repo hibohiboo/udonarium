@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 
-import { EventSystem, Network } from '@udonarium/core/system/system';
+import { EventSystem, Network } from '@udonarium/core/system';
 import { DataElement } from '@udonarium/data-element';
 import { TabletopObject } from '@udonarium/tabletop-object';
 
@@ -70,8 +70,8 @@ export class GameCharacterSheetComponent implements OnInit, OnDestroy, AfterView
     this.tabletopObject.setLocation(locationName);
   }
 
-  openModal(name: string = '') {
-    this.modalService.open<string>(FileSelecterComponent).then(value => {
+  openModal(name: string = '', isAllowedEmpty: boolean = false) {
+    this.modalService.open<string>(FileSelecterComponent, { isAllowedEmpty: isAllowedEmpty }).then(value => {
       if (!this.tabletopObject || !this.tabletopObject.imageDataElement || !value) return;
       let element = this.tabletopObject.imageDataElement.getFirstElementByName(name);
       if (!element) return;

@@ -1,16 +1,17 @@
 import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { EventSystem } from '@udonarium/core/system/system';
+import { EventSystem } from '@udonarium/core/system';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { Terrain, TerrainViewState } from '@udonarium/terrain';
 
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 import { MovableOption } from 'directive/movable.directive';
 import { RotableOption } from 'directive/rotable.directive';
-import { ContextMenuService } from 'service/context-menu.service';
+import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { TabletopService } from 'service/tabletop.service';
 
 @Component({
   selector: 'terrain',
@@ -43,6 +44,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
   rotableOption: RotableOption = {};
 
   constructor(
+    private tabletopService: TabletopService,
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private pointerDeviceService: PointerDeviceService
@@ -90,9 +92,10 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
 
-    let potison = this.pointerDeviceService.pointers[0];
-    console.log('mouseCursor', potison);
-    this.contextMenuService.open(potison, [
+    let menuPosition = this.pointerDeviceService.pointers[0];
+    let objectPosition = this.tabletopService.calcTabletopLocalCoordinate();
+    console.log('mouseCursor', menuPosition);
+    this.contextMenuService.open(menuPosition, [
       (this.isLocked
         ? {
           name: '固定解除', action: () => {
@@ -121,6 +124,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
             this.mode = TerrainViewState.ALL;
           }
         }),
+      ContextMenuSeparator,
       { name: '地形設定を編集', action: () => { this.showDetail(this.terrain); } },
       {
         name: 'コピーを作る', action: () => {
@@ -139,6 +143,8 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
           SoundEffect.play(PresetSound.delete);
         }
       },
+      ContextMenuSeparator,
+      { name: 'オブジェクト作成', action: null, subActions: this.tabletopService.getContextMenuActionsForCreateObject(objectPosition) }
     ], this.name);
   }
 

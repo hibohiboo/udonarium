@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
-import { EventSystem, Network } from '@udonarium/core/system/system';
+import { EventSystem, Network } from '@udonarium/core/system';
 import { PeerCursor } from '@udonarium/peer-cursor';
 
 import { PasswordCheckComponent } from 'component/password-check/password-check.component';
@@ -130,7 +130,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
 
   async showRoomSetting() {
     await this.modalService.open(RoomSettingComponent, { width: 700, height: 400, left: 0, top: 400 });
-    this.rooms = [];
+    this.reload();
     this.help = '「一覧を更新」ボタンを押すと接続可能なルーム一覧を表示します。';
   }
 }

@@ -1,58 +1,30 @@
 import { Attributes } from './attributes';
+import { defineSyncObject as SyncObject, defineSyncVariable as SyncVar } from './decorator-core';
 import { GameObject, ObjectContext } from './game-object';
-import { ObjectFactory, Type } from './object-factory';
 import { InnerXml, ObjectSerializer, XmlAttributes } from './object-serializer';
 import { ObjectStore } from './object-store';
 import { XmlUtil } from './xml-util';
 
-//ERROR in Error encountered resolving symbol values statically. の対応 Export
-//循環参照回避
-export function _SyncObject(alias: string) {
-  return <T extends GameObject>(constructor: Type<T>) => {
-    ObjectFactory.instance.register(constructor, alias);
-  }
-}
-//循環参照回避
-export function _SyncVar() {
-  return <T extends GameObject>(target: T, key: string | symbol) => {
-    function getter() {
-      return this.context.syncData[key];
-    }
-
-    function setter(value: any) {
-      this.context.syncData[key] = value;
-      this.update();
-    }
-
-    Object.defineProperty(target, key, {
-      get: getter,
-      set: setter,
-      enumerable: true,
-      configurable: true
-    });
-  }
-}
-
-@_SyncObject('node')
+@SyncObject('node')
 export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
-  @_SyncVar() value: number | string = '';
-  @_SyncVar() attributes: Attributes = {};
-  @_SyncVar() private parentIdentifier: string = '';
-  @_SyncVar() protected majorIndex: number = 0;
-  @_SyncVar() protected minorIndex: number = Math.random();
+  @SyncVar() value: number | string = '';
+  @SyncVar() protected attributes: Attributes = {};
+  @SyncVar() private parentIdentifier: string = '';
+  @SyncVar() protected majorIndex: number = 0;
+  @SyncVar() protected minorIndex: number = Math.random();
 
   get index(): number { return this.majorIndex + this.minorIndex; }
   set index(index: number) {
     this.majorIndex = index | 0;
     this.minorIndex = index - this.majorIndex;
-    if (this.parent) this.parent.isNeedSort = true;
+    if (this.parent) this.parent.needsSort = true;
   }
 
   get parent(): ObjectNode { return ObjectStore.instance.get<ObjectNode>(this.parentIdentifier); }
   private _children: ObjectNode[] = [];
   get children(): ObjectNode[] {
-    if (this.isNeedSort) {
-      this.isNeedSort = false;
+    if (this.needsSort) {
+      this.needsSort = false;
       this._children.sort((a, b) => {
         if (a.index < b.index) return -1;
         if (a.index > b.index) return 1;
@@ -64,18 +36,49 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
 
   // TODO 名前　親Nodeの存在が未知の状態であるNode
   private static unknownNodes: { [identifier: string]: ObjectNode[] } = {};
-  private isNeedSort: boolean = true;
+  private needsSort: boolean = true;
 
-  initialize(needUpdate: boolean = true) {
-    super.initialize(needUpdate);
-    this.initializeChildren();
-  }
-
+  // override
   destroy() {
-    if (this.parent) this.parent.removeChild(this);
     super.destroy();
     for (let child of this.children) {
       child.destroy();
+    }
+  }
+
+  // GameObject Lifecycle
+  onStoreAdded() {
+    super.onStoreAdded();
+    this.initializeChildren();
+  }
+
+  // GameObject Lifecycle
+  onStoreRemoved() {
+    super.onStoreRemoved();
+    if (this.parent) this.parent.removeChild(this);
+  }
+
+  // ObjectNode Lifecycle
+  onChildAdded(child: ObjectNode) { }
+
+  // ObjectNode Lifecycle
+  onChildRemoved(child: ObjectNode) { }
+
+  private _onChildAdded(child: ObjectNode) {
+    let node: ObjectNode = this;
+    while (node) {
+      node.onChildAdded(child);
+      node = node.parent;
+      if (node === this) break;
+    }
+  }
+
+  private _onChildRemoved(child: ObjectNode) {
+    let node: ObjectNode = this;
+    while (node) {
+      node.onChildRemoved(child);
+      node = node.parent;
+      if (node === this) break;
     }
   }
 
@@ -97,10 +100,15 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
 
   private updateChildren(child: ObjectNode = this) {
     let index = this._children.indexOf(child);
+    let isAdded = false;
 
-    if (index < 0 && child.parent === this) this._children.push(child);
+    if (index < 0 && child.parent === this) {
+      this._children.push(child);
+      isAdded = true;
+    }
     if (0 <= index && child.parent !== this) {
       this._children.splice(index, 1);
+      this._onChildRemoved(child);
       return;
     }
 
@@ -109,8 +117,8 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
     let prevIndex = index - 1 < 0 ? 0 : index - 1;
     let nextIndex = this._children.length - 1 < index + 1 ? this._children.length - 1 : index + 1;
 
-    if (this._children[prevIndex].index <= child.index && child.index <= this._children[nextIndex].index) return;
-    this.isNeedSort = true;
+    if (this._children[prevIndex].index > child.index || child.index > this._children[nextIndex].index) this.needsSort = true;
+    if (isAdded) this._onChildAdded(child);
   }
 
   private updateIndexs() {
@@ -134,7 +142,6 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
       child.parent.updateChildren(child);
     }
 
-    child.update();
     return child;
   }
 
@@ -155,7 +162,6 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
       child.parent.updateChildren(child);
     }
 
-    child.update();
     return child;
   }
 
@@ -173,7 +179,6 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
     if (oldParent) {
       oldParent.updateChildren(child);
     }
-    child.update();
     return child;
   }
 

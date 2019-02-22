@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { EventSystem } from '@udonarium/core/system/system';
+import { EventSystem } from '@udonarium/core/system';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { TabletopObject } from '@udonarium/tabletop-object';
 import { TextNote } from '@udonarium/text-note';
@@ -126,9 +126,9 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
     e.preventDefault();
 
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
-    let potison = this.pointerDeviceService.pointers[0];
-    console.log('mouseCursor', potison);
-    this.contextMenuService.open(potison, [
+    let position = this.pointerDeviceService.pointers[0];
+    console.log('mouseCursor', position);
+    this.contextMenuService.open(position, [
       { name: 'メモを編集', action: () => { this.showDetail(this.textNote); } },
       {
         name: 'コピーを作る', action: () => {

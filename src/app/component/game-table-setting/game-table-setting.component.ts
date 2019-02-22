@@ -4,8 +4,8 @@ import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
 import { ObjectSerializer } from '@udonarium/core/synchronize-object/object-serializer';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
-import { EventSystem, Network } from '@udonarium/core/system/system';
-import { GameTable, GridType } from '@udonarium/game-table';
+import { EventSystem, Network } from '@udonarium/core/system';
+import { GameTable, GridType, FilterType } from '@udonarium/game-table';
 import { TableSelecter } from '@udonarium/table-selecter';
 
 import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component';
@@ -24,6 +24,12 @@ export class GameTableSettingComponent implements OnInit, OnDestroy, AfterViewIn
   get tableBackgroundImage(): ImageFile {
     if (!this.selectedTable) return ImageFile.Empty;
     let file = ImageStorage.instance.get(this.selectedTable.imageIdentifier);
+    return file ? file : ImageFile.Empty;
+  }
+
+  get tableDistanceviewImage(): ImageFile {
+    if (!this.selectedTable) return ImageFile.Empty;
+    let file = ImageStorage.instance.get(this.selectedTable.backgroundImageIdentifier);
     return file ? file : ImageFile.Empty;
   }
 
@@ -53,6 +59,9 @@ export class GameTableSettingComponent implements OnInit, OnDestroy, AfterViewIn
 
   get tableGridType(): GridType { return this.selectedTable.gridType; }
   set tableGridType(gridType: GridType) { if (this.isEditable) this.selectedTable.gridType = Number(gridType); }
+
+  get tableDistanceviewFilter(): FilterType { return this.selectedTable.backgroundFilterType; }
+  set tableDistanceviewFilter(filterType: FilterType) { if (this.isEditable) this.selectedTable.backgroundFilterType = filterType; }
 
   get tableSelecter(): TableSelecter { return ObjectStore.instance.get<TableSelecter>('tableSelecter'); }
 
@@ -133,12 +142,19 @@ export class GameTableSettingComponent implements OnInit, OnDestroy, AfterViewIn
     }
   }
 
-  openModal() {
+  openBgImageModal() {
     if (this.isDeleted) return;
     this.modalService.open<string>(FileSelecterComponent).then(value => {
       if (!this.selectedTable || !value) return;
       this.selectedTable.imageIdentifier = value;
     });
   }
-}
 
+  openDistanceViewImageModal() {
+    if (this.isDeleted) return;
+    this.modalService.open<string>(FileSelecterComponent, { isAllowedEmpty: true }).then(value => {
+      if (!this.selectedTable || !value) return;
+      this.selectedTable.backgroundImageIdentifier = value;
+    });
+  }
+}

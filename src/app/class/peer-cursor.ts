@@ -3,7 +3,7 @@ import { ImageStorage } from './core/file-storage/image-storage';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { GameObject, ObjectContext } from './core/synchronize-object/game-object';
 import { ObjectStore } from './core/synchronize-object/object-store';
-import { EventSystem, Network } from './core/system/system';
+import { EventSystem, Network } from './core/system';
 
 @SyncObject('PeerCursor')
 export class PeerCursor extends GameObject {
@@ -17,8 +17,9 @@ export class PeerCursor extends GameObject {
   get isMine(): boolean { return (PeerCursor.myCursor && PeerCursor.myCursor === this); }
   get image(): ImageFile { return ImageStorage.instance.get(this.imageIdentifier); }
 
-  initialize(needUpdate: boolean = true) {
-    super.initialize(needUpdate);
+  // GameObject Lifecycle
+  onStoreAdded() {
+    super.onStoreAdded();
     if (!this.isMine) {
       EventSystem.register(this)
         .on('CLOSE_OTHER_PEER', -1000, event => {
@@ -29,9 +30,11 @@ export class PeerCursor extends GameObject {
     }
   }
 
-  destroy() {
+  // GameObject Lifecycle
+  onStoreRemoved() {
+    super.onStoreRemoved();
+    EventSystem.unregister(this);
     delete PeerCursor.hash[this.peerId];
-    super.destroy();
   }
 
   static find(peerId): PeerCursor {

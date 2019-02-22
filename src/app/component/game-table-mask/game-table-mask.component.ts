@@ -1,15 +1,16 @@
 import { AfterViewInit, Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { EventSystem } from '@udonarium/core/system/system';
+import { EventSystem } from '@udonarium/core/system';
 import { GameTableMask } from '@udonarium/game-table-mask';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 import { MovableOption } from 'directive/movable.directive';
-import { ContextMenuService } from 'service/context-menu.service';
+import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { TabletopService } from 'service/tabletop.service';
 
 @Component({
   selector: 'game-table-mask',
@@ -33,6 +34,7 @@ export class GameTableMaskComponent implements OnInit, OnDestroy, AfterViewInit 
   movableOption: MovableOption = {};
 
   constructor(
+    private tabletopService: TabletopService,
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private pointerDeviceService: PointerDeviceService
@@ -77,9 +79,10 @@ export class GameTableMaskComponent implements OnInit, OnDestroy, AfterViewInit 
     e.preventDefault();
 
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
-    let potison = this.pointerDeviceService.pointers[0];
-    console.log('mouseCursor', potison);
-    this.contextMenuService.open(potison, [
+    let menuPosition = this.pointerDeviceService.pointers[0];
+    let objectPosition = this.tabletopService.calcTabletopLocalCoordinate();
+    console.log('mouseCursor', menuPosition);
+    this.contextMenuService.open(menuPosition, [
       (this.isLock
         ? {
           name: '固定解除', action: () => {
@@ -94,6 +97,7 @@ export class GameTableMaskComponent implements OnInit, OnDestroy, AfterViewInit 
           }
         }
       ),
+      ContextMenuSeparator,
       { name: 'マップマスクを編集', action: () => { this.showDetail(this.gameTableMask); } },
       {
         name: 'コピーを作る', action: () => {
@@ -112,6 +116,8 @@ export class GameTableMaskComponent implements OnInit, OnDestroy, AfterViewInit 
           SoundEffect.play(PresetSound.delete);
         }
       },
+      ContextMenuSeparator,
+      { name: 'オブジェクト作成', action: null, subActions: this.tabletopService.getContextMenuActionsForCreateObject(objectPosition) }
     ], this.name);
   }
 

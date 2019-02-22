@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContextSubMenuComponent } from './context-sub-menu.component';
+import { BadgeComponent } from './badge.component';
 
-describe('ContextSubMenuComponent', () => {
-  let component: ContextSubMenuComponent;
-  let fixture: ComponentFixture<ContextSubMenuComponent>;
+describe('BadgeComponent', () => {
+  let component: BadgeComponent;
+  let fixture: ComponentFixture<BadgeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContextSubMenuComponent ]
+      declarations: [ BadgeComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ContextSubMenuComponent);
+    fixture = TestBed.createComponent(BadgeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -14,13 +14,13 @@ import { Card, CardState } from '@udonarium/card';
 import { CardStack } from '@udonarium/card-stack';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
-import { EventSystem, Network } from '@udonarium/core/system/system';
+import { EventSystem, Network } from '@udonarium/core/system';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 import { MovableOption } from 'directive/movable.directive';
 import { RotableOption } from 'directive/rotable.directive';
-import { ContextMenuService } from 'service/context-menu.service';
+import { ContextMenuService, ContextMenuSeparator } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 
@@ -198,9 +198,9 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     e.preventDefault();
     this.removeMouseEventListeners();
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
-    let potison = this.pointerDeviceService.pointers[0];
-    console.log('mouseCursor', potison);
-    this.contextMenuService.open(potison, [
+    let position = this.pointerDeviceService.pointers[0];
+    console.log('mouseCursor', position);
+    this.contextMenuService.open(position, [
       (!this.isVisible || this.isHand
         ? {
           name: '表にする', action: () => {
@@ -229,12 +229,14 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.owner = Network.peerId;
           }
         }),
+      ContextMenuSeparator,
       {
         name: '重なったカードで山札を作る', action: () => {
           this.createStack();
           SoundEffect.play(PresetSound.cardPut);
         }
       },
+      ContextMenuSeparator,
       { name: 'カードを編集', action: () => { this.showDetail(this.card); } },
       {
         name: 'コピーを作る', action: () => {

@@ -5,7 +5,7 @@ import { ChatMessageContext } from '@udonarium/chat-message';
 import { ChatTab } from '@udonarium/chat-tab';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
-import { EventSystem, Network } from '@udonarium/core/system/system';
+import { EventSystem, Network } from '@udonarium/core/system';
 import { DiceBot } from '@udonarium/dice-bot';
 import { GameCharacter } from '@udonarium/game-character';
 import { PeerCursor } from '@udonarium/peer-cursor';
@@ -55,7 +55,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   get gameCharacters(): GameCharacter[] {
     if (this.shouldUpdateCharacterList) {
       this.shouldUpdateCharacterList = false;
-      this._gameCharacters = this.objectStore
+      this._gameCharacters = ObjectStore.instance
         .getObjects<GameCharacter>(GameCharacter)
         .filter(character => this.allowsChat(character));
     }
@@ -67,25 +67,22 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   private _chatTabidentifier: string = '';
   get chatTabidentifier(): string { return this._chatTabidentifier; }
   set chatTabidentifier(chatTabidentifier: string) {
-    if (this._chatTabidentifier !== chatTabidentifier) this.scrollToBottom(true);
+    let hasChanged: boolean = this._chatTabidentifier !== chatTabidentifier;
     this._chatTabidentifier = chatTabidentifier;
     this.updatePanelTitle();
+    if (hasChanged) this.scrollToBottom(true);
   }
 
-  get chatTab(): ChatTab { return this.objectStore.get<ChatTab>(this.chatTabidentifier); }
+  get chatTab(): ChatTab { return ObjectStore.instance.get<ChatTab>(this.chatTabidentifier); }
   maxLogLength: number = 1000;
   isAutoScroll: boolean = true;
   scrollToBottomTimer: NodeJS.Timer = null;
-
-  eventSystem = EventSystem;
-  objectStore = ObjectStore.instance;
 
   private writingEventInterval: NodeJS.Timer = null;
   private previousWritingLength: number = 0;
   writingPeers: Map<string, NodeJS.Timer> = new Map();
   writingPeerNames: string[] = [];
 
-  get network() { return Network; };
   get diceBotInfos() { return DiceBot.diceBotInfos }
   get myPeer(): PeerCursor { return PeerCursor.myCursor; }
   get otherPeers(): PeerCursor[] { return ObjectStore.instance.getObjects(PeerCursor); }
@@ -98,11 +95,11 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   ) { }
 
   ngOnInit() {
-    this.sender = this.network.peerId;
+    this.sender = Network.peerId;
     console.log(this.chatMessageService.chatTabs);
     this.chatTabidentifier = 0 < this.chatMessageService.chatTabs.length ? this.chatMessageService.chatTabs[0].identifier : '';
 
-    this.eventSystem.register(this)
+    EventSystem.register(this)
       .on<ChatMessageContext>('BROADCAST_MESSAGE', -1000, event => {
         if (event.isSendFromSelf && event.data.tabIdentifier === this.chatTabidentifier) {
           this.scrollToBottom(true);
@@ -124,7 +121,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       })
       .on('CLOSE_OTHER_PEER', event => {
-        let object = this.objectStore.get(this.sendTo);
+        let object = ObjectStore.instance.get(this.sendTo);
         if (object instanceof PeerCursor && object.peerId === event.data.peer) {
           this.sendTo = '';
         }
@@ -150,7 +147,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.eventSystem.unregister(this);
+    EventSystem.unregister(this);
   }
 
   private updateWritingPeerNames() {
@@ -168,6 +165,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
       this.isAutoScroll = true;
     }
     if (this.isAutoScroll) {
+      if (this.chatTab) this.chatTab.markForRead();
       this.scrollToBottomTimer = setTimeout(() => {
         this.scrollToBottomTimer = null;
         this.panelService.scrollablePanel.scrollTop = this.panelService.scrollablePanel.scrollHeight;
@@ -199,7 +197,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSelectedCharacter(identifier: string) {
-    let object = this.objectStore.get(identifier);
+    let object = ObjectStore.instance.get(identifier);
     if (object instanceof GameCharacter) {
       this.gameCharacter = object;
     } else {
@@ -261,12 +259,12 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (event && event.keyCode !== 13) return;
 
-    if (!this.sender.length) this.sender = this.network.peerId;
+    if (!this.sender.length) this.sender = Network.peerId;
 
     let time = this.chatMessageService.getTime();
     console.log('time:' + time);
     let chatMessage: ChatMessageContext = {
-      from: this.network.peerContext.id,
+      from: Network.peerContext.id,
       name: this.sender,
       text: this.text,
       timestamp: time,
@@ -274,7 +272,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
       imageIdentifier: '',
     };
 
-    if (this.sender === this.network.peerId || !this.gameCharacter) {
+    if (this.sender === Network.peerId || !this.gameCharacter) {
       chatMessage.imageIdentifier = this.myPeer.imageIdentifier;
       chatMessage.name = this.myPeer.name;
     } else if (this.gameCharacter) {
@@ -284,7 +282,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (this.sendTo != null && this.sendTo.length) {
       let name = '';
-      let object = this.objectStore.get(this.sendTo);
+      let object = ObjectStore.instance.get(this.sendTo);
       if (object instanceof GameCharacter) {
         name = object.name;
         chatMessage.to = object.identifier;
@@ -323,13 +321,13 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.writingEventInterval === null && this.previousWritingLength <= this.text.length) {
       let sendTo: string = null;
       if (this.isDirect) {
-        let object = this.objectStore.get(this.sendTo);
+        let object = ObjectStore.instance.get(this.sendTo);
         if (object instanceof PeerCursor) {
           let peer = PeerContext.create(object.peerId);
           if (peer) sendTo = peer.id;
         }
       }
-      this.eventSystem.call('WRITING_A_MESSAGE', this.chatTabidentifier, sendTo);
+      EventSystem.call('WRITING_A_MESSAGE', this.chatTabidentifier, sendTo);
       this.writingEventInterval = setTimeout(() => {
         this.writingEventInterval = null;
       }, 200);

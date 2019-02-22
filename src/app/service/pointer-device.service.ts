@@ -25,14 +25,15 @@ export class PointerDeviceService {
   private callbackOnPointerUp = (e) => this.onPointerUp(e);
   private callbackOnContextMenu = (e) => this.onContextMenu(e);
 
-  _isAllowedToOpenContextMenu: boolean = false;
+  private _isAllowedToOpenContextMenu: boolean = false;
   get isAllowedToOpenContextMenu(): boolean { return this._isAllowedToOpenContextMenu; }
   isDragging: boolean = false; // todo
-  _isPointerDown: boolean = false;
+  private _isPointerDown: boolean = false;
   get isPointerDown(): boolean { return this._isPointerDown; }
   pointers: PointerCoordinate[] = [{ x: 0, y: 0, z: 0 }];
   pointerType: PointerType = PointerType.UNKNOWN;
 
+  targetElement: HTMLElement;
   private contextMenuStartPostion: PointerCoordinate = { x: 0, y: 0, z: 0 };
 
   get pointerX(): number {
@@ -68,6 +69,7 @@ export class PointerDeviceService {
       this.onMouseDown(e);
     }
     this.contextMenuStartPostion = this.pointers[0];
+    this.targetElement = e.target;
   }
 
   private onMouseDown(e: MouseEvent) {
@@ -93,6 +95,7 @@ export class PointerDeviceService {
     } else {
       this.onMouseMove(e);
     }
+    this.targetElement = e.target;
   }
 
   private onMouseMove(e: MouseEvent) {

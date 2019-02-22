@@ -1,15 +1,13 @@
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { Component, HostListener, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { ChatMessageContext } from '@udonarium/chat-message';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { EventSystem, Network } from '@udonarium/core/system/system';
+import { EventSystem, Network } from '@udonarium/core/system';
 import { DiceSymbol } from '@udonarium/dice-symbol';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
-import { TabletopObject } from '@udonarium/tabletop-object';
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 import { MovableOption } from 'directive/movable.directive';
 import { RotableOption } from 'directive/rotable.directive';
-import { ContextMenuAction, ContextMenuService } from 'service/context-menu.service';
+import { ContextMenuAction, ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 
@@ -149,10 +147,10 @@ export class DiceSymbolComponent implements OnInit, OnDestroy {
     e.preventDefault();
 
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
-    let potison = this.pointerDeviceService.pointers[0];
+    let position = this.pointerDeviceService.pointers[0];
 
     let actions: ContextMenuAction[] = [];
-    console.log('mouseCursor', potison);
+    console.log('mouseCursor', position);
 
     if (this.isVisible) {
       actions.push({
@@ -161,7 +159,7 @@ export class DiceSymbolComponent implements OnInit, OnDestroy {
         }
       });
     }
-
+    actions.push(ContextMenuSeparator);
     if (this.isMine || this.hasOwner) {
       actions.push({
         name: 'ダイスを公開', action: () => {
@@ -192,6 +190,8 @@ export class DiceSymbolComponent implements OnInit, OnDestroy {
       actions.push({ name: `ダイス目を設定`, action: null, subActions: subActions });
     }
 
+    actions.push(ContextMenuSeparator);
+
     actions.push({ name: '詳細を表示', action: () => { this.showDetail(this.diceSymbol); } });
     actions.push({
       name: 'コピーを作る', action: () => {
@@ -209,7 +209,7 @@ export class DiceSymbolComponent implements OnInit, OnDestroy {
         SoundEffect.play(PresetSound.delete);
       }
     });
-    this.contextMenuService.open(potison, actions, this.name);
+    this.contextMenuService.open(position, actions, this.name);
   }
 
   onMove() {

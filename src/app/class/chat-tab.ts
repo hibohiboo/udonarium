@@ -2,15 +2,20 @@ import { ChatMessage, ChatMessageContext } from './chat-message';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
 import { InnerXml, ObjectSerializer } from './core/synchronize-object/object-serializer';
-import { EventSystem } from './core/system/system';
+import { EventSystem } from './core/system';
 
 @SyncObject('chat-tab')
 export class ChatTab extends ObjectNode implements InnerXml {
   @SyncVar() name: string = 'タブ';
   get chatMessages(): ChatMessage[] { return <ChatMessage[]>this.children; }
 
-  initialize(needUpdate: boolean = true) {
-    super.initialize(needUpdate);
+  private _unreadLength: number = 0;
+  get unreadLength(): number { return this._unreadLength; }
+  get hasUnread(): boolean { return 0 < this.unreadLength; }
+
+  // GameObject Lifecycle
+  onStoreAdded() {
+    super.onStoreAdded();
     EventSystem.register(this)
       .on<ChatMessageContext>('BROADCAST_MESSAGE', 200, event => {
         if (!event.isSendFromSelf) return;
@@ -34,9 +39,33 @@ export class ChatTab extends ObjectNode implements InnerXml {
       });
   }
 
+  // GameObject Lifecycle
+  onStoreRemoved() {
+    super.onStoreRemoved();
+    EventSystem.unregister(this);
+  }
+
+  // ObjectNode Lifecycle
+  onChildAdded(child: ObjectNode) {
+    super.onChildAdded(child);
+    if (child.parent === this && child instanceof ChatMessage && child.isDisplayable) {
+      this._unreadLength++;
+      EventSystem.trigger('MESSAGE_ADDED', { tabIdentifier: this.identifier, messageIdentifier: child.identifier });
+    }
+  }
+
+  // ObjectNode Lifecycle
+  onChildRemoved(child: ObjectNode) {
+    super.onChildRemoved(child);
+  }
+
   addMessage(message: ChatMessageContext) {
     message.tabIdentifier = this.identifier;
     EventSystem.call('BROADCAST_MESSAGE', message);
+  }
+
+  markForRead() {
+    this._unreadLength = 0;
   }
 
   innerXml(): string {

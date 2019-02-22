@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { BadgeComponent } from 'component/badge/badge.component';
 import { CardStackListComponent } from 'component/card-stack-list/card-stack-list.component';
 import { CardStackComponent } from 'component/card-stack/card-stack.component';
 import { CardComponent } from 'component/card/card.component';
@@ -14,7 +15,6 @@ import { ChatTabSettingComponent } from 'component/chat-tab-setting/chat-tab-set
 import { ChatTabComponent } from 'component/chat-tab/chat-tab.component';
 import { ChatWindowComponent } from 'component/chat-window/chat-window.component';
 import { ContextMenuComponent } from 'component/context-menu/context-menu.component';
-import { ContextSubMenuComponent } from 'component/context-sub-menu/context-sub-menu.component';
 import { DiceSymbolComponent } from 'component/dice-symbol/dice-symbol.component';
 import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component';
 import { FileStorageComponent } from 'component/file-storage/file-storage.component';
@@ -47,6 +47,7 @@ import { SafePipe } from 'pipe/safe.pipe';
 import { AppConfigService } from 'service/app-config.service';
 import { ChatMessageService } from 'service/chat-message.service';
 import { ContextMenuService } from 'service/context-menu.service';
+import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
@@ -57,6 +58,7 @@ import { AppComponent } from './app.component';
 @NgModule({
   declarations: [
     AppComponent,
+    BadgeComponent,
     CardComponent,
     CardStackComponent,
     CardStackListComponent,
@@ -93,7 +95,6 @@ import { AppComponent } from './app.component';
     RotableDirective,
     NetworkIndicatorComponent,
     DiceSymbolComponent,
-    ContextSubMenuComponent,
   ],
   imports: [
     BrowserModule,
@@ -107,6 +108,7 @@ import { AppComponent } from './app.component';
     ChatMessageService,
     ContextMenuService,
     ModalService,
+    GameObjectInventoryService,
     PanelService,
     PointerDeviceService,
     TabletopService,

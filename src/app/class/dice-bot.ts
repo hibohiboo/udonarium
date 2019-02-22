@@ -2,7 +2,7 @@ import { ChatMessage, ChatMessageContext } from './chat-message';
 import { SyncObject } from './core/synchronize-object/decorator';
 import { GameObject } from './core/synchronize-object/game-object';
 import { ObjectStore } from './core/synchronize-object/object-store';
-import { EventSystem } from './core/system/system';
+import { EventSystem } from './core/system';
 import { PromiseQueue } from './core/system/util/promise-queue';
 
 declare var Opal
@@ -272,8 +272,9 @@ export class DiceBot extends GameObject {
     'BloodCrusade_TD1T.txt'
   ];
 
-  initialize(needUpdate: boolean = true) {
-    super.initialize(needUpdate);
+  // GameObject Lifecycle
+  onStoreAdded() {
+    super.onStoreAdded();
     DiceBot.queue.add(DiceBot.loadScriptAsync('./assets/cgiDiceBot.js'));
     EventSystem.register(this)
       .on<ChatMessageContext>('BROADCAST_MESSAGE', 100, async event => {
@@ -297,6 +298,12 @@ export class DiceBot extends GameObject {
         }
         return;
       });
+  }
+
+  // GameObject Lifecycle
+  onStoreRemoved() {
+    super.onStoreRemoved();
+    EventSystem.unregister(this);
   }
 
   private sendResultMessage(rollResult: DiceRollResult, originalMessage: ChatMessage) {

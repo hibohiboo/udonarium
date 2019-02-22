@@ -13,7 +13,7 @@ import { ObjectFactory } from '@udonarium/core/synchronize-object/object-factory
 import { ObjectSerializer } from '@udonarium/core/synchronize-object/object-serializer';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { ObjectSynchronizer } from '@udonarium/core/synchronize-object/object-synchronizer';
-import { EventSystem, Network } from '@udonarium/core/system/system';
+import { EventSystem, Network } from '@udonarium/core/system';
 import { DataSummarySetting } from '@udonarium/data-summary-setting';
 import { DiceBot } from '@udonarium/dice-bot';
 import { Jukebox } from '@udonarium/Jukebox';
@@ -30,6 +30,7 @@ import { JukeboxComponent } from 'component/jukebox/jukebox.component';
 import { PeerMenuComponent } from 'component/peer-menu/peer-menu.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
 import { AppConfig, AppConfigService } from 'service/app-config.service';
+import { ChatMessageService } from 'service/chat-message.service';
 import { ContextMenuService } from 'service/context-menu.service';
 import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
@@ -52,6 +53,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private modalService: ModalService,
     private panelService: PanelService,
     private pointerDeviceService: PointerDeviceService,
+    private chatMessageService: ChatMessageService,
     private appConfigService: AppConfigService,
     private saveDataService: SaveDataService,
     private ngZone: NgZone
@@ -143,6 +145,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         console.log('OPEN_PEER', event.data.peer);
         PeerCursor.myCursor.peerId = event.data.peer;
       })
+      .on('OPEN_OTHER_PEER', event => {
+        if (event.isSendFromSelf) this.chatMessageService.calibrateTimeOffset();
+      })
       .on('CLOSE_OTHER_PEER', 0, event => {
         //
       })
@@ -183,7 +188,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         break;
       case 'GameTableSettingComponent':
         component = GameTableSettingComponent;
-        option = { width: 630, height: 350, left: 100 };
+        option = { width: 630, height: 400, left: 100 };
         break;
       case 'FileStorageComponent':
         component = FileStorageComponent;

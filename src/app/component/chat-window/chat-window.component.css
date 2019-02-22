@@ -9,16 +9,6 @@
   justify-content: space-between;
   align-content: space-between;
 }
-.log {
-  /*
-  display: inline-block;
-  width: 100%;
-  height: 200px;
-  max-width: 100%;
-  overflow: auto;
-  */
-  /*margin: 0 0 120px 0;*/
-  }
 .imagebox {
   display: inline-block;
   width: 50px;
@@ -94,6 +84,7 @@
 
 .chat-tab label {
   display: inline-block;
+  position: relative;
 }
 
 .chat-tab input[type="radio"] {
@@ -123,6 +114,12 @@
 .chat-tab input[type="radio"]:checked + div {
   background: #555;
   color: #CCC;
+}
+
+.badge {
+  position: absolute;
+  top: -4px;
+  right: 0;
 }
 
 .tab-setting {

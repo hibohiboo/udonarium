@@ -1,7 +1,7 @@
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { GameObject } from './core/synchronize-object/game-object';
 import { ObjectStore } from './core/synchronize-object/object-store';
-import { EventSystem } from './core/system/system';
+import { EventSystem } from './core/system';
 import { GameTable } from './game-table';
 
 @SyncObject('TableSelecter')
@@ -10,8 +10,9 @@ export class TableSelecter extends GameObject {
   gridShow: boolean = false; // true=常時グリッド表示
   gridSnap: boolean = true;
 
-  initialize(needUpdate: boolean = true) {
-    super.initialize(needUpdate);
+  // GameObject Lifecycle
+  onStoreAdded() {
+    super.onStoreAdded();
     EventSystem.register(this)
       .on('SELECT_GAME_TABLE', 0, event => {
         console.log('SELECT_GAME_TABLE ' + this.identifier);
@@ -20,6 +21,12 @@ export class TableSelecter extends GameObject {
         this.viewTableIdentifier = event.data.identifier;
         if (this.viewTable) this.viewTable.selected = true;
       });
+  }
+
+  // GameObject Lifecycle
+  onStoreRemoved() {
+    super.onStoreRemoved();
+    EventSystem.unregister(this);
   }
 
   get viewTable(): GameTable {

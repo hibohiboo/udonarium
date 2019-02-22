@@ -5,7 +5,7 @@ import { AudioStorage } from './core/file-storage/audio-storage';
 import { SyncObject } from './core/synchronize-object/decorator';
 import { GameObject } from './core/synchronize-object/game-object';
 import { ObjectStore } from './core/synchronize-object/object-store';
-import { EventSystem } from './core/system/system';
+import { EventSystem } from './core/system';
 
 export class PresetSound {
   static dice1: string = '';
@@ -23,9 +23,9 @@ export class PresetSound {
 
 @SyncObject('sound-effect')
 export class SoundEffect extends GameObject {
-
-  initialize(needUpdate: boolean = true) {
-    super.initialize(needUpdate);
+  // GameObject Lifecycle
+  onStoreAdded() {
+    super.onStoreAdded();
     EventSystem.register(this)
       .on<string>('SOUND_EFFECT', event => {
         AudioPlayer.play(AudioStorage.instance.get(event.data), 0.5);
@@ -40,6 +40,12 @@ export class SoundEffect extends GameObject {
           SoundEffect.play(PresetSound.dice2);
         }
       });
+  }
+
+  // GameObject Lifecycle
+  onStoreRemoved() {
+    super.onStoreRemoved();
+    EventSystem.unregister(this);
   }
 
   play(identifier: string)

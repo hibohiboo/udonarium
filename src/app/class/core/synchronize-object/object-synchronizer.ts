@@ -1,4 +1,4 @@
-import { EventSystem } from '../system/system';
+import { EventSystem } from '../system';
 import { GameObject, ObjectContext } from './game-object';
 import { ObjectFactory } from './object-factory';
 import { CatalogItem, ObjectStore } from './object-store';
@@ -57,6 +57,8 @@ export class ObjectSynchronizer {
         let object: GameObject = ObjectStore.instance.get(context.identifier);
         if (object) {
           if (!event.isSendFromSelf) this.updateObject(object, context);
+        } else if (ObjectStore.instance.isDeleted(context.identifier)) {
+          EventSystem.call('DELETE_GAME_OBJECT', { identifier: context.identifier }, event.sendFrom);
         } else {
           this.createObject(context);
         }
@@ -78,17 +80,13 @@ export class ObjectSynchronizer {
   }
 
   private createObject(context: ObjectContext) {
-    if (ObjectStore.instance.isDeleted(context.identifier)) {
-      EventSystem.call('DELETE_GAME_OBJECT', { identifier: context.identifier });
-      return;
-    }
     let newObject: GameObject = ObjectFactory.instance.create(context.aliasName, context.identifier);
     if (!newObject) {
-      console.log(context.aliasName + ' is Unknown...?', context);
+      console.warn(context.aliasName + ' is Unknown...?', context);
       return;
     }
     newObject.apply(context);
-    newObject.initialize(false);
+    ObjectStore.instance.add(newObject, false);
   }
 
   private sendCatalog(sendTo: string) {

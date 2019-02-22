@@ -9,8 +9,22 @@
   </div>
   <div class="flex-item">
     <ng-container *ngIf="!isEmpty || selectedTable">
-      <div>
-        <img height="120" [src]="tableBackgroundImage.url | safe: 'resourceUrl'" (click)="openModal()">
+      <div class="images-select">
+        <div>
+          画像
+          <div (click)="openBgImageModal()">
+            <img height="120" [src]="tableBackgroundImage.url | safe: 'resourceUrl'">
+          </div>
+        </div>
+        <div>
+          背景
+          <div *ngIf="!tableDistanceviewImage.url">
+            <button (click)="openDistanceViewImageModal()" style="height: 120px;">背景画像を追加</button>
+          </div>
+          <div *ngIf="tableDistanceviewImage.url" (click)="openDistanceViewImageModal()">
+            <img height="120" [src]="tableDistanceviewImage.url | safe: 'resourceUrl'">
+          </div>
+        </div>
       </div>
       <div>Name :
         <input [(ngModel)]="tableName" placeholder="Name" [attr.disabled]="!isEditable ? '' : null" />
@@ -36,6 +50,14 @@
         <select [(ngModel)]="tableGridColor" name="tableGridColor" [attr.disabled]="!isEditable ? '' : null">
           <option value="#000000e6">黒</option>
           <option value="#dddddde6">白</option>
+        </select>
+      </div>
+      <div>
+        背景フィルタ
+        <select [(ngModel)]="tableDistanceviewFilter" name="tableDistanceviewFilter" [attr.disabled]="!isEditable ? '' : null">
+          <option value="">なし</option>
+          <option value="white">ホワイト</option>
+          <option value="black">ブラック</option>
         </select>
       </div>
       <hr/>
