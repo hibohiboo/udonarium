@@ -241,7 +241,8 @@ class DiceBot
       debug('call rollDiceCommand command', command)
       result, secret_flg = rollDiceCommand(command)
     rescue => e
-      debug("executeCommand exception", e.to_s, $@.join("\n"))
+      #debug("executeCommand exception", e.to_s, $@.join("\n"))
+      debug("executeCommand exception", e.to_s, ($@ || []).join("\n"), $!) # TKfix $@ is nil
     end
     
     debug('rollDiceCommand result', result)
@@ -501,13 +502,15 @@ class DiceBot
         item, value = get_table_by_d66(table)
         value = value.to_i
         output = item[1]
-        diceText = (value / 10).to_s  + "," + (value % 10).to_s
+        #diceText = (value / 10).to_s  + "," + (value % 10).to_s
+        diceText = (value / 10).floor.to_s  + "," + (value % 10).to_s # TKfix Rubyでは常に整数が返るが、JSだと実数になる可能性がある
         [output, value, diceText]
       when 'D66S'
         table = getTableInfoFromExtraTableText(table, 21)
         output, value = get_table_by_d66_swap(table)
         value = value.to_i
-        diceText = (value / 10).to_s  + "," + (value % 10).to_s
+        #diceText = (value / 10).to_s  + "," + (value % 10).to_s
+        diceText = (value / 10).floor.to_s  + "," + (value % 10).to_s # TKfix Rubyでは常に整数が返るが、JSだと実数になる可能性がある
         [output, value, diceText]
       else
         raise "invalid dice Type #{command}"

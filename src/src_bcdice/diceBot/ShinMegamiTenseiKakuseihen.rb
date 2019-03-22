@@ -37,13 +37,12 @@ INFO_MESSAGE_TEXT
     #ゾロ目
     isRepdigit = ( dice1 == dice2 )
     
-    #TKfix <<
     result = " ＞ スワップ"
-    result = result + getCheckResultText(diff, [total1, total2].min, isRepdigit)
-    result = result + "／通常"
-    result = result + getCheckResultText(diff, total_n, isRepdigit)
-    result = result + "／逆スワップ"
-    result = result + getCheckResultText(diff, [total1, total2].max, isRepdigit)
+    result += getCheckResultText(diff, [total1, total2].min, isRepdigit)
+    result += "／通常"
+    result += getCheckResultText(diff, total_n, isRepdigit)
+    result += "／逆スワップ"
+    result += getCheckResultText(diff, [total1, total2].max, isRepdigit)
     
     return result
   end
@@ -54,7 +53,8 @@ INFO_MESSAGE_TEXT
     
     value %= 100
     
-    dice1 = value / 10
+    #dice1 = value / 10
+    dice1 = (value / 10).floor # TKfix Rubyでは常に整数が返るが、JSだと実数になる可能性がある
     dice2 = value % 10
     
     return [dice1, dice2]
