@@ -4,6 +4,7 @@ import * as MessagePack from 'msgpack-lite';
 import { setZeroTimeout } from '../util/zero-timeout';
 import { Connection, ConnectionCallback } from './connection';
 import { PeerContext } from './peer-context';
+import { SkyWayDataConnection } from './skyway-data-connection';
 
 // @types/skywayを使用すると@types/webrtcが定義エラーになるので代替定義
 declare var Peer;
@@ -13,7 +14,7 @@ declare module PeerJs {
 }
 
 interface DataContainer {
-  data: any;
+  data: Uint8Array;
   peers?: string[];
   ttl: number;
   isCompressed?: boolean;
@@ -32,7 +33,7 @@ export class SkyWayConnection implements Connection {
 
   private key: string = '';
   private peer: PeerJs.Peer;
-  private connections: PeerJs.DataConnection[] = [];
+  private connections: SkyWayDataConnection[] = [];
 
   private listAllPeersCache: string[] = [];
   private httpRequestInterval: number = performance.now() + 500;
@@ -65,9 +66,10 @@ export class SkyWayConnection implements Connection {
   connect(peerId: string): boolean {
     if (!this.shouldConnect(peerId)) return false;
 
-    let conn: PeerJs.DataConnection = this.peer.connect(peerId, {
+    let conn: SkyWayDataConnection = new SkyWayDataConnection(this.peer.connect(peerId, {
+      serialization: 'none',
       metadata: { sendFrom: this.peerId }
-    });
+    }));
 
     this.openDataConnection(conn);
     return true;
@@ -114,13 +116,16 @@ export class SkyWayConnection implements Connection {
       ttl: 0
     }
 
-    let byteLength = container.data.length;
+    let byteLength = container.data.byteLength;
     this.bandwidthUsage += byteLength;
     this.queue = this.queue.then(() => new Promise((resolve, reject) => {
       setZeroTimeout(async () => {
-        if (1 * 1024 < container.data.length) {
-          container.isCompressed = true;
-          container.data = await this.compressAsync(container.data);
+        if (1 * 1024 < container.data.byteLength) {
+          let compressed = await compressAsync(container.data);
+          if (compressed.byteLength < container.data.byteLength) {
+            container.data = compressed;
+            container.isCompressed = true;
+          }
         }
         if (sendTo) {
           this.sendUnicast(container, sendTo);
@@ -144,84 +149,6 @@ export class SkyWayConnection implements Connection {
     for (let conn of this.connections) {
       if (conn.open) conn.send(container);
     }
-  }
-
-  private onData(conn: PeerJs.DataConnection, container: DataContainer) {
-    if (0 < container.ttl) this.onRelay(conn, container);
-    if (this.callback.onData) {
-      let byteLength = container.data.byteLength;
-      this.bandwidthUsage += byteLength;
-      this.queue = this.queue.then(() => new Promise((resolve, reject) => {
-        setZeroTimeout(async () => {
-          let data: Uint8Array;
-          if (container.isCompressed) {
-            data = await this.decompressAsync(container.data);
-          } else {
-            data = new Uint8Array(container.data);
-          }
-          this.callback.onData(conn.remoteId, MessagePack.decode(data));
-          this.bandwidthUsage -= byteLength;
-          return resolve();
-        });
-      }));
-    }
-  }
-
-  private onRelay(conn: PeerJs.DataConnection, container: DataContainer) {
-    container.ttl--;
-
-    let canUpdate: boolean = container.peers && 0 < container.peers.length;
-    let hasRelayingList: boolean = this.relayingPeerIds.has(conn.remoteId);
-
-    if (!canUpdate && !hasRelayingList) return;
-
-    let relayingPeerIds: string[] = [];
-    let unknownPeerIds: string[] = [];
-
-    if (canUpdate) {
-      let diff = this.diffArray(this._peerIds, container.peers);
-      relayingPeerIds = diff.diff1;
-      unknownPeerIds = diff.diff2;
-      this.relayingPeerIds.set(conn.remoteId, relayingPeerIds);
-      container.peers = container.peers.concat(relayingPeerIds);
-    } else if (hasRelayingList) {
-      relayingPeerIds = this.relayingPeerIds.get(conn.remoteId);
-    }
-
-    for (let peerId of relayingPeerIds) {
-      let conn = this.findDataConnection(peerId);
-      if (conn && conn.open) {
-        console.log('<' + peerId + '> 転送しなきゃ・・・');
-        conn.send(container);
-      }
-    }
-    if (unknownPeerIds.length && this.callback.onDetectUnknownPeers) {
-      for (let peerId of unknownPeerIds) {
-        if (this.connect(peerId)) console.log('auto connect to unknown Peer <' + peerId + '>');
-      }
-      this.callback.onDetectUnknownPeers(unknownPeerIds);
-    }
-  }
-
-  private add(conn: PeerJs.DataConnection): boolean {
-    let existConn = this.findDataConnection(conn.remoteId);
-    if (existConn !== null) {
-      console.log('add() is Fail. ' + conn.remoteId + ' is already connecting.');
-      if (existConn !== conn) {
-        if (existConn.metadata.sendFrom < conn.metadata.sendFrom) {
-          this.closeDataConnection(conn);
-        } else {
-          this.closeDataConnection(existConn);
-          this.add(conn);
-          return true;
-        }
-      }
-      return false;
-    }
-    this.connections.push(conn);
-    this.peerContexts.push(new PeerContext(conn.remoteId));
-    console.log('<add()> Peer:' + conn.remoteId + ' length:' + this.connections.length);
-    return true;
   }
 
   setApiKey(key: string) {
@@ -263,7 +190,7 @@ export class SkyWayConnection implements Connection {
     });
 
     peer.on('connection', conn => {
-      this.openDataConnection(conn);
+      this.openDataConnection(new SkyWayDataConnection(conn));
     });
 
     peer.on('error', err => {
@@ -290,8 +217,8 @@ export class SkyWayConnection implements Connection {
     this.peer = peer;
   }
 
-  private openDataConnection(conn: PeerJs.DataConnection) {
-    if (this.add(conn) === false) return;
+  private openDataConnection(conn: SkyWayDataConnection) {
+    if (this.addDataConnection(conn) === false) return;
 
     let sendFrom: string = conn.metadata.sendFrom;
     if (this.callback.willOpen) this.callback.willOpen(conn.remoteId, sendFrom);
@@ -310,11 +237,10 @@ export class SkyWayConnection implements Connection {
       this.onData(conn, data);
     });
     conn.on('open', () => {
-      exchangeSkyWayImplementation(conn);
       if (timeout !== null) clearTimeout(timeout);
       timeout = null;
       if (context) context.isOpen = true;
-      this.update();
+      this.updatePeerList();
       if (this.callback.onOpen) this.callback.onOpen(conn.remoteId);
     });
     conn.on('close', () => {
@@ -331,7 +257,7 @@ export class SkyWayConnection implements Connection {
     });
   }
 
-  private closeDataConnection(conn: PeerJs.DataConnection) {
+  private closeDataConnection(conn: SkyWayDataConnection) {
     conn.close();
     let index = this.connections.indexOf(conn);
     if (0 <= index) {
@@ -341,10 +267,31 @@ export class SkyWayConnection implements Connection {
     }
     this.relayingPeerIds.delete(conn.remoteId);
     console.log('<close()> Peer:' + conn.remoteId + ' length:' + this.connections.length + ':' + this.peerContexts.length);
-    this.update();
+    this.updatePeerList();
   }
 
-  private findDataConnection(peerId: string): PeerJs.DataConnection {
+  private addDataConnection(conn: SkyWayDataConnection): boolean {
+    let existConn = this.findDataConnection(conn.remoteId);
+    if (existConn !== null) {
+      console.log('add() is Fail. ' + conn.remoteId + ' is already connecting.');
+      if (existConn !== conn) {
+        if (existConn.metadata.sendFrom < conn.metadata.sendFrom) {
+          this.closeDataConnection(conn);
+        } else {
+          this.closeDataConnection(existConn);
+          this.addDataConnection(conn);
+          return true;
+        }
+      }
+      return false;
+    }
+    this.connections.push(conn);
+    this.peerContexts.push(new PeerContext(conn.remoteId));
+    console.log('<add()> Peer:' + conn.remoteId + ' length:' + this.connections.length);
+    return true;
+  }
+
+  private findDataConnection(peerId: string): SkyWayDataConnection {
     for (let conn of this.connections) {
       if (conn.remoteId === peerId) {
         return conn;
@@ -353,26 +300,59 @@ export class SkyWayConnection implements Connection {
     return null;
   }
 
-  private diffArray<T>(array1: T[], array2: T[]): { diff1: T[], diff2: T[] } {
-    let diff1: T[] = [];
-    let diff2: T[] = [];
-
-    let includesInArray1: boolean = false;
-    let includesInArray2: boolean = false;
-
-    for (let item of array1.concat(array2)) {
-      includesInArray1 = array1.includes(item);
-      includesInArray2 = array2.includes(item);
-      if (includesInArray1 && !includesInArray2) {
-        diff1.push(item);
-      } else if (!includesInArray1 && includesInArray2) {
-        diff2.push(item);
-      }
+  private onData(conn: SkyWayDataConnection, container: DataContainer) {
+    if (0 < container.ttl) this.onRelay(conn, container);
+    if (this.callback.onData) {
+      let byteLength = container.data.byteLength;
+      this.bandwidthUsage += byteLength;
+      this.queue = this.queue.then(() => new Promise((resolve, reject) => {
+        setZeroTimeout(async () => {
+          let data = container.isCompressed ? await decompressAsync(container.data) : container.data;
+          this.callback.onData(conn.remoteId, MessagePack.decode(data));
+          this.bandwidthUsage -= byteLength;
+          return resolve();
+        });
+      }));
     }
-    return { diff1: diff1, diff2: diff2 };
   }
 
-  private update(): string[] {
+  private onRelay(conn: SkyWayDataConnection, container: DataContainer) {
+    container.ttl--;
+
+    let canUpdate: boolean = container.peers && 0 < container.peers.length;
+    let hasRelayingList: boolean = this.relayingPeerIds.has(conn.remoteId);
+
+    if (!canUpdate && !hasRelayingList) return;
+
+    let relayingPeerIds: string[] = [];
+    let unknownPeerIds: string[] = [];
+
+    if (canUpdate) {
+      let diff = diffArray(this._peerIds, container.peers);
+      relayingPeerIds = diff.diff1;
+      unknownPeerIds = diff.diff2;
+      this.relayingPeerIds.set(conn.remoteId, relayingPeerIds);
+      container.peers = container.peers.concat(relayingPeerIds);
+    } else if (hasRelayingList) {
+      relayingPeerIds = this.relayingPeerIds.get(conn.remoteId);
+    }
+
+    for (let peerId of relayingPeerIds) {
+      let conn = this.findDataConnection(peerId);
+      if (conn && conn.open) {
+        console.log('<' + peerId + '> 転送しなきゃ・・・');
+        conn.send(container);
+      }
+    }
+    if (unknownPeerIds.length && this.callback.onDetectUnknownPeers) {
+      for (let peerId of unknownPeerIds) {
+        if (this.connect(peerId)) console.log('auto connect to unknown Peer <' + peerId + '>');
+      }
+      this.callback.onDetectUnknownPeers(unknownPeerIds);
+    }
+  }
+
+  private updatePeerList(): string[] {
     let peers: string[] = [];
     for (let conn of this.connections) {
       if (conn.open) peers.push(conn.remoteId);
@@ -401,50 +381,6 @@ export class SkyWayConnection implements Connection {
     this.sendBroadcast(container);
   }
 
-  private async compressAsync(data: Buffer): Promise<Uint8Array> {
-    let files: File[] = [];
-    files.push(new File([data], 'data.pack', { type: 'application/octet-stream' }));
-
-    let zip = new JSZip();
-    let length = files.length;
-    for (let i = 0; i < length; i++) {
-      let file = files[i]
-      zip.file(file.name, file);
-    }
-
-    let uint8array: Uint8Array = await zip.generateAsync({
-      type: 'uint8array',
-      compression: 'DEFLATE',
-      compressionOptions: {
-        level: 2
-      }
-    });
-
-    return uint8array;
-  }
-
-  private async decompressAsync(data: Buffer | ArrayBuffer | Uint8Array): Promise<Uint8Array> {
-    let zip = new JSZip();
-    try {
-      zip = await zip.loadAsync(data);
-    } catch (reason) {
-      console.warn(reason);
-      return null;
-    }
-    let uint8array: Uint8Array = await new Promise<Uint8Array>(
-      async (resolve, reject) => {
-        zip.forEach(async (relativePath, zipEntry) => {
-          try {
-            uint8array = await zipEntry.async('uint8array');
-            resolve(uint8array);
-          } catch (reason) {
-            console.warn(reason);
-          }
-        });
-      });
-    return uint8array;
-  }
-
   private getSkyWayErrorMessage(errType: string): string {
     switch (errType) {
       case 'peer-unavailable':
@@ -467,35 +403,64 @@ export class SkyWayConnection implements Connection {
   }
 }
 
-/* 
-SkyWay の DataConnection._startSendLoop() を取り替える.
-setInterval() に由来する遅延を解消するが skyway-js-sdk の更新次第で動作しなくなるので注意.
+function diffArray<T>(array1: T[], array2: T[]): { diff1: T[], diff2: T[] } {
+  let diff1: T[] = [];
+  let diff2: T[] = [];
 
-https://github.com/skyway/skyway-js-sdk/blob/master/src/peer/dataConnection.js
-*/
-function exchangeSkyWayImplementation(conn: PeerJs.DataConnection) {
-  if (conn._dc && conn._sendBuffer) {
-    conn._startSendLoop = startSendLoopZeroTimeout;
+  let includesInArray1: boolean = false;
+  let includesInArray2: boolean = false;
+
+  for (let item of array1.concat(array2)) {
+    includesInArray1 = array1.includes(item);
+    includesInArray2 = array2.includes(item);
+    if (includesInArray1 && !includesInArray2) {
+      diff1.push(item);
+    } else if (!includesInArray1 && includesInArray2) {
+      diff2.push(item);
+    }
   }
+  return { diff1: diff1, diff2: diff2 };
 }
 
-function startSendLoopZeroTimeout() {
-  if (!this.sendInterval) {
-    this.sendInterval = setZeroTimeout(sendBuffertZeroTimeout.bind(this));
+async function compressAsync(data: Uint8Array): Promise<Uint8Array> {
+  let files: File[] = [];
+  files.push(new File([data], 'd', { type: 'application/octet-stream' }));
+
+  let zip = new JSZip();
+  let length = files.length;
+  for (let i = 0; i < length; i++) {
+    let file = files[i]
+    zip.file(file.name, file);
   }
+
+  let uint8array: Uint8Array = await zip.generateAsync({
+    type: 'uint8array',
+    compression: 'DEFLATE',
+    compressionOptions: {
+      level: 2
+    }
+  });
+
+  return uint8array;
 }
 
-function sendBuffertZeroTimeout() {
-  const currMsg = this._sendBuffer.shift();
+async function decompressAsync(data: ArrayBuffer | Uint8Array): Promise<Uint8Array> {
+  let zip = new JSZip();
   try {
-    this._dc.send(currMsg);
-  } catch (error) {
-    this._sendBuffer.push(currMsg);
+    zip = await zip.loadAsync(data);
+  } catch (reason) {
+    console.warn(reason);
+    return null;
   }
-
-  if (this._sendBuffer.length === 0) {
-    this.sendInterval = undefined;
-  } else {
-    this.sendInterval = setZeroTimeout(sendBuffertZeroTimeout.bind(this));
-  }
+  let uint8array: Uint8Array = await new Promise<Uint8Array>(
+    async (resolve, reject) => {
+      zip.forEach(async (relativePath, zipEntry) => {
+        try {
+          resolve(await zipEntry.async('uint8array'));
+        } catch (reason) {
+          console.warn(reason);
+        }
+      });
+    });
+  return uint8array;
 }

@@ -64,6 +64,12 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
       })
       .on('UPDATE_INVENTORY', event => {
         if (event.isSendFromSelf) this.changeDetector.markForCheck();
+      })
+      .on('OPEN_PEER', event => {
+        this.inventoryTypes = ['table', 'common', Network.peerId, 'graveyard'];
+        if (!this.inventoryTypes.includes(this.selectTab)) {
+          this.selectTab = Network.peerId;
+        }
       });
     this.inventoryTypes = ['table', 'common', Network.peerId, 'graveyard'];
   }
@@ -111,7 +117,6 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
 
   onContextMenu(e: Event, gameObject: GameCharacter) {
     if (document.activeElement instanceof HTMLInputElement && document.activeElement.getAttribute('type') !== 'range') return;
-    console.log('onContextMenu');
     e.stopPropagation();
     e.preventDefault();
 
@@ -120,7 +125,6 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
     this.selectGameObject(gameObject);
 
     let position = this.pointerDeviceService.pointers[0];
-    console.log('mouseCursor', position);
 
     let actions: ContextMenuAction[] = [];
 
@@ -189,7 +193,6 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
 
   private selectGameObject(gameObject: GameObject) {
     let aliasName: string = gameObject.aliasName;
-    console.log('onSelectedGameObject <' + aliasName + '>', gameObject.identifier);
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: gameObject.identifier, className: gameObject.aliasName });
   }
 

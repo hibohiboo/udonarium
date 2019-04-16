@@ -89,13 +89,16 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
     this.sampleMessages = messages;
 
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', -1000, event => {
-        let object = ObjectStore.instance.get(event.data.identifier);
-        if (object && object instanceof ChatMessage && object.parent === this.chatTab) {
+      .on('MESSAGE_ADDED', event => {
+        let message = ObjectStore.instance.get<ChatMessage>(event.data.messageIdentifier);
+        if (message && message.parent === this.chatTab) {
           if (!this.needUpdate) this.changeDetector.markForCheck();
           this.needUpdate = true;
           this.maxMessages += 1;
         }
+      })
+      .on('UPDATE_GAME_OBJECT', event => {
+        if (event.data.aliasName === ChatMessage.aliasName) this.changeDetector.markForCheck();
       });
   }
 
@@ -132,10 +135,6 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
     if (this.chatTab && maxLength < this.maxMessages) this.maxMessages = maxLength;
     this.changeDetector.markForCheck();
     this.needUpdate = true;
-
-    EventSystem.trigger('BROADCAST_MESSAGE', {
-      from: '', name: '', text: '', timestamp: 0, tag: '', imageIdentifier: '', responseIdentifier: '',
-    });
 
     this.preScrollBottom = this.panelService.scrollablePanel.scrollHeight - this.panelService.scrollablePanel.scrollTop;
   }

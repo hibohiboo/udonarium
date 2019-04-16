@@ -77,7 +77,11 @@ export class RotableDirective extends Grabbable implements OnInit, OnDestroy, Af
       EventSystem.register(this)
         .on('UPDATE_GAME_OBJECT', -1000, event => {
           if ((event.isSendFromSelf && this.isGrabbing) || event.data.identifier !== this.tabletopObject.identifier || !this.shouldTransition(this.tabletopObject)) return;
-          this.cancel();
+          if (this.isGrabbing) {
+            this.cancel();
+          } else {
+            this.setAnimatedTransition(true);
+          }
           this.stopTransition();
           this.setRotate(this.tabletopObject);
         });
@@ -105,7 +109,6 @@ export class RotableDirective extends Grabbable implements OnInit, OnDestroy, Af
   protected onMouseDown(e: PointerEvent) {
     this.grabbingElement = <HTMLElement>e.target;
     if (this.isDisable || !this.isAllowedToRotate || e.button === 1 || e.button === 2) return this.cancel();
-    console.log('onRotateMouseDown!!!!');
     e.stopPropagation();
     this.onstart.emit(e);
     this._isGrabbing = true;

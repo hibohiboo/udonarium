@@ -13,36 +13,9 @@ export class ChatTab extends ObjectNode implements InnerXml {
   get unreadLength(): number { return this._unreadLength; }
   get hasUnread(): boolean { return 0 < this.unreadLength; }
 
-  // GameObject Lifecycle
-  onStoreAdded() {
-    super.onStoreAdded();
-    EventSystem.register(this)
-      .on<ChatMessageContext>('BROADCAST_MESSAGE', 200, event => {
-        if (!event.isSendFromSelf) return;
-        if (event.data.tabIdentifier !== this.identifier) return;
-        let chat = new ChatMessage();
-        let message = event.data;
-        for (let key in message) {
-          if (key === 'identifier') continue;
-          if (key === 'tabIdentifier') continue;
-          if (key === 'text') {
-            chat.value = message[key];
-            continue;
-          }
-          if (message[key] == null || message[key] === '') continue;
-          chat.setAttribute(key, message[key]);
-        }
-        chat.initialize();
-        this.appendChild(chat);
-
-        event.data.identifier = chat.identifier;
-      });
-  }
-
-  // GameObject Lifecycle
-  onStoreRemoved() {
-    super.onStoreRemoved();
-    EventSystem.unregister(this);
+  get latestTimeStamp(): number {
+    let lastIndex = this.chatMessages.length - 1;
+    return lastIndex < 0 ? 0 : this.chatMessages[lastIndex].timestamp;
   }
 
   // ObjectNode Lifecycle
@@ -54,14 +27,24 @@ export class ChatTab extends ObjectNode implements InnerXml {
     }
   }
 
-  // ObjectNode Lifecycle
-  onChildRemoved(child: ObjectNode) {
-    super.onChildRemoved(child);
-  }
-
-  addMessage(message: ChatMessageContext) {
+  addMessage(message: ChatMessageContext): ChatMessage {
     message.tabIdentifier = this.identifier;
-    EventSystem.call('BROADCAST_MESSAGE', message);
+
+    let chat = new ChatMessage();
+    for (let key in message) {
+      if (key === 'identifier') continue;
+      if (key === 'tabIdentifier') continue;
+      if (key === 'text') {
+        chat.value = message[key];
+        continue;
+      }
+      if (message[key] == null || message[key] === '') continue;
+      chat.setAttribute(key, message[key]);
+    }
+    chat.initialize();
+    EventSystem.trigger('SEND_MESSAGE', { tabIdentifier: this.identifier, messageIdentifier: chat.identifier });
+    this.appendChild(chat);
+    return chat;
   }
 
   markForRead() {
