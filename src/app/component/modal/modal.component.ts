@@ -9,7 +9,6 @@ import { ModalService } from 'service/modal.service';
   styleUrls: ['./modal.component.css'],
   animations: [
     trigger('flyInOut', [
-      state('in', style({ transform: 'scale(1.0, 1.0)' })),
       transition('void => *', [
         animate('100ms ease-out', keyframes([
           style({ transform: 'scale(0.8, 0.8)', opacity: '0', offset: 0 }),
@@ -32,7 +31,7 @@ import { ModalService } from 'service/modal.service';
   ]
 })
 export class ModalComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('content', { read: ViewContainerRef }) content: ViewContainerRef;
+  @ViewChild('content', { read: ViewContainerRef, static: true }) content: ViewContainerRef;
 
   constructor(
     public modalService: ModalService) { }

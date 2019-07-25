@@ -1,8 +1,20 @@
-import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { Component, HostListener, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
+import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { DiceSymbol } from '@udonarium/dice-symbol';
+import { PeerCursor } from '@udonarium/peer-cursor';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 import { MovableOption } from 'directive/movable.directive';
@@ -15,9 +27,9 @@ import { PointerDeviceService } from 'service/pointer-device.service';
   selector: 'dice-symbol',
   templateUrl: './dice-symbol.component.html',
   styleUrls: ['./dice-symbol.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('diceRoll', [
-      state('active', style({ transform: '' })),
       transition('* => active', [
         animate('800ms ease', keyframes([
           style({ transform: 'scale3d(0.8, 0.8, 0.8) rotateZ(0deg)', offset: 0 }),
@@ -29,7 +41,6 @@ import { PointerDeviceService } from 'service/pointer-device.service';
       ])
     ]),
     trigger('bounceInOut', [
-      state('in', style({ transform: 'scale3d(1, 1, 1)' })),
       transition('void => *', [
         animate('600ms ease', keyframes([
           style({ transform: 'scale3d(0, 0, 0)', offset: 0 }),
@@ -73,6 +84,9 @@ export class DiceSymbolComponent implements OnInit, OnDestroy {
 
   animeState: string = 'inactive';
 
+  private iconHiddenTimer: NodeJS.Timer = null;
+  get isIconHidden(): boolean { return this.iconHiddenTimer != null };
+
   private emptyImage: ImageFile = ImageFile.Empty;
   gridSize: number = 50;
 
@@ -86,6 +100,7 @@ export class DiceSymbolComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private panelService: PanelService,
     private contextMenuService: ContextMenuService,
+    private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService) { }
 
   ngOnInit() {
@@ -94,13 +109,29 @@ export class DiceSymbolComponent implements OnInit, OnDestroy {
         if (event.data.identifier === this.diceSymbol.identifier) {
           this.ngZone.run(() => {
             this.animeState = 'inactive';
-            setTimeout(() => { this.animeState = 'active'; });
+            this.changeDetector.markForCheck();
+            setTimeout(() => { this.animeState = 'active'; this.changeDetector.markForCheck(); });
           });
         }
+      })
+      .on('UPDATE_GAME_OBJECT', -1000, event => {
+        let object = ObjectStore.instance.get(event.data.identifier);
+        if (!this.diceSymbol || !object) return;
+        if ((this.diceSymbol === object)
+          || (object instanceof ObjectNode && this.diceSymbol.contains(object))
+          || (object instanceof PeerCursor && object.peerId === this.diceSymbol.owner)) {
+          this.changeDetector.markForCheck();
+        }
+      })
+      .on('SYNCHRONIZE_FILE_LIST', event => {
+        this.changeDetector.markForCheck();
+      })
+      .on('UPDATE_FILE_RESOURE', -1000, event => {
+        this.changeDetector.markForCheck();
       });
     this.movableOption = {
       tabletopObject: this.diceSymbol,
-      transformCssOffset: 'translateZ(0.15px)',
+      transformCssOffset: 'translateZ(1.0px)',
       colideLayers: ['terrain']
     };
     this.rotableOption = {
@@ -114,11 +145,14 @@ export class DiceSymbolComponent implements OnInit, OnDestroy {
 
   animationShuffleDone(event: any) {
     this.animeState = 'inactive';
+    this.changeDetector.markForCheck();
   }
 
   @HostListener('mousedown', ['$event'])
   onMouseDown(e: any) {
     this.onDoubleClick(e);
+    this.startIconHiddenTimer();
+
     e.preventDefault();
   }
 
@@ -230,6 +264,15 @@ export class DiceSymbolComponent implements OnInit, OnDestroy {
     let option: PanelOption = { title: title, left: coordinate.x - 300, top: coordinate.y - 300, width: 600, height: 600 };
     let component = this.panelService.open<GameCharacterSheetComponent>(GameCharacterSheetComponent, option);
     component.tabletopObject = gameObject;
+  }
+
+  private startIconHiddenTimer() {
+    clearTimeout(this.iconHiddenTimer);
+    this.iconHiddenTimer = setTimeout(() => {
+      this.iconHiddenTimer = null;
+      this.changeDetector.markForCheck();
+    }, 400);
+    this.changeDetector.markForCheck();
   }
 
   private adjustMinBounds(value: number, min: number = 0): number {

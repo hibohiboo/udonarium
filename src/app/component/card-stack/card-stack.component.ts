@@ -1,12 +1,23 @@
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
-
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Card } from '@udonarium/card';
 import { CardStack } from '@udonarium/card-stack';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
+import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
+import { PeerCursor } from '@udonarium/peer-cursor';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
-
 import { CardStackListComponent } from 'component/card-stack-list/card-stack-list.component';
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 import { MovableOption } from 'directive/movable.directive';
@@ -19,6 +30,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
   selector: 'card-stack',
   templateUrl: './card-stack.component.html',
   styleUrls: ['./card-stack.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('shuffle', [
       state('active', style({ transform: '' })),
@@ -60,6 +72,9 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private callbackOnMouseUp = (e) => this.onMouseUp(e);
 
+  private iconHiddenTimer: NodeJS.Timer = null;
+  get isIconHidden(): boolean { return this.iconHiddenTimer != null };
+
   gridSize: number = 50;
 
   movableOption: MovableOption = {};
@@ -72,13 +87,32 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private elementRef: ElementRef,
+    private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService
   ) { }
 
   ngOnInit() {
     EventSystem.register(this)
       .on('SHUFFLE_CARD_STACK', -1000, event => {
-        if (event.data.identifier === this.cardStack.identifier) this.animeState = 'active';
+        if (event.data.identifier === this.cardStack.identifier) {
+          this.animeState = 'active';
+          this.changeDetector.markForCheck();
+        }
+      })
+      .on('UPDATE_GAME_OBJECT', -1000, event => {
+        let object = ObjectStore.instance.get(event.data.identifier);
+        if (!this.cardStack || !object) return;
+        if ((this.cardStack === object)
+          || (object instanceof ObjectNode && this.cardStack.contains(object))
+          || (object instanceof PeerCursor && object.peerId === this.cardStack.owner)) {
+          this.changeDetector.markForCheck();
+        }
+      })
+      .on('SYNCHRONIZE_FILE_LIST', event => {
+        this.changeDetector.markForCheck();
+      })
+      .on('UPDATE_FILE_RESOURE', -1000, event => {
+        this.changeDetector.markForCheck();
       });
     this.movableOption = {
       tabletopObject: this.cardStack,
@@ -103,6 +137,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   animationShuffleDone(event: any) {
     this.animeState = 'inactive';
+    this.changeDetector.markForCheck();
   }
 
   @HostListener('carddrop', ['$event'])
@@ -115,22 +150,12 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (e.detail instanceof Card) {
       let card: Card = e.detail;
-      let distance: number = Math.sqrt((card.location.x - this.cardStack.location.x) ** 2 + (card.location.y - this.cardStack.location.y) ** 2 + (card.posZ - this.cardStack.posZ) ** 2);
-      if (distance < 50) this.cardStack.putOnTop(card);
+      let distance: number = (card.location.x - this.cardStack.location.x) ** 2 + (card.location.y - this.cardStack.location.y) ** 2 + (card.posZ - this.cardStack.posZ) ** 2;
+      if (distance < 50 ** 2) this.cardStack.putOnTop(card);
     } else if (e.detail instanceof CardStack) {
       let cardStack: CardStack = e.detail;
-      let distance: number = Math.sqrt((cardStack.location.x - this.cardStack.location.x) ** 2 + (cardStack.location.y - this.cardStack.location.y) ** 2 + (cardStack.posZ - this.cardStack.posZ) ** 2);
-      if (distance < 25) {
-        let cards: Card[] = this.cardStack.drawCardAll();
-        cardStack.location.name = this.cardStack.location.name;
-        cardStack.location.x = this.cardStack.location.x;
-        cardStack.location.y = this.cardStack.location.y;
-        cardStack.posZ = this.cardStack.posZ;
-        for (let card of cards) cardStack.putOnBottom(card);
-        this.cardStack.location.name = '';
-        this.cardStack.update();
-        this.cardStack.destroy();
-      }
+      let distance: number = (cardStack.location.x - this.cardStack.location.x) ** 2 + (cardStack.location.y - this.cardStack.location.y) ** 2 + (cardStack.posZ - this.cardStack.posZ) ** 2;
+      if (distance < 25 ** 2) this.concatStack(cardStack);
     }
   }
 
@@ -148,11 +173,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.doubleClickPoint.x === this.pointerDeviceService.pointers[0].x
       && this.doubleClickPoint.y === this.pointerDeviceService.pointers[0].y) {
       console.log('onDoubleClick !!!!');
-      let card = this.cardStack.drawCard();
-      if (card) {
-        card.location.x += 100 + (Math.random() * 50);
-        card.location.y += 25 + (Math.random() * 50);
-        card.update();
+      if (this.drawCard() != null) {
         SoundEffect.play(PresetSound.cardDraw);
       }
     }
@@ -166,10 +187,11 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @HostListener('mousedown', ['$event'])
   onMouseDown(e: any) {
-    this.onDoubleClick(e);
     this.cardStack.toTopmost();
+    this.onDoubleClick(e);
 
     this.addMouseEventListeners();
+    this.startIconHiddenTimer();
 
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: this.cardStack.identifier, className: 'GameCharacter' });
 
@@ -193,11 +215,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     this.contextMenuService.open(position, [
       {
         name: '１枚引く', action: () => {
-          let card = this.cardStack.drawCard();
-          if (card) {
-            card.location.x += 100 + (Math.random() * 50);
-            card.location.y += 25 + (Math.random() * 50);
-            card.update();
+          if (this.drawCard() != null) {
             SoundEffect.play(PresetSound.cardDraw);
           }
         }
@@ -270,14 +288,13 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
           cloneObject.location.x += this.gridSize;
           cloneObject.location.y += this.gridSize;
           cloneObject.owner = '';
-          cloneObject.update();
+          cloneObject.toTopmost();
           SoundEffect.play(PresetSound.cardPut);
         }
       },
       {
         name: '山札を削除する', action: () => {
-          this.cardStack.location.name = 'graveyard';
-          this.cardStack.update();
+          this.cardStack.setLocation('graveyard');
           this.cardStack.destroy();
           SoundEffect.play(PresetSound.sweep);
         }
@@ -291,6 +308,17 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onMoved() {
     SoundEffect.play(PresetSound.cardPut);
+  }
+
+  private drawCard(): Card {
+    let card = this.cardStack.drawCard();
+    if (card) {
+      this.cardStack.update(); // todo
+      card.location.x += 100 + (Math.random() * 50);
+      card.location.y += 25 + (Math.random() * 50);
+      card.update();
+    }
+    return card;
   }
 
   private breakStack() {
@@ -310,13 +338,13 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     if (split < 2) return;
     let cardStacks: CardStack[] = [];
     for (let i = 0; i < split; i++) {
-      let cardStack = CardStack.create('山札');
+      let cardStack = CardStack.create(this.cardStack.name);
       cardStack.location.x = this.cardStack.location.x + 50 - (Math.random() * 100);
       cardStack.location.y = this.cardStack.location.y + 50 - (Math.random() * 100);
       cardStack.posZ = this.cardStack.posZ;
       cardStack.location.name = this.cardStack.location.name;
       cardStack.rotate = this.rotate;
-      cardStack.update();
+      cardStack.toTopmost();
       cardStacks.push(cardStack);
     }
 
@@ -334,6 +362,28 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
         splitIndex = (cards.length / split) * (num + 1);
       }
     }
+  }
+
+  private concatStack(topStack: CardStack, bottomStack: CardStack = this.cardStack) {
+    let newCardStack = CardStack.create(topStack.name);
+    newCardStack.location.name = bottomStack.location.name;
+    newCardStack.location.x = bottomStack.location.x;
+    newCardStack.location.y = bottomStack.location.y;
+    newCardStack.posZ = bottomStack.posZ;
+    newCardStack.zindex = topStack.zindex;
+    newCardStack.rotate = bottomStack.rotate;
+
+    let bottomCards: Card[] = bottomStack.drawCardAll();
+    let topCards: Card[] = topStack.drawCardAll();
+    for (let card of topCards.concat(bottomCards)) newCardStack.putOnBottom(card);
+
+    bottomStack.location.name = '';
+    bottomStack.update();
+    bottomStack.destroy();
+
+    topStack.location.name = '';
+    topStack.update();
+    topStack.destroy();
   }
 
   private dispatchCardDropEvent() {
@@ -373,5 +423,14 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cardStack.owner = Network.peerId;
     let component = this.panelService.open<CardStackListComponent>(CardStackListComponent, option);
     component.cardStack = gameObject;
+  }
+
+  private startIconHiddenTimer() {
+    clearTimeout(this.iconHiddenTimer);
+    this.iconHiddenTimer = setTimeout(() => {
+      this.iconHiddenTimer = null;
+      this.changeDetector.markForCheck();
+    }, 400);
+    this.changeDetector.markForCheck();
   }
 }

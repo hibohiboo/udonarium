@@ -1,9 +1,10 @@
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
-import { EventSystem } from '@udonarium/core/system';
+import { EventSystem, Network } from '@udonarium/core/system';
 import { PeerCursor } from '@udonarium/peer-cursor';
 
 import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service';
+import { TabletopService } from 'service/tabletop.service';
 
 @Component({
   selector: 'peer-cursor, [peer-cursor]',
@@ -12,8 +13,8 @@ import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.
 })
 export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild('cursor') cursorElementRef: ElementRef;
-  @ViewChild('opacity') opacityElementRef: ElementRef;
+  @ViewChild('cursor', { static: false }) cursorElementRef: ElementRef;
+  @ViewChild('opacity', { static: false }) opacityElementRef: ElementRef;
   @Input() cursor: PeerCursor = PeerCursor.myCursor;
 
   get iconUrl(): string { return this.cursor.image.url; }
@@ -31,7 +32,13 @@ export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
   private _y: number = 0;
   private _target: HTMLElement;
 
+  get delayMs(): number {
+    let maxDelay = Network.peerIds.length * 16.6;
+    return maxDelay < 100 ? 100 : maxDelay;
+  }
+
   constructor(
+    private tabletopService: TabletopService,
     private ngZone: NgZone
   ) { }
 
@@ -40,9 +47,12 @@ export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
       EventSystem.register(this)
         .on('CURSOR_MOVE', event => {
           if (event.sendFrom !== this.cursor.peerId) return;
-          this.stopTransition();
-          this.setPosition(event.data[0], event.data[1], event.data[2]);
-          this.resetFadeOut();
+          this.tabletopService.addBatch(() => {
+            this.stopTransition();
+            this.setAnimatedTransition();
+            this.setPosition(event.data[0], event.data[1], event.data[2]);
+            this.resetFadeOut();
+          }, this);
         });
     }
   }
@@ -56,6 +66,7 @@ export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.cursorElement = this.cursorElementRef.nativeElement;
       this.opacityElement = this.opacityElementRef.nativeElement;
+      this.setAnimatedTransition();
       this.setPosition(0, 0, 0);
       this.resetFadeOut();
     }
@@ -78,7 +89,7 @@ export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
       this.updateInterval = setTimeout(() => {
         this.updateInterval = null;
         this.calcLocalCoordinate(this._x, this._y, this._target);
-      }, 100);
+      }, this.delayMs);
     }
   }
 
@@ -107,6 +118,10 @@ export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private stopTransition() {
     this.cursorElement.style.transform = window.getComputedStyle(this.cursorElement).transform;
+  }
+
+  private setAnimatedTransition() {
+    this.cursorElement.style.transition = `transform ${this.delayMs + 33}ms linear, opacity 0.5s ease-out`;
   }
 
   private setPosition(x: number, y: number, z: number) {

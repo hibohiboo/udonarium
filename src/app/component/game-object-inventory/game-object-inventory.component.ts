@@ -170,6 +170,16 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
     this.isEdit = !this.isEdit;
   }
 
+  cleanInventory() {
+    let tabTitle = this.getTabTitle(this.selectTab);
+    let gameObjects = this.getGameObjects(this.selectTab);
+    if (!confirm(`${tabTitle}に存在する${gameObjects.length}個の要素を完全に削除しますか？`)) return;
+    for (const gameObject of gameObjects) {
+      this.deleteGameObject(gameObject);
+    }
+    SoundEffect.play(PresetSound.sweep);
+  }
+
   private cloneGameObject(gameObject: TabletopObject) {
     gameObject.clone();
   }
@@ -186,12 +196,12 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
 
   private showChatPalette(gameObject: GameCharacter) {
     let coordinate = this.pointerDeviceService.pointers[0];
-    let option: PanelOption = { left: coordinate.x - 250, top: coordinate.y - 175, width: 500, height: 350 };
+    let option: PanelOption = { left: coordinate.x - 250, top: coordinate.y - 175, width: 615, height: 350 };
     let component = this.panelService.open<ChatPaletteComponent>(ChatPaletteComponent, option);
     component.character = gameObject;
   }
 
-  private selectGameObject(gameObject: GameObject) {
+  selectGameObject(gameObject: GameObject) {
     let aliasName: string = gameObject.aliasName;
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: gameObject.identifier, className: gameObject.aliasName });
   }

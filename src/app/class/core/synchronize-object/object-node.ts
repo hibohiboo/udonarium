@@ -21,15 +21,16 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
   }
 
   get parent(): ObjectNode { return ObjectStore.instance.get<ObjectNode>(this.parentIdentifier); }
+  get parentId(): string { return this.parentIdentifier; }
+  get parentIsAssigned(): boolean { return 0 < this.parentIdentifier.length; }
+  get parentIsUnknown(): boolean { return this.parentIsAssigned && ObjectStore.instance.get(this.parentIdentifier) == null; }
+  get parentIsDestroyed(): boolean { return this.parentIsAssigned && ObjectStore.instance.isDeleted(this.parentIdentifier); }
+
   private _children: ObjectNode[] = [];
   get children(): ObjectNode[] {
     if (this.needsSort) {
       this.needsSort = false;
-      this._children.sort((a, b) => {
-        if (a.index < b.index) return -1;
-        if (a.index > b.index) return 1;
-        return 0;
-      });
+      this._children.sort((a, b) => a.index - b.index);
     }
     return this._children.concat();
   }
@@ -85,13 +86,8 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
   private initializeChildren() {
     if (ObjectNode.unknownNodes[this.identifier] == null) return;
     let objects = ObjectNode.unknownNodes[this.identifier];
-    for (let object of objects.concat()) {
-      if (object.parent === this) {
-        this.updateChildren(object);
-        objects.splice(objects.indexOf(object), 1);
-      } else if (object.parent) {
-        objects.splice(objects.indexOf(object), 1);
-      }
+    for (let object of objects) {
+      if (object.parent === this) this.updateChildren(object);
     }
     if (ObjectNode.unknownNodes[this.identifier]) {
       delete ObjectNode.unknownNodes[this.identifier];
@@ -101,19 +97,21 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
   private updateChildren(child: ObjectNode = this) {
     let index = this._children.indexOf(child);
     let isAdded = false;
+    let isMyChild = child.parent === this;
 
-    if (index < 0 && child.parent === this) {
+    if (index < 0 && isMyChild) {
       this._children.push(child);
+      index = this._children.length - 1;
       isAdded = true;
-    }
-    if (0 <= index && child.parent !== this) {
+    } else if (0 <= index && !isMyChild) {
       this._children.splice(index, 1);
       this._onChildRemoved(child);
+      return;
+    } else if (index < 0 && !isMyChild) {
       return;
     }
 
     if (!this._children.length) return;
-    if (index < 0) index = this._children.indexOf(child);
     let prevIndex = index - 1 < 0 ? 0 : index - 1;
     let nextIndex = this._children.length - 1 < index + 1 ? this._children.length - 1 : index + 1;
 
@@ -122,15 +120,16 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
   }
 
   private updateIndexs() {
-    for (let i = 0; i < this._children.length; i++) {
-      this._children[i].majorIndex = i;
-      this._children[i].minorIndex = Math.random();
+    let children = this.children;
+    for (let i = 0; i < children.length; i++) {
+      children[i].majorIndex = i;
+      children[i].minorIndex = Math.random();
     }
   }
 
   appendChild(child: ObjectNode): ObjectNode {
     if (child.contains(this)) return null;
-    if (child.parent) child.parent.removeChild(child);
+    if (child.parent && child.parent !== this) child.parent.removeChild(child);
 
     let lastIndex = 0 < this.children.length ? this.children[this.children.length - 1].majorIndex + 1 : 0;
 
@@ -138,9 +137,7 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
     child.majorIndex = lastIndex;
     child.minorIndex = Math.random();
 
-    if (child.parent) {
-      child.parent.updateChildren(child);
-    }
+    this.updateChildren(child);
 
     return child;
   }
@@ -149,17 +146,22 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
     if (child.contains(this)) return null;
     if (child === reference && child.parent === this) return child;
 
-    if (child.parent) child.parent.removeChild(child);
+    if (child.parent && child.parent !== this) child.parent.removeChild(child);
 
     let index = this.children.indexOf(reference);
     if (index < 0) return this.appendChild(child);
 
     child.parentIdentifier = this.identifier;
-    this._children.splice(index, 0, child);
 
-    if (child.parent) {
-      child.parent.updateIndexs();
-      child.parent.updateChildren(child);
+    let prevIndex = 0 < index ? this.children[index - 1].index : 0;
+    let diff = reference.index - prevIndex;
+    let insertIndex = prevIndex + diff * (0.45 + 0.1 * Math.random());
+    child.majorIndex = insertIndex | 0;
+    child.minorIndex = insertIndex - child.majorIndex;
+
+    this.updateChildren(child);
+    if (diff < 1e-7) {
+      this.updateIndexs();
     }
 
     return child;
@@ -248,7 +250,7 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
     if (oldParent && this.parent !== oldParent) oldParent.updateChildren(this);
     if (this.parent) {
       this.parent.updateChildren(this);
-    } else if (0 < this.parentIdentifier.length) {
+    } else if (this.parentIsAssigned) {
       if (!(this.parentIdentifier in ObjectNode.unknownNodes)) {
         ObjectNode.unknownNodes[this.parentIdentifier] = [];
       }

@@ -1,7 +1,7 @@
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
-import { ObjectStore } from './core/synchronize-object/object-store';
 import { DataElement } from './data-element';
 import { TabletopObject } from './tabletop-object';
+import { moveToTopmost } from './tabletop-object-util';
 
 @SyncObject('text-note')
 export class TextNote extends TabletopObject {
@@ -17,22 +17,7 @@ export class TextNote extends TabletopObject {
   set text(text: string) { this.setCommonValue('text', text); }
 
   toTopmost() {
-    let object: any[] = ObjectStore.instance.getObjects('text-note');
-    object.sort((a, b) => {
-      if (a.zindex < b.zindex) return -1;
-      if (a.zindex > b.zindex) return 1;
-      return 0;
-    });
-    let last = object[object.length - 1];
-    if (last === this) return;
-    let max = last.zindex;
-    if (this.zindex <= max) this.zindex = max + 1;
-
-    if (object.length * 16 < max) {
-      for (let i = 0; i < object.length; i++) {
-        object[i].zindex = i;
-      }
-    }
+    moveToTopmost(this);
   }
 
   static create(title: string, text: string, fontSize: number = 16, width: number = 1, height: number = 1, identifier?: string): TextNote {

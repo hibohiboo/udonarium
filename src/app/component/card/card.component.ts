@@ -9,20 +9,21 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-
 import { Card, CardState } from '@udonarium/card';
 import { CardStack } from '@udonarium/card-stack';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
+import { PeerCursor } from '@udonarium/peer-cursor';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
-
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 import { MovableOption } from 'directive/movable.directive';
 import { RotableOption } from 'directive/rotable.directive';
-import { ContextMenuService, ContextMenuSeparator } from 'service/context-menu.service';
+import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { TabletopService } from 'service/tabletop.service';
 
 @Component({
   selector: 'card',
@@ -54,6 +55,9 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   get frontImage(): ImageFile { return this.card.frontImage; }
   get backImage(): ImageFile { return this.card.backImage; }
 
+  private iconHiddenTimer: NodeJS.Timer = null;
+  get isIconHidden(): boolean { return this.iconHiddenTimer != null };
+
   gridSize: number = 50;
 
   movableOption: MovableOption = {};
@@ -69,44 +73,27 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     private panelService: PanelService,
     private elementRef: ElementRef,
     private changeDetector: ChangeDetectorRef,
+    private tabletopService: TabletopService,
     private pointerDeviceService: PointerDeviceService
   ) { }
 
   ngOnInit() {
     EventSystem.register(this)
       .on('UPDATE_GAME_OBJECT', -1000, event => {
-        if (event.data.identifier === this.card.identifier) {
-          this.changeDetector.markForCheck();
-        } else if (event.data.aliasName === 'data') {
+        let object = ObjectStore.instance.get(event.data.identifier);
+        if (!this.card || !object) return;
+        if ((this.card === object)
+          || (object instanceof ObjectNode && this.card.contains(object))
+          || (object instanceof PeerCursor && object.peerId === this.card.owner)) {
           this.changeDetector.markForCheck();
         }
-        if (event.isSendFromSelf || event.data.identifier !== this.card.identifier) return;
       })
-      .on('UPDATE_GAME_OBJECT', 1000, event => {
-        if (event.isSendFromSelf || event.data.aliasName !== 'card') return;
-        let object = ObjectStore.instance.get(event.data.identifier);
-        if (!object) this.changeDetector.markForCheck();
+      .on('SYNCHRONIZE_FILE_LIST', event => {
+        this.changeDetector.markForCheck();
+      })
+      .on('UPDATE_FILE_RESOURE', -1000, event => {
+        this.changeDetector.markForCheck();
       });
-    if (!this.frontImage || !this.backImage || this.frontImage.state < 2 || this.backImage.state < 2) {
-      let dummy = {};
-      EventSystem.register(dummy)
-        .on('SYNCHRONIZE_FILE_LIST', event => {
-          if ((this.frontImage && 0 < this.frontImage.state) || (this.backImage && 0 < this.backImage.state)) {
-            this.changeDetector.markForCheck();
-          }
-          if (this.frontImage && this.backImage && 2 <= this.frontImage.state && 2 <= this.backImage.state) {
-            EventSystem.unregister(dummy);
-          }
-        })
-        .on('UPDATE_FILE_RESOURE', -1000, event => {
-          if ((this.frontImage && 0 < this.frontImage.state) || (this.backImage && 0 < this.backImage.state)) {
-            this.changeDetector.markForCheck();
-          }
-          if (this.frontImage && this.backImage && 2 <= this.frontImage.state && 2 <= this.backImage.state) {
-            EventSystem.unregister(dummy);
-          }
-        });
-    }
     this.movableOption = {
       tabletopObject: this.card,
       transformCssOffset: 'translateZ(0.15px)',
@@ -134,8 +121,8 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (e.detail instanceof CardStack) {
       let cardStack: CardStack = e.detail;
-      let distance: number = Math.sqrt((cardStack.location.x - this.card.location.x) ** 2 + (cardStack.location.y - this.card.location.y) ** 2 + (cardStack.posZ - this.card.posZ) ** 2);
-      if (distance < 25) {
+      let distance: number = (cardStack.location.x - this.card.location.x) ** 2 + (cardStack.location.y - this.card.location.y) ** 2 + (cardStack.posZ - this.card.posZ) ** 2;
+      if (distance < 25 ** 2) {
         cardStack.location.x = this.card.location.x;
         cardStack.location.y = this.card.location.y;
         cardStack.posZ = this.card.posZ;
@@ -176,6 +163,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.card.toTopmost();
 
     this.addMouseEventListeners();
+    this.startIconHiddenTimer();
 
     e.preventDefault();
   }
@@ -236,7 +224,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
           let cloneObject = this.card.clone();
           cloneObject.location.x += this.gridSize;
           cloneObject.location.y += this.gridSize;
-          cloneObject.update();
+          cloneObject.toTopmost();
           SoundEffect.play(PresetSound.cardPut);
         }
       },
@@ -246,7 +234,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
           SoundEffect.play(PresetSound.sweep);
         }
       },
-    ], this.name);
+    ], this.isVisible ? this.name : 'カード');
   }
 
   onMove() {
@@ -272,9 +260,12 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     cardStack.posZ = this.card.posZ;
     cardStack.location.name = this.card.location.name;
     cardStack.rotate = this.rotate;
-    cardStack.update();
+    cardStack.zindex = this.card.zindex;
 
-    let cards: Card[] = ObjectStore.instance.getObjects<Card>(Card).filter((obj) => { return obj.location.name === this.card.location.name });
+    let cards: Card[] = this.tabletopService.cards.filter(card => {
+      let distance: number = (card.location.x - this.card.location.x) ** 2 + (card.location.y - this.card.location.y) ** 2 + (card.posZ - this.card.posZ) ** 2;
+      return distance < 100 ** 2;
+    });
 
     cards.sort((a, b) => {
       if (a.zindex < b.zindex) return 1;
@@ -283,8 +274,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     for (let card of cards) {
-      let distance: number = Math.sqrt((card.location.x - this.card.location.x) ** 2 + (card.location.y - this.card.location.y) ** 2);
-      if (distance < 100) cardStack.putOnBottom(card);
+      cardStack.putOnBottom(card);
     }
   }
 
@@ -297,6 +287,15 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     for (let i = 0; i < children.length; i++) {
       children[i].dispatchEvent(event);
     }
+  }
+
+  private startIconHiddenTimer() {
+    clearTimeout(this.iconHiddenTimer);
+    this.iconHiddenTimer = setTimeout(() => {
+      this.iconHiddenTimer = null;
+      this.changeDetector.markForCheck();
+    }, 400);
+    this.changeDetector.markForCheck();
   }
 
   private adjustMinBounds(value: number, min: number = 0): number {

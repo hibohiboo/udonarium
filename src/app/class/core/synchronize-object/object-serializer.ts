@@ -35,49 +35,51 @@ export class ObjectSerializer {
       if (attribute == null) continue;
       attrStr += ' ' + name + '="' + attribute + '"';
     }
-    xml += '<' + tagName + attrStr + '>';
+    xml += `<${tagName + attrStr}>`;
     xml += 'innerXml' in gameObject ? (<InnerXml>gameObject).innerXml() : '';
-    xml += '</' + tagName + '>';
+    xml += `</${tagName}>`;
     return xml;
   }
 
   static toAttributes(syncData: Object): Attributes {
     let attributes = {};
     for (let syncVar in syncData) {
-      if (Array.isArray(syncData[syncVar])) {
-        console.warn('Array', syncData[syncVar]);
-        let arrayAttributes = ObjectSerializer.array2attributes(syncData[syncVar], syncVar);
-        for (let name in arrayAttributes) {
-          attributes[name] = arrayAttributes[name];
-        }
-      } else if (typeof syncData[syncVar] === 'object') {
-        let objAttributes = ObjectSerializer.object2attributes(syncData[syncVar], syncVar);
-        for (let name in objAttributes) {
-          attributes[name] = objAttributes[name];
-        }
-      } else {
-        attributes[syncVar] = syncData[syncVar];
+      let item = syncData[syncVar];
+      let key = syncVar;
+      let childAttr = ObjectSerializer.make2Attributes(item, key);
+      for (let name in childAttr) {
+        attributes[name] = childAttr[name];
       }
+    }
+    return attributes;
+  }
+
+  private static make2Attributes(item: any, key: string): Attributes {
+    let attributes = {};
+    if (Array.isArray(item)) {
+      let arrayAttributes = ObjectSerializer.array2attributes(item, key);
+      for (let name in arrayAttributes) {
+        attributes[name] = arrayAttributes[name];
+      }
+    } else if (typeof item === 'object') {
+      let objAttributes = ObjectSerializer.object2attributes(item, key);
+      for (let name in objAttributes) {
+        attributes[name] = objAttributes[name];
+      }
+    } else {
+      attributes[key] = item;
     }
     return attributes;
   }
 
   private static object2attributes(obj: any, rootKey: string): Attributes {
     let attributes = {};
-    for (let key in obj) {
-      if (Array.isArray(obj[key])) {
-        let arrayAttributes = ObjectSerializer.array2attributes(obj[key], key);
-        for (let name in arrayAttributes) {
-          attributes[name] = arrayAttributes[name];
-        }
-      }
-      if (typeof obj[key] === 'object') {
-        let childAttributes = ObjectSerializer.object2attributes(obj[key], key);
-        for (let name in childAttributes) {
-          attributes[name] = childAttributes[name];
-        }
-      } else {
-        attributes[rootKey + '.' + key] = obj[key];
+    for (let objKey in obj) {
+      let item = obj[objKey];
+      let key = rootKey + '.' + objKey;
+      let childAttr = ObjectSerializer.make2Attributes(item, key);
+      for (let name in childAttr) {
+        attributes[name] = childAttr[name];
       }
     }
     return attributes;
@@ -88,18 +90,9 @@ export class ObjectSerializer {
     for (let i = 0; i < array.length; i++) {
       let item = array[i];
       let key = rootKey + '.' + i;
-      if (Array.isArray(item)) {
-        let arrayAttributes = ObjectSerializer.array2attributes(item, key);
-        for (let name in arrayAttributes) {
-          attributes[name] = arrayAttributes[name];
-        }
-      } else if (typeof item === 'object') {
-        let childAttributes = ObjectSerializer.object2attributes(item, key);
-        for (let name in childAttributes) {
-          attributes[name] = childAttributes[name];
-        }
-      } else {
-        attributes[key] = item;
+      let childAttr = ObjectSerializer.make2Attributes(item, key);
+      for (let name in childAttr) {
+        attributes[name] = childAttr[name];
       }
     }
     return attributes;
@@ -143,11 +136,11 @@ export class ObjectSerializer {
       let split: string[] = attributes[i].name.split('.');
       let key: string | number = split[0];
       let obj: Object | Array<any> = syncData;
-      let parentObj: Object | Array<any> = null;
 
       if (1 < split.length) {
         // 階層構造の解析 foo.bar.0="abc" 等
         // 処理として実装こそしているが、xmlの仕様としては良くないので使用するべきではない.
+        let parentObj: Object | Array<any> = null;
         for (let j = 0; j < split.length; j++) {
           let index = parseInt(split[j]);
           if (parentObj && !Number.isNaN(index) && !Array.isArray(obj) && Object.keys(parentObj).length) {
@@ -165,8 +158,7 @@ export class ObjectSerializer {
 
       let type = typeof obj[key];
       if (type !== 'string' && obj[key] != null) {
-        let json = JSON.parse(value);
-        value = json;
+        value = JSON.parse(value);
       }
       obj[key] = value;
     }

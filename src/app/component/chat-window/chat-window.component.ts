@@ -40,7 +40,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 })
 
 export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('textArea') textAreaElementRef: ElementRef;
+  @ViewChild('textArea', { static: true }) textAreaElementRef: ElementRef;
 
   sender: string = 'Guest';
   text: string = '';
@@ -70,7 +70,10 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     let hasChanged: boolean = this._chatTabidentifier !== chatTabidentifier;
     this._chatTabidentifier = chatTabidentifier;
     this.updatePanelTitle();
-    if (hasChanged) this.scrollToBottom(true);
+    if (hasChanged) {
+      this.scrollToBottom(true);
+      if (this.chatTab) this.chatTab.markForRead();
+    }
   }
 
   get chatTab(): ChatTab { return ObjectStore.instance.get<ChatTab>(this.chatTabidentifier); }
@@ -97,7 +100,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this.sender = this.myPeer.identifier;
     console.log(this.chatMessageService.chatTabs);
-    this.chatTabidentifier = 0 < this.chatMessageService.chatTabs.length ? this.chatMessageService.chatTabs[0].identifier : '';
+    this._chatTabidentifier = 0 < this.chatMessageService.chatTabs.length ? this.chatMessageService.chatTabs[0].identifier : '';
 
     EventSystem.register(this)
       .on('MESSAGE_ADDED', event => {
@@ -107,6 +110,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
           this.checkAutoScroll();
         }
+        if (this.isAutoScroll && event.data.tabIdentifier === this.chatTabidentifier && this.chatTab) this.chatTab.markForRead();
         let sendFrom = message ? message.from : '?';
         if (this.writingPeers.has(sendFrom)) {
           clearTimeout(this.writingPeers.get(sendFrom));
@@ -143,9 +147,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.scrollToBottom(true);
-    }, 0);
+    this.scrollToBottom(true);
   }
 
   ngOnDestroy() {
@@ -162,15 +164,12 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   // @TODO やり方はもう少し考えた方がいいい
   scrollToBottom(isForce: boolean = false) {
     if (isForce) this.isAutoScroll = true;
-    if (!this.isAutoScroll || !this.panelService.scrollablePanel) return;
-
-    if (this.chatTab) this.chatTab.markForRead();
-
-    if (this.scrollToBottomTimer != null) return;
+    if (this.scrollToBottomTimer != null || !this.isAutoScroll) return;
     this.scrollToBottomTimer = setTimeout(() => {
+      if (this.chatTab) this.chatTab.markForRead();
       this.scrollToBottomTimer = null;
       this.isAutoScroll = false;
-      this.panelService.scrollablePanel.scrollTop = this.panelService.scrollablePanel.scrollHeight;
+      if (this.panelService.scrollablePanel) this.panelService.scrollablePanel.scrollTop = this.panelService.scrollablePanel.scrollHeight;
     }, 0);
   }
 

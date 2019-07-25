@@ -17,7 +17,7 @@ import { SaveDataService } from 'service/save-data.service';
 export class GameCharacterSheetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() tabletopObject: TabletopObject = null;
-  private isEdit: boolean = false;
+  isEdit: boolean = false;
 
   networkService = Network;
 
@@ -37,7 +37,6 @@ export class GameCharacterSheetComponent implements OnInit, OnDestroy, AfterView
   }
 
   ngAfterViewInit() {
-    console.log(this.tabletopObject);
   }
 
   ngOnDestroy() {

@@ -5,6 +5,7 @@ import { GameObject } from './core/synchronize-object/game-object';
 import { ObjectStore } from './core/synchronize-object/object-store';
 import { EventSystem } from './core/system';
 import { PromiseQueue } from './core/system/util/promise-queue';
+import { StringUtil } from './core/system/util/string-util';
 
 declare var Opal
 
@@ -85,6 +86,7 @@ export class DiceBot extends GameObject {
     { script: 'ShinkuuGakuen', game: '真空学園' },
     { script: 'ShinMegamiTenseiKakuseihen', game: '真・女神転生TRPG　覚醒編' },
     { script: 'SRS', game: 'Standard RPG System' },
+    { script: 'StratoShout', game: 'ストラトシャウト' },
     { script: 'TherapieSein', game: '青春疾患セラフィザイン' },
     { script: 'EtrianOdysseySRS', game: '世界樹の迷宮SRS' },
     { script: 'ZettaiReido', game: '絶対隷奴' },
@@ -103,11 +105,13 @@ export class DiceBot extends GameObject {
     { script: 'DetatokoSaga', game: 'でたとこサーガ' },
     { script: 'DeadlineHeroes', game: 'デッドラインヒーローズ' },
     { script: 'DemonParasite', game: 'デモンパラサイト' },
+    { script: 'TokyoGhostResearch', game: '東京ゴーストリサーチ' },
     { script: 'TokyoNova', game: 'トーキョーＮ◎ＶＡ' },
     { script: 'Torg', game: 'トーグ' },
     { script: 'Torg1_5', game: 'トーグ1.5版' },
     { script: 'TokumeiTenkousei', game: '特命転攻生' },
     { script: 'Dracurouge', game: 'ドラクルージュ' },
+    { script: 'TrinitySeven', game: 'トリニティセブンRPG' },
     { script: 'TwilightGunsmoke', game: 'トワイライト・ガンスモーク' },
     { script: 'TunnelsAndTrolls', game: 'トンネルズ＆トロールズ' },
     { script: 'NightWizard', game: 'ナイトウィザード2版' },
@@ -130,6 +134,7 @@ export class DiceBot extends GameObject {
     { script: 'BeginningIdol', game: 'ビギニングアイドル' },
     { script: 'PhantasmAdventure', game: 'ファンタズムアドベンチャー' },
     { script: 'FilledWith', game: 'フィルトウィズ' },
+    { script: 'FutariSousa', game: 'フタリソウサ' },
     { script: 'BlindMythos', game: 'ブラインド・ミトス' },
     { script: 'BloodCrusade', game: 'ブラッド・クルセイド' },
     { script: 'BloodMoon', game: 'ブラッド・ムーン' },
@@ -282,12 +287,24 @@ export class DiceBot extends GameObject {
         let chatMessage = ObjectStore.instance.get<ChatMessage>(event.data.messageIdentifier);
         if (!chatMessage || !chatMessage.isSendFromSelf || chatMessage.isSystem) return;
 
-        let text: string = chatMessage.text.replace(/[Ａ-Ｚａ-ｚ０-９！＂＃＄％＆＇（）＊＋，－．／：；＜＝＞？＠［＼］＾＿｀｛｜｝]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+        let text: string = StringUtil.toHalfWidth(chatMessage.text);
         let gameType: string = chatMessage.tag;
 
         try {
-          let rollResult = await DiceBot.diceRollAsync(text, gameType);
-          this.sendResultMessage(rollResult, chatMessage);
+          let regArray = /^((\d+)?\s+)?([^\s]*)?/ig.exec(text);
+          let repeat: number = (regArray[2] != null) ? Number(regArray[2]) : 1;
+          let rollText: string = (regArray[3] != null) ? regArray[3] : text;
+
+          let finalResult: DiceRollResult = { result: '', isSecret: false };
+          for (let i = 0; i < repeat && i < 32; i++) {
+            let rollResult = await DiceBot.diceRollAsync(rollText, gameType);
+            if (rollResult.result.length < 1) break;
+
+            finalResult.result += rollResult.result;
+            finalResult.isSecret = finalResult.isSecret || rollResult.isSecret;
+            if (1 < repeat) finalResult.result += ` #${i + 1}`;
+          }
+          this.sendResultMessage(finalResult, chatMessage);
         } catch (e) {
           console.error(e);
         }
@@ -343,7 +360,7 @@ export class DiceBot extends GameObject {
       let diceBotTablePrefix = 'diceBotTable_';
       let isNeedResult = true;
       try {
-        Opal.gvars.isDebug = true;
+        Opal.gvars.isDebug = false;
         let cgiDiceBot = Opal.CgiDiceBot.$new();
         result = cgiDiceBot.$roll(message, gameType, dir, diceBotTablePrefix, isNeedResult);
         console.log('diceRoll!!!', result);
