@@ -2,19 +2,16 @@
 
 # このシェルスクリプトのディレクトリの絶対パスを取得。
 bin_dir=$(cd $(dirname $0) && pwd)
+parent_dir=$(cd $bin_dir/.. && pwd)
+docker_dir=$(cd $parent_dir/docker && pwd)
+dist_dir=$(cd $parent_dir/dest/dist/udonarium && pwd)
 container_name=${1:-node}
+rm -rf $dist_dir
+cd $docker_dir && docker-compose run -e NODE_ENV=production $container_name /bin/bash -c  'npm run build -- --prod && cp -r /app/dist /app/dest/'
 
-# $container_nameの有無をgrepで調べる
-docker ps | grep $container_name
+vendor_dir=$(cd $parent_dir/.. && pwd)
+root_dir=$(cd $vendor_dir/.. && pwd)
+public_dir=$(cd $root_dir/app/public && pwd)
 
-# grepの戻り値$?の評価。 grep戻り値 0:一致した 1:一致しなかった
-if [ $? -eq 0 ]; then
-  # 一致したときの処理
-  cd $bin_dir/../docker && docker-compose exec -e NODE_ENV=production $container_name bash -c  'npm run build -- --prod && cp -r /app/dist /app/dest/'
-else
-  # 一致しなかった時の処理
-  # コンテナを立ち上げて接続
-  cd $bin_dir/../docker && docker-compose run -e NODE_ENV=production $container_name /bin/bash -c  'npm run build -- --prod && cp -r /app/dist /app/dest/'
-fi
-
-
+rm -rf $public_dir/udonarium
+cp -r $dist_dir $public_dir/udonarium
