@@ -35,6 +35,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
+import { lobbyRef } from './class/firebase/firebase';
 
 @Component({
   selector: 'app-root',
@@ -88,6 +89,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     let chatTab: ChatTab = new ChatTab('MainTab');
     chatTab.name = 'メインタブ';
     chatTab.initialize();
+    const mainTab = chatTab;
 
     chatTab = new ChatTab('SubTab');
     chatTab.name = 'サブタブ';
@@ -150,6 +152,48 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       .on('OPEN_PEER', 0, event => {
         console.log('OPEN_PEER', event.data.peer);
         PeerCursor.myCursor.peerId = event.data.peer;
+        if (Network.peerContext.roomName !== 'lobby') {
+          return;
+        }
+        let isFirst = true;
+        lobbyRef.onSnapshot(qs => {
+          qs.docChanges().forEach(change => {
+            if ('added' !== `${change.type}`
+              || Network.peerContext.roomName !== 'lobby') {
+              return;
+            }
+
+            const data = change.doc.data();
+
+            // udonariumのメッセージは初回以外読み込まない。
+            if (data.chattool === 'udonarium' && !isFirst) {
+              return;
+            }
+            if (Network.peerContexts.length > 0) {
+              const contextIds = Network.peerContexts.filter(p => p.roomName === 'lobby').map(p => p.id);
+              contextIds.push(Network.peerContext.id);
+              const maxId = contextIds.reduce((a, b) => a > b ? a : b);
+              console.log(Network.peerContext.id, maxId);
+
+              // 参加者の中で、最大のIDを持つ人以外は更新しない。
+              if (maxId !== Network.peerContext.id) {
+                return;
+              }
+            }
+
+            let chatMessage = {
+              from: Network.peerContext.id,
+              to: '',
+              name: data.common.name,
+              imageIdentifier: null,
+              timestamp: data.common.createdAt,
+              tag: '',
+              text: data.common.text,
+            };
+            mainTab.addMessage(chatMessage);
+          });
+          isFirst = false;
+        });
       })
       .on('OPEN_OTHER_PEER', event => {
         if (event.isSendFromSelf) this.chatMessageService.calibrateTimeOffset();

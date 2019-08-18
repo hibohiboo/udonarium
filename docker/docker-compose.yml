@@ -11,7 +11,7 @@ services:
       - ../src:/app/src
       - ../dest:/app/dest
     ports:
-      - 80:80
+      # - 80:80
       - 4200:4200
     command: [npm, run, start, --, "--host", "0.0.0.0", "--watch", "--poll=2000"]
 
