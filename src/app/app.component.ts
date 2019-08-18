@@ -156,7 +156,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           return;
         }
         let isFirst = true;
-        lobbyRef.onSnapshot(qs => {
+        lobbyRef.limit(5).onSnapshot(qs => {
           qs.docChanges().forEach(change => {
             if ('added' !== `${change.type}`
               || Network.peerContext.roomName !== 'lobby') {

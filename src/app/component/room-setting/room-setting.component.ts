@@ -16,7 +16,7 @@ export class RoomSettingComponent implements OnInit, OnDestroy {
   peers: PeerContext[] = [];
   isReloading: boolean = false;
 
-  roomName: string = 'ふつうの部屋';
+  roomName: string = 'lobby';
   password: string = '';
   isPrivate: boolean = false;
 
