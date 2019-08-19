@@ -156,7 +156,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           return;
         }
         let isFirst = true;
-        lobbyRef.limit(5).onSnapshot(qs => {
+        lobbyRef.orderBy('createdAt', 'desc').limit(5).onSnapshot(qs => {
           qs.docChanges().forEach(change => {
             if ('added' !== `${change.type}`
               || Network.peerContext.roomName !== 'lobby') {
@@ -173,7 +173,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
               const contextIds = Network.peerContexts.filter(p => p.roomName === 'lobby').map(p => p.id);
               contextIds.push(Network.peerContext.id);
               const maxId = contextIds.reduce((a, b) => a > b ? a : b);
-              console.log(Network.peerContext.id, maxId);
 
               // 参加者の中で、最大のIDを持つ人以外は更新しない。
               if (maxId !== Network.peerContext.id) {
