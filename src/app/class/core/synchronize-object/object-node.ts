@@ -1,9 +1,9 @@
+import { XmlUtil } from '../system/util/xml-util';
 import { Attributes } from './attributes';
 import { defineSyncObject as SyncObject, defineSyncVariable as SyncVar } from './decorator-core';
 import { GameObject, ObjectContext } from './game-object';
 import { InnerXml, ObjectSerializer, XmlAttributes } from './object-serializer';
 import { ObjectStore } from './object-store';
-import { XmlUtil } from './xml-util';
 
 @SyncObject('node')
 export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
@@ -172,15 +172,11 @@ export class ObjectNode extends GameObject implements XmlAttributes, InnerXml {
     let index: number = children.indexOf(child);
     if (index < 0) return null;
 
-    let oldParent = child.parent;
-
     child.parentIdentifier = '';
     child.majorIndex = 0;
     child.minorIndex = Math.random();
 
-    if (oldParent) {
-      oldParent.updateChildren(child);
-    }
+    this.updateChildren(child);
     return child;
   }
 

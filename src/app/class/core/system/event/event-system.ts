@@ -43,9 +43,9 @@ export class EventSystem implements Subject {
   }
 
   private _unregister(key: any = this, eventName: string, callback: Callback<any>) {
-    for (let eventName in this.listenersHash) {
-      let listeners = this.getListeners(eventName);
-      for (let listener of listeners.concat()) {
+    for (let _eventName in this.listenersHash) {
+      let listeners = this.getListeners(_eventName).concat();
+      for (let listener of listeners) {
         if (listener.isEqual(key, eventName, callback)) {
           listener.unregister();
         }
@@ -57,11 +57,7 @@ export class EventSystem implements Subject {
     let listeners: Listener[] = this.getListeners(listener.eventName);
 
     listeners.push(listener);
-    listeners.sort(function (a, b) {
-      if (a.priority > b.priority) return -1;
-      if (a.priority < b.priority) return 1;
-      return 0;
-    });
+    listeners.sort((a, b) => b.priority - a.priority);
     return listener;
   }
 
@@ -105,10 +101,8 @@ export class EventSystem implements Subject {
   }
 
   private _trigger<T>(event: Event<T>): Event<T> {
-    for (let listener of this.getListeners(event.eventName).concat()) {
-      listener.trigger(event);
-    }
-    for (let listener of this.getListeners('*').concat()) {
+    let listeners = this.getListeners(event.eventName).concat(this.getListeners('*'));
+    for (let listener of listeners) {
       listener.trigger(event);
     }
     return event;
@@ -124,26 +118,21 @@ export class EventSystem implements Subject {
   private initializeNetworkEvent() {
     let callback = Network.instance.callback;
 
-    callback.willOpen = (peerId, sendFrom) => {
-      if (sendFrom !== Network.instance.peerId) {
-        this.sendSystemMessage('Receive <' + peerId + '> connecting...');
-      } else {
-        this.sendSystemMessage('Request <' + peerId + '> connecting...');
-      }
-    }
-
-    callback.onTimeout = (peerId) => {
-      this.sendSystemMessage('timeout peer connection... <' + peerId + '>');
-    }
-
     callback.onOpen = (peerId) => {
-      this.sendSystemMessage('<' + peerId + '> is Open <DataConnection>');
-      if (peerId === Network.instance.peerId) {
-        this.trigger('OPEN_PEER', { peer: peerId });
-      } else {
-        this.trigger('OPEN_OTHER_PEER', { peer: peerId });
-        this.call('OTHER_PEERS', { otherPeers: Network.instance.peerIds });
-      }
+      this.trigger('OPEN_NETWORK', { peer: peerId });
+    }
+    callback.onClose = (peerId) => {
+      this.trigger('CLOSE_NETWORK', { peer: peerId });
+    }
+
+    callback.onConnect = (peerId) => {
+      this.sendSystemMessage('<' + peerId + '> connect <DataConnection>');
+      this.trigger('CONNECT_PEER', { peer: peerId });
+    }
+
+    callback.onDisconnect = (peerId) => {
+      this.sendSystemMessage('<' + peerId + '> disconnect <DataConnection>');
+      this.trigger('DISCONNECT_PEER', { peer: peerId });
     }
 
     callback.onData = (peerId, data: EventContext<never>[]) => {
@@ -152,22 +141,8 @@ export class EventSystem implements Subject {
       }
     }
 
-    callback.onClose = (peerId) => {
-      this.sendSystemMessage('<' + peerId + '> is closed <DataConnection>');
-      if (peerId === Network.instance.peerId) {
-        this.trigger('LOST_CONNECTION_PEER', { peer: peerId });
-      } else {
-        this.trigger('CLOSE_OTHER_PEER', { peer: peerId });
-      }
-    }
-
     callback.onError = (peerId, err) => {
       this.sendSystemMessage('<' + peerId + '> ' + err);
-    }
-
-    callback.onDetectUnknownPeers = (peerIds) => {
-      console.warn('未接続のPeerを確認?', peerIds);
-      this.trigger('OTHER_PEERS', { otherPeers: peerIds });
     }
   }
 
