@@ -81,6 +81,7 @@ export class DiceBot extends GameObject {
     { script: 'ShinobiGami', game: 'シノビガミ' },
     { script: 'ShadowRun', game: 'シャドウラン' },
     { script: 'ShadowRun4', game: 'シャドウラン第４版' },
+    { script: 'ShadowRun5', game: 'シャドウラン第５版' },
     { script: 'ShoujoTenrankai', game: '少女展爛会' },
     { script: 'Alter_raise', game: '心衝想機TRPGアルトレイズ' },
     { script: 'ShinkuuGakuen', game: '真空学園' },
@@ -117,6 +118,7 @@ export class DiceBot extends GameObject {
     { script: 'NightWizard', game: 'ナイトウィザード2版' },
     { script: 'NightWizard3rd', game: 'ナイトウィザード3版' },
     { script: 'NightmareHunterDeep', game: 'ナイトメアハンター=ディープ' },
+    { script: 'NinjaSlayer', game: 'ニンジャスレイヤーTRPG' },
     { script: 'Nuekagami', game: '鵺鏡' },
     { script: 'Nechronica', game: 'ネクロニカ' },
     { script: 'HarnMaster', game: 'ハーンマスター' },
@@ -424,7 +426,7 @@ export class DiceBot extends GameObject {
     });
   }
 
-  private static loadScriptAsync(path: string) {
+  private static loadScriptAsync(path: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       let head = document.head;
       let script = document.createElement('script');
@@ -445,7 +447,7 @@ export class DiceBot extends GameObject {
     });
   }
 
-  private static loadExtratablesAsync(path: string, table: string) {
+  private static loadExtratablesAsync(path: string, table: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       fetch(path)
         .then(response => {

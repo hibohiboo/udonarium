@@ -3,18 +3,17 @@ export namespace XmlUtil {
     let domParser: DOMParser = new DOMParser();
     let xmlDocument: Document = null;
     try {
+      xml = xml.replace(/([^\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFC\u{10000}-\u{10FFFF}])/ug, '');
       xmlDocument = domParser.parseFromString(xml, 'application/xml');
-      if (xmlDocument.getElementsByTagName('parsererror').length) {
+      let parsererror = xmlDocument.getElementsByTagName('parsererror');
+      if (parsererror.length) {
+        console.error('XMLのパースに失敗しました', xmlDocument.documentElement);
         xmlDocument = null;
       }
     } catch (error) {
       console.error(error);
     }
-    if (!xmlDocument) {
-      console.error('XMLのパースに失敗しました');
-      return null;
-    }
-    return xmlDocument.documentElement;
+    return xmlDocument ? xmlDocument.documentElement : null;
   }
 
   export function encodeEntityReference(string: string): string {

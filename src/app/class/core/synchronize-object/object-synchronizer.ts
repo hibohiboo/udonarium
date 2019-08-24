@@ -20,12 +20,12 @@ export class ObjectSynchronizer {
     this.destroy();
     console.log('ObjectSynchronizer ready...');
     EventSystem.register(this)
-      .on('OPEN_OTHER_PEER', 2, event => {
+      .on('CONNECT_PEER', 2, event => {
         if (!event.isSendFromSelf) return;
-        console.log('OPEN_OTHER_PEER GameRoomService !!!', event.data.peer);
+        console.log('CONNECT_PEER GameRoomService !!!', event.data.peer);
         this.sendCatalog(event.data.peer);
       })
-      .on<CatalogItem[]>('SYNCHRONIZE_GAME_OBJECT', 0, event => {
+      .on<CatalogItem[]>('SYNCHRONIZE_GAME_OBJECT', event => {
         if (event.isSendFromSelf) return;
         console.log('SYNCHRONIZE_GAME_OBJECT ' + event.sendFrom);
         let catalog: CatalogItem[] = event.data;
@@ -38,7 +38,7 @@ export class ObjectSynchronizer {
         }
         this.synchronize();
       })
-      .on('REQUEST_GAME_OBJECT', 0, event => {
+      .on('REQUEST_GAME_OBJECT', event => {
         if (event.isSendFromSelf) return;
         if (ObjectStore.instance.isDeleted(event.data)) {
           EventSystem.call('DELETE_GAME_OBJECT', { identifier: event.data }, event.sendFrom);
@@ -47,7 +47,7 @@ export class ObjectSynchronizer {
           if (object) EventSystem.call('UPDATE_GAME_OBJECT', object.toContext(), event.sendFrom);
         }
       })
-      .on('UPDATE_GAME_OBJECT', 0, event => {
+      .on('UPDATE_GAME_OBJECT', event => {
         let context: ObjectContext = event.data;
         let object: GameObject = ObjectStore.instance.get(context.identifier);
         if (object) {
@@ -58,7 +58,7 @@ export class ObjectSynchronizer {
           this.createObject(context);
         }
       })
-      .on('DELETE_GAME_OBJECT', 0, event => {
+      .on('DELETE_GAME_OBJECT', event => {
         let context: ObjectContext = event.data;
         ObjectStore.instance.delete(context.identifier, false);
       });
