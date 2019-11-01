@@ -397,7 +397,7 @@ export class TabletopService {
     cardStack.location.y = position.y - 25;
     cardStack.posZ = position.z;
 
-    const back = "./assets/images/hollow/z02.gif";
+    const back = "./assets/images/hollowflux_cardpng/card_back.jpg";
     if (!ImageStorage.instance.get(back)) {
       ImageStorage.instance.add(back);
     }
@@ -421,7 +421,7 @@ export class TabletopService {
     cardStack.location.y = position.y - 25;
     cardStack.posZ = position.z;
 
-    const back = "./assets/images/hollow/z02.gif";
+    const back = "./assets/images/hollowflux_cardpng/card_back.jpg";
     if (!ImageStorage.instance.get(back)) {
       ImageStorage.instance.add(back);
     }
