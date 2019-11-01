@@ -174,7 +174,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PanelService.defaultParentViewContainerRef = ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
       this.panelService.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
-      this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 0, top: 450 });
+      this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
     }, 0);
   }
 
@@ -218,7 +218,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       option.top = (this.openPanelCount % 10 + 1) * 20;
       option.left = 100 + (this.openPanelCount % 20 + 1) * 5;
       this.openPanelCount = this.openPanelCount + 1;
-      console.log('openPanelCount:', this.openPanelCount);
       this.panelService.open(component, option);
     }
   }
@@ -228,6 +227,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       ? Network.peerContext.roomName
       : 'ルームデータ';
     this.saveDataService.saveRoom(roomName);
+  }
+
+  handleFileSelect(event: Event) {
+    let files = (<HTMLInputElement>event.target).files;
+    if (files.length) FileArchiver.instance.load(files);
   }
 
   private lazyNgZoneUpdate(isImmediate: boolean) {
