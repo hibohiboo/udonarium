@@ -414,9 +414,12 @@ export class TabletopService {
 
     return cardStack;
   }
-
-  createHollowSample1(position: PointerCoordinate): CardStack {
-    const cardStack = CardStack.create("HollowΦFluxカード一覧");
+  private createHollowSample(
+    position: PointerCoordinate,
+    title: string,
+    cardList: number[]
+  ): CardStack {
+    const cardStack = CardStack.create(title);
     cardStack.location.x = position.x - 25;
     cardStack.location.y = position.y - 25;
     cardStack.posZ = position.z;
@@ -426,7 +429,21 @@ export class TabletopService {
       ImageStorage.instance.add(back);
     }
 
-    [
+    cardList.forEach(id => {
+      const url: string =
+        "./assets/images/hollowflux_cardpng/card_" + id + ".png";
+      if (!ImageStorage.instance.get(url)) {
+        ImageStorage.instance.add(url);
+      }
+      const card = Card.create("カード", url, back);
+      cardStack.putOnBottom(card);
+    });
+
+    return cardStack;
+  }
+
+  createHollowSample1(position: PointerCoordinate): CardStack {
+    return this.createHollowSample(position, "構築済み１「氷壊摂理」", [
       11,
       11,
       11,
@@ -467,19 +484,142 @@ export class TabletopService {
       46,
       46,
       46
-    ].forEach(id => {
-      const url: string =
-        "./assets/images/hollowflux_cardpng/card_" + id + ".png";
-      if (!ImageStorage.instance.get(url)) {
-        ImageStorage.instance.add(url);
-      }
-      const card = Card.create("カード", url, back);
-      cardStack.putOnBottom(card);
-    });
-
-    return cardStack;
+    ]);
   }
 
+  createHollowSample2(position: PointerCoordinate): CardStack {
+    return this.createHollowSample(position, "構築済み２「鏖殺毒性」", [
+      53,
+      53,
+      53,
+      15,
+      15,
+      15,
+      36,
+      36,
+      36,
+      38,
+      50,
+      50,
+      50,
+      13,
+      13,
+      13,
+      22,
+      22,
+      22,
+      35,
+      35,
+      35,
+      12,
+      12,
+      12,
+      55,
+      55,
+      55,
+      38,
+      0,
+      0,
+      0,
+      28,
+      28,
+      58,
+      58,
+      58,
+      7,
+      7,
+      7
+    ]);
+  }
+
+  createHollowSample3(position: PointerCoordinate): CardStack {
+    return this.createHollowSample(position, "構築済み３「圧制覇道」", [
+      14,
+      14,
+      14,
+      36,
+      32,
+      29,
+      33,
+      47,
+      20,
+      27,
+      50,
+      50,
+      50,
+      35,
+      35,
+      35,
+      15,
+      15,
+      15,
+      48,
+      48,
+      48,
+      26,
+      26,
+      26,
+      19,
+      19,
+      19,
+      32,
+      32,
+      59,
+      59,
+      59,
+      29,
+      29,
+      33,
+      33,
+      47,
+      20,
+      20
+    ]);
+  }
+  createHollowSample4(position: PointerCoordinate): CardStack {
+    return this.createHollowSample(position, "構築済み４「剣帝閃嵐」", [
+      11,
+      11,
+      11,
+      41,
+      41,
+      41,
+      54,
+      54,
+      54,
+      18,
+      31,
+      31,
+      31,
+      10,
+      10,
+      10,
+      6,
+      6,
+      6,
+      43,
+      43,
+      34,
+      34,
+      34,
+      18,
+      18,
+      5,
+      5,
+      5,
+      9,
+      9,
+      9,
+      24,
+      24,
+      24,
+      8,
+      8,
+      15,
+      15,
+      15
+    ]);
+  }
   makeDefaultTable() {
     let tableSelecter = new TableSelecter("tableSelecter");
     tableSelecter.initialize();
@@ -501,7 +641,7 @@ export class TabletopService {
     gameTable.imageIdentifier = testBgFile.identifier;
     //gameTable.backgroundImageIdentifier = testDistanceFile.identifier;
     gameTable.width = 20;
-    gameTable.height = 15;
+    gameTable.height = 28;
     gameTable.initialize();
 
     tableSelecter.viewTableIdentifier = gameTable.identifier;
@@ -511,6 +651,39 @@ export class TabletopService {
     let testCharacter: GameCharacter = null;
     let testFile: ImageFile = null;
     let fileContext: ImageContext = null;
+
+    const prefix_url_hollow = './assets/images/hollowflux_cardpng';
+    const card_back = `${prefix_url_hollow}/ok.png`;
+    if (!ImageStorage.instance.get(card_back)) {
+      ImageStorage.instance.add(card_back);
+    }
+
+    [{title:'了解', card_front:`${prefix_url_hollow}/ok.png`, y: 200},
+    {title:'攻撃', card_front:`${prefix_url_hollow}/attack.png`, y: 300},
+    {title:'防御', card_front:`${prefix_url_hollow}/guard.png`, y: 400},
+    {title:'割込み', card_front:`${prefix_url_hollow}/interrupt.png`, y: 500},
+    {title:'ターン開始', card_front:`${prefix_url_hollow}/turn_start.png`, y: 600},
+    {title:'ターン終了', card_front:`${prefix_url_hollow}/turn_end.png`, y: 700},
+    {title:'能力使用', card_front:`${prefix_url_hollow}/use_power.png`, y: 800},
+    {title:'カルネージ', card_front:`${prefix_url_hollow}/carnage.png`, y: 900},
+  ]
+    .forEach(({title,card_front, y})=>{
+      if (!ImageStorage.instance.get(card_front)) {
+        ImageStorage.instance.add(card_front);
+      }
+      const card = Card.create(title, card_front, card_back);
+      card.location.x = -150;
+      card.location.y = y;
+    });
+    const marker = Card.create('後攻マーカー', `${prefix_url_hollow}/marker.png`, `${prefix_url_hollow}/marker_back.png`);
+    marker.location.x = -20;
+    marker.location.y = 650;
+    if (!ImageStorage.instance.get(`${prefix_url_hollow}/marker.png`)) {
+      ImageStorage.instance.add(`${prefix_url_hollow}/marker.png`);
+    }
+    if (!ImageStorage.instance.get( `${prefix_url_hollow}/marker_back.png`)) {
+      ImageStorage.instance.add(`${prefix_url_hollow}/marker_back.png`);
+    }
 
     return;
     // 初期表示なしにカスタマイズ
@@ -681,7 +854,27 @@ export class TabletopService {
         SoundEffect.play(PresetSound.cardPut);
       }
     });
-
+    subMenus.push({
+      name: "​構築済み２「鏖殺毒性」",
+      action: () => {
+        this.createHollowSample2(position);
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: "​構築済み３「圧制覇道」",
+      action: () => {
+        this.createHollowSample3(position);
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: "​構築済み４「剣帝閃嵐」",
+      action: () => {
+        this.createHollowSample4(position);
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
     return {
       name: "HollowΦFluxの山札を作成",
       action: null,

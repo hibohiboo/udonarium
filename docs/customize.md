@@ -1,0 +1,57 @@
+## カスタマイズ覚書
+
+### 右クリック時コンテキストメニュー
+
+#### コンテキストメニュー選択肢
+
+src\app\service\tabletop.service.ts ファイルの`getContextMenuActionsForCreateObject`メソッドを参照。
+
+##### デッキの追加
+
+src\app\service\tabletop.service.ts ファイルの`getCreateTrumpMenu`メソッドを参照
+
+### 初期表示
+
+#### ゲームテーブルの初期配置
+
+##### 拡大率など
+
+src\app\component\game-table\game-table.component.ts ファイルの`GameTableComponent`クラスのプロパティ参照
+
+```js
+  private viewPotisonX: number = 200;  // 左右の調整
+  private viewPotisonY: number = 0;    // 上下の調整
+  private viewPotisonZ: number = -600; // 拡大率
+
+  private viewRotateX: number = 0; // 忍者屋敷のどんでん返しの壁のように回転
+  private viewRotateY: number = 0; // ノートパソコン閉じたり開くときのように回転
+  private viewRotateZ: number = 0; // 時計のように回転
+```
+
+##### 画像
+
+src\app\service\tabletop.service.ts ファイルの`makeDefaultTable`メソッドを参照
+
+#### コマやカードの初期配置
+
+src\app\service\tabletop.service.ts ファイルの`makeDefaultTabletopObjects`メソッドを参照
+
+#### チャットウィンドウ・接続情報の初期配置
+
+src\app\app.component.tsファイルの`ngAfterViewInit`メソッドを参照
+
+#### チャットの初期メッセージ
+
+src\app\component\chat-tab\chat-tab.component.tsファイルの`ChatTabComponent`クラスのsampleMessagesプロパティを参照
+
+### 接続情報のカスタマイズ
+
+src\app\component\peer-menu\フォルダ内のファイルを参照
+
+### メニューのカスタマイズ
+
+src\app\app.component.htmlファイルを参照
+
+## 参考
+
+[【Angular7】初期フォーカスを当てる方法を解説！](https://traveler0401.com/angular-autofocus/)

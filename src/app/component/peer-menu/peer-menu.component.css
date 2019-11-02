@@ -1,7 +1,7 @@
 .image {
   padding: 0px;
-  width: 128px;
-  height: 128px;
+  width: 32px;
+  height: 32px;
   display: table-cell;
   vertical-align: top;
 }
