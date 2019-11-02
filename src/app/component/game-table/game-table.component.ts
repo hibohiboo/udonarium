@@ -466,6 +466,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     if (document.body !== document.activeElement) return;
 
     if (e.key === '?') {
+      if (this.modalService.isShow) { return;}
       this.modalService.open(HelpKeyboardComponent, { width: 700, height: 400, left: 0, top: 400 });
       return;
     }

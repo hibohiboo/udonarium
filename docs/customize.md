@@ -56,7 +56,59 @@ src\app\app.component.htmlファイルを参照
 ### キーボードショートカットの表示を追加
 src\app\component\game-table\game-table.component.tsファイルの`onKeydown`メソッドを参照
 
+[この時点のソース](https://github.com/hibohiboo/udonarium/tree/b7b27e1fed8aaeecceda17d902921b6353d18d6e)
+
+### カードにキーボードイベントを対応させる
+
+src\app\component\card\card.component.tsファイルを参照
+コンポーネントにフォーカスを当てるようにしないとキーイベントを拾えなかったのでハマった。
+tabIndexがないとフォーカスを当てられないもよう。。
+
+```diff
+  ElementRef,
+  HostListener,
++  HostBinding,
+```
+
+```diff
++  @HostBinding('tabIndex') tabIndex:string;
+  constructor(
+    private ngZone: NgZone,
+    private contextMenuService: ContextMenuService,
+    private panelService: PanelService,
+    private elementRef: ElementRef<HTMLElement>,
+    private changeDetector: ChangeDetectorRef,
+    private tabletopService: TabletopService,
+    private pointerDeviceService: PointerDeviceService
+  ) {
++    this.tabIndex="0";
+   }
+```
+
+```diff
++  @HostListener("pointerenter", ["$event"])
++  onPointerenter(e: KeyboardEvent) {
++    this.elementRef.nativeElement.focus();
++  }
+
++  @HostListener("keydown", ["$event"])
++  onKeydown(e: KeyboardEvent) {
+
++    if (e.key === 't') {
++      this.card.rotate = 90;
++      return;
++    }
++    if (e.key === 'u') {
++      this.rotate = 0;
++      return;
++    }
++  }
+
+  private createStack() {
+```
+
 ## 参考
 
 [【Angular7】初期フォーカスを当てる方法を解説！](https://traveler0401.com/angular-autofocus/)
 [キーコード](https://web-designer.cman.jp/javascript_ref/keyboard/keycode/)
+[Angularで、Componentにキーイベントを取得させる](https://qiita.com/Hayakuchi0/items/30e7b91c65d401ba8632)

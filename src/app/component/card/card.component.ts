@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  HostBinding,
   Input,
   NgZone,
   OnDestroy,
@@ -26,6 +27,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
+
 
 @Component({
   selector: 'card',
@@ -70,6 +72,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private input: InputHandler = null;
 
+  @HostBinding('tabIndex') tabIndex:string;//tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
   constructor(
     private ngZone: NgZone,
     private contextMenuService: ContextMenuService,
@@ -78,7 +81,9 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     private changeDetector: ChangeDetectorRef,
     private tabletopService: TabletopService,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    this.tabIndex="0";//TabIndexを付与。これをしないとフォーカスできないのでコンポーネントに対するキーイベントを取得できない。
+   }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -243,6 +248,29 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   onMoved() {
     SoundEffect.play(PresetSound.cardPut);
     this.ngZone.run(() => this.dispatchCardDropEvent());
+  }
+
+  @HostListener("pointerenter", ["$event"])
+  onPointerenter(e: KeyboardEvent) {
+    this.elementRef.nativeElement.focus();
+  }
+
+  @HostListener("keydown", ["$event"])
+  onKeydown(e: KeyboardEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    // ポインタ（マウスカーソル）がカードの上にあるとき、その画像をターゲットとしている。
+    // カードの画像のエレメントと比較することで、現在のポインタがあるカードのみを対象にできる。
+    // if (this.pointerDeviceService.targetElement !== this.elementRef.nativeElement.querySelector('img')) return;
+    if (e.key === 't') {
+      this.card.rotate = 90;
+      return;
+    }
+    if (e.key === 'u') {
+      this.rotate = 0;
+      return;
+    }
   }
 
   private createStack() {
