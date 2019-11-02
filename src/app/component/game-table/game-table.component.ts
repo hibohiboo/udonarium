@@ -25,6 +25,7 @@ import { Terrain } from "@udonarium/terrain";
 import { TextNote } from "@udonarium/text-note";
 
 import { GameTableSettingComponent } from "component/game-table-setting/game-table-setting.component";
+import { HelpKeyboardComponent } from "component/help-keyboard/help-keyboard.component";
 import { InputHandler } from "directive/input-handler";
 import {
   ContextMenuAction,
@@ -141,7 +142,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     private elementRef: ElementRef,
     private pointerDeviceService: PointerDeviceService,
     private tabletopService: TabletopService,
-    private modalService: ModalService
+    private modalService: ModalService,
   ) {}
 
   ngOnInit() {
@@ -463,6 +464,12 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener("document:keydown", ["$event"])
   onKeydown(e: KeyboardEvent) {
     if (document.body !== document.activeElement) return;
+
+    if (e.key === '?') {
+      this.modalService.open(HelpKeyboardComponent, { width: 700, height: 400, left: 0, top: 400 });
+      return;
+    }
+
     let transformX = 0;
     let transformY = 0;
     let transformZ = 0;
@@ -503,6 +510,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         transformY = -10;
       }
     }
+
     this.setTransform(
       transformX,
       transformY,

@@ -37,6 +37,7 @@ import { TerrainComponent } from 'component/terrain/terrain.component';
 import { TextNoteComponent } from 'component/text-note/text-note.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
 import { UIPanelComponent } from 'component/ui-panel/ui-panel.component';
+import { HelpKeyboardComponent } from 'component/help-keyboard/help-keyboard.component';
 import { DraggableDirective } from 'directive/draggable.directive';
 import { MovableDirective } from 'directive/movable.directive';
 import { ResizableDirective } from 'directive/resizable.directive';
@@ -97,6 +98,7 @@ import { AppComponent } from './app.component';
     RotableDirective,
     NetworkIndicatorComponent,
     DiceSymbolComponent,
+    HelpKeyboardComponent,
     TooltipDirective,
     DraggableDirective,
     ResizableDirective,
@@ -140,6 +142,7 @@ import { AppComponent } from './app.component';
     TextViewComponent,
     TextNoteComponent,
     OverviewPanelComponent,
+    HelpKeyboardComponent,
   ],
   bootstrap: [AppComponent]
 })

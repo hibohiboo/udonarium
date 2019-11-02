@@ -51,7 +51,12 @@ src\app\component\peer-menu\フォルダ内のファイルを参照
 ### メニューのカスタマイズ
 
 src\app\app.component.htmlファイルを参照
+[この時点のソース](https://github.com/hibohiboo/udonarium/tree/54643446e60710e6ef702b6a64c8176b81d18f34)
+
+### キーボードショートカットの表示を追加
+src\app\component\game-table\game-table.component.tsファイルの`onKeydown`メソッドを参照
 
 ## 参考
 
 [【Angular7】初期フォーカスを当てる方法を解説！](https://traveler0401.com/angular-autofocus/)
+[キーコード](https://web-designer.cman.jp/javascript_ref/keyboard/keycode/)
