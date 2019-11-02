@@ -252,6 +252,8 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener("pointerenter", ["$event"])
   onPointerenter(e: KeyboardEvent) {
+    e.stopPropagation();
+    e.preventDefault();
     this.elementRef.nativeElement.focus();
   }
 

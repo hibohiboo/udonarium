@@ -107,6 +107,10 @@ tabIndexがないとフォーカスを当てられないもよう。。
   private createStack() {
 ```
 
+
+[この時点のソース](https://github.com/hibohiboo/udonarium/tree/0f52077de2cfc74b835c59eabb25496d164544cc)
+
+
 ## 参考
 
 [【Angular7】初期フォーカスを当てる方法を解説！](https://traveler0401.com/angular-autofocus/)

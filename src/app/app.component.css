@@ -8,6 +8,8 @@ nav ul {
   padding: 5px;
   background-color: rgba(30, 30, 30, 0.8);
   */
+  display: flex;
+  flex-wrap:wrap;
 }
 
 nav ul > li {

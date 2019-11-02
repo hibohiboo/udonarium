@@ -19,3 +19,8 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+.icon-wrapper{
+  display:flex;
+  padding-top: 10px;
+  padding-bottom:10px;
+}

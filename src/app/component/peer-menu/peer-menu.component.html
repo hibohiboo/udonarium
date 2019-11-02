@@ -1,6 +1,6 @@
 <div *ngIf="myPeer">
   <span>あなたのニックネーム：  <input [(ngModel)]="myPeer.name"  placeholder="ニックネーム" appAutofocus /></span>
-  <div style="display:flex;padding-top: 10px;padding-bottom:10px;">
+  <div class="icon-wrapper">
   <button (click)="changeIcon()">アイコンを変更する</button>
     <div *ngIf="myPeer.image" class="image cover" [style.background-image]="'url(' + myPeer.image.url + ')' | safe: 'style' "
       (click)="changeIcon()">
