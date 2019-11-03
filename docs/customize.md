@@ -28,6 +28,15 @@ src\app\component\game-table\game-table.component.ts ファイルの`GameTableCo
   private viewRotateZ: number = 0; // 時計のように回転
 ```
 
+##### gridの比率
+src\app\service\tabletop.service.ts ファイルの`makeDefaultTable`メソッドを参照
+
+```js
+    gameTable.width = 28;
+    gameTable.height = 20;
+    gameTable.initialize();
+```
+
 ##### 画像
 
 src\app\service\tabletop.service.ts ファイルの`makeDefaultTable`メソッドを参照

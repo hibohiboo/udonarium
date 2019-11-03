@@ -7,7 +7,6 @@ import { Network } from '@udonarium/core/system';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
 import { GameCharacter } from '@udonarium/game-character';
 import { PeerCursor } from '@udonarium/peer-cursor';
-import { lobbyRef, serverTimestamp } from '../class/firebase/firebase';
 const HOURS = 60 * 60 * 1000;
 
 @Injectable()
@@ -83,18 +82,6 @@ export class ChatMessageService {
       tag: gameType,
       text: text,
     };
-    if (Network.peerContext.roomName === 'lobby') {
-      lobbyRef.add({
-        chattool: "udonarium"
-        , original: chatMessage
-        , common: {
-          name: chatMessage.name
-          , text: chatMessage.text
-          , createdAt: chatMessage.timestamp
-        }
-        , createdAt: serverTimestamp
-      });
-    }
     return chatTab.addMessage(chatMessage);
   }
 
