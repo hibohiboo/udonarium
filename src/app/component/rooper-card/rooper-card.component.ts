@@ -27,16 +27,16 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
-
+import { RooperCard } from '@udonarium/rooper-card';
 
 @Component({
-  selector: 'card',
-  templateUrl: './card.component.html',
-  styleUrls: ['./card.component.css'],
+  selector: 'rooper-card',
+  templateUrl: './rooper-card.component.html',
+  styleUrls: ['./rooper-card.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
-  @Input() card: Card = null;
+export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Input() card: RooperCard = null;
   @Input() is3D: boolean = false;
 
   get name(): string { return this.card.name; }
@@ -75,12 +75,12 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('tabIndex') tabIndex:string;//tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
   constructor(
     private ngZone: NgZone,
-    protected contextMenuService: ContextMenuService,
+    private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
     private tabletopService: TabletopService,
-    protected pointerDeviceService: PointerDeviceService
+    private pointerDeviceService: PointerDeviceService
   ) {
     this.tabIndex="0";//TabIndexを付与。これをしないとフォーカスできないのでコンポーネントに対するキーイベントを取得できない。
    }
@@ -215,6 +215,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }),
       ContextMenuSeparator,
+      { name: 'カードを編集', action: () => { this.showDetail(this.card); } },
       {
         name: '重なったカードで山札を作る', action: () => {
           this.createStack();
@@ -222,16 +223,6 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
       ContextMenuSeparator,
-      { name: 'カードを編集', action: () => { this.showDetail(this.card); } },
-      {
-        name: 'コピーを作る', action: () => {
-          let cloneObject = this.card.clone();
-          cloneObject.location.x += this.gridSize;
-          cloneObject.location.y += this.gridSize;
-          cloneObject.toTopmost();
-          SoundEffect.play(PresetSound.cardPut);
-        }
-      },
       {
         name: '削除する', action: () => {
           this.card.destroy();
@@ -275,7 +266,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  protected createStack() {
+  private createStack() {
     let cardStack = CardStack.create('山札');
     cardStack.location.x = this.card.location.x;
     cardStack.location.y = this.card.location.y;
@@ -284,7 +275,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     cardStack.rotate = this.rotate;
     cardStack.zindex = this.card.zindex;
 
-    let cards: Card[] = this.tabletopService.cards.filter(card => {
+    let cards: RooperCard[] = this.tabletopService.rooperCards.filter(card => {
       let distance: number = (card.location.x - this.card.location.x) ** 2 + (card.location.y - this.card.location.y) ** 2 + (card.posZ - this.card.posZ) ** 2;
       return distance < 100 ** 2;
     });
@@ -324,7 +315,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     return value < min ? min : value;
   }
 
-  protected showDetail(gameObject: Card) {
+  private showDetail(gameObject: RooperCard) {
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: gameObject.identifier, className: gameObject.aliasName });
     let coordinate = this.pointerDeviceService.pointers[0];
     let title = 'カード設定';

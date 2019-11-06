@@ -7,6 +7,7 @@ import { BadgeComponent } from 'component/badge/badge.component';
 import { CardStackListComponent } from 'component/card-stack-list/card-stack-list.component';
 import { CardStackComponent } from 'component/card-stack/card-stack.component';
 import { CardComponent } from 'component/card/card.component';
+import { RooperCardComponent } from 'component/rooper-card/rooper-card.component';
 import { ChatMessageComponent } from 'component/chat-message/chat-message.component';
 import { ChatPaletteComponent } from 'component/chat-palette/chat-palette.component';
 import { ChatTabSettingComponent } from 'component/chat-tab-setting/chat-tab-setting.component';
@@ -62,6 +63,7 @@ import { AppComponent } from './app.component';
     AppComponent,
     BadgeComponent,
     CardComponent,
+    RooperCardComponent,
     CardStackComponent,
     CardStackListComponent,
     ChatMessageComponent,

@@ -10,6 +10,7 @@ import {
 } from "@angular/core";
 
 import { Card } from "@udonarium/card";
+import { RooperCard } from "@udonarium/rooper-card";
 import { CardStack } from "@udonarium/card-stack";
 import { ImageFile } from "@udonarium/core/file-storage/image-file";
 import { ImageStorage } from "@udonarium/core/file-storage/image-storage";
@@ -134,6 +135,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   get peerCursors(): PeerCursor[] {
     return this.tabletopService.peerCursors;
+  }
+  get rooperCards(): RooperCard[] {
+    return this.tabletopService.rooperCards;
   }
 
   constructor(

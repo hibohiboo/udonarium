@@ -8,7 +8,6 @@ dist_dir=$(cd $parent_dir/dest/dist/udonarium && pwd)
 container_name=${1:-node}
 rm -rf $dist_dir
 cd $docker_dir && docker-compose run -e NODE_ENV=production $container_name /bin/bash -c  'npm run build -- --prod && cp -r /app/dist /app/dest/'
-
 vendor_dir=$(cd $parent_dir/.. && pwd)
 root_dir=$(cd $vendor_dir/.. && pwd)
 public_dir=$(cd $root_dir/app/public && pwd)

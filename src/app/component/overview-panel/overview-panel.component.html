@@ -5,6 +5,9 @@
     <ng-container *ngSwitchCase="'card'">
       <ng-container *ngTemplateOutlet="overviewCard; context: { card: tabletopObject }"></ng-container>
     </ng-container>
+    <ng-container *ngSwitchCase="'rooper-card'">
+      <ng-container *ngTemplateOutlet="overviewCard; context: { card: tabletopObject }"></ng-container>
+    </ng-container>
     <ng-container *ngSwitchCase="'card-stack'">
       <ng-container *ngTemplateOutlet="overviewCard; context: { card: tabletopObject }"></ng-container>
     </ng-container>

@@ -26,6 +26,8 @@ import {
   PointerDeviceService
 } from "./pointer-device.service";
 
+import { RooperCard } from '@udonarium/rooper-card';
+
 type ObjectIdentifier = string;
 type LocationName = string;
 
@@ -75,11 +77,18 @@ export class TabletopService {
     ObjectStore.instance.getObjects(DiceSymbol)
   );
 
+  private rooperCardCache = new TabletopCache<RooperCard>(() =>
+    ObjectStore.instance.getObjects(RooperCard).filter(obj => obj.isVisibleOnTable)
+  );
+
   get characters(): GameCharacter[] {
     return this.characterCache.objects;
   }
   get cards(): Card[] {
     return this.cardCache.objects;
+  }
+  get rooperCards(): RooperCard[] {
+    return this.rooperCardCache.objects;
   }
   get cardStacks(): CardStack[] {
     return this.cardStackCache.objects;
@@ -180,6 +189,8 @@ export class TabletopService {
         return this.characterCache;
       case Card.aliasName:
         return this.cardCache;
+      case RooperCard.aliasName:
+          return this.rooperCardCache;
       case CardStack.aliasName:
         return this.cardStackCache;
       case GameTableMask.aliasName:
@@ -203,6 +214,7 @@ export class TabletopService {
   private refreshCacheAll() {
     this.characterCache.refresh();
     this.cardCache.refresh();
+    this.rooperCardCache.refresh();
     this.cardStackCache.refresh();
     this.tableMaskCache.refresh();
     this.terrainCache.refresh();
@@ -447,30 +459,17 @@ export class TabletopService {
     let testFile: ImageFile = null;
     let fileContext: ImageContext = null;
 
-    const prefix_url_hollow = './assets/images/hollowflux_cardpng';
-    const card_back = `${prefix_url_hollow}/ok.png`;
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
+    const card_back = `${prefix_path_characters}/character_01_0.png`;
     if (!ImageStorage.instance.get(card_back)) {
       ImageStorage.instance.add(card_back);
     }
-
-  //   [{title:'了解', card_front:`${prefix_url_hollow}/ok.png`, y: 200},
-  //   {title:'攻撃', card_front:`${prefix_url_hollow}/attack.png`, y: 300},
-  //   {title:'防御', card_front:`${prefix_url_hollow}/guard.png`, y: 400},
-  //   {title:'割込み', card_front:`${prefix_url_hollow}/interrupt.png`, y: 500},
-  //   {title:'ターン開始', card_front:`${prefix_url_hollow}/turn_start.png`, y: 600},
-  //   {title:'ターン終了', card_front:`${prefix_url_hollow}/turn_end.png`, y: 700},
-  //   {title:'能力使用', card_front:`${prefix_url_hollow}/use_power.png`, y: 800},
-  //   {title:'カルネージ', card_front:`${prefix_url_hollow}/carnage.png`, y: 900},
-  // ]
-  //   .forEach(({title,card_front, y})=>{
-  //     if (!ImageStorage.instance.get(card_front)) {
-  //       ImageStorage.instance.add(card_front);
-  //     }
-  //     const card = Card.create(title, card_front, card_back);
-  //     card.location.x = -150;
-  //     card.location.y = y;
-  //   });
-
+    const card_front = `${prefix_path_characters}/character_01_1.png`;
+    if (!ImageStorage.instance.get(card_front)) {
+      ImageStorage.instance.add(card_front);
+    }
+    const testCard = RooperCard.create('男子学生', card_front, card_back);
 
     return;
     // 初期表示なしにカスタマイズ
@@ -560,6 +559,7 @@ export class TabletopService {
       this.getCreateTextNoteMenu(position),
       this.getCreateTrumpMenu(position),
       this.getCreateDiceSymbolMenu(position),
+      this.getCreateRooperMenu(position)
     ];
   }
 
@@ -691,6 +691,74 @@ export class TabletopService {
       });
     });
     return { name: "ダイスを作成", action: null, subActions: subMenus };
+  }
+  private getCreateRooperMenu(position: PointerCoordinate): ContextMenuAction {
+    return {
+      name: "惨劇RoopeR",
+      action: null,
+      subActions: this.getCreateRooperSubMenu(position)
+    };
+  }
+  private getCreateRooperSubMenu(position: PointerCoordinate) : ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+
+    subMenus.push({
+      name: "キャラクター一覧",
+      action: null,
+      subActions: this.getCreateRooperSubSubMenu(position)
+    });
+    return subMenus;
+  }
+  private getCreateRooperSubSubMenu(position: PointerCoordinate) : ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+
+    subMenus.push({
+      name: "キャラクター一覧",
+      action: () => {
+
+        const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+        const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
+        const card_back = `${prefix_path_characters}/character_01_0.png`;
+        if (!ImageStorage.instance.get(card_back)) {
+          ImageStorage.instance.add(card_back);
+        }
+        const card_front = `${prefix_path_characters}/character_01_1.png`;
+        if (!ImageStorage.instance.get(card_front)) {
+          ImageStorage.instance.add(card_front);
+        }
+        const testCard = RooperCard.create('男子学生', card_front, card_back);
+
+        const cardStack = CardStack.create("惨劇RoopeR");
+        cardStack.location.x = position.x - 25;
+        cardStack.location.y = position.y - 25;
+        cardStack.posZ = position.z;
+        cardStack.putOnBottom(testCard);
+
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: "男子学生",
+      action: () => {
+
+        const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+        const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
+        const card_back = `${prefix_path_characters}/character_01_0.png`;
+        if (!ImageStorage.instance.get(card_back)) {
+          ImageStorage.instance.add(card_back);
+        }
+        const card_front = `${prefix_path_characters}/character_01_1.png`;
+        if (!ImageStorage.instance.get(card_front)) {
+          ImageStorage.instance.add(card_front);
+        }
+        const testCard = RooperCard.create('男子学生', card_front, card_back);
+        testCard.location.x= 10;
+        testCard.location.y = 10;
+
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
   }
 }
 

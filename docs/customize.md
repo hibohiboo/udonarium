@@ -120,6 +120,98 @@ tabIndexがないとフォーカスを当てられないもよう。。
 [この時点のソース](https://github.com/hibohiboo/udonarium/tree/0f52077de2cfc74b835c59eabb25496d164544cc)
 
 
+## 新コンポーネント追加
+
+### 惨劇RoopeR用カードオブジェクト
+
+#### class
+src\app\class\card.tsをコピーして、src\app\class\rooper-card.tsを作成。
+
+#### component
+src\app\component\cardディレクトリをコピーして、src\app\component\rooper-cardディレクトリを作成。
+src\app\component\card\card.component.tsでいくつかのメソッド・プロパティをprivateからprotectedに。
+
+#### componentの登録
+src\app\app.module.tsに登録する。
+
+```diff
+import { CardComponent } from 'component/card/card.component';
++import { RooperCardComponent } from 'component/rooper-card/rooper-card.component';
+
+// 省略
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    BadgeComponent,
+    CardComponent,
++    RooperCardComponent,
+```
+
+#### game-table componentへの登録
+src\app\component\game-table\game-table.component.ts
+
+```js
+  get rooperCards(): RooperCard[] {
+    return this.tabletopService.rooperCards;
+  }
+```
+
+src\app\component\game-table\game-table.component.html
+```diff
+      <card class="is-3d" *ngFor="let card of cards; trackBy: trackByGameObject" [card]="card" [appTooltip]="card" [ngStyle]="{'z-index' : card.zindex, 'transform': 'translateZ(' + (card.zindex * 0.001) +'px)'}"></card>
++      <rooper-card class="is-3d" *ngFor="let rooperCard of rooperCards; trackBy: trackByGameObject" [card]="rooperCard" [appTooltip]="rooperCard" [ngStyle]="{'z-index' : rooperCard.zindex, 'transform': 'translateZ(' + (rooperCard.zindex * 0.001) +'px)'}"></rooper-card>
+```
+
+
+#### サービスへの登録
+src\app\service\tabletop.service.ts を編集
+
+##### キャッシュの登録
+
+```js
+  private rooperCardCache = new TabletopCache<RooperCard>(() =>
+    ObjectStore.instance.getObjects(RooperCard).filter(obj => obj.isVisibleOnTable)
+  );
+  get rooperCards(): RooperCard[] {
+    return this.rooperCardCache.objects;
+  }
+```
+
+```diff
+  private findCache(aliasName: string): TabletopCache<any> {
+    switch (aliasName) {
+      case GameCharacter.aliasName:
+        return this.characterCache;
+      case Card.aliasName:
+        return this.cardCache;
++      case RooperCard.aliasName:
++          return this.rooperCardCache;
+
+// 省略
+
+
+  private refreshCacheAll() {
+    this.characterCache.refresh();
++    this.cardCache.refresh();
+    this.rooperCardCache.refresh();
+```
+
+#### overviewの登録
+
+src\app\component\overview-panel\overview-panel.component.html
+
+```diff
+    <ng-container *ngSwitchCase="'card'">
+      <ng-container *ngTemplateOutlet="overviewCard; context: { card: tabletopObject }"></ng-container>
+    </ng-container>
++    <ng-container *ngSwitchCase="'rooper-card'">
++      <ng-container *ngTemplateOutlet="overviewCard; context: { card: tabletopObject }"></ng-container>
++    </ng-container>
+```
+
+
+
 ## 参考
 
 [【Angular7】初期フォーカスを当てる方法を解説！](https://traveler0401.com/angular-autofocus/)
