@@ -210,7 +210,13 @@ src\app\component\overview-panel\overview-panel.component.html
 +    </ng-container>
 ```
 
+## ノートを平面にする。
 
+src\app\component\text-note\text-note.component.css
+
+```diff
+- transform: rotateX(-90deg);
+```
 
 ## 参考
 

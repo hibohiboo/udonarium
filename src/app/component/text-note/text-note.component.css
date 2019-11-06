@@ -54,7 +54,7 @@
   left: 0;
   right: 0;
   transform-origin: 50% 100%;
-  transform: rotateX(-90deg);
+  /* transform: rotateX(-90deg); */
 }
 
 .is-bg-texture {

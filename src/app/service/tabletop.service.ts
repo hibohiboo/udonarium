@@ -476,12 +476,17 @@ export class TabletopService {
     this.createRooperScripterHands({x:800,y:500, z: 0}, '主人公B手札','a_heroB_cards');
     this.createRooperScripterHands({x:1000,y:500, z: 0}, '主人公C手札','a_heroC_cards');
     // リーダーカート表示
-    if (!ImageStorage.instance.get(`${prefix_path_rooper}/extra/leader.png`)) {
-      ImageStorage.instance.add(`${prefix_path_rooper}/extra/leader.png`);
+    const createExtra = (position, title, path, size=2)=>{
+      const img = `${prefix_path_rooper}/extra/${path}.png`;
+      if (!ImageStorage.instance.get(img)) {
+        ImageStorage.instance.add(img);
+      }
+      const card = Card.create(title, img, img, size);
+      card.location.x = position.x;
+      card.location.y = position.y;
     }
-    const leader = Card.create('リーダーカード',  `${prefix_path_rooper}/extra/leader.png`, `${prefix_path_rooper}/extra/leader.png`);
-    leader.location.x = 600;
-    leader.location.y = 600;
+    createExtra({x:600, y:600, z: 0}, 'リーダーカード', 'leader');
+
     // カウンター初期表示
 
     const prefix_path_tokens = `${prefix_path_rooper}/tokens`;
@@ -505,6 +510,28 @@ export class TabletopService {
     createToken({x:100,y:470, z: 0}, '事件カウンター', 'chip_08');
     createToken({x:165,y:470, z: 0}, 'ループカウンター', 'chip_09');
     createToken({x:230,y:280, z: 0}, 'Exカウンター', 'chip_10');
+    createExtra({x:10, y:550, z: 0}, '日記', 'diary', 1);
+    createExtra({x:125, y:750, z: 0}, '時計', 'clock', 1);
+    createExtra({x:175, y:750, z: 0}, 'app', 'icon', 1);
+
+    let textNote = TextNote.create(
+      "公開シート",
+      `ループ回数: 4回 / 1ループ日数: 5日
+相談: 不可
+[事件予定]
+1日目: 不安拡大
+2日目: 殺人事件
+3日目: 自殺
+4日目: 行方不明
+5日目: 
+`,
+      5,
+      6,
+      3
+    );
+    textNote.location.x = 100;
+    textNote.location.y = 150;
+    textNote.posZ = 0;
     return;
     // 初期表示なしにカスタマイズ
     testCharacter = new GameCharacter("testCharacter_1");
