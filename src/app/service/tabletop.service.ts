@@ -447,15 +447,15 @@ export class TabletopService {
     const board_right_edge_x = board_left_edge_x + 13.5 * tick;
     const board_under_y = 10 * tick;
     [
-      {name:'男子学生', card_num:'01', x: (board_right_edge_x), y:(board_under_y + bord_chip_margin)},
-      {name:'女子学生', card_num:'02', x: (board_right_edge_x + card_width), y:(board_under_y + bord_chip_margin)},
-      {name:'お嬢様', card_num:'03', x: (board_right_edge_x + card_width*2), y:(board_under_y + bord_chip_margin)},
+      // {name:'男子学生', card_num:'01', x: (board_right_edge_x), y:(board_under_y + bord_chip_margin)},
+      // {name:'女子学生', card_num:'02', x: (board_right_edge_x + card_width), y:(board_under_y + bord_chip_margin)},
+      // {name:'お嬢様', card_num:'03', x: (board_right_edge_x + card_width*2), y:(board_under_y + bord_chip_margin)},
       {name:'巫女', card_num:'04', x: (board_right_edge_x), y:(board_top_y + bord_chip_margin)},
-      {name:'刑事', card_num:'05', x: (board_left_edge_x), y:(board_under_y + bord_chip_margin)},
-      {name:'サラリーマン', card_num:'06', x: (board_left_edge_x + card_width * 1), y:(board_under_y + bord_chip_margin)},
-      {name:'情報屋', card_num:'07', x: (board_left_edge_x + card_width * 2), y:(board_under_y + bord_chip_margin)},
-      {name:'医者', card_num:'08', x: (board_left_edge_x + card_width), y:(board_top_y + bord_chip_margin)},
-      {name:'患者', card_num:'09', x: (board_left_edge_x), y:(board_top_y + bord_chip_margin)},
+      // {name:'刑事', card_num:'05', x: (board_left_edge_x), y:(board_under_y + bord_chip_margin)},
+      // {name:'サラリーマン', card_num:'06', x: (board_left_edge_x + card_width * 1), y:(board_under_y + bord_chip_margin)},
+      // {name:'情報屋', card_num:'07', x: (board_left_edge_x + card_width * 2), y:(board_under_y + bord_chip_margin)},
+      // {name:'医者', card_num:'08', x: (board_left_edge_x + card_width), y:(board_top_y + bord_chip_margin)},
+      // {name:'患者', card_num:'09', x: (board_left_edge_x), y:(board_top_y + bord_chip_margin)},
     ].forEach(({name,card_num,x,y})=>{
       const card_back = `${prefix_path_characters}/character_${card_num}_0.png`;
       if (!ImageStorage.instance.get(card_back)) {
@@ -470,8 +470,41 @@ export class TabletopService {
       testCard.location.y = y;
     });
 
+    // 手札初期表示
+    this.createRooperScripterHands({x:800,y:300, z: 0}, '脚本家手札','a_writer_cards');
+    this.createRooperScripterHands({x:600,y:500, z: 0}, '主人公A手札','a_heroA_cards');
+    this.createRooperScripterHands({x:800,y:500, z: 0}, '主人公B手札','a_heroB_cards');
+    this.createRooperScripterHands({x:1000,y:500, z: 0}, '主人公C手札','a_heroC_cards');
+    // リーダーカート表示
+    if (!ImageStorage.instance.get(`${prefix_path_rooper}/extra/leader.png`)) {
+      ImageStorage.instance.add(`${prefix_path_rooper}/extra/leader.png`);
+    }
+    const leader = Card.create('リーダーカード',  `${prefix_path_rooper}/extra/leader.png`, `${prefix_path_rooper}/extra/leader.png`);
+    leader.location.x = 600;
+    leader.location.y = 600;
+    // カウンター初期表示
 
-  
+    const prefix_path_tokens = `${prefix_path_rooper}/tokens`;
+    const createToken = (position, title, path)=>{
+      const back = `${prefix_path_tokens}/${path}.png`;
+      if (!ImageStorage.instance.get(back)) {
+        ImageStorage.instance.add(back);
+      }
+      const front = `${prefix_path_tokens}/${path}.png`;
+      if (!ImageStorage.instance.get(front)) {
+        ImageStorage.instance.add(front);
+      }
+      const card = Card.create(title, front, back, 1);
+      card.location.x = position.x - 25;
+      card.location.y = position.y - 25;
+    }
+    createToken({x:30,y:280, z: 0}, '現在日数', 'chip_07');
+    createToken({x:100,y:280, z: 0}, '事件カウンター', 'chip_08');
+    createToken({x:100,y:340, z: 0}, '事件カウンター', 'chip_08');
+    createToken({x:100,y:400, z: 0}, '事件カウンター', 'chip_08');
+    createToken({x:100,y:470, z: 0}, '事件カウンター', 'chip_08');
+    createToken({x:165,y:470, z: 0}, 'ループカウンター', 'chip_09');
+    createToken({x:230,y:280, z: 0}, 'Exカウンター', 'chip_10');
     return;
     // 初期表示なしにカスタマイズ
     testCharacter = new GameCharacter("testCharacter_1");
@@ -720,6 +753,16 @@ export class TabletopService {
       action: null,
       subActions: this.createRooperHandsMenu(position)
     });
+    subMenus.push({
+      name: "拡張カード追加",
+      action: null,
+      subActions: this.createRooperExtraMenu(position)
+    });
+    subMenus.push({
+      name: "トークン追加",
+      action: null,
+      subActions: this.createRooperTokenMenu(position)
+    });
     return subMenus;
   }
   private createRooperHandsMenu(position):ContextMenuAction[] {
@@ -749,6 +792,104 @@ export class TabletopService {
       name: '主人公C手札',
       action: ()=>{
         this.createRooperScripterHands(position, '主人公C手札','a_heroC_cards');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
+  }
+  private createRooperTokenMenu(position):ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_tokens = `${prefix_path_rooper}/tokens`;
+
+    const createCard = (position, title, path)=>{
+      const back = `${prefix_path_tokens}/${path}.png`;
+      if (!ImageStorage.instance.get(back)) {
+        ImageStorage.instance.add(back);
+      }
+      const front = `${prefix_path_tokens}/${path}.png`;
+      if (!ImageStorage.instance.get(front)) {
+        ImageStorage.instance.add(front);
+      }
+      const card = Card.create(title, front, back, 1);
+      card.location.x = position.x - 25;
+      card.location.y = position.y - 25;
+    }
+
+    subMenus.push({
+      name: '暗躍カウンター',
+      action: ()=>{
+        createCard(position, '暗躍カウンター','chip_03');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '事件カウンター',
+      action: ()=>{
+        createCard(position, '事件カウンター','chip_08');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '刑事カウンター',
+      action: ()=>{
+        createCard(position, '刑事カウンター','guard');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '大物カウンター',
+      action: ()=>{
+        createCard(position, '大物カウンター','turf');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
+  }
+
+  private createRooperExtraMenu(position:PointerCoordinate) :ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_extra = `${prefix_path_rooper}/extra`;
+    const back = `${prefix_path_extra}/extra_back.png`;
+    if (!ImageStorage.instance.get(back)) {
+      ImageStorage.instance.add(back);
+    }
+    const createCard = (position, title,id)=>{
+      const front = `${prefix_path_extra}/${id}.png`;
+      if (!ImageStorage.instance.get(front)) {
+        ImageStorage.instance.add(front);
+      }
+      const card = Card.create(title, front, back);
+      card.location.x = position.x - 25;
+      card.location.y = position.y - 25;
+    }
+
+    subMenus.push({
+      name: 'ExtraA',
+      action: ()=>{
+        createCard(position, 'ExtraA','extra_a');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: 'ExtraB',
+      action: ()=>{
+        createCard(position, 'ExtraB','extra_b');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: 'ExtraC',
+      action: ()=>{
+        createCard(position, 'ExtraC','extra_c');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: 'ExtraD',
+      action: ()=>{
+        createCard(position, 'ExtraD','extra_d');
         SoundEffect.play(PresetSound.cardPut);
       }
     });
