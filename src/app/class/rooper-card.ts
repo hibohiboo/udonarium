@@ -48,7 +48,7 @@ export class RooperCard extends Card {
   //   moveToTopmost(this, ['card-stack']);
   // }
 
-  static create(name: string, front: string, back: string, size: number = 2, identifier?: string): RooperCard {
+  static create(name: string, front: string, back: string, size: number = 3, identifier?: string): RooperCard {
     let object: RooperCard = null;
 
     if (identifier) {

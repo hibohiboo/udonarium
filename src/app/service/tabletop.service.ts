@@ -554,13 +554,20 @@ export class TabletopService {
     position: PointerCoordinate
   ): ContextMenuAction[] {
     return [
-      this.getCreateCharacterMenu(position),
-      this.getCreateTableMaskMenu(position),
-      this.getCreateTerrainMenu(position),
-      this.getCreateTextNoteMenu(position),
-      this.getCreateTrumpMenu(position),
-      this.getCreateDiceSymbolMenu(position),
-      this.getCreateRooperMenu(position)
+
+      this.getCreateRooperMenu(position),
+      {
+        name: "udonarium",
+        action: null,
+        subActions:[
+          this.getCreateCharacterMenu(position),
+          this.getCreateTableMaskMenu(position),
+          this.getCreateTerrainMenu(position),
+          this.getCreateTextNoteMenu(position),
+          this.getCreateTrumpMenu(position),
+          this.getCreateDiceSymbolMenu(position),
+        ]
+      }
     ];
   }
 
@@ -704,61 +711,177 @@ export class TabletopService {
     const subMenus: ContextMenuAction[] = [];
 
     subMenus.push({
-      name: "キャラクター一覧",
+      name: "キャラクター追加",
       action: null,
       subActions: this.getCreateRooperSubSubMenu(position)
     });
+    subMenus.push({
+      name: "手札追加",
+      action: null,
+      subActions: this.createRooperHandsMenu(position)
+    });
     return subMenus;
   }
+  private createRooperHandsMenu(position):ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    subMenus.push({
+      name: '脚本家手札',
+      action: ()=>{
+        this.createRooperScripterHands(position, '脚本家手札','a_writer_cards');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公A手札',
+      action: ()=>{
+        this.createRooperScripterHands(position, '主人公A手札','a_heroA_cards');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公B手札',
+      action: ()=>{
+        this.createRooperScripterHands(position, '主人公B手札','a_heroB_cards');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公C手札',
+      action: ()=>{
+        this.createRooperScripterHands(position, '主人公C手札','a_heroC_cards');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
+  }
+
+  private createRooperScripterHands(
+    position: PointerCoordinate,
+    title: string,
+    prefix:string
+  ): CardStack {
+    return this.createRooperHands(position, title,prefix, 
+    ['不安+1', '不安+1', '不安-1', '不安禁止', '友好禁止', '暗躍+1',
+   '暗躍+2', '移動↑↓', '移動←→', '移動斜め']);
+  }
+  private createRooperProtagonistHands(
+    position: PointerCoordinate,
+    title: string,
+    prefix:string
+  ): CardStack {
+    return this.createRooperHands(position, title,prefix, 
+      ['不安+1', '不安-1', '友好+1', '友好+2', '暗躍禁止',
+      '移動↑↓', '移動←→', '移動禁止']);
+  }
+  private createRooperHands(
+    position: PointerCoordinate,
+    title: string,
+    prefix:string,
+    items: string[]
+  ): CardStack {
+    const cardStack = CardStack.create(title);
+    cardStack.location.x = position.x - 25;
+    cardStack.location.y = position.y - 25;
+    cardStack.posZ = position.z;
+
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_action_cards = `${prefix_path_rooper}/action_cards`;
+
+    const back = `${prefix_path_action_cards}/${prefix}_0b.png`;
+    if (!ImageStorage.instance.get(back)) {
+      ImageStorage.instance.add(back);
+    }
+
+    items.forEach((name, index) => {
+      const id = ('0' + (index - -1)).slice(-2);
+      const url =  `${prefix_path_action_cards}/${prefix}_${id}.png`;
+      if (!ImageStorage.instance.get(url)) {
+        ImageStorage.instance.add(url);
+      }
+      const card = Card.create(name, url, back);
+      cardStack.putOnBottom(card);
+    });
+    return cardStack;
+  }
+
   private getCreateRooperSubSubMenu(position: PointerCoordinate) : ContextMenuAction[] {
     const subMenus: ContextMenuAction[] = [];
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
+    const characters = [
+      {name:'男子学生', card_num:'01', },
+      {name:'女子学生', card_num:'02', },
+      {name:'お嬢様', card_num:'03', },
+      {name:'巫女', card_num:'04', },
+      {name:'刑事', card_num:'05', },
+      {name:'サラリーマン', card_num:'06',},
+      {name:'情報屋', card_num:'07', },
+      {name:'医者', card_num:'08', },
+      {name:'患者', card_num:'09', },
+      {name:'委員長', card_num:'10', },
+      {name:'イレギュラー', card_num:'11', },
+      {name:'異世界人', card_num:'12', },
+      {name:'神格', card_num:'13', },
+      {name:'アイドル', card_num:'14', },
+      {name:'マスコミ', card_num:'15', },
+      {name:'大物', card_num:'16', },
+      {name:'ナース', card_num:'17', },
+      {name:'手先', card_num:'18', },
+      {name:'学者', card_num:'19', },
+      {name:'幻想', card_num:'20', },
+      {name:'鑑識官', card_num:'21', },
+      {name:'A.I.', card_num:'22', },
+      {name:'先生', card_num:'23', },
+      {name:'転校生', card_num:'24', },
+      {name:'軍人', card_num:'25', },
+      {name:'黒猫', card_num:'26', },
+      {name:'女の子', card_num:'27', },
+    ];
 
     subMenus.push({
       name: "キャラクター一覧",
       action: () => {
-
-        const prefix_path_rooper = './assets/images/tragedy_commons_5th';
-        const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
-        const card_back = `${prefix_path_characters}/character_01_0.png`;
-        if (!ImageStorage.instance.get(card_back)) {
-          ImageStorage.instance.add(card_back);
-        }
-        const card_front = `${prefix_path_characters}/character_01_1.png`;
-        if (!ImageStorage.instance.get(card_front)) {
-          ImageStorage.instance.add(card_front);
-        }
-        const testCard = RooperCard.create('男子学生', card_front, card_back);
-
-        const cardStack = CardStack.create("惨劇RoopeR");
+        const cardStack = CardStack.create("キャラクター一覧");
         cardStack.location.x = position.x - 25;
         cardStack.location.y = position.y - 25;
         cardStack.posZ = position.z;
-        cardStack.putOnBottom(testCard);
+        characters.forEach(({name,card_num,})=>{
+          const card_back = `${prefix_path_characters}/character_${card_num}_0.png`;
+          if (!ImageStorage.instance.get(card_back)) {
+            ImageStorage.instance.add(card_back);
+          }
+          const card_front = `${prefix_path_characters}/character_${card_num}_1.png`;
+          if (!ImageStorage.instance.get(card_front)) {
+            ImageStorage.instance.add(card_front);
+          }
+          const testCard = RooperCard.create(name, card_front, card_back, 3);  
+          cardStack.putOnBottom(testCard);
+        });
 
         SoundEffect.play(PresetSound.cardPut);
       }
     });
-    subMenus.push({
-      name: "男子学生",
-      action: () => {
-
-        const prefix_path_rooper = './assets/images/tragedy_commons_5th';
-        const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
-        const card_back = `${prefix_path_characters}/character_01_0.png`;
-        if (!ImageStorage.instance.get(card_back)) {
-          ImageStorage.instance.add(card_back);
+    characters.forEach(({name,card_num,})=>{
+      subMenus.push({
+        name,
+        action: () => {
+          const card_back = `${prefix_path_characters}/character_${card_num}_0.png`;
+          if (!ImageStorage.instance.get(card_back)) {
+            ImageStorage.instance.add(card_back);
+          }
+          const card_front = `${prefix_path_characters}/character_${card_num}_1.png`;
+          if (!ImageStorage.instance.get(card_front)) {
+            ImageStorage.instance.add(card_front);
+          }
+          const testCard = RooperCard.create(name, card_front, card_back);
+          testCard.location.x= position.x - 25;
+          testCard.location.y = position.y - 25;
+  
+          SoundEffect.play(PresetSound.cardPut);
         }
-        const card_front = `${prefix_path_characters}/character_01_1.png`;
-        if (!ImageStorage.instance.get(card_front)) {
-          ImageStorage.instance.add(card_front);
-        }
-        const testCard = RooperCard.create('男子学生', card_front, card_back);
-        testCard.location.x= 10;
-        testCard.location.y = 10;
-
-        SoundEffect.play(PresetSound.cardPut);
-      }
+      });
     });
+
     return subMenus;
   }
 }
