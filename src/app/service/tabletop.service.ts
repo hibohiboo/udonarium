@@ -403,30 +403,6 @@ export class TabletopService {
     return cardStack;
   }
 
-  createHollow(position: PointerCoordinate): CardStack {
-    const cardStack = CardStack.create("HollowΦFluxカード一覧");
-    cardStack.location.x = position.x - 25;
-    cardStack.location.y = position.y - 25;
-    cardStack.posZ = position.z;
-
-    const back = "./assets/images/hollowflux_cardpng/card_back.jpg";
-    if (!ImageStorage.instance.get(back)) {
-      ImageStorage.instance.add(back);
-    }
-
-    [...Array(60).keys()].forEach(id => {
-      const url: string =
-        "./assets/images/hollowflux_cardpng/card_" + id + ".png";
-      if (!ImageStorage.instance.get(url)) {
-        ImageStorage.instance.add(url);
-      }
-      const card = Card.create("カード", url, back);
-      cardStack.putOnBottom(card);
-    });
-
-    return cardStack;
-  }
-
   makeDefaultTable() {
     let tableSelecter = new TableSelecter("tableSelecter");
     tableSelecter.initialize();
@@ -436,9 +412,9 @@ export class TabletopService {
     let bgFileContext = ImageFile.createEmpty(
       "testTableBackgroundImage_image"
     ).toContext();
-    bgFileContext.url = "./assets/images/BG10a_80.jpg";
-    // 初期表示カスタマイズ
-
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_board = `${prefix_path_rooper}/board`;
+    bgFileContext.url = `${prefix_path_board}/board.png`;
     testBgFile = ImageStorage.instance.add(bgFileContext);
     //let testDistanceFile: ImageFile = null;
     //let distanceFileContext = ImageFile.createEmpty('testTableDistanceviewImage_image').toContext();
@@ -447,7 +423,7 @@ export class TabletopService {
     gameTable.name = "最初のテーブル";
     gameTable.imageIdentifier = testBgFile.identifier;
     //gameTable.backgroundImageIdentifier = testDistanceFile.identifier;
-    gameTable.width = 28;
+    gameTable.width = 32;
     gameTable.height = 20;
     gameTable.initialize();
 
@@ -459,18 +435,43 @@ export class TabletopService {
     let testFile: ImageFile = null;
     let fileContext: ImageContext = null;
 
+    // キャラクター追加
     const prefix_path_rooper = './assets/images/tragedy_commons_5th';
     const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
-    const card_back = `${prefix_path_characters}/character_01_0.png`;
-    if (!ImageStorage.instance.get(card_back)) {
-      ImageStorage.instance.add(card_back);
-    }
-    const card_front = `${prefix_path_characters}/character_01_1.png`;
-    if (!ImageStorage.instance.get(card_front)) {
-      ImageStorage.instance.add(card_front);
-    }
-    const testCard = RooperCard.create('男子学生', card_front, card_back);
 
+    const tick = 50;
+    const board_left_edge_x = 5.5 * tick;
+    const board_top_y = 0;
+    const bord_chip_margin = 2.5 * tick;
+    const card_width = 3.5 * tick;
+    const board_right_edge_x = board_left_edge_x + 13.5 * tick;
+    const board_under_y = 10 * tick;
+    [
+      {name:'男子学生', card_num:'01', x: (board_right_edge_x), y:(board_under_y + bord_chip_margin)},
+      {name:'女子学生', card_num:'02', x: (board_right_edge_x + card_width), y:(board_under_y + bord_chip_margin)},
+      {name:'お嬢様', card_num:'03', x: (board_right_edge_x + card_width*2), y:(board_under_y + bord_chip_margin)},
+      {name:'巫女', card_num:'04', x: (board_right_edge_x), y:(board_top_y + bord_chip_margin)},
+      {name:'刑事', card_num:'05', x: (board_left_edge_x), y:(board_under_y + bord_chip_margin)},
+      {name:'サラリーマン', card_num:'06', x: (board_left_edge_x + card_width * 1), y:(board_under_y + bord_chip_margin)},
+      {name:'情報屋', card_num:'07', x: (board_left_edge_x + card_width * 2), y:(board_under_y + bord_chip_margin)},
+      {name:'医者', card_num:'08', x: (board_left_edge_x + card_width), y:(board_top_y + bord_chip_margin)},
+      {name:'患者', card_num:'09', x: (board_left_edge_x), y:(board_top_y + bord_chip_margin)},
+    ].forEach(({name,card_num,x,y})=>{
+      const card_back = `${prefix_path_characters}/character_${card_num}_0.png`;
+      if (!ImageStorage.instance.get(card_back)) {
+        ImageStorage.instance.add(card_back);
+      }
+      const card_front = `${prefix_path_characters}/character_${card_num}_1.png`;
+      if (!ImageStorage.instance.get(card_front)) {
+        ImageStorage.instance.add(card_front);
+      }
+      const testCard = RooperCard.create(name, card_front, card_back, 3);  
+      testCard.location.x = x;
+      testCard.location.y = y;
+    });
+
+
+  
     return;
     // 初期表示なしにカスタマイズ
     testCharacter = new GameCharacter("testCharacter_1");

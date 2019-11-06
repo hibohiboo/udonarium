@@ -78,7 +78,7 @@ export class RooperCard extends Card {
     this.createDataElements();
 
     let nameElement: DataElement = DataElement.create('name', name, {}, 'name_' + this.identifier);
-    // let sizeElement: DataElement = DataElement.create('size', size, {}, 'size_' + this.identifier);
+    let sizeElement: DataElement = DataElement.create('size', size, {}, 'size_' + this.identifier);
 
     // if (this.imageDataElement.getFirstElementByName('imageIdentifier')) {
     //   this.imageDataElement.getFirstElementByName('imageIdentifier').value = imageIdentifier;
@@ -90,7 +90,7 @@ export class RooperCard extends Card {
     let intrigueElement: DataElement = DataElement.create('暗躍', 0, { 'type': 'numberResource', 'currentValue': '0' }, 'Intrigue_' + this.identifier);
 
     this.commonDataElement.appendChild(nameElement);
-    // this.commonDataElement.appendChild(sizeElement);
+    this.commonDataElement.appendChild(sizeElement);
 
     this.commonDataElement.appendChild(goodwillElement);
     this.commonDataElement.appendChild(paranoiaElement);
