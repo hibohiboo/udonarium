@@ -141,4 +141,38 @@ export class RooperCard extends Card {
     this.appendChild(palette);
   }
 
+  // パラメータ追加
+  get goodwill (): number {
+    return this.commonDataElement.getFirstElementByName('友好').currentValue as number;
+  }
+  increaseGoodwillCounter(){
+    const element = this.commonDataElement.getFirstElementByName('友好');
+    element.currentValue = element.currentValue as number - -1;
+  }
+  decreaseGoodwillCounter(){
+    const element = this.commonDataElement.getFirstElementByName('友好');
+    element.currentValue = element.currentValue as number - 1;
+  }
+  get paranoia (): number {
+    return this.commonDataElement.getFirstElementByName('不安').currentValue as number;
+  }
+  increaseParanoiaCounter(){
+    const element = this.commonDataElement.getFirstElementByName('不安');
+    element.currentValue = element.currentValue as number - -1;
+  }
+  decreaseParanoiaCounter(){
+    const element = this.commonDataElement.getFirstElementByName('不安');
+    element.currentValue = element.currentValue as number - 1;
+  }
+  get intrigue (): number {
+    return this.commonDataElement.getFirstElementByName('暗躍').currentValue as number;
+  }
+  increaseIntrigueCounter(){
+    const element = this.commonDataElement.getFirstElementByName('暗躍');
+    element.currentValue = element.currentValue as number - -1;
+  }
+  decreaseIntrigueCounter(){
+    const element = this.commonDataElement.getFirstElementByName('暗躍');
+    element.currentValue = element.currentValue as number - 1;
+  }
 }

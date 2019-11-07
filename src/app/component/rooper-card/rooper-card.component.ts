@@ -200,28 +200,8 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
       ),
-      (this.isHand
-        ? {
-          name: '裏にする', action: () => {
-            this.card.faceDown();
-            SoundEffect.play(PresetSound.cardDraw);
-          }
-        }
-        : {
-          name: '自分だけ見る', action: () => {
-            SoundEffect.play(PresetSound.cardDraw);
-            this.card.faceDown();
-            this.owner = Network.peerId;
-          }
-        }),
       ContextMenuSeparator,
       { name: 'カードを編集', action: () => { this.showDetail(this.card); } },
-      {
-        name: '重なったカードで山札を作る', action: () => {
-          this.createStack();
-          SoundEffect.play(PresetSound.cardPut);
-        }
-      },
       ContextMenuSeparator,
       {
         name: '削除する', action: () => {
@@ -264,32 +244,58 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.rotate = 0;
       return;
     }
-  }
-
-  private createStack() {
-    let cardStack = CardStack.create('山札');
-    cardStack.location.x = this.card.location.x;
-    cardStack.location.y = this.card.location.y;
-    cardStack.posZ = this.card.posZ;
-    cardStack.location.name = this.card.location.name;
-    cardStack.rotate = this.rotate;
-    cardStack.zindex = this.card.zindex;
-
-    let cards: RooperCard[] = this.tabletopService.rooperCards.filter(card => {
-      let distance: number = (card.location.x - this.card.location.x) ** 2 + (card.location.y - this.card.location.y) ** 2 + (card.posZ - this.card.posZ) ** 2;
-      return distance < 100 ** 2;
-    });
-
-    cards.sort((a, b) => {
-      if (a.zindex < b.zindex) return 1;
-      if (a.zindex > b.zindex) return -1;
-      return 0;
-    });
-
-    for (let card of cards) {
-      cardStack.putOnBottom(card);
+    // 友好カウンター
+    if (e.key === 'Y') {
+      this.card.decreaseGoodwillCounter();
+      return;
+    }
+    if (e.key === 'y') {
+      this.card.increaseGoodwillCounter();
+      return;
+    }
+    // 不安カウンター
+    if (e.key === 'H') {
+      this.card.decreaseParanoiaCounter();
+      return;
+    }
+    if (e.key === 'h') {
+      this.card.increaseParanoiaCounter();
+      return;
+    }
+    if (e.key === 'A') {
+      this.card.decreaseIntrigueCounter();
+      return;
+    }
+    if (e.key === 'a') {
+      this.card.increaseIntrigueCounter();
+      return;
     }
   }
+
+  // private createStack() {
+  //   let cardStack = CardStack.create('山札');
+  //   cardStack.location.x = this.card.location.x;
+  //   cardStack.location.y = this.card.location.y;
+  //   cardStack.posZ = this.card.posZ;
+  //   cardStack.location.name = this.card.location.name;
+  //   cardStack.rotate = this.rotate;
+  //   cardStack.zindex = this.card.zindex;
+
+  //   let cards: RooperCard[] = this.tabletopService.rooperCards.filter(card => {
+  //     let distance: number = (card.location.x - this.card.location.x) ** 2 + (card.location.y - this.card.location.y) ** 2 + (card.posZ - this.card.posZ) ** 2;
+  //     return distance < 100 ** 2;
+  //   });
+
+  //   cards.sort((a, b) => {
+  //     if (a.zindex < b.zindex) return 1;
+  //     if (a.zindex > b.zindex) return -1;
+  //     return 0;
+  //   });
+
+  //   for (let card of cards) {
+  //     cardStack.putOnBottom(card);
+  //   }
+  // }
 
   private dispatchCardDropEvent() {
     console.log('dispatchCardDropEvent');
