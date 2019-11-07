@@ -44,6 +44,8 @@ src\app\service\tabletop.service.ts ファイルの`makeDefaultTable`メソッ�
 #### コマやカードの初期配置
 
 src\app\service\tabletop.service.ts ファイルの`makeDefaultTabletopObjects`メソッドを参照
+identifierの名前を付けておかないと、初期表示同士が接続されたときに、同じコマが増える現象が起きる。
+
 
 #### チャットウィンドウ・接続情報の初期配置
 
@@ -208,6 +210,19 @@ src\app\component\overview-panel\overview-panel.component.html
 +    <ng-container *ngSwitchCase="'rooper-card'">
 +      <ng-container *ngTemplateOutlet="overviewCard; context: { card: tabletopObject }"></ng-container>
 +    </ng-container>
+```
+
+### Roomへの登録
+これを行わないと、保存したときにxmlに出力されない。
+
+src\app\class\room.ts
+
+```diff
+    objects = objects.concat(ObjectStore.instance.getObjects(Card).filter((obj) => { return obj.parent === null }));
++    objects = objects.concat(ObjectStore.instance.getObjects(RooperCard).filter((obj) => { return obj.parent === null }));
+// 省略
+    objects = objects.concat(ObjectStore.instance.getObjects(Card));
++    objects = objects.concat(ObjectStore.instance.getObjects(RooperCard));
 ```
 
 ## ノートを平面にする。

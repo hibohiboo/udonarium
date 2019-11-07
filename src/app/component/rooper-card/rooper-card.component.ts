@@ -127,7 +127,7 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostListener('carddrop', ['$event'])
   onCardDrop(e) {
-    if (this.card === e.detail || (e.detail instanceof Card === false && e.detail instanceof CardStack === false)) {
+    if (this.card === e.detail || (e.detail instanceof RooperCard === false && e.detail instanceof CardStack === false)) {
       return;
     }
     e.stopPropagation();

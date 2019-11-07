@@ -465,23 +465,23 @@ export class TabletopService {
       if (!ImageStorage.instance.get(card_front)) {
         ImageStorage.instance.add(card_front);
       }
-      const testCard = RooperCard.create(name, card_front, card_back, 3);  
+      const testCard = RooperCard.create(name, card_front, card_back, 3, `sample_rooper_card_${card_num}`);  
       testCard.location.x = x;
       testCard.location.y = y;
     });
 
     // 手札初期表示
-    this.createRooperScripterHands({x:800,y:300, z: 0}, '脚本家手札','a_writer_cards');
-    this.createRooperScripterHands({x:600,y:500, z: 0}, '主人公A手札','a_heroA_cards');
-    this.createRooperScripterHands({x:800,y:500, z: 0}, '主人公B手札','a_heroB_cards');
-    this.createRooperScripterHands({x:1000,y:500, z: 0}, '主人公C手札','a_heroC_cards');
+    this.createRooperScripterHands({x:800,y:300, z: 0}, '脚本家手札','a_writer_cards', 'sample_hand_s');
+    this.createRooperProtagonistHands({x:600,y:500, z: 0}, '主人公A手札','a_heroA_cards', 'sample_hand_a');
+    this.createRooperProtagonistHands({x:800,y:500, z: 0}, '主人公B手札','a_heroB_cards', 'sample_hand_b');
+    this.createRooperProtagonistHands({x:1000,y:500, z: 0}, '主人公C手札','a_heroC_cards', 'sample_hand_c');
     // リーダーカート表示
     const createExtra = (position, title, path, size=2)=>{
       const img = `${prefix_path_rooper}/extra/${path}.png`;
       if (!ImageStorage.instance.get(img)) {
         ImageStorage.instance.add(img);
       }
-      const card = Card.create(title, img, img, size);
+      const card = Card.create(title, img, img, size, `sample_${path}`);
       card.location.x = position.x;
       card.location.y = position.y;
     }
@@ -499,7 +499,7 @@ export class TabletopService {
       if (!ImageStorage.instance.get(front)) {
         ImageStorage.instance.add(front);
       }
-      const card = Card.create(title, front, back, 1);
+      const card = Card.create(title, front, back, 1, `sample_${path}_${position.x}_${position.y}`);
       card.location.x = position.x - 25;
       card.location.y = position.y - 25;
     }
@@ -527,7 +527,8 @@ export class TabletopService {
 `,
       5,
       6,
-      3
+      3,
+      'sample_open_sheet'
     );
     textNote.location.x = 100;
     textNote.location.y = 150;
@@ -797,28 +798,28 @@ export class TabletopService {
     subMenus.push({
       name: '脚本家手札',
       action: ()=>{
-        this.createRooperScripterHands(position, '脚本家手札','a_writer_cards');
+        this.createRooperScripterHands(position, '脚本家手札','a_writer_cards', 'hand_s');
         SoundEffect.play(PresetSound.cardPut);
       }
     });
     subMenus.push({
       name: '主人公A手札',
       action: ()=>{
-        this.createRooperScripterHands(position, '主人公A手札','a_heroA_cards');
+        this.createRooperProtagonistHands(position, '主人公A手札','a_heroA_cards', 'hand_a');
         SoundEffect.play(PresetSound.cardPut);
       }
     });
     subMenus.push({
       name: '主人公B手札',
       action: ()=>{
-        this.createRooperScripterHands(position, '主人公B手札','a_heroB_cards');
+        this.createRooperProtagonistHands(position, '主人公B手札','a_heroB_cards', 'hand_b');
         SoundEffect.play(PresetSound.cardPut);
       }
     });
     subMenus.push({
       name: '主人公C手札',
       action: ()=>{
-        this.createRooperScripterHands(position, '主人公C手札','a_heroC_cards');
+        this.createRooperProtagonistHands(position, '主人公C手札','a_heroC_cards', 'hand_c');
         SoundEffect.play(PresetSound.cardPut);
       }
     });
@@ -926,18 +927,20 @@ export class TabletopService {
   private createRooperScripterHands(
     position: PointerCoordinate,
     title: string,
-    prefix:string
+    prefix:string,
+    identifier: string,
   ): CardStack {
-    return this.createRooperHands(position, title,prefix, 
+    return this.createRooperHands(position, title,prefix, identifier,
     ['不安+1', '不安+1', '不安-1', '不安禁止', '友好禁止', '暗躍+1',
    '暗躍+2', '移動↑↓', '移動←→', '移動斜め']);
   }
   private createRooperProtagonistHands(
     position: PointerCoordinate,
     title: string,
-    prefix:string
+    prefix:string,
+    identifier: string,
   ): CardStack {
-    return this.createRooperHands(position, title,prefix, 
+    return this.createRooperHands(position, title,prefix, identifier,
       ['不安+1', '不安-1', '友好+1', '友好+2', '暗躍禁止',
       '移動↑↓', '移動←→', '移動禁止']);
   }
@@ -945,9 +948,10 @@ export class TabletopService {
     position: PointerCoordinate,
     title: string,
     prefix:string,
+    identifier: string,
     items: string[]
   ): CardStack {
-    const cardStack = CardStack.create(title);
+    const cardStack = CardStack.create(title, identifier);
     cardStack.location.x = position.x - 25;
     cardStack.location.y = position.y - 25;
     cardStack.posZ = position.z;
