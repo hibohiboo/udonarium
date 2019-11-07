@@ -182,3 +182,20 @@
 .component:hover .material-icons, .component:active .material-icons {
   display: inline;
 }
+
+/* カード上に載せるカウンター*/
+.counters {
+  position: absolute;
+  left: 15px;
+  top: 15px;
+  width: 80px;
+}
+.goodwill,.paranoia, .intrigue {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+}
+.goodwill img, .paranoia img, .intrigue img {
+  width: 32px;
+  height: 32px;
+}

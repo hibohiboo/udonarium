@@ -1,12 +1,28 @@
 <div class="component is-3d is-pointer-events-none is-grab" [style.width.px]="size * gridSize"
   appMovable [movable.option]="movableOption" (movable.ondragstart)="onMove()" (movable.ondragend)="onMoved()">
   <div class="component-content is-pointer-events-auto"
-    appRotable [rotable.option]="rotableOption" (rotable.ondragstart)="onMove()" (rotable.ondragend)="onMoved()">
+    appRotable [rotable.option]="rotableOption" (rotable.ondragstart)="onMove()" (rotable.ondragend)="onMoved()"
+    style="position: relative;">
     <img *ngIf="imageFile" class="card-image" [src]="(isFront ? frontImage.url : backImage.url) | safe: 'resourceUrl'">
     <div *ngIf="!isFront && hasOwner" class="name-tag is-nowrap has-length-limit is-black-background" [ngStyle]="{'transform': 'translateY(-75%) translateX(-50%) translateX(' + size * gridSize / 2 +'px)'}">
       <span>{{ownerName}}</span>
     </div>
     <img *ngIf="isHand && frontImage" class="card-image thumbnail-transform is-translucent" [src]="frontImage.url | safe: 'resourceUrl'">
+    <div class="counters">
+        <div class="goodwill">
+            <img *ngFor="let num of goodwill3" src="assets/images/tragedy_commons_5th/tokens/chip_04.png">
+            <img *ngFor="let num of goodwill" src="assets/images/tragedy_commons_5th/tokens/chip_01.png">
+        </div>
+        <div class="paranoia">
+            <img *ngFor="let num of paranoia3" src="assets/images/tragedy_commons_5th/tokens/chip_05.png">
+            <img *ngFor="let num of paranoia" src="assets/images/tragedy_commons_5th/tokens/chip_02.png">
+        </div>
+        <div class="intrigue">
+            <img *ngFor="let num of intrigue3" src="assets/images/tragedy_commons_5th/tokens/chip_06.png">
+            <img *ngFor="let num of intrigue" src="assets/images/tragedy_commons_5th/tokens/chip_03.png">
+        </div>
+    </div>
+
     <ng-container *ngIf="!isIconHidden">
       <div class="rotate-grab of-left-top">
         <i class="material-icons">autorenew</i>

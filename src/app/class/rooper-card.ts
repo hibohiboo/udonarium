@@ -142,37 +142,40 @@ export class RooperCard extends Card {
   }
 
   // パラメータ追加
+  get goodwillElement (){
+    return this.commonDataElement.getFirstElementByName('友好');
+  }
   get goodwill (): number {
-    return this.commonDataElement.getFirstElementByName('友好').currentValue as number;
+    return parseInt(this.goodwillElement.currentValue as string);
   }
   increaseGoodwillCounter(){
-    const element = this.commonDataElement.getFirstElementByName('友好');
-    element.currentValue = element.currentValue as number - -1;
+    this.goodwillElement.currentValue = this.goodwill + 1;
   }
   decreaseGoodwillCounter(){
-    const element = this.commonDataElement.getFirstElementByName('友好');
-    element.currentValue = element.currentValue as number - 1;
+    this.goodwillElement.currentValue = this.goodwill - 1;
+  }
+  get paranoiaElement (){
+    return this.commonDataElement.getFirstElementByName('不安');
   }
   get paranoia (): number {
-    return this.commonDataElement.getFirstElementByName('不安').currentValue as number;
+    return parseInt(this.paranoiaElement.currentValue as string);
   }
   increaseParanoiaCounter(){
-    const element = this.commonDataElement.getFirstElementByName('不安');
-    element.currentValue = element.currentValue as number - -1;
+    this.paranoiaElement.currentValue = this.paranoia + 1;
   }
   decreaseParanoiaCounter(){
-    const element = this.commonDataElement.getFirstElementByName('不安');
-    element.currentValue = element.currentValue as number - 1;
+    this.paranoiaElement.currentValue = this.paranoia - 1;
+  }
+  get intrigueElement (){
+    return this.commonDataElement.getFirstElementByName('暗躍');
   }
   get intrigue (): number {
-    return this.commonDataElement.getFirstElementByName('暗躍').currentValue as number;
+    return parseInt(this.intrigueElement.currentValue as string);
   }
   increaseIntrigueCounter(){
-    const element = this.commonDataElement.getFirstElementByName('暗躍');
-    element.currentValue = element.currentValue as number - -1;
+    this.intrigueElement.currentValue = this.intrigue + 1;
   }
   decreaseIntrigueCounter(){
-    const element = this.commonDataElement.getFirstElementByName('暗躍');
-    element.currentValue = element.currentValue as number - 1;
+    this.intrigueElement.currentValue = this.intrigue - 1;
   }
 }
