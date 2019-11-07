@@ -20,7 +20,7 @@ import { TabletopObject } from "@udonarium/tabletop-object";
 import { Terrain } from "@udonarium/terrain";
 import { TextNote } from "@udonarium/text-note";
 
-import { ContextMenuAction } from "./context-menu.service";
+import { ContextMenuAction, ContextMenuType } from "./context-menu.service";
 import {
   PointerCoordinate,
   PointerDeviceService
@@ -615,8 +615,13 @@ export class TabletopService {
     position: PointerCoordinate
   ): ContextMenuAction[] {
     return [
-
-      this.getCreateRooperMenu(position),
+      // this.getCreateRooperMenu(position),
+      ...this.getCreateRooperSubMenu(position),
+      {
+        name: "separator",
+        action: null,
+        type: ContextMenuType.SEPARATOR
+      },
       {
         name: "udonarium",
         action: null,
