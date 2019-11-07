@@ -233,6 +233,9 @@ src\app\component\text-note\text-note.component.css
 - transform: rotateX(-90deg);
 ```
 
+[この時点のソース](https://github.com/hibohiboo/udonarium/tree/b460bf48eb64a9979fe3e5f11835985eeb1e2c43)
+
+
 ## 参考
 
 [【Angular7】初期フォーカスを当てる方法を解説！](https://traveler0401.com/angular-autofocus/)
