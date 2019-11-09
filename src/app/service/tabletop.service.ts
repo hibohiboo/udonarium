@@ -27,6 +27,7 @@ import {
 } from "./pointer-device.service";
 
 import { RooperCard } from '@udonarium/rooper-card';
+import { Device } from '@udonarium/device/device';
 
 type ObjectIdentifier = string;
 type LocationName = string;
@@ -1023,6 +1024,74 @@ export class TabletopService {
     const subMenus: ContextMenuAction[] = [];
     const prefix_path_rooper = './assets/images/tragedy_commons_5th';
     const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
+    const action = (name, card_num)=>{
+      const card_back = `${prefix_path_characters}/character_${card_num}_0.png`;
+      if (!ImageStorage.instance.get(card_back)) {
+        ImageStorage.instance.add(card_back);
+      }
+      const card_front = `${prefix_path_characters}/character_${card_num}_1.png`;
+      if (!ImageStorage.instance.get(card_front)) {
+        ImageStorage.instance.add(card_front);
+      }
+      const testCard = RooperCard.create(name, card_front, card_back);
+      testCard.location.x= position.x - 25;
+      testCard.location.y = position.y - 25;
+
+      SoundEffect.play(PresetSound.cardPut);
+    };
+    if(Device.isMobile()){
+
+      const character1 = [
+        {name:'男子学生', card_num:'01', },
+        {name:'女子学生', card_num:'02', },
+        {name:'お嬢様', card_num:'03', },
+        {name:'巫女', card_num:'04', },
+        {name:'刑事', card_num:'05', },
+        {name:'サラリーマン', card_num:'06',},
+        {name:'情報屋', card_num:'07', },
+        {name:'医者', card_num:'08', },
+        {name:'患者', card_num:'09', },
+      ];
+      const character2 = [
+      {name:'委員長', card_num:'10', },
+      {name:'イレギュラー', card_num:'11', },
+      {name:'異世界人', card_num:'12', },
+      {name:'神格', card_num:'13', },
+      {name:'アイドル', card_num:'14', },
+      {name:'マスコミ', card_num:'15', },
+      {name:'大物', card_num:'16', },
+      {name:'ナース', card_num:'17', },
+      {name:'手先', card_num:'18', },
+      {name:'学者', card_num:'19', },
+      {name:'幻想', card_num:'20', },
+      {name:'鑑識官', card_num:'21', },
+      {name:'A.I.', card_num:'22', },
+      ]
+      const character3 = [
+        {name:'先生', card_num:'23', },
+        {name:'転校生', card_num:'24', },
+        {name:'軍人', card_num:'25', },
+        {name:'黒猫', card_num:'26', },
+        {name:'女の子', card_num:'27', },
+      ];
+
+      subMenus.push({
+        name: "キャラクター追加1",
+        action: null,
+        subActions: (()=>{const menues: ContextMenuAction[] = [];character1.forEach(({name,card_num,})=>{menues.push({name,action: () => {action(name, card_num);}});}); return menues})()
+      });
+      subMenus.push({
+        name: "キャラクター追加2",
+        action: null,
+        subActions: (()=>{const menues: ContextMenuAction[] = [];character2.forEach(({name,card_num,})=>{menues.push({name,action: () => {action(name, card_num);}});}); return menues})()
+      });
+      subMenus.push({
+        name: "キャラクター追加3",
+        action: null,
+        subActions: (()=>{const menues: ContextMenuAction[] = [];character3.forEach(({name,card_num,})=>{menues.push({name,action: () => {action(name, card_num);}});}); return menues})()
+      });
+      return subMenus;
+    }
     const characters = [
       {name:'男子学生', card_num:'01', },
       {name:'女子学生', card_num:'02', },
@@ -1076,23 +1145,11 @@ export class TabletopService {
         SoundEffect.play(PresetSound.cardPut);
       }
     });
-    characters.forEach(({name,card_num,})=>{
+    characters.forEach(({name,card_num})=>{
       subMenus.push({
         name,
         action: () => {
-          const card_back = `${prefix_path_characters}/character_${card_num}_0.png`;
-          if (!ImageStorage.instance.get(card_back)) {
-            ImageStorage.instance.add(card_back);
-          }
-          const card_front = `${prefix_path_characters}/character_${card_num}_1.png`;
-          if (!ImageStorage.instance.get(card_front)) {
-            ImageStorage.instance.add(card_front);
-          }
-          const testCard = RooperCard.create(name, card_front, card_back);
-          testCard.location.x= position.x - 25;
-          testCard.location.y = position.y - 25;
-  
-          SoundEffect.play(PresetSound.cardPut);
+          action(name, card_num);
         }
       });
     });
