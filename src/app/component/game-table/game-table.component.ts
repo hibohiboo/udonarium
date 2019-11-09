@@ -36,6 +36,7 @@ import {
 import { ModalService } from "service/modal.service";
 import { PointerDeviceService } from "service/pointer-device.service";
 import { TabletopService } from "service/tabletop.service";
+import { Device } from '@udonarium/device/device';
 
 @Component({
   selector: "game-table",
@@ -147,7 +148,12 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     private pointerDeviceService: PointerDeviceService,
     private tabletopService: TabletopService,
     private modalService: ModalService,
-  ) {}
+  ) {
+    if(Device.isMobile()){
+      this.viewPotisonZ = -3500;
+      this.viewPotisonX = 0;
+    }
+  }
 
   ngOnInit() {
     EventSystem.register(this)
