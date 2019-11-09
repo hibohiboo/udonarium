@@ -81,7 +81,7 @@
   <ng-container *ngIf="18 < networkService.peerId.length">
     <hr/>
     <div>
-      <span>ルームID<span *ngIf="networkService.isOpen" style="font-weight: bold;">{{networkService.peerContext.roomId}}/{{networkService.peerContext.room}}</span></span>
+      <span>ルームID：<span *ngIf="networkService.isOpen" style="font-weight: bold;">{{networkService.peerContext.room}}</span></span>
     </div>
     <div>
       <span>パスワード：<span *ngIf="networkService.isOpen" style="font-weight: bold;">{{networkService.peerContext.password}}</span></span>
