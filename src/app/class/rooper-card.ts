@@ -152,6 +152,7 @@ export class RooperCard extends Card {
     this.goodwillElement.currentValue = this.goodwill + 1;
   }
   decreaseGoodwillCounter(){
+    if (this.goodwill <= 0) {return;}
     this.goodwillElement.currentValue = this.goodwill - 1;
   }
   get paranoiaElement (){
@@ -164,6 +165,7 @@ export class RooperCard extends Card {
     this.paranoiaElement.currentValue = this.paranoia + 1;
   }
   decreaseParanoiaCounter(){
+    if (this.goodwill <= 0) {return;}
     this.paranoiaElement.currentValue = this.paranoia - 1;
   }
   get intrigueElement (){
@@ -176,6 +178,7 @@ export class RooperCard extends Card {
     this.intrigueElement.currentValue = this.intrigue + 1;
   }
   decreaseIntrigueCounter(){
+    // if (this.goodwill <= 0) {return;}
     this.intrigueElement.currentValue = this.intrigue - 1;
   }
 }
