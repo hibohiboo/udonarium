@@ -1,9 +1,21 @@
 .help-list {
   border-bottom:1px dotted #888;
 }
-
+.title {
+  display: flex;
+}
+.title button {
+  display: block;
+  height: 40px;
+  width: 40px;
+  margin-left: 10px;
+}
 h2 {
   font-size: 1.2rem;
+  display: block;
+  height: 40px;
+  margin:0;
+  padding-top:10px;
 }
 table th {
   padding: 0 1em;

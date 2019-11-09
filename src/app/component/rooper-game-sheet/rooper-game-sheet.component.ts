@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit,HostListener, } from '@angular/core';
-import { EventSystem, Network } from '@udonarium/core/system';
+import { EventSystem } from '@udonarium/core/system';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { TabletopService } from 'service/tabletop.service';
+import { ContextMenuService, ContextMenuAction } from 'service/context-menu.service';
+import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
   selector: 'rooper-game-sheet',
@@ -15,6 +17,8 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     private panelService: PanelService,
     private modalService: ModalService,
     private tabletopService: TabletopService,
+    private contextMenuService: ContextMenuService,
+    private pointerDeviceService: PointerDeviceService
   ) { }
 
   ngOnInit() {
@@ -37,5 +41,11 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
       this.modalService.resolve();
       return;
     }
+  }
+  addRooperCard(){
+    let position = this.pointerDeviceService.pointers[0];
+
+    let actions: ContextMenuAction[] = this.tabletopService.getCreateRooperSubSubMenu({x:900, y:400, z: 0});
+    this.contextMenuService.open(position, actions);
   }
 }

@@ -981,7 +981,7 @@ export class TabletopService {
     return cardStack;
   }
 
-  private getCreateRooperSubSubMenu(position: PointerCoordinate) : ContextMenuAction[] {
+  getCreateRooperSubSubMenu(position: PointerCoordinate) : ContextMenuAction[] {
     const subMenus: ContextMenuAction[] = [];
     const prefix_path_rooper = './assets/images/tragedy_commons_5th';
     const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
