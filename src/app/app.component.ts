@@ -35,6 +35,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
+import { Device } from '@udonarium/device/device';
 
 @Component({
   selector: 'app-root',
@@ -174,8 +175,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     PanelService.defaultParentViewContainerRef = ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
-      this.panelService.open(PeerMenuComponent, { width: 440, height: 450, left: 0, top: 100 });
+      if(Device.isMobile()) {
+        this.panelService.open(PeerMenuComponent, { width: 440, height: 150, left: 0, top: 100 });
+        return;        
+      }
       this.panelService.open(ChatWindowComponent, { width: 440, height: 400, left: 0, top: 450 });
+      this.panelService.open(PeerMenuComponent, { width: 440, height: 450, left: 0, top: 100 });
     }, 0);
   }
 
