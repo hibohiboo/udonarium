@@ -133,7 +133,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     AudioStorage.instance.get(PresetSound.sweep).isHidden = true;
 
     PeerCursor.createMyCursor();
-    PeerCursor.myCursor.name = 'プレイヤー';
+    PeerCursor.myCursor.name = '';
     PeerCursor.myCursor.imageIdentifier = noneIconImage.identifier;
 
     EventSystem.register(this)
@@ -176,7 +176,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PanelService.defaultParentViewContainerRef = ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
       if(Device.isMobile()) {
-        this.panelService.open(PeerMenuComponent, { width: 440, height: 150, left: 0, top: 100 });
+        this.panelService.open(PeerMenuComponent, { width: 190, height: 190, left: 0, top: 100 });
         return;        
       }
       this.panelService.open(ChatWindowComponent, { width: 440, height: 400, left: 0, top: 450 });
