@@ -158,6 +158,31 @@ export class TabletopService {
           SoundEffect.play(PresetSound.piecePut);
         }
       });
+      // 初期使用画像の登録
+      const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+      const prefix_path_extra = `${prefix_path_rooper}/extra`;
+      const prexix_chibi = `${prefix_path_rooper}/protagonists_mastermind`;
+      const addImage = (prefix_path, path)=>{
+        const back = `${prefix_path}/${path}.png`;
+        if (!ImageStorage.instance.get(back)) {
+          ImageStorage.instance.add(back);
+        }
+      }
+      addImage(prefix_path_extra, 'clock');
+      addImage(prefix_path_extra, 'icon');
+      addImage(prefix_path_extra, 'diary');
+      addImage(prexix_chibi, 'chibi_A1');
+      addImage(prexix_chibi, 'chibi_A2');
+      addImage(prexix_chibi, 'chibi_B1');
+      addImage(prexix_chibi, 'chibi_B2');
+      addImage(prexix_chibi, 'chibi_C1');
+      addImage(prexix_chibi, 'chibi_C2');
+      addImage(prexix_chibi, 'chibi_W');
+      addImage(prexix_chibi, 'hero_A');
+      addImage(prexix_chibi, 'hero_B');
+      addImage(prexix_chibi, 'hero_C');
+      addImage(prexix_chibi, 'writer_1');
+      addImage(prexix_chibi, 'writer_2');
   }
 
   addBatch(task: Function, key: any = {}) {
@@ -486,6 +511,10 @@ export class TabletopService {
       card.location.y = position.y;
     }
     createExtra({x:600, y:600, z: 0}, 'リーダーカード', 'leader');
+    createExtra({x:400, y:-150, z: 0}, 'リーダーカード', 'extra_a');
+    createExtra({x:410, y:-150, z: 0}, 'リーダーカード', 'extra_b');
+    createExtra({x:420, y:-150, z: 0}, 'リーダーカード', 'extra_c');
+    createExtra({x:430, y:-150, z: 0}, 'リーダーカード', 'extra_d');
 
     // カウンター初期表示
 
@@ -513,7 +542,16 @@ export class TabletopService {
     createExtra({x:10, y:550, z: 0}, '日記', 'diary', 1);
     createExtra({x:125, y:750, z: 0}, '時計', 'clock', 1);
     createExtra({x:175, y:750, z: 0}, 'app', 'icon', 1);
-
+    createToken({x:300,y:-50, z: 0}, '暗躍カウンター', 'chip_03');
+    createToken({x:310,y:-50, z: 0}, '暗躍カウンター', 'chip_03');
+    createToken({x:320,y:-50, z: 0}, '暗躍カウンター', 'chip_03');
+    createToken({x:330,y:-50, z: 0}, '暗躍カウンター', 'chip_03');
+    createToken({x:340,y:-50, z: 0}, '暗躍カウンター', 'chip_03');
+    createToken({x:350,y:-50, z: 0}, '暗躍カウンター', 'chip_06');
+    createToken({x:360,y:-50, z: 0}, '暗躍カウンター', 'chip_06');
+    createToken({x:370,y:-50, z: 0}, '暗躍カウンター', 'chip_06');
+    createToken({x:280,y:-50, z: 0}, '大物トークン', 'turf');
+    createToken({x:290,y:-50, z: 0}, '刑事トークン', 'guard');
     let textNote = TextNote.create(
       "公開シート",
       `ループ回数: 4回 / 1ループ日数: 5日
