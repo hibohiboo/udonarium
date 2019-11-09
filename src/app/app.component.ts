@@ -49,6 +49,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private lazyUpdateTimer: NodeJS.Timer = null;
   private openPanelCount: number = 0;
 
+  get isMobile(): boolean { return Device.isMobile(); }
+
   constructor(
     private modalService: ModalService,
     private panelService: PanelService,

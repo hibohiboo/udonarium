@@ -4,75 +4,153 @@
 >
   <game-table></game-table>
 </div>
-<ui-panel
-  [top]="0"
-  [left]="0"
-  [width]="440"
-  [height]="100"
-  [title]="'メニュー'"
->
-  <nav>
-    <ul>
-      <li (click)="save()">
-        <a routerLink="/" routerLinkActive="active">
-          <div><i class="material-icons">sd_storage</i></div>
-          <div>保存</div>
-        </a>
-      </li>
-      <li (click)="open('PeerMenuComponent')">
-        <a routerLink="/" routerLinkActive="active">
-          <div><i class="material-icons icon-size">people</i></div>
-          <div>接続</div>
-        </a>
-      </li>
-      <li (click)="open('ChatWindowComponent')">
-        <a routerLink="/" routerLinkActive="active">
-          <div><i class="material-icons icon-size">speaker_notes</i></div>
-          <div>チャット画面</div>
-        </a>
-      </li>
-      <li (click)="open('GameTableSettingComponent')">
-        <a routerLink="/" routerLinkActive="active">
-          <div><i class="material-icons icon-size">layers</i></div>
-          <div>テーブル設定</div>
-        </a>
-      </li>
-      <li (click)="open('FileStorageComponent')">
-        <a routerLink="/" routerLinkActive="active">
-          <div><i class="material-icons icon-size">photo_library</i></div>
-          <div>画像</div>
-        </a>
-      </li>
-      <li (click)="open('JukeboxComponent')">
-        <a routerLink="/" routerLinkActive="active">
-          <div><i class="material-icons">queue_music</i></div>
-          <div>音楽</div>
-        </a>
-      </li>
-      <li (click)="open('GameObjectInventoryComponent')">
-        <a routerLink="/" routerLinkActive="active">
-          <div><i class="material-icons icon-size">folder_shared</i></div>
-          <div>インベントリ</div>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/" routerLinkActive="active">
-          <label>
-            <div><i class="material-icons">open_in_browser</i></div>
-            <div>ファイル読込</div>
-            <input
-              type="file"
-              style="display: none;"
-              (change)="handleFileSelect($event)"
-              multiple
-              accept="image/*,audio/*,application/zip"
-            />
-          </label>
-        </a>
-      </li>
+<ng-container *ngIf="isMobile; then mobileContent; else normalContent"></ng-container>
 
-    </ul>
-  </nav>
-</ui-panel>
+
+<ng-template #normalContent>
+    <ui-panel
+    [top]="0"
+    [left]="0"
+    [width]="440"
+    [height]="100"
+    [title]="'メニュー'"
+  >
+    <nav>
+      <ul>
+        <li (click)="save()">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons">sd_storage</i></div>
+            <div>保存</div>
+          </a>
+        </li>
+        <li (click)="open('PeerMenuComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons icon-size">people</i></div>
+            <div>接続</div>
+          </a>
+        </li>
+        <li (click)="open('ChatWindowComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons icon-size">speaker_notes</i></div>
+            <div>チャット画面</div>
+          </a>
+        </li>
+        <li (click)="open('GameTableSettingComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons icon-size">layers</i></div>
+            <div>テーブル設定</div>
+          </a>
+        </li>
+        <li (click)="open('FileStorageComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons icon-size">photo_library</i></div>
+            <div>画像</div>
+          </a>
+        </li>
+        <li (click)="open('JukeboxComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons">queue_music</i></div>
+            <div>音楽</div>
+          </a>
+        </li>
+        <li (click)="open('GameObjectInventoryComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons icon-size">folder_shared</i></div>
+            <div>インベントリ</div>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/" routerLinkActive="active">
+            <label>
+              <div><i class="material-icons">open_in_browser</i></div>
+              <div>ファイル読込</div>
+              <input
+                type="file"
+                style="display: none;"
+                (change)="handleFileSelect($event)"
+                multiple
+                accept="image/*,audio/*,application/zip"
+              />
+            </label>
+          </a>
+        </li>
+  
+      </ul>
+    </nav>
+  </ui-panel>
+</ng-template>
+
+<ng-template #mobileContent>
+    <ui-panel
+    [top]="0"
+    [left]="0"
+    [width]="200"
+    [height]="80"
+    [title]="'メニュー'"
+  >
+    <nav>
+      <ul>
+        <li (click)="save()">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons">sd_storage</i></div>
+            <div>保存</div>
+          </a>
+        </li>
+        <li (click)="open('ChatWindowComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons icon-size">speaker_notes</i></div>
+            <div>チャット</div>
+          </a>
+        </li>
+        <li (click)="open('JukeboxComponent')">
+            <a routerLink="/" routerLinkActive="active">
+              <div><i class="material-icons">queue_music</i></div>
+              <div>音楽</div>
+            </a>
+        </li>
+        <li (click)="open('GameTableSettingComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons icon-size">layers</i></div>
+            <div>テーブル</div>
+          </a>
+        </li>
+        <li (click)="open('FileStorageComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons icon-size">photo_library</i></div>
+            <div>画像</div>
+          </a>
+        </li>
+        <li (click)="open('GameObjectInventoryComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons icon-size">folder_shared</i></div>
+            <div>インベントリ</div>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/" routerLinkActive="active">
+            <label>
+              <div><i class="material-icons">open_in_browser</i></div>
+              <div>ファイル読込</div>
+              <input
+                type="file"
+                style="display: none;"
+                (change)="handleFileSelect($event)"
+                multiple
+                accept="image/*,audio/*,application/zip"
+              />
+            </label>
+          </a>
+        </li>
+        <li (click)="open('PeerMenuComponent')">
+            <a routerLink="/" routerLinkActive="active">
+              <div><i class="material-icons icon-size">people</i></div>
+              <div>接続</div>
+            </a>
+        </li>
+      </ul>
+    </nav>
+  </ui-panel>
+</ng-template>
+
 <div #modalLayer></div>
 <network-indicator class="networkIndicator"></network-indicator>
