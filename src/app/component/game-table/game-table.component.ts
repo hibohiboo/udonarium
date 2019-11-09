@@ -225,15 +225,30 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.hammer.add([tap, pan1p, pan2p, pinch, rotate]);
 
-    this.hammer.on("hammer.input", this.onHammer.bind(this));
-    this.hammer.on("tap", this.onTap.bind(this));
-    this.hammer.on("pan1pstart", this.onTappedPanStart.bind(this));
-    this.hammer.on("pan1pmove", this.onTappedPanMove.bind(this));
-    this.hammer.on("pan1pend", this.onTappedPanEnd.bind(this));
-    this.hammer.on("pan1pcancel", this.onTappedPanEnd.bind(this));
-    this.hammer.on("pan2pmove", this.onPanMove.bind(this));
-    this.hammer.on("pinchmove", this.onPinchMove.bind(this));
-    this.hammer.on("rotatemove", this.onRotateMove.bind(this));
+    this.hammer.on('hammer.input', this.onHammer.bind(this));
+    this.hammer.on('tap', this.onTap.bind(this));
+    this.hammer.on('pan1pstart', this.onTappedPanStart.bind(this));
+    this.hammer.on('pan1pmove', this.onTappedPanMove.bind(this));
+    this.hammer.on('pan1pend', this.onTappedPanEnd.bind(this));
+    this.hammer.on('pan1pcancel', this.onTappedPanEnd.bind(this));
+    this.hammer.on('pan2pmove', this.onPanMove.bind(this));
+    this.hammer.on('pinchmove', this.onPinchMove.bind(this));
+    this.hammer.on('rotatemove', this.onRotateMove.bind(this));
+
+    // iOS で contextmenu が発火しない問題へのworkaround.
+    let ua = window.navigator.userAgent.toLowerCase();
+    let isiOS = ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1 || ua.indexOf('macintosh') > -1 && 'ontouchend' in document;
+    if (!isiOS) return;
+    this.hammer.add(new Hammer.Press({ time: 251 }));
+    this.hammer.on('press', ev => {
+      let event = new MouseEvent('contextmenu', {
+        bubbles: true,
+        cancelable: true,
+        clientX: ev.center.x,
+        clientY: ev.center.y,
+      });
+      this.ngZone.run(() => ev.srcEvent.target.dispatchEvent(event));
+    });
   }
 
   onHammer(ev: HammerInput) {
@@ -253,12 +268,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.prevHammerDeltaX = ev.deltaX;
     this.prevHammerDeltaY = ev.deltaY;
 
-    if (this.tappedPanTimer == null || ev.eventType != Hammer.INPUT_START)
-      return;
-    let distance =
-      (this.tappedPanCenter.x - ev.center.x) ** 2 +
-      (this.tappedPanCenter.y - ev.center.y) ** 2;
-    if (75 ** 2 < distance) {
+    if (this.tappedPanTimer == null || ev.eventType != Hammer.INPUT_START) return;
+    let distance = (this.tappedPanCenter.x - ev.center.x) ** 2 + (this.tappedPanCenter.y - ev.center.y) ** 2;
+    if (50 ** 2 < distance) {
       clearTimeout(this.tappedPanTimer);
       this.tappedPanTimer = null;
     }
