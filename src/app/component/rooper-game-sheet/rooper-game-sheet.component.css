@@ -1,0 +1,20 @@
+.help-list {
+  border-bottom:1px dotted #888;
+}
+
+h2 {
+  font-size: 1.2rem;
+}
+table th {
+  padding: 0 1em;
+}
+table tr td {
+  text-align: center;
+  padding: 0 0.5em;
+}
+table tr td div {
+  display: inline-block;
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+}

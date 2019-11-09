@@ -152,7 +152,6 @@ export class RooperCard extends Card {
     this.goodwillElement.currentValue = this.goodwill + 1;
   }
   decreaseGoodwillCounter(){
-    if (this.goodwill <= 0) {return;}
     this.goodwillElement.currentValue = this.goodwill - 1;
   }
   get paranoiaElement (){
@@ -165,7 +164,6 @@ export class RooperCard extends Card {
     this.paranoiaElement.currentValue = this.paranoia + 1;
   }
   decreaseParanoiaCounter(){
-    if (this.goodwill <= 0) {return;}
     this.paranoiaElement.currentValue = this.paranoia - 1;
   }
   get intrigueElement (){
@@ -178,7 +176,24 @@ export class RooperCard extends Card {
     this.intrigueElement.currentValue = this.intrigue + 1;
   }
   decreaseIntrigueCounter(){
-    // if (this.goodwill <= 0) {return;}
     this.intrigueElement.currentValue = this.intrigue - 1;
+  }
+  get isDead():boolean {
+    const rotate = this.rotate;// 正の数しかとれないので不要 → Math.abs(this.rotate);
+    return rotate >= 70 && rotate <=110 || rotate >= 260 && rotate <=280;
+  }
+  set isDead(value:boolean) {
+    if(!value){
+      this.revive();
+      return;
+    }
+    this.kill();
+  }
+  kill () {
+    this.rotate = 90;
+  }
+  
+  revive() {
+    this.rotate = 0;
   }
 }

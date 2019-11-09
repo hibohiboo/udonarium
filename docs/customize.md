@@ -235,6 +235,61 @@ src\app\component\text-note\text-note.component.css
 
 [この時点のソース](https://github.com/hibohiboo/udonarium/tree/b460bf48eb64a9979fe3e5f11835985eeb1e2c43)
 
+## 惨劇RoopeR用カード管理コンポーネント
+
+### コンポーネント作成
+src/component/rooper-characters-sheet ディレクトリ内にコンポーネント作成
+
+### モジュール登録
+
+src/app/app.module.ts
+
+```diff
+@NgModule({
+  declarations: [
+    // 省略
+    HelpKeyboardComponent,
++    RooperCharactersSheetComponent,
+    TooltipDirective,
+    // 省略
+  entryComponents: [
+    ModalComponent,
+    // 省略
+    OverviewPanelComponent,
+    HelpKeyboardComponent,
++    RooperCharactersSheetComponent,
+  ],
+```
+
+### appに登録
+
+#### html 
+
+```diff
+        <li (click)="save()">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons">sd_storage</i></div>
+            <div>保存</div>
+          </a>
+        </li>
++        <li (click)="open('RooperCharactersSheetComponent')">
++            <a routerLink="/" routerLinkActive="active">
++              <div><i class="material-icons">loop</i></div>
++              <div>RoopeR</div>
++            </a>
++        </li>
+```
+
+#### ts 
+
+```diff
+      case 'GameObjectInventoryComponent':
+        component = GameObjectInventoryComponent;
+        break;
++      case 'RooperCharactersSheetComponent':
++          component = RooperCharactersSheetComponent;
++          break;
+```
 
 ## 参考
 

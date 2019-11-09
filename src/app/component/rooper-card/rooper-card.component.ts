@@ -300,11 +300,11 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
     // カードの画像のエレメントと比較することで、現在のポインタがあるカードのみを対象にできる。
     // if (this.pointerDeviceService.targetElement !== this.elementRef.nativeElement.querySelector('img')) return;
     if (e.key === "t") {
-      this.card.rotate = 90;
+      this.card.kill();
       return;
     }
     if (e.key === "u") {
-      this.rotate = 0;
+      this.card.revive();
       return;
     }
     // 友好カウンター
@@ -410,23 +410,29 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   get goodwill3() {
+    if(this.card.goodwill <= 0 ) { return []; }
     return Array(Math.floor(this.card.goodwill / 3));
   }
   get goodwill() {
+    if(this.card.goodwill <= 0 ) { return []; }
     return Array(this.card.goodwill % 3);
   }
 
   get paranoia3() {
+    if(this.card.paranoia <= 0 ) { return []; }
     return Array(Math.floor(this.card.paranoia / 3));
   }
   get paranoia() {
+    if(this.card.paranoia <= 0 ) { return []; }
     return Array(this.card.paranoia % 3);
   }
 
   get intrigue3() {
+    if(this.card.intrigue <= 0 ) { return []; }
     return Array(Math.floor(this.card.intrigue / 3));
   }
   get intrigue() {
+    if(this.card.intrigue <= 0 ) { return []; }
     return Array(this.card.intrigue % 3);
   }
 }

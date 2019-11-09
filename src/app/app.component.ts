@@ -28,6 +28,7 @@ import { GameTableSettingComponent } from 'component/game-table-setting/game-tab
 import { JukeboxComponent } from 'component/jukebox/jukebox.component';
 import { PeerMenuComponent } from 'component/peer-menu/peer-menu.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
+import { RooperGameSheetComponent } from 'component/rooper-game-sheet/rooper-game-sheet.component';
 import { AppConfig, AppConfigService } from 'service/app-config.service';
 import { ChatMessageService } from 'service/chat-message.service';
 import { ContextMenuService } from 'service/context-menu.service';
@@ -220,6 +221,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         break;
       case 'GameObjectInventoryComponent':
         component = GameObjectInventoryComponent;
+        break;
+      case 'RooperGameSheetComponent':
+        component = RooperGameSheetComponent;
         break;
     }
     if (component) {
