@@ -28,6 +28,7 @@ import { GameTableSettingComponent } from 'component/game-table-setting/game-tab
 import { JukeboxComponent } from 'component/jukebox/jukebox.component';
 import { PeerMenuComponent } from 'component/peer-menu/peer-menu.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
+import { RooperGameSheetComponent } from 'component/rooper-game-sheet/rooper-game-sheet.component';
 import { AppConfig, AppConfigService } from 'service/app-config.service';
 import { ChatMessageService } from 'service/chat-message.service';
 import { ContextMenuService } from 'service/context-menu.service';
@@ -35,6 +36,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
+import { Device } from '@udonarium/device/device';
 
 @Component({
   selector: 'app-root',
@@ -47,6 +49,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private immediateUpdateTimer: NodeJS.Timer = null;
   private lazyUpdateTimer: NodeJS.Timer = null;
   private openPanelCount: number = 0;
+
+  get isMobile(): boolean { return Device.isMobile(); }
 
   constructor(
     private modalService: ModalService,
@@ -132,7 +136,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     AudioStorage.instance.get(PresetSound.sweep).isHidden = true;
 
     PeerCursor.createMyCursor();
-    PeerCursor.myCursor.name = 'プレイヤー';
+    PeerCursor.myCursor.name = '';
     PeerCursor.myCursor.imageIdentifier = noneIconImage.identifier;
 
     EventSystem.register(this)
@@ -174,8 +178,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     PanelService.defaultParentViewContainerRef = ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
-      this.panelService.open(PeerMenuComponent, { width: 440, height: 450, left: 0, top: 100 });
+      if(Device.isMobile()) {
+        this.panelService.open(PeerMenuComponent, { width: 190, height: 190, left: 0, top: 80 });
+        return;        
+      }
       this.panelService.open(ChatWindowComponent, { width: 440, height: 400, left: 0, top: 450 });
+      this.panelService.open(PeerMenuComponent, { width: 440, height: 450, left: 0, top: 100 });
     }, 0);
   }
 
@@ -213,6 +221,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         break;
       case 'GameObjectInventoryComponent':
         component = GameObjectInventoryComponent;
+        break;
+      case 'RooperGameSheetComponent':
+        component = RooperGameSheetComponent;
         break;
     }
     if (component) {

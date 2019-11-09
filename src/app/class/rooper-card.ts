@@ -178,4 +178,22 @@ export class RooperCard extends Card {
   decreaseIntrigueCounter(){
     this.intrigueElement.currentValue = this.intrigue - 1;
   }
+  get isDead():boolean {
+    const rotate = this.rotate;// 正の数しかとれないので不要 → Math.abs(this.rotate);
+    return rotate >= 70 && rotate <=110 || rotate >= 260 && rotate <=280;
+  }
+  set isDead(value:boolean) {
+    if(!value){
+      this.revive();
+      return;
+    }
+    this.kill();
+  }
+  kill () {
+    this.rotate = 90;
+  }
+  
+  revive() {
+    this.rotate = 0;
+  }
 }

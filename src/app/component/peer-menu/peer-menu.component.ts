@@ -10,6 +10,7 @@ import { LobbyComponent } from 'component/lobby/lobby.component';
 import { AppConfigService } from 'service/app-config.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
+import { Device } from '@udonarium/device/device';
 
 @Component({
   selector: 'peer-menu',
@@ -24,6 +25,7 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   help: string = '';
 
   get myPeer(): PeerCursor { return PeerCursor.myCursor; }
+  get isMobile(): boolean { return Device.isMobile(); }
 
   constructor(
     private ngZone: NgZone,
