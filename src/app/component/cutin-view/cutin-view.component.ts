@@ -61,10 +61,17 @@ export class CutinViewComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  ngAfterViewInit() { }
+  ngAfterViewInit() { 
+    SoundEffect.play(PresetSound.bell);
+  }
 
   ngOnDestroy() {
     EventSystem.unregister(this);
+  }
+
+  onClick (){
+    this.cutin.destroy();
+
   }
 
   // @HostListener('dragstart', ['$event'])

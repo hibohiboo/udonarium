@@ -14,11 +14,16 @@ export class CutinView extends TabletopObject {
   @SyncVar() cutin: Cutin;
 
   get title(): string { return this.cutin.title; }
-  get imageFile(): ImageFile { return this.cutin.imageFile; }
+  // get imageFile(): ImageFile { return this.cutin.imageFile; }
 
   static create( cutin: Cutin, identifier?: string): CutinView {
     const object: CutinView = identifier ? new CutinView(identifier) : new CutinView();
     object.cutin = cutin;
+
+    object.createDataElements();
+    if (object.imageDataElement.getFirstElementByName('imageIdentifier')) {
+      object.imageDataElement.getFirstElementByName('imageIdentifier').value = cutin.imageFile.identifier;
+    }
     object.initialize();
 
     return object;

@@ -7,7 +7,7 @@ import { ContextMenuService, ContextMenuAction } from 'service/context-menu.serv
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { Cutin } from '@udonarium/cutin';
 import { CutinView } from '@udonarium/cutin-view';
-
+import { CutinViewComponent } from "component/cutin-view/cutin-view.component";
 @Component({
   selector: 'cutin-list',
   templateUrl: './cutin-list.component.html',
@@ -47,6 +47,7 @@ export class CutinListComponent implements OnInit, OnDestroy {
   }
   open (cutin:Cutin) {
     CutinView.create(cutin);
+    // this.modalService.open(CutinViewComponent, { width: 700, height: 400, left: 0, top: 400 });
   }
   // addRooperCard(){
   //   let position = this.pointerDeviceService.pointers[0];

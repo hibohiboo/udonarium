@@ -12,7 +12,10 @@
   background-color: rgba(30, 30, 30, 0.3);
   width: 100vw;
   height: 100vh;
-  z-index: 129900;
+  z-index: 9300;
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .image-view-background .close-button {
