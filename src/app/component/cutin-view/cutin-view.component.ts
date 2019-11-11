@@ -10,19 +10,19 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { Cutin } from '@udonarium/cutin';
+import { CutinView } from '@udonarium/cutin-view';
 
 @Component({
-  selector: 'cutin',
-  templateUrl: './cutin.component.html',
-  styleUrls: ['./cutin.component.css'],
+  selector: 'cutin-view',
+  templateUrl: './cutin-view.component.html',
+  styleUrls: ['./cutin-view.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CutinComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CutinViewComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('textArea', { static: true }) textAreaElementRef: ElementRef;
 
-  @Input() cutin: Cutin = null;
-  @Input() is3D: boolean = false;
+  @Input() cutin: CutinView = null;
+  // @Input() is3D: boolean = false;
 
   get title(): string { return this.cutin.title; }
   get imageFile(): ImageFile { return this.cutin.imageFile; }

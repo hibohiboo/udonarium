@@ -1,0 +1,5 @@
+
+<div class="image-view-background is-fill" (click)="chanageImageView(false)" [@fadeInOut]="'in'">
+  <div class="close-button is-pointer-events-none"><i class="material-icons">close</i></div>
+  <img class="contain-image" [src]="imageFile.url | safe: 'resourceUrl'">
+</div>

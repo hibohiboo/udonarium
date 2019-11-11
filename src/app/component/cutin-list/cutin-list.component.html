@@ -6,16 +6,18 @@
           <i class="material-icons">person_add</i>
       </button> -->
   </div>
-  <table style="font-size:12px; border: 0; border-spacing: 0; width: 100%;">
+  <table style="">
       <tr>
         <th>名前</th>
+        <th>画像</th>
         <th></th>
       </tr>
       <ng-container *ngFor="let cutin of cutins">
         <tr>
           <td>{{cutin.title}}</td>
+          <td><img [src]="cutin.imageFile.url | safe: 'resourceUrl'"></td>
           <td>
-            
+            <button (click)="open(cutin)">表示</button>
           </td>
         </tr>
       </ng-container>

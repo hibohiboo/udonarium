@@ -20,7 +20,7 @@ import { TabletopObject } from "@udonarium/tabletop-object";
 import { Terrain } from "@udonarium/terrain";
 import { TextNote } from "@udonarium/text-note";
 import { Cutin } from '@udonarium/cutin';
-
+import { CutinView } from '@udonarium/cutin-view';
 import { ContextMenuAction } from "./context-menu.service";
 import {
   PointerCoordinate,
@@ -75,6 +75,9 @@ export class TabletopService {
   private cutinCache = new TabletopCache<Cutin>(() =>
     ObjectStore.instance.getObjects(Cutin)
   );
+  private cutinViewCache  = new TabletopCache<CutinView>(()=>
+    ObjectStore.instance.getObjects(CutinView)
+  );
   private diceSymbolCache = new TabletopCache<DiceSymbol>(() =>
     ObjectStore.instance.getObjects(DiceSymbol)
   );
@@ -99,6 +102,9 @@ export class TabletopService {
   }
   get cutins(): Cutin[] {
     return this.cutinCache.objects;
+  }
+  get cutinViews(): CutinView[] {
+    return this.cutinViewCache.objects;
   }
   get diceSymbols(): DiceSymbol[] {
     return this.diceSymbolCache.objects;
@@ -199,6 +205,8 @@ export class TabletopService {
         return this.diceSymbolCache;
       case Cutin.aliasName:
         return this.cutinCache;
+      case CutinView.aliasName:
+        return this.cutinViewCache;
       default:
         return null;
     }
@@ -217,6 +225,7 @@ export class TabletopService {
     this.terrainCache.refresh();
     this.textNoteCache.refresh();
     this.cutinCache.refresh();
+    this.cutinViewCache.refresh();
     this.diceSymbolCache.refresh();
 
     this.clearMap();
@@ -681,9 +690,10 @@ export class TabletopService {
       if (!ImageStorage.instance.get(card_front)) {
         ImageStorage.instance.add(card_front);
       }
-      const card = Card.create(title, card_front, card_back);
-      card.location.x = -150;
-      card.location.y = y;
+      // const card = Card.create(title, card_front, card_back);
+      // card.location.x = -150;
+      // card.location.y = y;
+      Cutin.create(title, card_front, '', 0, 0, 0, `sampleCutin_${card_front}`);
     });
     const marker = Card.create('後攻マーカー', `${prefix_url_hollow}/marker.png`, `${prefix_url_hollow}/marker_back.png`);
     marker.location.x = -20;
@@ -695,7 +705,7 @@ export class TabletopService {
       ImageStorage.instance.add(`${prefix_url_hollow}/marker_back.png`);
     }
 
-    Cutin.create('初期カットイン', 'test', 15, 200, 200, 'sampleCutin_1');
+    
     return;
     // 初期表示なしにカスタマイズ
     testCharacter = new GameCharacter("testCharacter_1");

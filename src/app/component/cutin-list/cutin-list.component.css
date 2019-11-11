@@ -17,6 +17,9 @@ h2 {
   margin:0;
   padding-top:10px;
 }
+table {
+  font-size:12px; border: 0; border-spacing: 0; width: 100%;
+}
 table th {
   padding: 0 1em;
 }
@@ -29,4 +32,7 @@ table tr td div {
   vertical-align: middle;
   width: 30px;
   height: 30px;
+}
+td img {
+  max-width: 100px;
 }

@@ -16,7 +16,6 @@ import { EventSystem, Network } from '@udonarium/core/system';
 import { DataSummarySetting } from '@udonarium/data-summary-setting';
 import { DiceBot } from '@udonarium/dice-bot';
 import { Jukebox } from '@udonarium/Jukebox';
-import { Cutin } from '@udonarium/cutin';
 import { PeerCursor } from '@udonarium/peer-cursor';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 
@@ -85,8 +84,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     let jukebox: Jukebox = new Jukebox('Jukebox');
     jukebox.initialize();
     
-    let cutin: Cutin = new Cutin('Cutin');
-    cutin.initialize();
+    // let cutin: Cutin = new Cutin('Cutin');
+    // cutin.initialize();
 
     let soundEffect: SoundEffect = new SoundEffect('SoundEffect');
     soundEffect.initialize();
@@ -223,6 +222,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       this.panelService.open(PeerMenuComponent, { width: 440, height: 450, left: 0, top: 100 });
       this.panelService.open(ChatWindowComponent, { width: 440, height: 400, left: 0, top: 450 });
+      this.panelService.open(CutinListComponent, { width: 350, height: 600, left: 400, top: 0 });
     }, 0);
   }
 

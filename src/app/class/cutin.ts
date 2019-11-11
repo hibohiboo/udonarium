@@ -42,13 +42,16 @@ export class Cutin extends TabletopObject {
   //   moveToTopmost(this);
   // }
 
-  static create(title: string, text: string, fontSize: number = 16, width: number = 1, height: number = 1, identifier?: string): Cutin {
+  static create(title: string, imageIdentifier: string, text: string = '', fontSize: number = 16, width: number = 1, height: number = 1, identifier?: string): Cutin {
     const object: Cutin = identifier ? new Cutin(identifier) : new Cutin();
 
     object.createDataElements();
     // object.commonDataElement.appendChild(DataElement.create('fontsize', fontSize, {}, 'fontsize_' + object.identifier));
     object.commonDataElement.appendChild(DataElement.create('title', title, {}, 'title_' + object.identifier));
     object.commonDataElement.appendChild(DataElement.create('text', text, { type: 'note', currentValue: text }, 'text_' + object.identifier));
+    if (object.imageDataElement.getFirstElementByName('imageIdentifier')) {
+      object.imageDataElement.getFirstElementByName('imageIdentifier').value = imageIdentifier;
+    }
     object.initialize();
 
     return object;

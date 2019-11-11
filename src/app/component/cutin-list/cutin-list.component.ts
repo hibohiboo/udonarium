@@ -1,10 +1,12 @@
-import { Component, OnDestroy, OnInit,HostListener, } from '@angular/core';
+import { Component, OnDestroy, OnInit,HostListener,ComponentFactoryResolver } from '@angular/core';
 import { EventSystem } from '@udonarium/core/system';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { TabletopService } from 'service/tabletop.service';
 import { ContextMenuService, ContextMenuAction } from 'service/context-menu.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { Cutin } from '@udonarium/cutin';
+import { CutinView } from '@udonarium/cutin-view';
 
 @Component({
   selector: 'cutin-list',
@@ -12,13 +14,14 @@ import { PointerDeviceService } from 'service/pointer-device.service';
   styleUrls: ['./cutin-list.component.css'],
 })
 export class CutinListComponent implements OnInit, OnDestroy {
-  get cutins() {return this.tabletopService.cutins; }
+  get cutins() { return this.tabletopService.cutins; }
   constructor(
     private panelService: PanelService,
     private modalService: ModalService,
     private tabletopService: TabletopService,
     private contextMenuService: ContextMenuService,
-    private pointerDeviceService: PointerDeviceService
+    private pointerDeviceService: PointerDeviceService,
+    private componentFactoryResolver: ComponentFactoryResolver,
   ) { }
 
   ngOnInit() {
@@ -41,6 +44,9 @@ export class CutinListComponent implements OnInit, OnDestroy {
       this.modalService.resolve();
       return;
     }
+  }
+  open (cutin:Cutin) {
+    CutinView.create(cutin);
   }
   // addRooperCard(){
   //   let position = this.pointerDeviceService.pointers[0];
