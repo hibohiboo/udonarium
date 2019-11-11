@@ -1,0 +1,23 @@
+
+<div>
+  <div class="title">
+      <h2>カットイン</h2>
+      <!-- <button (click)="addRooperCard()">
+          <i class="material-icons">person_add</i>
+      </button> -->
+  </div>
+  <table style="font-size:12px; border: 0; border-spacing: 0; width: 100%;">
+      <tr>
+        <th>名前</th>
+        <th></th>
+      </tr>
+      <ng-container *ngFor="let cutin of cutins">
+        <tr>
+          <td>{{cutin.title}}</td>
+          <td>
+            
+          </td>
+        </tr>
+      </ng-container>
+    </table>
+</div>

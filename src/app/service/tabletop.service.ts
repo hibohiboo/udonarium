@@ -19,6 +19,7 @@ import { TableSelecter } from "@udonarium/table-selecter";
 import { TabletopObject } from "@udonarium/tabletop-object";
 import { Terrain } from "@udonarium/terrain";
 import { TextNote } from "@udonarium/text-note";
+import { Cutin } from '@udonarium/cutin';
 
 import { ContextMenuAction } from "./context-menu.service";
 import {
@@ -71,6 +72,9 @@ export class TabletopService {
   private textNoteCache = new TabletopCache<TextNote>(() =>
     ObjectStore.instance.getObjects(TextNote)
   );
+  private cutinCache = new TabletopCache<Cutin>(() =>
+    ObjectStore.instance.getObjects(Cutin)
+  );
   private diceSymbolCache = new TabletopCache<DiceSymbol>(() =>
     ObjectStore.instance.getObjects(DiceSymbol)
   );
@@ -92,6 +96,9 @@ export class TabletopService {
   }
   get textNotes(): TextNote[] {
     return this.textNoteCache.objects;
+  }
+  get cutins(): Cutin[] {
+    return this.cutinCache.objects;
   }
   get diceSymbols(): DiceSymbol[] {
     return this.diceSymbolCache.objects;
@@ -190,6 +197,8 @@ export class TabletopService {
         return this.textNoteCache;
       case DiceSymbol.aliasName:
         return this.diceSymbolCache;
+      case Cutin.aliasName:
+        return this.cutinCache;
       default:
         return null;
     }
@@ -207,6 +216,7 @@ export class TabletopService {
     this.tableMaskCache.refresh();
     this.terrainCache.refresh();
     this.textNoteCache.refresh();
+    this.cutinCache.refresh();
     this.diceSymbolCache.refresh();
 
     this.clearMap();
@@ -685,6 +695,7 @@ export class TabletopService {
       ImageStorage.instance.add(`${prefix_url_hollow}/marker_back.png`);
     }
 
+    Cutin.create('初期カットイン', 'test', 15, 200, 200, 'sampleCutin_1');
     return;
     // 初期表示なしにカスタマイズ
     testCharacter = new GameCharacter("testCharacter_1");

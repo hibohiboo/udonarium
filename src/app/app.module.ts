@@ -36,6 +36,8 @@ import { RoomSettingComponent } from 'component/room-setting/room-setting.compon
 import { TerrainComponent } from 'component/terrain/terrain.component';
 import { TextNoteComponent } from 'component/text-note/text-note.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
+import { CutinComponent } from 'component/cutin/cutin.component';
+import { CutinListComponent} from 'component/cutin-list/cutin-list.component';
 import { UIPanelComponent } from 'component/ui-panel/ui-panel.component';
 import { HelpKeyboardComponent } from 'component/help-keyboard/help-keyboard.component';
 import { DraggableDirective } from 'directive/draggable.directive';
@@ -94,6 +96,8 @@ import { AppComponent } from './app.component';
     TerrainComponent,
     PeerCursorComponent,
     TextNoteComponent,
+    CutinComponent,
+    CutinListComponent,
     MovableDirective,
     RotableDirective,
     NetworkIndicatorComponent,
@@ -143,6 +147,8 @@ import { AppComponent } from './app.component';
     TextNoteComponent,
     OverviewPanelComponent,
     HelpKeyboardComponent,
+    CutinComponent,
+    CutinListComponent,
   ],
   bootstrap: [AppComponent]
 })
