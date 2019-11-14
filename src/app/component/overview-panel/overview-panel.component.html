@@ -17,13 +17,19 @@
     <ng-container *ngSwitchCase="'dice-symbol'">
       <ng-container *ngTemplateOutlet="overviewDiceSymbol; context: { dice: tabletopObject }"></ng-container>
     </ng-container>
+    <ng-container *ngSwitchCase="'cutin-view'">
+    </ng-container>
     <ng-container *ngSwitchDefault>
       <ng-container *ngTemplateOutlet="overviewCharacter; context: { character: tabletopObject }"></ng-container>
     </ng-container>
   </ng-container>
 </div>
 
-<ng-container *ngIf="isOpenImageView">
+<ng-container *ngIf="isOpenCutin">
+  <ng-container *ngTemplateOutlet="cutinView"></ng-container>
+</ng-container>
+
+<ng-container *ngIf="!isOpenCutin && isOpenImageView">
   <ng-container *ngTemplateOutlet="imageView"></ng-container>
 </ng-container>
 
@@ -193,6 +199,12 @@
 
 <ng-template #imageView>
   <div class="image-view-background is-fill" (click)="chanageImageView(false)" [@fadeInOut]="'in'">
+    <div class="close-button is-pointer-events-none"><i class="material-icons">close</i></div>
+    <img class="contain-image" [src]="imageUrl | safe: 'resourceUrl'" />
+  </div>
+</ng-template>
+<ng-template #cutinView>
+  <div class="image-view-background is-fill" (click)="close()" [@fadeInOut]="'in'">
     <div class="close-button is-pointer-events-none"><i class="material-icons">close</i></div>
     <img class="contain-image" [src]="imageUrl | safe: 'resourceUrl'" />
   </div>

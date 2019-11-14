@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CutinComponent } from './cutin.component';
+import { CutinViewComponent } from './cutin-view.component';
 
-describe('CutinComponent', () => {
-  let component: CutinComponent;
-  let fixture: ComponentFixture<CutinComponent>;
+describe('CutinViewComponent', () => {
+  let component: CutinViewComponent;
+  let fixture: ComponentFixture<CutinViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CutinComponent ]
+      declarations: [ CutinViewComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CutinComponent);
+    fixture = TestBed.createComponent(CutinViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

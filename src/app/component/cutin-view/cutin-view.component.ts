@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, NgZone, OnDestroy, OnInit, ViewChild ,ComponentFactoryResolver} from '@angular/core';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
@@ -11,6 +11,10 @@ import { ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { CutinView } from '@udonarium/cutin-view';
+import { ModalService } from 'service/modal.service';
+import { HelpKeyboardComponent } from 'component/help-keyboard/help-keyboard.component';
+import { OverviewPanelComponent } from 'component/overview-panel/overview-panel.component';
+
 
 @Component({
   selector: 'cutin-view',
@@ -40,7 +44,9 @@ export class CutinViewComponent implements OnInit, OnDestroy, AfterViewInit {
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
-    private pointerDeviceService: PointerDeviceService
+    private pointerDeviceService: PointerDeviceService,
+    private modalService: ModalService,
+    private componentFactoryResolver: ComponentFactoryResolver,
   ) { }
 
   ngOnInit() {
@@ -59,10 +65,36 @@ export class CutinViewComponent implements OnInit, OnDestroy, AfterViewInit {
         this.changeDetector.markForCheck();
       });
 
+    // カットインのオーバービュー表示
+    // angularのループ後にカットインを表示を呼び出さないとExpressionChangedAfterItHasBeenCheckedErrorになる
+    setTimeout(()=>{
+      const parentViewContainerRef = ContextMenuService.defaultParentViewContainerRef;
+      const injector = parentViewContainerRef.injector;
+      const panelComponentFactory = this.componentFactoryResolver.resolveComponentFactory(OverviewPanelComponent);
+      const tooltipComponentRef = parentViewContainerRef.createComponent(panelComponentFactory, parentViewContainerRef.length, injector);
+      const cutin = this.cutin;
+      tooltipComponentRef.instance.tabletopObject = cutin;
+      EventSystem.register(this)
+      .on('DELETE_GAME_OBJECT', -1000, event => {
+        if (cutin && cutin.identifier === event.data.identifier){
+          tooltipComponentRef.destroy();
+        } 
+      });
+    }, 1);
+
   }
 
-  ngAfterViewInit() { 
+  ngAfterViewInit() {
     SoundEffect.play(PresetSound.bell);
+
+
+    // EventSystem.register(this)
+    //   .on('DELETE_GAME_OBJECT', -1000, event => {
+    //     if (cutin && cutin.identifier === event.data.identifier){ cutin.destroy(); }
+    //   });
+      // if (this.modalService.isShow) { return;}
+      // this.modalService.open(CutinViewComponent, {cutin: this.cutin});
+
   }
 
   ngOnDestroy() {
@@ -71,7 +103,6 @@ export class CutinViewComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onClick (){
     this.cutin.destroy();
-
   }
 
   // @HostListener('dragstart', ['$event'])

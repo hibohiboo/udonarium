@@ -8,6 +8,8 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { Cutin } from '@udonarium/cutin';
 import { CutinView } from '@udonarium/cutin-view';
 import { CutinViewComponent } from "component/cutin-view/cutin-view.component";
+import { OverviewPanelComponent } from 'component/overview-panel/overview-panel.component';
+
 @Component({
   selector: 'cutin-list',
   templateUrl: './cutin-list.component.html',
@@ -46,7 +48,26 @@ export class CutinListComponent implements OnInit, OnDestroy {
     }
   }
   open (cutin:Cutin) {
-    CutinView.create(cutin);
+    const cutinComponent = CutinView.create(cutin);
+
+    // this.addEventListeners(this.tooltipComponentRef.location.nativeElement);
+    // this.ngZone.runOutsideAngular(() => {
+    //   document.body.addEventListener('touchstart', this.callbackOnMouseDown, true);
+    //   document.body.addEventListener('mousedown', this.callbackOnMouseDown, true);
+    // });
+
+
+    // this.tooltipComponentRef.onDestroy(() => {
+    //   this.removeEventListeners(this.tooltipComponentRef.location.nativeElement);
+    //   document.body.removeEventListener('touchstart', this.callbackOnMouseDown, true);
+    //   document.body.removeEventListener('mousedown', this.callbackOnMouseDown, true);
+    //   this.clearTimer();
+    //   this.tooltipComponentRef = null;
+    //   EventSystem.unregister(this);
+    // });
+    // TooltipDirective.activeTooltips.push(this.tooltipComponentRef);
+    // if (this.modalService.isShow) { return;}
+    // this.modalService.open(CutinViewComponent, {cutin});
     // this.modalService.open(CutinViewComponent, { width: 700, height: 400, left: 0, top: 400 });
   }
   // addRooperCard(){
