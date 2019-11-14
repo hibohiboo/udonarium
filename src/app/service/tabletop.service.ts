@@ -19,8 +19,10 @@ import { TableSelecter } from "@udonarium/table-selecter";
 import { TabletopObject } from "@udonarium/tabletop-object";
 import { Terrain } from "@udonarium/terrain";
 import { TextNote } from "@udonarium/text-note";
-
 import { ContextMenuAction, ContextMenuType } from "./context-menu.service";
+import { Cutin } from '@udonarium/cutin';
+import { CutinView } from '@udonarium/cutin-view';
+
 import {
   PointerCoordinate,
   PointerDeviceService
@@ -74,6 +76,12 @@ export class TabletopService {
   private textNoteCache = new TabletopCache<TextNote>(() =>
     ObjectStore.instance.getObjects(TextNote)
   );
+  private cutinCache = new TabletopCache<Cutin>(() =>
+    ObjectStore.instance.getObjects(Cutin)
+  );
+  private cutinViewCache  = new TabletopCache<CutinView>(()=>
+    ObjectStore.instance.getObjects(CutinView)
+  );
   private diceSymbolCache = new TabletopCache<DiceSymbol>(() =>
     ObjectStore.instance.getObjects(DiceSymbol)
   );
@@ -102,6 +110,12 @@ export class TabletopService {
   }
   get textNotes(): TextNote[] {
     return this.textNoteCache.objects;
+  }
+  get cutins(): Cutin[] {
+    return this.cutinCache.objects;
+  }
+  get cutinViews(): CutinView[] {
+    return this.cutinViewCache.objects;
   }
   get diceSymbols(): DiceSymbol[] {
     return this.diceSymbolCache.objects;
@@ -227,6 +241,10 @@ export class TabletopService {
         return this.textNoteCache;
       case DiceSymbol.aliasName:
         return this.diceSymbolCache;
+      case Cutin.aliasName:
+        return this.cutinCache;
+      case CutinView.aliasName:
+        return this.cutinViewCache;
       default:
         return null;
     }
@@ -245,6 +263,8 @@ export class TabletopService {
     this.tableMaskCache.refresh();
     this.terrainCache.refresh();
     this.textNoteCache.refresh();
+    this.cutinCache.refresh();
+    this.cutinViewCache.refresh();
     this.diceSymbolCache.refresh();
 
     this.clearMap();
@@ -494,6 +514,11 @@ export class TabletopService {
       const testCard = RooperCard.create(name, card_front, card_back, 3, `sample_rooper_card_${card_num}`);  
       testCard.location.x = x;
       testCard.location.y = y;
+      // const card = Card.create(title, card_front, card_back);
+      // card.location.x = -150;
+      // card.location.y = y;
+      // TODO: カットイン
+      // Cutin.create(title, card_front, '', 0, 0, 0, `sampleCutin_${card_front}`);
     });
 
     // 手札初期表示

@@ -29,6 +29,7 @@ import { JukeboxComponent } from 'component/jukebox/jukebox.component';
 import { PeerMenuComponent } from 'component/peer-menu/peer-menu.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
 import { RooperGameSheetComponent } from 'component/rooper-game-sheet/rooper-game-sheet.component';
+import { CutinListComponent } from 'component/cutin-list/cutin-list.component';
 import { AppConfig, AppConfigService } from 'service/app-config.service';
 import { ChatMessageService } from 'service/chat-message.service';
 import { ContextMenuService } from 'service/context-menu.service';
@@ -85,6 +86,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     let jukebox: Jukebox = new Jukebox('Jukebox');
     jukebox.initialize();
+    
+    // let cutin: Cutin = new Cutin('Cutin');
+    // cutin.initialize();
 
     let soundEffect: SoundEffect = new SoundEffect('SoundEffect');
     soundEffect.initialize();
@@ -118,6 +122,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PresetSound.lock = AudioStorage.instance.add('./assets/sounds/tm2/tm2_switch001.wav').identifier;
     PresetSound.unlock = AudioStorage.instance.add('./assets/sounds/tm2/tm2_switch001.wav').identifier;
     PresetSound.sweep = AudioStorage.instance.add('./assets/sounds/tm2/tm2_swing003.wav').identifier;
+    PresetSound.bell = AudioStorage.instance.add('./assets/sounds/on-jin/bell.mp3').identifier;
 
     AudioStorage.instance.get(PresetSound.dicePick).isHidden = true;
     AudioStorage.instance.get(PresetSound.dicePut).isHidden = true;
@@ -224,6 +229,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         break;
       case 'RooperGameSheetComponent':
         component = RooperGameSheetComponent;
+      case 'CutinListComponent':
+        component = CutinListComponent;
         break;
     }
     if (component) {

@@ -24,6 +24,8 @@ import { PeerCursor } from "@udonarium/peer-cursor";
 import { TableSelecter } from "@udonarium/table-selecter";
 import { Terrain } from "@udonarium/terrain";
 import { TextNote } from "@udonarium/text-note";
+import { Cutin } from "@udonarium/cutin";
+import { CutinView} from "@udonarium/cutin-view";
 
 import { GameTableSettingComponent } from "component/game-table-setting/game-table-setting.component";
 import { HelpKeyboardComponent } from "component/help-keyboard/help-keyboard.component";
@@ -130,6 +132,12 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   get textNotes(): TextNote[] {
     return this.tabletopService.textNotes;
+  }
+  get cutins(): Cutin[] {
+    return this.tabletopService.cutins;
+  }
+  get cutinViews(): CutinView[] {
+    return this.tabletopService.cutinViews;
   }
   get diceSymbols(): DiceSymbol[] {
     return this.tabletopService.diceSymbols;

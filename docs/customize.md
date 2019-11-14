@@ -296,3 +296,5 @@ src/app/app.module.ts
 [【Angular7】初期フォーカスを当てる方法を解説！](https://traveler0401.com/angular-autofocus/)
 [キーコード](https://web-designer.cman.jp/javascript_ref/keyboard/keycode/)
 [Angularで、Componentにキーイベントを取得させる](https://qiita.com/Hayakuchi0/items/30e7b91c65d401ba8632)
+[TypeScriptのDecoratorについて – 公式ドキュメント日本語訳](https://mae.chab.in/archives/59845)
+[TypeScriptのMethod Decoratorを解説する。](https://qiita.com/ukiuni@github/items/8753c762abd7af831afe)

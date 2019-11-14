@@ -37,6 +37,8 @@ import { RoomSettingComponent } from 'component/room-setting/room-setting.compon
 import { TerrainComponent } from 'component/terrain/terrain.component';
 import { TextNoteComponent } from 'component/text-note/text-note.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
+import { CutinViewComponent } from 'component/cutin-view/cutin-view.component';
+import { CutinListComponent} from 'component/cutin-list/cutin-list.component';
 import { UIPanelComponent } from 'component/ui-panel/ui-panel.component';
 import { HelpKeyboardComponent } from 'component/help-keyboard/help-keyboard.component';
 import { RooperGameSheetComponent } from 'component/rooper-game-sheet/rooper-game-sheet.component';
@@ -98,6 +100,8 @@ import { AppComponent } from './app.component';
     TerrainComponent,
     PeerCursorComponent,
     TextNoteComponent,
+    CutinViewComponent,
+    CutinListComponent,
     MovableDirective,
     RotableDirective,
     NetworkIndicatorComponent,
@@ -149,6 +153,8 @@ import { AppComponent } from './app.component';
     OverviewPanelComponent,
     HelpKeyboardComponent,
     RooperGameSheetComponent,
+    CutinViewComponent,
+    CutinListComponent,
   ],
   bootstrap: [AppComponent]
 })
