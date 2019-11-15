@@ -207,8 +207,8 @@
   </div>
 </ng-template>
 <ng-template #cutinView>
-  <div class="image-view-background is-fill" (click)="close()" [@fadeInOut]="'in'">
+  <div class="image-view-background is-fill cutin-background" (click)="close()" [@fadeInOut]="'in'">
     <div class="close-button is-pointer-events-none"><i class="material-icons">close</i></div>
-    <img class="contain-image" [src]="imageUrl | safe: 'resourceUrl'" />
+    <img [src]="imageUrl | safe: 'resourceUrl'"/>
   </div>
 </ng-template>

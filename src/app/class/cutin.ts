@@ -11,44 +11,15 @@ import { DataElement } from './data-element';
 export class Cutin extends TabletopObject {
   // @SyncVar() audioIdentifier: string = '';
 
-  // // GameObject Lifecycle
-  // onStoreAdded() {
-  //   super.onStoreAdded();
-  // }
-
-  // // GameObject Lifecycle
-  // onStoreRemoved() {
-  //   super.onStoreRemoved();
-  // }
-
-  // // override
-  // apply(context: ObjectContext) {
-  //   let audioIdentifier = this.audioIdentifier;
-  //   let isPlaying = this.isPlaying;
-  //   super.apply(context);
-  //   if ((audioIdentifier !== this.audioIdentifier || !isPlaying) && this.isPlaying) {
-  //     this._play();
-  //   } else if (isPlaying !== this.isPlaying && !this.isPlaying) {
-  //     this._stop();
-  //   }
-  // }
-
-  // get fontSize(): number { return this.getCommonValue('fontsize', 1); }
   get title(): string { return this.getCommonValue('title', ''); }
   get text(): string { return this.getCommonValue('text', ''); }
   set text(text: string) { this.setCommonValue('text', text); }
-
-  // toTopmost() {
-  //   moveToTopmost(this);
-  // }
 
   static create(title: string, imageIdentifier: string, text: string = '', fontSize: number = 16, width: number = 1, height: number = 1, identifier?: string): Cutin {
     const object: Cutin = identifier ? new Cutin(identifier) : new Cutin();
 
     object.createDataElements();
-    // object.commonDataElement.appendChild(DataElement.create('fontsize', fontSize, {}, 'fontsize_' + object.identifier));
     object.commonDataElement.appendChild(DataElement.create('title', title, {}, 'title_' + object.identifier));
-    object.commonDataElement.appendChild(DataElement.create('text', text, { type: 'note', currentValue: text }, 'text_' + object.identifier));
     if (object.imageDataElement.getFirstElementByName('imageIdentifier')) {
       object.imageDataElement.getFirstElementByName('imageIdentifier').value = imageIdentifier;
     }

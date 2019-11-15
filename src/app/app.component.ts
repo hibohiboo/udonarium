@@ -87,9 +87,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     let jukebox: Jukebox = new Jukebox('Jukebox');
     jukebox.initialize();
     
-    // let cutin: Cutin = new Cutin('Cutin');
-    // cutin.initialize();
-
     let soundEffect: SoundEffect = new SoundEffect('SoundEffect');
     soundEffect.initialize();
 
@@ -185,10 +182,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       if(Device.isMobile()) {
         this.panelService.open(PeerMenuComponent, { width: 190, height: 190, left: 0, top: 80 });
+        this.panelService.open(CutinListComponent, { width: 300, height: 450, left: 250, top: 100 });
         return;        
       }
-      this.panelService.open(ChatWindowComponent, { width: 440, height: 400, left: 0, top: 450 });
-      this.panelService.open(PeerMenuComponent, { width: 440, height: 450, left: 0, top: 100 });
+      this.panelService.open(ChatWindowComponent, { width: 340, height: 400, left: 0, top: 450 });
+      this.panelService.open(PeerMenuComponent, { width: 340, height: 450, left: 0, top: 100 });
+      this.panelService.open(CutinListComponent, { width: 300, height: 450, left: 250, top: 100 });
     }, 0);
   }
 
@@ -229,6 +228,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         break;
       case 'RooperGameSheetComponent':
         component = RooperGameSheetComponent;
+        break;
       case 'CutinListComponent':
         component = CutinListComponent;
         break;
