@@ -18,19 +18,19 @@
         <tr>
           <td>{{card.name}}</td>
           <td>
-            <i class="material-icons" (click)="card.increaseGoodwillCounter()">add_circle</i>
-            <div>{{card.goodwill}}</div>  
             <i class="material-icons" (click)="card.decreaseGoodwillCounter()">remove_circle</i>
+            <div>{{card.goodwill}}</div>  
+            <i class="material-icons" (click)="card.increaseGoodwillCounter()">add_circle</i>
           </td>
           <td>
-            <i class="material-icons" (click)="card.increaseParanoiaCounter()">add_circle</i>
-            <div>{{card.paranoia}}</div>  
             <i class="material-icons" (click)="card.decreaseParanoiaCounter()">remove_circle</i>
+            <div>{{card.paranoia}}</div>  
+            <i class="material-icons" (click)="card.increaseParanoiaCounter()">add_circle</i>
           </td>
           <td>
-            <i class="material-icons" (click)="card.increaseIntrigueCounter()">add_circle</i>
-            <div>{{card.intrigue}}</div>  
             <i class="material-icons" (click)="card.decreaseIntrigueCounter()">remove_circle</i>
+            <div>{{card.intrigue}}</div>  
+            <i class="material-icons" (click)="card.increaseIntrigueCounter()">add_circle</i>
           </td>
           <td>
             <input type="checkbox" [(ngModel)]="card.isDead"/>

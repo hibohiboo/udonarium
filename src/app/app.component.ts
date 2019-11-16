@@ -182,7 +182,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       if(Device.isMobile()) {
         this.panelService.open(PeerMenuComponent, { width: 190, height: 190, left: 0, top: 80 });
-        this.panelService.open(CutinListComponent, { width: 300, height: 450, left: 250, top: 100 });
         return;        
       }
       this.panelService.open(ChatWindowComponent, { width: 340, height: 400, left: 0, top: 450 });
