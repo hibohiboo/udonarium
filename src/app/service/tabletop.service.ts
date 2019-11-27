@@ -1116,7 +1116,7 @@ export class TabletopService {
       {name:'A.I.', card_num:'22', },
       ]
       const character3 = [
-        {name:'先生', card_num:'23', },
+        {name:'教師', card_num:'23', },
         {name:'転校生', card_num:'24', },
         {name:'軍人', card_num:'25', },
         {name:'黒猫', card_num:'26', },
@@ -1163,7 +1163,7 @@ export class TabletopService {
       {name:'幻想', card_num:'20', },
       {name:'鑑識官', card_num:'21', },
       {name:'A.I.', card_num:'22', },
-      {name:'先生', card_num:'23', },
+      {name:'教師', card_num:'23', },
       {name:'転校生', card_num:'24', },
       {name:'軍人', card_num:'25', },
       {name:'黒猫', card_num:'26', },
