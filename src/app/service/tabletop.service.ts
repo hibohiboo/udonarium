@@ -75,7 +75,7 @@ export class TabletopService {
   private cutinCache = new TabletopCache<Cutin>(() =>
     ObjectStore.instance.getObjects(Cutin)
   );
-  private cutinViewCache  = new TabletopCache<CutinView>(()=>
+  private cutinViewCache = new TabletopCache<CutinView>(() =>
     ObjectStore.instance.getObjects(CutinView)
   );
   private diceSymbolCache = new TabletopCache<DiceSymbol>(() =>
@@ -421,7 +421,7 @@ export class TabletopService {
       ImageStorage.instance.add(back);
     }
 
-    [...Array(60).keys()].forEach(id => {
+    [...Array(70).keys()].forEach(id => {
       const url: string =
         "./assets/images/hollowflux_cardpng/card_" + id + ".png";
       if (!ImageStorage.instance.get(url)) {
@@ -460,6 +460,52 @@ export class TabletopService {
 
     return cardStack;
   }
+
+  createHollowSample0(position: PointerCoordinate): CardStack {
+    return this.createHollowSample(position, "チュートリアルデッキ", [
+      11,
+      11,
+      11,
+      49,
+      49,
+      49,
+      67,
+      67,
+      67,
+      54,
+      63,
+      63,
+      63,
+      22,
+      22,
+      22,
+      13,
+      53,
+      53,
+      53,
+      34,
+      34,
+      34,
+      65,
+      65,
+      65,
+      26,
+      26,
+      26,
+      38,
+      38,
+      38,
+      28,
+      28,
+      64,
+      64,
+      64,
+      69,
+      69,
+      69
+    ]);
+  }
+
 
   createHollowSample1(position: PointerCoordinate): CardStack {
     return this.createHollowSample(position, "構築済み１「氷壊摂理」", [
@@ -677,35 +723,35 @@ export class TabletopService {
       ImageStorage.instance.add(card_back);
     }
 
-    [{title:'了解', card_front:`${prefix_url_hollow}/ok.png`, y: 200},
-    {title:'攻撃', card_front:`${prefix_url_hollow}/attack.png`, y: 300},
-    {title:'防御', card_front:`${prefix_url_hollow}/guard.png`, y: 400},
-    {title:'割込み', card_front:`${prefix_url_hollow}/interrupt.png`, y: 500},
-    {title:'ターン開始', card_front:`${prefix_url_hollow}/turn_start.png`, y: 600},
-    {title:'ターン終了', card_front:`${prefix_url_hollow}/turn_end.png`, y: 700},
-    {title:'能力使用', card_front:`${prefix_url_hollow}/use_power.png`, y: 800},
-    {title:'カルネージ', card_front:`${prefix_url_hollow}/carnage.png`, y: 900},
-  ]
-    .forEach(({title,card_front, y})=>{
-      if (!ImageStorage.instance.get(card_front)) {
-        ImageStorage.instance.add(card_front);
-      }
-      // const card = Card.create(title, card_front, card_back);
-      // card.location.x = -150;
-      // card.location.y = y;
-      Cutin.create(title, card_front, '', 0, 0, 0, `sampleCutin_${card_front}`);
-    });
+    [{ title: '了解', card_front: `${prefix_url_hollow}/ok.png`, y: 200 },
+    { title: '攻撃', card_front: `${prefix_url_hollow}/attack.png`, y: 300 },
+    { title: '防御', card_front: `${prefix_url_hollow}/guard.png`, y: 400 },
+    { title: '割込み', card_front: `${prefix_url_hollow}/interrupt.png`, y: 500 },
+    { title: 'ターン開始', card_front: `${prefix_url_hollow}/turn_start.png`, y: 600 },
+    { title: 'ターン終了', card_front: `${prefix_url_hollow}/turn_end.png`, y: 700 },
+    { title: '能力使用', card_front: `${prefix_url_hollow}/use_power.png`, y: 800 },
+    { title: 'カルネージ', card_front: `${prefix_url_hollow}/carnage.png`, y: 900 },
+    ]
+      .forEach(({ title, card_front, y }) => {
+        if (!ImageStorage.instance.get(card_front)) {
+          ImageStorage.instance.add(card_front);
+        }
+        // const card = Card.create(title, card_front, card_back);
+        // card.location.x = -150;
+        // card.location.y = y;
+        Cutin.create(title, card_front, '', 0, 0, 0, `sampleCutin_${card_front}`);
+      });
     const marker = Card.create('後攻マーカー', `${prefix_url_hollow}/marker.png`, `${prefix_url_hollow}/marker_back.png`);
     marker.location.x = -20;
     marker.location.y = 650;
     if (!ImageStorage.instance.get(`${prefix_url_hollow}/marker.png`)) {
       ImageStorage.instance.add(`${prefix_url_hollow}/marker.png`);
     }
-    if (!ImageStorage.instance.get( `${prefix_url_hollow}/marker_back.png`)) {
+    if (!ImageStorage.instance.get(`${prefix_url_hollow}/marker_back.png`)) {
       ImageStorage.instance.add(`${prefix_url_hollow}/marker_back.png`);
     }
 
-    
+
     return;
     // 初期表示なしにカスタマイズ
     testCharacter = new GameCharacter("testCharacter_1");
@@ -869,6 +915,13 @@ export class TabletopService {
       }
     });
     subMenus.push({
+      name: "チュートリアルデッキ",
+      action: () => {
+        this.createHollowSample0(position);
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
       name: "構築済み１「氷壊摂理」",
       action: () => {
         this.createHollowSample1(position);
@@ -919,49 +972,49 @@ export class TabletopService {
       type: DiceType;
       imagePathPrefix: string;
     }[] = [
-      {
-        menuName: "D4",
-        diceName: "D4",
-        type: DiceType.D4,
-        imagePathPrefix: "4_dice"
-      },
-      {
-        menuName: "D6",
-        diceName: "D6",
-        type: DiceType.D6,
-        imagePathPrefix: "6_dice"
-      },
-      {
-        menuName: "D8",
-        diceName: "D8",
-        type: DiceType.D8,
-        imagePathPrefix: "8_dice"
-      },
-      {
-        menuName: "D10",
-        diceName: "D10",
-        type: DiceType.D10,
-        imagePathPrefix: "10_dice"
-      },
-      {
-        menuName: "D10 (00-90)",
-        diceName: "D10",
-        type: DiceType.D10_10TIMES,
-        imagePathPrefix: "100_dice"
-      },
-      {
-        menuName: "D12",
-        diceName: "D12",
-        type: DiceType.D12,
-        imagePathPrefix: "12_dice"
-      },
-      {
-        menuName: "D20",
-        diceName: "D20",
-        type: DiceType.D20,
-        imagePathPrefix: "20_dice"
-      }
-    ];
+        {
+          menuName: "D4",
+          diceName: "D4",
+          type: DiceType.D4,
+          imagePathPrefix: "4_dice"
+        },
+        {
+          menuName: "D6",
+          diceName: "D6",
+          type: DiceType.D6,
+          imagePathPrefix: "6_dice"
+        },
+        {
+          menuName: "D8",
+          diceName: "D8",
+          type: DiceType.D8,
+          imagePathPrefix: "8_dice"
+        },
+        {
+          menuName: "D10",
+          diceName: "D10",
+          type: DiceType.D10,
+          imagePathPrefix: "10_dice"
+        },
+        {
+          menuName: "D10 (00-90)",
+          diceName: "D10",
+          type: DiceType.D10_10TIMES,
+          imagePathPrefix: "100_dice"
+        },
+        {
+          menuName: "D12",
+          diceName: "D12",
+          type: DiceType.D12,
+          imagePathPrefix: "12_dice"
+        },
+        {
+          menuName: "D20",
+          diceName: "D20",
+          type: DiceType.D20,
+          imagePathPrefix: "20_dice"
+        }
+      ];
     let subMenus: ContextMenuAction[] = [];
 
     dices.forEach(item => {
@@ -995,7 +1048,7 @@ class TabletopCache<T extends TabletopObject> {
     return this._objects;
   }
 
-  constructor(readonly refreshCollector: () => T[]) {}
+  constructor(readonly refreshCollector: () => T[]) { }
 
   refresh() {
     this.needsRefresh = true;
