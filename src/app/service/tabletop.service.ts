@@ -433,6 +433,31 @@ export class TabletopService {
 
     return cardStack;
   }
+  createHonestWithGOD(position: PointerCoordinate): CardStack {
+    const cardStack = CardStack.create("HonestWithGODカード一覧");
+    cardStack.location.x = position.x - 25;
+    cardStack.location.y = position.y - 25;
+    cardStack.posZ = position.z;
+
+    const back = "./assets/images/HonestWithGOD/z01.gif";
+    if (!ImageStorage.instance.get(back)) {
+      ImageStorage.instance.add(back);
+    }
+
+    [...Array(62).keys()].forEach(id => {
+      const url: string =
+        "./assets/images/HonestWithGOD/Card" + (id - -1) + ".PNG";
+      if (!ImageStorage.instance.get(url)) {
+        ImageStorage.instance.add(url);
+      }
+      const card = Card.create("カード", url, back);
+      cardStack.putOnBottom(card);
+    });
+
+    return cardStack;
+  }
+
+
   private createHollowSample(
     position: PointerCoordinate,
     title: string,
@@ -840,7 +865,8 @@ export class TabletopService {
       this.getCreateTextNoteMenu(position),
       this.getCreateTrumpMenu(position),
       this.getCreateDiceSymbolMenu(position),
-      this.getCreateHollowMenu(position)
+      this.getCreateHollowMenu(position),
+      this.getCreateHonestWithGOD(position)
     ];
   }
 
@@ -902,6 +928,16 @@ export class TabletopService {
         SoundEffect.play(PresetSound.cardPut);
       }
     };
+  }
+  private getCreateHonestWithGOD(position: PointerCoordinate): ContextMenuAction {
+    return {
+      name: "HonestWithGODのカードを作成",
+      action: () => {
+        this.createHonestWithGOD(position);
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    };
+
   }
 
   private getCreateHollowMenu(position: PointerCoordinate): ContextMenuAction {
