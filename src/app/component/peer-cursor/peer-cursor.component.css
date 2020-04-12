@@ -23,7 +23,7 @@
   border-radius: 50% 50% 5% 50%;
   background-color: rgba(240, 218, 189, 0.9);
   transform-origin: 100% 100%;
-  transform: translateX(-100%) translateY(-100%)  rotateX(-90deg) rotateZ(45deg);
+  transform: translateX(-100%) translateY(-100%) rotateZ(45deg);
 }
 
 .icon {

@@ -235,6 +235,15 @@ src\app\component\text-note\text-note.component.css
 
 [この時点のソース](https://github.com/hibohiboo/udonarium/tree/b460bf48eb64a9979fe3e5f11835985eeb1e2c43)
 
+## カーソルを平面にする。
+
+src\app\component\text-note\peer-cursor.component.css
+
+```diff
+- transform: rotateX(-90deg);
+```
+
+
 ## 惨劇RoopeR用カード管理コンポーネント
 
 ### コンポーネント作成
@@ -312,6 +321,16 @@ src/app/app.module.ts
     this.positionElement.value = value;
   }
 ```
+#### 初期データに位置の追加
+
+```diff
+export const rooperCharacterList = [
+  {
+   name:'男子学生',
+   card_num:'01',
++   position: '学校'
+  },
+```
 
 ### app/rooper-game-sheet/の編集
 #### rooper-game-sheet.component.html
@@ -330,6 +349,16 @@ src/app/app.module.ts
 +          <td>{{card.position}}</td>
 ```
 #### rooper
+
+## カーソルを平面にする。
+
+src\app\component\text-note\peer-cursor.component.css
+
+```diff
+- transform: rotateX(-90deg);
+```
+
+
 
 ## 参考
 
