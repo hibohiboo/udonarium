@@ -511,7 +511,7 @@ export class TabletopService {
       if (!ImageStorage.instance.get(card_front)) {
         ImageStorage.instance.add(card_front);
       }
-      const testCard = RooperCard.create(name, card_front, card_back, 3, `sample_rooper_card_${card_num}`);  
+      const testCard = RooperCard.create(name, card_front, card_back, 3, `sample_rooper_card_${card_num}`);
       testCard.location.x = x;
       testCard.location.y = y;
       // const card = Card.create(title, card_front, card_back);
@@ -587,7 +587,7 @@ export class TabletopService {
 2日目: 殺人事件
 3日目: 自殺
 4日目: 行方不明
-5日目: 
+5日目:
 `,
       5,
       6,
@@ -1062,7 +1062,7 @@ export class TabletopService {
       if (!ImageStorage.instance.get(url)) {
         ImageStorage.instance.add(url);
       }
-      const card = Card.create(name, url, back);
+      const card = Card.create(name, url, back, undefined, `${identifier}-${index}`);
       cardStack.putOnBottom(card);
     });
     return cardStack;
@@ -1186,7 +1186,7 @@ export class TabletopService {
           if (!ImageStorage.instance.get(card_front)) {
             ImageStorage.instance.add(card_front);
           }
-          const testCard = RooperCard.create(name, card_front, card_back, 3);  
+          const testCard = RooperCard.create(name, card_front, card_back, 3);
           cardStack.putOnBottom(testCard);
         });
 
