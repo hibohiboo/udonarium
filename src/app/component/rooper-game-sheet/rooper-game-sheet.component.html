@@ -9,6 +9,7 @@
   <table style="font-size:12px; border: 0; border-spacing: 0; width: 100%;">
       <tr>
         <th>名前</th>
+        <th>位置</th>
         <th>友好</th>
         <th>不安</th>
         <th>暗躍</th>
@@ -17,19 +18,20 @@
       <ng-container *ngFor="let card of rooperCards">
         <tr>
           <td>{{card.name}}</td>
+          <td>{{card.position}}</td>
           <td>
             <i class="material-icons" (click)="card.decreaseGoodwillCounter()">remove_circle</i>
-            <div>{{card.goodwill}}</div>  
+            <div>{{card.goodwill}}</div>
             <i class="material-icons" (click)="card.increaseGoodwillCounter()">add_circle</i>
           </td>
           <td>
             <i class="material-icons" (click)="card.decreaseParanoiaCounter()">remove_circle</i>
-            <div>{{card.paranoia}}</div>  
+            <div>{{card.paranoia}}</div>
             <i class="material-icons" (click)="card.increaseParanoiaCounter()">add_circle</i>
           </td>
           <td>
             <i class="material-icons" (click)="card.decreaseIntrigueCounter()">remove_circle</i>
-            <div>{{card.intrigue}}</div>  
+            <div>{{card.intrigue}}</div>
             <i class="material-icons" (click)="card.increaseIntrigueCounter()">add_circle</i>
           </td>
           <td>

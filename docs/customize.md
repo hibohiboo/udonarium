@@ -238,7 +238,7 @@ src\app\component\text-note\text-note.component.css
 ## 惨劇RoopeR用カード管理コンポーネント
 
 ### コンポーネント作成
-src/component/rooper-characters-sheet ディレクトリ内にコンポーネント作成
+src/app/component/rooper-game-sheet ディレクトリ内にコンポーネント作成
 
 ### モジュール登録
 
@@ -290,6 +290,46 @@ src/app/app.module.ts
 +          component = RooperCharactersSheetComponent;
 +          break;
 ```
+## キャラクターへのパラメータの追加
+### `app/class/rooper-card.ts`を編集
+
+#### createTestGameDataElementメソッドの編集
+
+```diff
+    let intrigueElement: DataElement = DataElement.create('暗躍', 0, { 'type': 'numberResource', 'currentValue': '0' }, 'Intrigue_' + this.identifier);
++    let positionElement: DataElement = DataElement.create('位置', '神社', { }, 'Position_' + this.identifier);
+```
+#### getter, setterの追加
+
+```ts
+  get positionElement (){
+    return this.commonDataElement.getFirstElementByName('位置');
+  }
+  get position (): string {
+    return this.positionElement.value as string;
+  }
+  setPosition(value: string){
+    this.positionElement.value = value;
+  }
+```
+
+### app/rooper-game-sheet/の編集
+#### rooper-game-sheet.component.html
+```diff
+      <tr>
+        <th>名前</th>
++        <th>位置</th>
+        <th>友好</th>
+        <th>不安</th>
+        <th>暗躍</th>
+        <th>死亡</th>
+      </tr>
+      <ng-container *ngFor="let card of rooperCards">
+        <tr>
+          <td>{{card.name}}</td>
++          <td>{{card.position}}</td>
+```
+#### rooper
 
 ## 参考
 

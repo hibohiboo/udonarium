@@ -88,6 +88,7 @@ export class RooperCard extends Card {
     let goodwillElement: DataElement = DataElement.create('友好', 0, { 'type': 'numberResource', 'currentValue': '0' }, 'Goodwill_' + this.identifier);
     let paranoiaElement: DataElement = DataElement.create('不安', 0, { 'type': 'numberResource', 'currentValue': '0' }, 'Paranoia_' + this.identifier);
     let intrigueElement: DataElement = DataElement.create('暗躍', 0, { 'type': 'numberResource', 'currentValue': '0' }, 'Intrigue_' + this.identifier);
+    let positionElement: DataElement = DataElement.create('位置', '神社', {  }, 'Position_' + this.identifier);
 
     this.commonDataElement.appendChild(nameElement);
     this.commonDataElement.appendChild(sizeElement);
@@ -95,6 +96,7 @@ export class RooperCard extends Card {
     this.commonDataElement.appendChild(goodwillElement);
     this.commonDataElement.appendChild(paranoiaElement);
     this.commonDataElement.appendChild(intrigueElement);
+    this.commonDataElement.appendChild(positionElement);
 
     // this.detailDataElement.appendChild(resourceElement);
     // resourceElement.appendChild(goodwillElement);
@@ -192,8 +194,19 @@ export class RooperCard extends Card {
   kill () {
     this.rotate = 90;
   }
-  
+
   revive() {
     this.rotate = 0;
   }
+
+  get positionElement (){
+    return this.commonDataElement.getFirstElementByName('位置');
+  }
+  get position (): string {
+    return this.positionElement.value as string;
+  }
+  setPosition(value: string){
+    this.positionElement.value = value;
+  }
+
 }
