@@ -5,6 +5,7 @@ import { PanelService } from 'service/panel.service';
 import { TabletopService } from 'service/tabletop.service';
 import { ContextMenuService, ContextMenuAction } from 'service/context-menu.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import {Board } from '@udonarium/rooper-card';
 
 @Component({
   selector: 'rooper-game-sheet',
@@ -56,10 +57,59 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     })
   }
   resetLocation(){
+    let numbers = {
+      school: 0,
+      hospital: 0,
+      shrine: 0,
+      city:0,
+    };
+
     this.rooperCards.forEach(card=>{
-      card.location.x = 0;
-      card.location.y = 0;
+      card.location.x = calcPositionX(card.defaultPosition, numbers);
+      card.location.y = calcPositionY(card.defaultPosition, numbers);
       card.update();
+      switch(card.defaultPosition){
+        case '学校': return numbers.school++;
+        case '病院': return numbers.hospital++;
+        case '神社': return numbers.shrine++;
+        case '都市': return numbers.city++;
+      }
     })
+  }
+}
+
+function calcPositionX(board:Board, numbers: {
+  school: number,
+  hospital: number,
+  shrine: number,
+  city:number,
+}){
+  const tick = 50;
+  const board_left_edge_x = 5.5 * tick;
+  const card_width = 3.5 * tick;
+
+  switch(board){
+    case '学校': return board_left_edge_x + 13.5 * tick + card_width * (numbers.school % 4);
+    case '病院': return board_left_edge_x + card_width * (numbers.hospital % 4);
+    case '神社': return board_left_edge_x + 13.5 * tick + card_width * (numbers.shrine % 4);
+    case '都市': return board_left_edge_x+ card_width * (numbers.city % 4);
+  }
+}
+function calcPositionY(board:Board,  numbers: {
+  school: number,
+  hospital: number,
+  shrine: number,
+  city:number,
+}){
+  const tick = 50;
+  const base_y =  tick * 2;
+  const card_height = 4.5 * tick;
+  const under_padding = 10 * tick;
+
+  switch(board){
+    case '学校': return base_y + under_padding + Math.floor(numbers.school/4) * card_height;
+    case '病院': return base_y + Math.floor(numbers.hospital/4) * card_height;
+    case '神社': return base_y + Math.floor(numbers.shrine/4) * card_height;
+    case '都市': return base_y + under_padding + Math.floor(numbers.city/4) * card_height;
   }
 }
