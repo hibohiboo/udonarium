@@ -5,11 +5,20 @@
       <button (click)="addRooperCard()">
           <i class="material-icons">person_add</i>
       </button>
+
+  </div>
+  <div style="padding-bottom: 5px;">
+    <button (click)="resetCounter()">
+    カウンターリセット
+    </button>
+    <button (click)="resetLocation()">
+      初期位置に配置
+    </button>
   </div>
   <table style="font-size:12px; border: 0; border-spacing: 0; width: 100%;">
       <tr>
         <th>名前</th>
-        <th>位置</th>
+        <!-- <th>位置</th> -->
         <th>友好</th>
         <th>不安</th>
         <th>暗躍</th>
@@ -18,7 +27,7 @@
       <ng-container *ngFor="let card of rooperCards">
         <tr>
           <td>{{card.name}}</td>
-          <td>{{card.position}}</td>
+          <!-- <td>{{card.position}}</td> -->
           <td>
             <i class="material-icons" (click)="card.decreaseGoodwillCounter()">remove_circle</i>
             <div>{{card.goodwill}}</div>

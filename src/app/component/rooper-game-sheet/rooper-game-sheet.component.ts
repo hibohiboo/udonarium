@@ -48,4 +48,18 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     let actions: ContextMenuAction[] = this.tabletopService.getCreateRooperSubSubMenu({x:900, y:400, z: 0});
     this.contextMenuService.open(position, actions);
   }
+  resetCounter(){
+    this.rooperCards.forEach(card=>{
+      card.goodwill = 0;
+      card.paranoia = 0;
+      card.intrigue = 0;
+    })
+  }
+  resetLocation(){
+    this.rooperCards.forEach(card=>{
+      card.location.x = 0;
+      card.location.y = 0;
+      card.update();
+    })
+  }
 }

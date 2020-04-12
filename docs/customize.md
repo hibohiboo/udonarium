@@ -350,12 +350,18 @@ export const rooperCharacterList = [
 ```
 #### rooper
 
-## カーソルを平面にする。
+## 位置を操作する
 
-src\app\component\text-note\peer-cursor.component.css
+locationの値を変更しても、`card.update`を使わないと反映されないので注意。
 
-```diff
-- transform: rotateX(-90deg);
+```ts
+  resetLocation(){
+    this.rooperCards.forEach(card=>{
+      card.location.x = 0;
+      card.location.y = 0;
+      card.update();
+    })
+  }
 ```
 
 
