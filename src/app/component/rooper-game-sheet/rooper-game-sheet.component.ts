@@ -50,6 +50,9 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     this.contextMenuService.open(position, actions);
   }
   resetCounter(){
+    if (!window.confirm("カウンターをリセットします。よろしいですか？")){
+      return;
+    }
     this.rooperCards.forEach(card=>{
       card.goodwill = 0;
       card.paranoia = 0;
@@ -57,6 +60,9 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     })
   }
   resetLocation(){
+    if (!window.confirm("キャラクターを初期配置に戻します。よろしいですか？")){
+      return;
+    }
     let numbers = {
       school: 0,
       hospital: 0,
