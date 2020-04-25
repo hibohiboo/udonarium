@@ -519,10 +519,10 @@ export class TabletopService {
     });
 
     // 手札初期表示
-    this.createRooperScripterHands({x:800,y:300, z: 0}, '脚本家手札','a_writer_cards', 'sample_hand_s');
-    this.createRooperProtagonistHands({x:600,y:500, z: 0}, '主人公A手札','a_heroA_cards', 'sample_hand_a');
-    this.createRooperProtagonistHands({x:800,y:500, z: 0}, '主人公B手札','a_heroB_cards', 'sample_hand_b');
-    this.createRooperProtagonistHands({x:1000,y:500, z: 0}, '主人公C手札','a_heroC_cards', 'sample_hand_c');
+    this.createRooperScripterHands({x:800,y:300, z: 0}, '脚本家手札','a_writer_cards', 'sample_hand_s').faceDown();
+    this.createRooperProtagonistHands({x:600,y:500, z: 0}, '主人公A手札','a_heroA_cards', 'sample_hand_a').faceDown();
+    this.createRooperProtagonistHands({x:800,y:500, z: 0}, '主人公B手札','a_heroB_cards', 'sample_hand_b').faceDown();
+    this.createRooperProtagonistHands({x:1000,y:500, z: 0}, '主人公C手札','a_heroC_cards', 'sample_hand_c').faceDown();
     // リーダーカート表示
     const createExtra = (position, title, path, size=2)=>{
       const img = `${prefix_path_rooper}/extra/${path}.png`;

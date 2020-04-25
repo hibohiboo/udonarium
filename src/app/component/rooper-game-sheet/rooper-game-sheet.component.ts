@@ -59,6 +59,14 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
       card.intrigue = 0;
     })
   }
+  reviveAll(){
+    if (!window.confirm("キャラクターを蘇生します。よろしいですか？")){
+      return;
+    }
+    this.rooperCards.forEach(card=>{
+      card.isDead = false;
+    })
+  }
   resetLocation(){
     if (!window.confirm("キャラクターを初期配置に戻します。よろしいですか？")){
       return;

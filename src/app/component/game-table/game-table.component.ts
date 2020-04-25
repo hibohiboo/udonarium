@@ -40,6 +40,9 @@ import { PointerDeviceService } from "service/pointer-device.service";
 import { TabletopService } from "service/tabletop.service";
 import { Device } from '@udonarium/device/device';
 
+const viewPotisonZDefault = -600;
+const viewPotisonXDefault = 200;
+
 @Component({
   selector: "game-table",
   templateUrl: "./game-table.component.html",
@@ -90,9 +93,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.pointerDeviceService.isDragging;
   }
 
-  private viewPotisonX: number = 200;
+  private viewPotisonX: number = viewPotisonXDefault;
   private viewPotisonY: number = 0;
-  private viewPotisonZ: number = -600; // 初期表示のテーブルを全体が映るように修正
+  private viewPotisonZ: number = viewPotisonZDefault; // 初期表示のテーブルを全体が映るように修正
 
   private viewRotateX: number = 0; // 初期の回転を調整
   private viewRotateY: number = 0;
@@ -499,6 +502,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.modalService.isShow) { return;}
       this.modalService.open(HelpKeyboardComponent, { width: 700, height: 400, left: 0, top: 400 });
       return;
+    } else if (e.key === 'Home') {
+      this.resetTransform();
+      return;
     }
 
     let transformX = 0;
@@ -597,6 +603,31 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.viewPotisonX += transformX;
     this.viewPotisonY += transformY;
     this.viewPotisonZ += transformZ;
+
+    this.gameTable.nativeElement.style.transform =
+      "translateZ(" +
+      this.viewPotisonZ +
+      "px) translateY(" +
+      this.viewPotisonY +
+      "px) translateX(" +
+      this.viewPotisonX +
+      "px) rotateY(" +
+      this.viewRotateY +
+      "deg) rotateX(" +
+      this.viewRotateX +
+      "deg) rotateZ(" +
+      this.viewRotateZ +
+      "deg) ";
+  }
+
+  private resetTransform() {
+    this.viewRotateX = 0;
+    this.viewRotateY = 0;
+    this.viewRotateZ = 0;
+
+    this.viewPotisonX = viewPotisonXDefault;
+    this.viewPotisonY = 0;
+    this.viewPotisonZ = viewPotisonZDefault;
 
     this.gameTable.nativeElement.style.transform =
       "translateZ(" +
