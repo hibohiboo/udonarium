@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { ChatTab } from '@udonarium/chat-tab';
+import { ChatTabList } from '@udonarium/chat-tab-list';
 import { ObjectSerializer } from '@udonarium/core/synchronize-object/object-serializer';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem } from '@udonarium/core/system';
@@ -35,7 +36,7 @@ export class ChatTabSettingComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.modalService.title = this.panelService.title = 'チャットタブ設定';
+    Promise.resolve().then(() => this.modalService.title = this.panelService.title = 'チャットタブ設定');
     EventSystem.register(this)
       .on('DELETE_GAME_OBJECT', 1000, event => {
         if (!this.selectedTab || event.data.identifier !== this.selectedTab.identifier) return;
@@ -56,9 +57,7 @@ export class ChatTabSettingComponent implements OnInit, OnDestroy {
   }
 
   create() {
-    let chatTab = new ChatTab();
-    chatTab.name = 'タブ';
-    chatTab.initialize();
+    ChatTabList.instance.addChatTab('タブ');
   }
 
   save() {
