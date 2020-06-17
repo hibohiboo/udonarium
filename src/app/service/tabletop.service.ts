@@ -444,7 +444,7 @@ export class TabletopService {
       ImageStorage.instance.add(back);
     }
 
-    [...Array(62).keys()].forEach(id => {
+    [...Array(90).keys()].forEach(id => {
       const url: string =
         "./assets/images/HonestWithGOD/Card" + (id - -1) + ".PNG";
       if (!ImageStorage.instance.get(url)) {
