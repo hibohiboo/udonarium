@@ -421,9 +421,8 @@ export class TabletopService {
       ImageStorage.instance.add(back);
     }
 
-    [...Array(70).keys()].forEach(id => {
-      const url: string =
-        "./assets/images/hollowflux_cardpng/card_" + id + ".png";
+    [...Array(105).keys()].map(i=>i+1).forEach(id => {
+      const url =  `./assets/images/hollowflux_cardpng/card_${`000${id}`.slice(-3)}.png`;
       if (!ImageStorage.instance.get(url)) {
         ImageStorage.instance.add(url);
       }
@@ -950,41 +949,41 @@ export class TabletopService {
         SoundEffect.play(PresetSound.cardPut);
       }
     });
-    subMenus.push({
-      name: "チュートリアルデッキ",
-      action: () => {
-        this.createHollowSample0(position);
-        SoundEffect.play(PresetSound.cardPut);
-      }
-    });
-    subMenus.push({
-      name: "構築済み１「氷壊摂理」",
-      action: () => {
-        this.createHollowSample1(position);
-        SoundEffect.play(PresetSound.cardPut);
-      }
-    });
-    subMenus.push({
-      name: "​構築済み２「鏖殺毒性」",
-      action: () => {
-        this.createHollowSample2(position);
-        SoundEffect.play(PresetSound.cardPut);
-      }
-    });
-    subMenus.push({
-      name: "​構築済み３「圧制覇道」",
-      action: () => {
-        this.createHollowSample3(position);
-        SoundEffect.play(PresetSound.cardPut);
-      }
-    });
-    subMenus.push({
-      name: "​構築済み４「剣帝閃嵐」",
-      action: () => {
-        this.createHollowSample4(position);
-        SoundEffect.play(PresetSound.cardPut);
-      }
-    });
+    // subMenus.push({
+    //   name: "チュートリアルデッキ",
+    //   action: () => {
+    //     this.createHollowSample0(position);
+    //     SoundEffect.play(PresetSound.cardPut);
+    //   }
+    // });
+    // subMenus.push({
+    //   name: "構築済み１「氷壊摂理」",
+    //   action: () => {
+    //     this.createHollowSample1(position);
+    //     SoundEffect.play(PresetSound.cardPut);
+    //   }
+    // });
+    // subMenus.push({
+    //   name: "​構築済み２「鏖殺毒性」",
+    //   action: () => {
+    //     this.createHollowSample2(position);
+    //     SoundEffect.play(PresetSound.cardPut);
+    //   }
+    // });
+    // subMenus.push({
+    //   name: "​構築済み３「圧制覇道」",
+    //   action: () => {
+    //     this.createHollowSample3(position);
+    //     SoundEffect.play(PresetSound.cardPut);
+    //   }
+    // });
+    // subMenus.push({
+    //   name: "​構築済み４「剣帝閃嵐」",
+    //   action: () => {
+    //     this.createHollowSample4(position);
+    //     SoundEffect.play(PresetSound.cardPut);
+    //   }
+    // });
     return {
       name: "HollowΦFluxの山札を作成",
       action: null,
