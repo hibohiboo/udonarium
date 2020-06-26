@@ -527,6 +527,8 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
       //↑
       if (e.shiftKey) {
         rotateX = -2;
+      } else if (e.ctrlKey) {
+        transformZ = 150;
       } else {
         transformY = 10;
       }
@@ -543,6 +545,8 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
       //↓
       if (e.shiftKey) {
         rotateX = 2;
+      } else if (e.ctrlKey) {
+        transformZ = -150;
       } else {
         transformY = -10;
       }
@@ -706,16 +710,14 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         break;
     }
 
-    for (let h = 0; h <= height; h++) {
-      for (let w = 0; w <= width; w++) {
-        calcGridPosition(w, h);
-        context.beginPath();
-        context.strokeRect(gx, gy, gridSize, gridSize);
-        context.fillText(
-          (w + 1).toString() + "-" + (h + 1).toString(),
-          gx + gridSize / 2,
-          gy + gridSize / 2
-        );
+    if (0 <= gridType) {
+      for (let h = 0; h <= height; h++) {
+        for (let w = 0; w <= width; w++) {
+          calcGridPosition(w, h);
+          context.beginPath();
+          context.strokeRect(gx, gy, gridSize, gridSize);
+          context.fillText((w + 1).toString() + '-' + (h + 1).toString(), gx + (gridSize / 2), gy + (gridSize / 2));
+        }
       }
     }
 

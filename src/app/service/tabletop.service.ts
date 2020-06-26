@@ -1,35 +1,33 @@
-import { Injectable, NgZone } from "@angular/core";
-import { Card } from "@udonarium/card";
-import { CardStack } from "@udonarium/card-stack";
-import {
-  ImageContext,
-  ImageFile
-} from "@udonarium/core/file-storage/image-file";
-import { ImageStorage } from "@udonarium/core/file-storage/image-storage";
-import { ObjectSerializer } from "@udonarium/core/synchronize-object/object-serializer";
-import { ObjectStore } from "@udonarium/core/synchronize-object/object-store";
-import { EventSystem } from "@udonarium/core/system";
-import { DiceSymbol, DiceType } from "@udonarium/dice-symbol";
-import { GameCharacter } from "@udonarium/game-character";
-import { GameTable } from "@udonarium/game-table";
-import { GameTableMask } from "@udonarium/game-table-mask";
-import { PeerCursor } from "@udonarium/peer-cursor";
-import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
-import { TableSelecter } from "@udonarium/table-selecter";
-import { TabletopObject } from "@udonarium/tabletop-object";
-import { Terrain } from "@udonarium/terrain";
-import { TextNote } from "@udonarium/text-note";
-import { ContextMenuAction, ContextMenuType } from "./context-menu.service";
+import { Injectable, NgZone } from '@angular/core';
+import { Card } from '@udonarium/card';
+import { CardStack } from '@udonarium/card-stack';
+import { ChatTab } from '@udonarium/chat-tab';
+import { ChatTabList } from '@udonarium/chat-tab-list';
+import { ImageContext, ImageFile } from '@udonarium/core/file-storage/image-file';
+import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
+import { ObjectSerializer } from '@udonarium/core/synchronize-object/object-serializer';
+import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
+import { EventSystem } from '@udonarium/core/system';
+import { DiceSymbol, DiceType } from '@udonarium/dice-symbol';
+import { GameCharacter } from '@udonarium/game-character';
+import { GameTable } from '@udonarium/game-table';
+import { GameTableMask } from '@udonarium/game-table-mask';
+import { PeerCursor } from '@udonarium/peer-cursor';
+import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
+import { TableSelecter } from '@udonarium/table-selecter';
+import { TabletopObject } from '@udonarium/tabletop-object';
+import { Terrain } from '@udonarium/terrain';
+import { TextNote } from '@udonarium/text-note';
+import { ContextMenuAction } from './context-menu.service';
 import { Cutin } from '@udonarium/cutin';
 import { CutinView } from '@udonarium/cutin-view';
-
 import {
   PointerCoordinate,
   PointerDeviceService
 } from "./pointer-device.service";
-
 import { RooperCard, rooperCharacterList, Board } from '@udonarium/rooper-card';
 import { Device } from '@udonarium/device/device';
+
 
 type ObjectIdentifier = string;
 type LocationName = string;
@@ -171,6 +169,8 @@ export class TabletopService {
           gameObject.posZ = pointer.z;
           this.placeToTabletop(gameObject);
           SoundEffect.play(PresetSound.piecePut);
+        } else if (gameObject instanceof ChatTab) {
+          ChatTabList.instance.addChatTab(gameObject);
         }
       });
       // 初期使用画像の登録

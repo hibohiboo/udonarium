@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 
 import { ChatTab } from '@udonarium/chat-tab';
+import { ChatTabList } from '@udonarium/chat-tab-list';
 import { AudioPlayer } from '@udonarium/core/file-storage/audio-player';
 import { AudioSharingSystem } from '@udonarium/core/file-storage/audio-sharing-system';
 import { AudioStorage } from '@udonarium/core/file-storage/audio-storage';
@@ -79,6 +80,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.appConfigService.initialize();
     this.pointerDeviceService.initialize();
 
+    ChatTabList.instance.initialize();
     DataSummarySetting.instance.initialize();
 
     let diceBot: DiceBot = new DiceBot('DiceBot');
@@ -86,18 +88,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     let jukebox: Jukebox = new Jukebox('Jukebox');
     jukebox.initialize();
-    
+
     let soundEffect: SoundEffect = new SoundEffect('SoundEffect');
     soundEffect.initialize();
 
-    let chatTab: ChatTab = new ChatTab('MainTab');
-    chatTab.name = 'メインタブ';
-    chatTab.initialize();
-    const mainTab = chatTab;
-
-    chatTab = new ChatTab('SubTab');
-    chatTab.name = 'サブタブ';
-    chatTab.initialize();
+    ChatTabList.instance.addChatTab('メインタブ', 'MainTab');
+    ChatTabList.instance.addChatTab('サブタブ', 'SubTab');
 
     let fileContext = ImageFile.createEmpty('none_icon').toContext();
     fileContext.url = './assets/images/ic_account_circle_black_24dp_2x.png';
@@ -171,9 +167,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       })
       .on('CONNECT_PEER', event => {
         if (event.isSendFromSelf) this.chatMessageService.calibrateTimeOffset();
+        this.lazyNgZoneUpdate(event.isSendFromSelf);
       })
       .on('DISCONNECT_PEER', event => {
-        //
+        this.lazyNgZoneUpdate(event.isSendFromSelf);
       });
   }
 
@@ -182,7 +179,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       if(Device.isMobile()) {
         this.panelService.open(PeerMenuComponent, { width: 190, height: 190, left: 0, top: 80 });
-        return;        
+        return;
       }
       this.panelService.open(ChatWindowComponent, { width: 340, height: 400, left: 0, top: 450 });
       this.panelService.open(PeerMenuComponent, { width: 340, height: 450, left: 0, top: 100 });
