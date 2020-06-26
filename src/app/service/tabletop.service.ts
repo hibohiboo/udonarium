@@ -18,7 +18,7 @@ import { TableSelecter } from '@udonarium/table-selecter';
 import { TabletopObject } from '@udonarium/tabletop-object';
 import { Terrain } from '@udonarium/terrain';
 import { TextNote } from '@udonarium/text-note';
-import { ContextMenuAction } from './context-menu.service';
+import { ContextMenuAction, ContextMenuType } from './context-menu.service';
 import { Cutin } from '@udonarium/cutin';
 import { CutinView } from '@udonarium/cutin-view';
 import {
