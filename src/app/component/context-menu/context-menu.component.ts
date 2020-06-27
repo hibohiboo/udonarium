@@ -154,4 +154,3 @@ export class ContextMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 }
 
-ContextMenuService.UIPanelComponentClass = ContextMenuComponent;

@@ -49,31 +49,5 @@ export class CutinListComponent implements OnInit, OnDestroy {
   }
   open (cutin:Cutin) {
     const cutinComponent = CutinView.create(cutin);
-
-    // this.addEventListeners(this.tooltipComponentRef.location.nativeElement);
-    // this.ngZone.runOutsideAngular(() => {
-    //   document.body.addEventListener('touchstart', this.callbackOnMouseDown, true);
-    //   document.body.addEventListener('mousedown', this.callbackOnMouseDown, true);
-    // });
-
-
-    // this.tooltipComponentRef.onDestroy(() => {
-    //   this.removeEventListeners(this.tooltipComponentRef.location.nativeElement);
-    //   document.body.removeEventListener('touchstart', this.callbackOnMouseDown, true);
-    //   document.body.removeEventListener('mousedown', this.callbackOnMouseDown, true);
-    //   this.clearTimer();
-    //   this.tooltipComponentRef = null;
-    //   EventSystem.unregister(this);
-    // });
-    // TooltipDirective.activeTooltips.push(this.tooltipComponentRef);
-    // if (this.modalService.isShow) { return;}
-    // this.modalService.open(CutinViewComponent, {cutin});
-    // this.modalService.open(CutinViewComponent, { width: 700, height: 400, left: 0, top: 400 });
   }
-  // addRooperCard(){
-  //   let position = this.pointerDeviceService.pointers[0];
-
-  //   let actions: ContextMenuAction[] = this.tabletopService.getCreateRooperSubSubMenu({x:900, y:400, z: 0});
-  //   this.contextMenuService.open(position, actions);
-  // }
 }

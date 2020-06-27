@@ -1,4 +1,7 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, ViewContainerRef } from '@angular/core';
+// aotでコンパイルした後のファイルでContextMenuService.UIPanelComponentClassにnullが入っており、右クリック時に、e.resolveComponentFactoryにnullが入ってCannot read property 'ɵcmp' of nullになってしまう
+// 循環参照のWARNINGが出るが、一旦、これで対策
+import { ContextMenuComponent } from 'component/context-menu/context-menu.component';
 
 interface ContextMenuPoint {
   x: number,
@@ -53,7 +56,7 @@ export class ContextMenuService {
     let panelComponentRef: ComponentRef<any>;
 
     const injector = parentViewContainerRef.injector;
-    const panelComponentFactory = this.componentFactoryResolver.resolveComponentFactory(ContextMenuService.UIPanelComponentClass);
+    const panelComponentFactory = this.componentFactoryResolver.resolveComponentFactory(ContextMenuComponent);
 
     panelComponentRef = parentViewContainerRef.createComponent(panelComponentFactory, parentViewContainerRef.length, injector);
 
