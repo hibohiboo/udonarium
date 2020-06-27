@@ -15,7 +15,7 @@ export class HelpKeyboardComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.changeTitle();
+    Promise.resolve().then(() => this.changeTitle());
   }
 
   private changeTitle() {

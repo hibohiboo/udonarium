@@ -64,7 +64,7 @@ export class CutinViewComponent implements OnInit, OnDestroy, AfterViewInit {
       .on('DELETE_GAME_OBJECT', -1000, event => {
         if (cutin && cutin.identifier === event.data.identifier){
           tooltipComponentRef.destroy();
-        } 
+        }
       });
     }, 1);
 
