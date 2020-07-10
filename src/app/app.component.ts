@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+
 import { ChatTabList } from '@udonarium/chat-tab-list';
 import { AudioPlayer } from '@udonarium/core/file-storage/audio-player';
 import { AudioSharingSystem } from '@udonarium/core/file-storage/audio-sharing-system';
@@ -275,5 +276,5 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 }
 
 PanelService.UIPanelComponentClass = UIPanelComponent;
-ContextMenuService.UIPanelComponentClass = ContextMenuComponent;
+ContextMenuService.ContextMenuComponentClass = ContextMenuComponent;
 ModalService.ModalComponentClass = ModalComponent;
