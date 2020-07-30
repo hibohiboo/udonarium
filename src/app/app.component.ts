@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 
-import { ChatTab } from '@udonarium/chat-tab';
+import { ChatTabList } from '@udonarium/chat-tab-list';
 import { AudioPlayer } from '@udonarium/core/file-storage/audio-player';
 import { AudioSharingSystem } from '@udonarium/core/file-storage/audio-sharing-system';
 import { AudioStorage } from '@udonarium/core/file-storage/audio-storage';
@@ -20,15 +20,18 @@ import { PeerCursor } from '@udonarium/peer-cursor';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 
 import { ChatWindowComponent } from 'component/chat-window/chat-window.component';
+import { ContextMenuComponent } from 'component/context-menu/context-menu.component';
 import { FileStorageComponent } from 'component/file-storage/file-storage.component';
 import { GameCharacterGeneratorComponent } from 'component/game-character-generator/game-character-generator.component';
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 import { GameObjectInventoryComponent } from 'component/game-object-inventory/game-object-inventory.component';
 import { GameTableSettingComponent } from 'component/game-table-setting/game-table-setting.component';
 import { JukeboxComponent } from 'component/jukebox/jukebox.component';
+import { ModalComponent } from 'component/modal/modal.component';
 import { PeerMenuComponent } from 'component/peer-menu/peer-menu.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
 import { CutinListComponent } from 'component/cutin-list/cutin-list.component';
+import { UIPanelComponent } from 'component/ui-panel/ui-panel.component';
 import { AppConfig, AppConfigService } from 'service/app-config.service';
 import { ChatMessageService } from 'service/chat-message.service';
 import { ContextMenuService } from 'service/context-menu.service';
@@ -37,6 +40,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { lobbyRef } from './class/firebase/firebase';
+import { ChatTab } from '@udonarium/chat-tab';
 
 @Component({
   selector: 'app-root',
@@ -76,6 +80,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.appConfigService.initialize();
     this.pointerDeviceService.initialize();
 
+    ChatTabList.instance.initialize();
     DataSummarySetting.instance.initialize();
 
     let diceBot: DiceBot = new DiceBot('DiceBot');
@@ -83,21 +88,15 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     let jukebox: Jukebox = new Jukebox('Jukebox');
     jukebox.initialize();
-    
+
     // let cutin: Cutin = new Cutin('Cutin');
     // cutin.initialize();
 
     let soundEffect: SoundEffect = new SoundEffect('SoundEffect');
     soundEffect.initialize();
 
-    let chatTab: ChatTab = new ChatTab('MainTab');
-    chatTab.name = 'メインタブ';
-    chatTab.initialize();
-    const mainTab = chatTab;
-
-    chatTab = new ChatTab('SubTab');
-    chatTab.name = 'サブタブ';
-    chatTab.initialize();
+    ChatTabList.instance.addChatTab('メインタブ', 'MainTab');
+    ChatTabList.instance.addChatTab('サブタブ', 'SubTab');
 
     let fileContext = ImageFile.createEmpty('none_icon').toContext();
     fileContext.url = './assets/images/ic_account_circle_black_24dp_2x.png';
@@ -194,7 +193,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
               tag: '',
               text: data.common.text,
             };
-            mainTab.addMessage(chatMessage);
+            ObjectStore.instance.get<ChatTab>('MainTab').addMessage(chatMessage);
           });
           isFirst = false;
         });
@@ -212,9 +211,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       })
       .on('CONNECT_PEER', event => {
         if (event.isSendFromSelf) this.chatMessageService.calibrateTimeOffset();
+        this.lazyNgZoneUpdate(event.isSendFromSelf);
       })
       .on('DISCONNECT_PEER', event => {
-        //
+        this.lazyNgZoneUpdate(event.isSendFromSelf);
       });
   }
 
@@ -310,3 +310,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
   }
 }
+
+PanelService.UIPanelComponentClass = UIPanelComponent;
+ContextMenuService.ContextMenuComponentClass = ContextMenuComponent;
+ModalService.ModalComponentClass = ModalComponent;
