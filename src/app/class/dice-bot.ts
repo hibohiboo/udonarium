@@ -6,7 +6,7 @@ import { ObjectStore } from './core/synchronize-object/object-store';
 import { EventSystem } from './core/system';
 import { PromiseQueue } from './core/system/util/promise-queue';
 import { StringUtil } from './core/system/util/string-util';
-import type { PostMessageChat } from '../ports/types'
+import type { PostMessageDiceChat } from '../ports/types'
 declare var Opal
 
 interface DiceBotInfo {
@@ -14,7 +14,7 @@ interface DiceBotInfo {
   game: string;
 }
 
-interface DiceRollResult {
+export interface DiceRollResult {
   result: string;
   isSecret: boolean;
 }
@@ -363,11 +363,12 @@ export class DiceBot extends GameObject {
       }
     }
     if (window.parent) {
-      const message: PostMessageChat = {
+      const message: PostMessageDiceChat = {
         type: 'dice',
         payload: {
           message: diceBotMessage,
-          tab:originalMessage.tabIdentifier
+          tab:originalMessage.tabIdentifier,
+          dice: rollResult
         }
       };
       window.parent.postMessage(
