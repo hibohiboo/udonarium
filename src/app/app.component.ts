@@ -38,6 +38,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
+import { ChatTab } from '@udonarium/chat-tab';
 
 @Component({
   selector: 'app-root',
@@ -132,6 +133,26 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PeerCursor.createMyCursor();
     PeerCursor.myCursor.name = 'プレイヤー';
     PeerCursor.myCursor.imageIdentifier = noneIconImage.identifier;
+    if (window.parent) {
+      window.addEventListener('message', (event: MessageEvent) => {
+        console.log('from parent message', event)
+        // TODO: origin
+        // if (event.origin !== '') return
+        const { message, tab } = event.data
+
+        let chatMessage = {
+          from: Network.peerContext.id,
+          to: message.to,
+          name: message.name,
+          imageIdentifier: message.imageIdentifier,
+          timestamp: message.timestamp,
+          tag: message.tag,
+          text: message.text,
+        };
+        ObjectStore.instance.get<ChatTab>(tab).addMessage(chatMessage);
+      }, false)
+
+    }
 
     EventSystem.register(this)
       .on('UPDATE_GAME_OBJECT', event => { this.lazyNgZoneUpdate(event.isSendFromSelf); })
@@ -174,7 +195,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PanelService.defaultParentViewContainerRef = ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
       this.panelService.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
-      this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
+      if (!window.parent) {
+        this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
+      }
     }, 0);
   }
 

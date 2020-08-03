@@ -84,7 +84,15 @@ export class ChatMessageService {
       tag: gameType,
       text: text,
     };
-
+    if (window.parent) {
+      window.parent.postMessage(
+        {
+          event: 'sendMessage',
+          message: chatMessage,
+        },
+        '*', // TODO: Set Origin
+      )
+    }
     return chatTab.addMessage(chatMessage);
   }
 
