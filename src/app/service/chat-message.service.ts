@@ -8,6 +8,7 @@ import { Network } from '@udonarium/core/system';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
 import { GameCharacter } from '@udonarium/game-character';
 import { PeerCursor } from '@udonarium/peer-cursor';
+import type { PostMessageChat } from '../ports/types'
 
 const HOURS = 60 * 60 * 1000;
 
@@ -85,11 +86,15 @@ export class ChatMessageService {
       text: text,
     };
     if (window.parent) {
-      window.parent.postMessage(
-        {
-          event: 'sendMessage',
+      const message: PostMessageChat = {
+        type: 'chat',
+        payload: {
           message: chatMessage,
-        },
+          tab: chatTab.identifier
+        }
+      };
+      window.parent.postMessage(
+        message,
         '*', // TODO: Set Origin
       )
     }

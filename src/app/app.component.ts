@@ -39,6 +39,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { ChatTab } from '@udonarium/chat-tab';
+import { isChatMessage } from './ports'
 
 @Component({
   selector: 'app-root',
@@ -138,7 +139,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         console.log('from parent message', event)
         // TODO: origin
         // if (event.origin !== '') return
-        const { message, tab } = event.data
+        // event.data.type webpackOKのメッセージなども来る。
+        if(!isChatMessage(event.data)) return
+        const { message, tab } = event.data.payload
 
         let chatMessage = {
           from: Network.peerContext.id,
