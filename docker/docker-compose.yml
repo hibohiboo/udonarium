@@ -10,7 +10,7 @@ services:
       - ../tsconfig.spec.json:/app/tsconfig.spec.json
       - ../tslint.json:/app/tslint.json
       - ../src:/app/src
-      - ../dest:/app/dest
+      - ../../../public/third:/app/dest/dist
     ports:
       - 80:80
       - 4200:4200
