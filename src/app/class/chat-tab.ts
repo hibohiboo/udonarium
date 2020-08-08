@@ -3,6 +3,7 @@ import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
 import { InnerXml, ObjectSerializer } from './core/synchronize-object/object-serializer';
 import { EventSystem } from './core/system';
+import type { PostMessageChat, PostMessageDiceChat } from '../ports/types'
 
 @SyncObject('chat-tab')
 export class ChatTab extends ObjectNode implements InnerXml {
@@ -21,7 +22,61 @@ export class ChatTab extends ObjectNode implements InnerXml {
   // ObjectNode Lifecycle
   onChildAdded(child: ObjectNode) {
     super.onChildAdded(child);
+
     if (child.parent === this && child instanceof ChatMessage && child.isDisplayable) {
+
+      if (window && window.parent && window !== window.parent) {
+        // const isDice = child.from === 'System-BCDice'
+        // const type = isDice ? 'dice' :'chat'
+        // if (isDice) {
+        //   const diceBotMessage: ChatMessageContext = {
+        //     identifier: '',
+        //     tabIdentifier: child.tabIdentifier,
+        //     originFrom: child.originFrom,
+        //     from: 'System-BCDice',
+        //     timestamp: child.timestamp,
+        //     imageIdentifier: '',
+        //     tag: child.tag,
+        //     name: child.name,
+        //     text: child.text
+        //   };
+        //   const message: PostMessageDiceChat = {
+        //     type: 'dice',
+        //     payload: {
+        //       message: diceBotMessage,
+        //       tab: child.tabIdentifier,
+        //       dice: rollResult
+        //     }
+        //   };
+        //   window.parent.postMessage(
+        //     message,
+        //     '*', // TODO: Set Origin
+        //   );
+        // } else {
+          const chatMessage: ChatMessageContext = {
+            from: child.from,
+            to: child.to,
+            name: child.name,
+            imageIdentifier: child.imageIdentifier,
+            timestamp: child.timestamp,
+            tag: child.tag,
+            text: child.text,
+          };
+          const message: PostMessageChat = {
+            type: 'chat',
+            payload: {
+              message: chatMessage,
+              tab: child.tabIdentifier
+            }
+          };
+          window.parent.postMessage(
+            message,
+            '*', // TODO: Set Origin
+          )
+        // }
+
+      }
+
       this._unreadLength++;
       EventSystem.trigger('MESSAGE_ADDED', { tabIdentifier: this.identifier, messageIdentifier: child.identifier });
     }

@@ -85,19 +85,7 @@ export class ChatMessageService {
       tag: gameType,
       text: text,
     };
-    if (window.parent) {
-      const message: PostMessageChat = {
-        type: 'chat',
-        payload: {
-          message: chatMessage,
-          tab: chatTab.identifier
-        }
-      };
-      window.parent.postMessage(
-        message,
-        '*', // TODO: Set Origin
-      )
-    }
+
     return chatTab.addMessage(chatMessage);
   }
 
