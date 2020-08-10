@@ -121,7 +121,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
           const message = {
             type: 'table-background',
             payload: {
-              url: this.tableImage.url
+              url: this.tableImage.url.replace('./', `${window.location.protocol}//${window.location.host}/`)
             }
           };
           window.parent.postMessage(
