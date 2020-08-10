@@ -98,7 +98,38 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
       .on('UPDATE_GAME_OBJECT', -1000, event => {
         if (event.data.identifier !== this.currentTable.identifier && event.data.identifier !== this.tableSelecter.identifier) return;
         console.log('UPDATE_GAME_OBJECT GameTableComponent ' + this.currentTable.identifier);
+        if (window && window.parent && window !== window.parent) {
+          // console.log('table-image', this.tableImage)
+          if (this.tableImage.blob) {
+            let reader = new FileReader();
+            reader.readAsDataURL(this.tableImage.blob); // blob を base64 へ変換し onload を呼び出します
 
+            reader.onload = function() {
+              const message = {
+                type: 'table-background',
+                payload: {
+                  url: reader.result
+                }
+              };
+              window.parent.postMessage(
+                message,
+                '*', // TODO: Set Origin
+              )
+            };
+            return
+          }
+          const message = {
+            type: 'table-background',
+            payload: {
+              url: this.tableImage.url
+            }
+          };
+          window.parent.postMessage(
+            message,
+            '*', // TODO: Set Origin
+          )
+
+      }
         this.setGameTableGrid(this.currentTable.width, this.currentTable.height, this.currentTable.gridSize, this.currentTable.gridType, this.currentTable.gridColor);
       })
       .on('DRAG_LOCKED_OBJECT', event => {
