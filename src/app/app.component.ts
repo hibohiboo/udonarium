@@ -47,7 +47,7 @@ import { isChatMessage } from './ports'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
-
+  get is2d(){ return location.search.includes('2d=true') }
   @ViewChild('modalLayer', { read: ViewContainerRef, static: true }) modalLayerViewContainerRef: ViewContainerRef;
   private immediateUpdateTimer: NodeJS.Timer = null;
   private lazyUpdateTimer: NodeJS.Timer = null;

@@ -25,6 +25,8 @@ import { PointerCoordinate, PointerDeviceService } from './pointer-device.servic
 type ObjectIdentifier = string;
 type LocationName = string;
 
+const is2d = location.search.includes('2d=true')
+
 @Injectable()
 export class TabletopService {
   dragAreaElement: HTMLElement = document.body;
@@ -249,6 +251,9 @@ export class TabletopService {
     if (!viewTable) return;
 
     let terrain = Terrain.create('地形', 2, 2, 2, image.identifier, image.identifier);
+    if (is2d) {
+      terrain = Terrain.create('地形', 2, 2, 0, image.identifier, image.identifier);
+    }
     terrain.location.x = position.x - 50;
     terrain.location.y = position.y - 50;
     terrain.posZ = position.z;

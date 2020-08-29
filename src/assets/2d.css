@@ -1,0 +1,22 @@
+.is2d game-character .upright-transform[class] {
+  transform: rotateX(0);
+}
+.is2d text-note .upright-transform[class] {
+  transform: rotateX(0) translateY(0);
+}
+.is2d .peer-cursor[class] {
+  transform: translateX(-100%) translateY(-100%) rotate(45deg);
+}
+.is2d .of-wall-top {
+  display: none;
+}
+.is2d .of-wall-bottom {
+  display: none;
+}
+.is2d .of-wall-left {
+  display: none;
+}
+.is2d .of-wall-right {
+  display: none;
+}
+

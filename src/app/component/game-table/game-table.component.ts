@@ -25,6 +25,8 @@ import { TabletopService } from 'service/tabletop.service';
 import { GridLineRender } from './grid-line-render';
 import { TableTouchGesture, TableTouchGestureEvent } from './table-touch-gesture';
 
+const is2d = location.search.includes('2d=true')
+
 @Component({
   selector: 'game-table',
   templateUrl: './game-table.component.html',
@@ -67,9 +69,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   private viewPotisonY: number = 0;
   private viewPotisonZ: number = 0;
 
-  private viewRotateX: number = 50;
+  private viewRotateX: number = is2d ? 0 : 50;
   private viewRotateY: number = 0;
-  private viewRotateZ: number = 10;
+  private viewRotateZ: number = is2d ? 0 : 10;
 
   private buttonCode: number = 0;
   private input: InputHandler = null;
@@ -351,6 +353,10 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.viewPotisonY += transformY;
     this.viewPotisonZ += transformZ;
 
+    if(is2d){
+      this.gameTable.nativeElement.style.transform = 'translateZ(' + this.viewPotisonZ + 'px) translateY(' + this.viewPotisonY + 'px) translateX(' + this.viewPotisonX + 'px) ';
+      return;
+    }
     this.gameTable.nativeElement.style.transform = 'translateZ(' + this.viewPotisonZ + 'px) translateY(' + this.viewPotisonY + 'px) translateX(' + this.viewPotisonX + 'px) rotateY(' + this.viewRotateY + 'deg) rotateX(' + this.viewRotateX + 'deg) rotateZ(' + this.viewRotateZ + 'deg) ';
   }
 
