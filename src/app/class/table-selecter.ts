@@ -7,7 +7,7 @@ import { GameTable } from './game-table';
 @SyncObject('TableSelecter')
 export class TableSelecter extends GameObject {
   @SyncVar() viewTableIdentifier: string = '';
-  gridShow: boolean = false; // true=常時グリッド表示
+  gridShow: boolean = true; // true=常時グリッド表示
   gridSnap: boolean = true;
 
   // GameObject Lifecycle
