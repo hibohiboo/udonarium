@@ -1,7 +1,8 @@
-FROM node:14.7.0
+FROM node:14.9.0
 
 # コンテナ上の作業ディレクトリ作成
 WORKDIR /app
 
 COPY package.json /app/package.json
 RUN npm install
+RUN npm install firebase

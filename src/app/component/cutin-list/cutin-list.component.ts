@@ -31,7 +31,7 @@ export class CutinListComponent implements OnInit, OnDestroy {
   }
 
   private changeTitle() {
-    this.modalService.title = this.panelService.title = 'カットイン一覧';
+    Promise.resolve().then(() => this.modalService.title = this.panelService.title = 'カットイン一覧');
   }
 
   ngOnDestroy() {

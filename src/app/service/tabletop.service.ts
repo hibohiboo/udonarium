@@ -763,7 +763,7 @@ export class TabletopService {
         // card.location.y = y;
         Cutin.create(title, card_front, '', 0, 0, 0, `sampleCutin_${card_front}`);
       });
-    const marker = Card.create('後攻マーカー', `${prefix_url_hollow}/marker.png`, `${prefix_url_hollow}/marker_back.png`);
+    const marker = Card.create('後攻マーカー', `${prefix_url_hollow}/marker.png`, `${prefix_url_hollow}/marker_back.png`, undefined, 'draw-first marker');
     marker.location.x = -20;
     marker.location.y = 650;
     if (!ImageStorage.instance.get(`${prefix_url_hollow}/marker.png`)) {
