@@ -8,6 +8,7 @@ import { CardStackListComponent } from 'component/card-stack-list/card-stack-lis
 import { CardStackComponent } from 'component/card-stack/card-stack.component';
 import { CardComponent } from 'component/card/card.component';
 import { RooperCardComponent } from 'component/rooper-card/rooper-card.component';
+import { ChatInputComponent } from 'component/chat-input/chat-input.component';
 import { ChatMessageComponent } from 'component/chat-message/chat-message.component';
 import { ChatPaletteComponent } from 'component/chat-palette/chat-palette.component';
 import { ChatTabSettingComponent } from 'component/chat-tab-setting/chat-tab-setting.component';
@@ -112,6 +113,7 @@ import { AppComponent } from './app.component';
     DraggableDirective,
     ResizableDirective,
     AutofocusDirective,
+    ChatInputComponent,
   ],
   imports: [
     BrowserModule,
