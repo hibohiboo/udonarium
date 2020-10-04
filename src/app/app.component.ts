@@ -185,6 +185,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.panelService.open(ChatWindowComponent, { width: 340, height: 400, left: 0, top: 450 });
       this.panelService.open(PeerMenuComponent, { width: 340, height: 450, left: 0, top: 100 });
       this.panelService.open(CutinListComponent, { width: 300, height: 450, left: 250, top: 100 });
+      this.panelService.open(RooperGameSheetComponent, { width: 300, height: 450, left: 500, top: 100 });
     }, 0);
   }
 

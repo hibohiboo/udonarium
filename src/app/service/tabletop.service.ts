@@ -126,6 +126,7 @@ export class TabletopService {
     public ngZone: NgZone,
     public pointerDeviceService: PointerDeviceService
   ) {
+    console.error('table top init')
     this.initialize();
   }
 
@@ -496,7 +497,7 @@ export class TabletopService {
       // {name:'男子学生', card_num:'01', x: (board_right_edge_x), y:(board_under_y + bord_chip_margin)},
       // {name:'女子学生', card_num:'02', x: (board_right_edge_x + card_width), y:(board_under_y + bord_chip_margin)},
       // {name:'お嬢様', card_num:'03', x: (board_right_edge_x + card_width*2), y:(board_under_y + bord_chip_margin)},
-      {name:'巫女', card_num:'04', x: (board_right_edge_x), y:(board_top_y + bord_chip_margin)},
+      // {name:'巫女', card_num:'04', x: (board_right_edge_x), y:(board_top_y + bord_chip_margin)},
       // {name:'刑事', card_num:'05', x: (board_left_edge_x), y:(board_under_y + bord_chip_margin)},
       // {name:'サラリーマン', card_num:'06', x: (board_left_edge_x + card_width * 1), y:(board_under_y + bord_chip_margin)},
       // {name:'情報屋', card_num:'07', x: (board_left_edge_x + card_width * 2), y:(board_under_y + bord_chip_margin)},
@@ -534,10 +535,10 @@ export class TabletopService {
       card.location.y = position.y;
     }
     createExtra({x:600, y:600, z: 0}, 'リーダーカード', 'leader');
-    createExtra({x:400, y:-150, z: 0}, 'リーダーカード', 'extra_a');
-    createExtra({x:410, y:-150, z: 0}, 'リーダーカード', 'extra_b');
-    createExtra({x:420, y:-150, z: 0}, 'リーダーカード', 'extra_c');
-    createExtra({x:430, y:-150, z: 0}, 'リーダーカード', 'extra_d');
+    createExtra({x:400, y:-150, z: 0}, 'ExtraA', 'extra_a');
+    createExtra({x:410, y:-150, z: 0}, 'ExtraB', 'extra_b');
+    createExtra({x:420, y:-150, z: 0}, 'ExtraC', 'extra_c');
+    createExtra({x:430, y:-150, z: 0}, 'ExtraD', 'extra_d');
 
     // カウンター初期表示
 
