@@ -32,6 +32,8 @@ import { Device } from '@udonarium/device/device';
 type ObjectIdentifier = string;
 type LocationName = string;
 
+let first = true; // rooper-card が継承しているからか、2回initが走ってしまう。対症療法だが。。 2020.10.05
+
 @Injectable()
 export class TabletopService {
   dragAreaElement: HTMLElement = document.body;
@@ -126,12 +128,13 @@ export class TabletopService {
     public ngZone: NgZone,
     public pointerDeviceService: PointerDeviceService
   ) {
-    console.error('table top init')
+    // rooperのカードのせいか、2回initが呼ばれる。2回呼ばれないとrooperのカードが動作しない。。。 2020.10.05
     this.initialize();
   }
 
   private initialize() {
     this.refreshCacheAll();
+
     EventSystem.register(this)
       .on("UPDATE_GAME_OBJECT", -1000, event => {
         if (
@@ -158,22 +161,28 @@ export class TabletopService {
         } else {
           this.refreshCache(garbage.aliasName);
         }
-      })
-      .on("XML_LOADED", event => {
-        let xmlElement: Element = event.data.xmlElement;
-        // todo:立体地形の上にドロップした時の挙動
-        let gameObject = ObjectSerializer.instance.parseXml(xmlElement);
-        if (gameObject instanceof TabletopObject) {
-          let pointer = this.calcTabletopLocalCoordinate();
-          gameObject.location.x = pointer.x - 25;
-          gameObject.location.y = pointer.y - 25;
-          gameObject.posZ = pointer.z;
-          this.placeToTabletop(gameObject);
-          SoundEffect.play(PresetSound.piecePut);
-        } else if (gameObject instanceof ChatTab) {
-          ChatTabList.instance.addChatTab(gameObject);
-        }
       });
+
+      // rooperのカードが二重に登録するのを防止する対症療法 2020.10.05
+      if(first){
+        first = false;
+        EventSystem.register(this).on("XML_LOADED", event => {
+          let xmlElement: Element = event.data.xmlElement;
+          // todo:立体地形の上にドロップした時の挙動
+          let gameObject = ObjectSerializer.instance.parseXml(xmlElement);
+          if (gameObject instanceof TabletopObject) {
+            let pointer = this.calcTabletopLocalCoordinate();
+            gameObject.location.x = pointer.x - 25;
+            gameObject.location.y = pointer.y - 25;
+            gameObject.posZ = pointer.z;
+            this.placeToTabletop(gameObject);
+            SoundEffect.play(PresetSound.piecePut);
+          } else if (gameObject instanceof ChatTab) {
+            ChatTabList.instance.addChatTab(gameObject);
+          }
+        });
+      }
+
       // 初期使用画像の登録
       const prefix_path_rooper = './assets/images/tragedy_commons_5th';
       const prefix_path_extra = `${prefix_path_rooper}/extra`;

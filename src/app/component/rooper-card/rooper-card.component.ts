@@ -118,7 +118,6 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
     private panelService: PanelService,
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
-    private tabletopService: TabletopService,
     private pointerDeviceService: PointerDeviceService
   ) {
     this.tabIndex = "0"; //TabIndexを付与。これをしないとフォーカスできないのでコンポーネントに対するキーイベントを取得できない。

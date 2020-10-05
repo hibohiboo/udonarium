@@ -1,55 +1,12 @@
-import { ImageFile } from './core/file-storage/image-file';
-import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
-import { Network } from './core/system';
+import { SyncObject } from './core/synchronize-object/decorator';
 import { DataElement } from './data-element';
-import { PeerCursor } from './peer-cursor';
-import { TabletopObject } from './tabletop-object';
-import { moveToTopmost } from './tabletop-object-util';
-import { Card, CardState } from './card';
+import { Card } from './card';
 import { ChatPalette } from './chat-palette';
 
 export type Board = '神社' | '学校' | '病院' | '都市';
 
 @SyncObject('rooper-card')
 export class RooperCard extends Card {
-  // @SyncVar() state: CardState = CardState.FRONT;
-  // @SyncVar() rotate: number = 0;
-  // @SyncVar() owner: string = '';
-  // @SyncVar() zindex: number = 0;
-  // @SyncVar() roll: number = 0;
-
-  // get name(): string { return this.getCommonValue('name', ''); }
-  // get size(): number { return this.getCommonValue('size', 2); }
-  // set size(size: number) { this.setCommonValue('size', size); }
-  // get frontImage(): ImageFile { return this.getImageFile('front'); }
-  // get backImage(): ImageFile { return this.getImageFile('back'); }
-
-  // get imageFile(): ImageFile { return this.isVisible ? this.frontImage : this.backImage; }
-
-  // get ownerName(): string {
-  //   let object = PeerCursor.find(this.owner);
-  //   return object ? object.name : '';
-  // }
-
-  // get hasOwner(): boolean { return PeerCursor.find(this.owner) != null; }
-  // get isHand(): boolean { return Network.peerId === this.owner; }
-  // get isFront(): boolean { return this.state === CardState.FRONT; }
-  // get isVisible(): boolean { return this.isHand || this.isFront; }
-
-  // faceUp() {
-  //   this.state = CardState.FRONT;
-  //   this.owner = '';
-  // }
-
-  // faceDown() {
-  //   this.state = CardState.BACK;
-  //   this.owner = '';
-  // }
-
-  // toTopmost() {
-  //   moveToTopmost(this, ['card-stack']);
-  // }
-
   static create(name: string, front: string, back: string, size: number = 3, identifier?: string, position?: Board): RooperCard {
     let object: RooperCard = null;
 
@@ -101,50 +58,6 @@ export class RooperCard extends Card {
     this.commonDataElement.appendChild(intrigueElement);
     this.commonDataElement.appendChild(positionElement);
     this.commonDataElement.appendChild(defaultPositionElement);
-
-    // this.detailDataElement.appendChild(resourceElement);
-    // resourceElement.appendChild(goodwillElement);
-    // resourceElement.appendChild(paranoiaElement);
-    // resourceElement.appendChild(intrigueElement);
-
-    // //TEST
-    // let testElement: DataElement = DataElement.create('情報', '', {}, '情報' + this.identifier);
-    // this.detailDataElement.appendChild(testElement);
-    // testElement.appendChild(DataElement.create('説明', 'ここに説明を書く\nあいうえお', { 'type': 'note' }, '説明' + this.identifier));
-    // testElement.appendChild(DataElement.create('メモ', '任意の文字列\n１\n２\n３\n４\n５', { 'type': 'note' }, 'メモ' + this.identifier));
-
-    // //TEST
-    // testElement = DataElement.create('能力', '', {}, '能力' + this.identifier);
-    // this.detailDataElement.appendChild(testElement);
-    // testElement.appendChild(DataElement.create('器用度', 24, {}, '器用度' + this.identifier));
-    // testElement.appendChild(DataElement.create('敏捷度', 24, {}, '敏捷度' + this.identifier));
-    // testElement.appendChild(DataElement.create('筋力', 24, {}, '筋力' + this.identifier));
-    // testElement.appendChild(DataElement.create('生命力', 24, {}, '生命力' + this.identifier));
-    // testElement.appendChild(DataElement.create('知力', 24, {}, '知力' + this.identifier));
-    // testElement.appendChild(DataElement.create('精神力', 24, {}, '精神力' + this.identifier));
-
-    // //TEST
-    // testElement = DataElement.create('戦闘特技', '', {}, '戦闘特技' + this.identifier);
-    // this.detailDataElement.appendChild(testElement);
-    // testElement.appendChild(DataElement.create('Lv1', '全力攻撃', {}, 'Lv1' + this.identifier));
-    // testElement.appendChild(DataElement.create('Lv3', '武器習熟/ソード', {}, 'Lv3' + this.identifier));
-    // testElement.appendChild(DataElement.create('Lv5', '武器習熟/ソードⅡ', {}, 'Lv5' + this.identifier));
-    // testElement.appendChild(DataElement.create('Lv7', '頑強', {}, 'Lv7' + this.identifier));
-    // testElement.appendChild(DataElement.create('Lv9', '薙ぎ払い', {}, 'Lv9' + this.identifier));
-    // testElement.appendChild(DataElement.create('自動', '治癒適正', {}, '自動' + this.identifier));
-
-    // let domParser: DOMParser = new DOMParser();
-    // let gameCharacterXMLDocument: Document = domParser.parseFromString(this.rootDataElement.toXml(), 'application/xml');
-
-    let palette: ChatPalette = new ChatPalette('ChatPalette_' + this.identifier);
-//     palette.setPalette(`チャットパレット入力例：
-// 2d6+1 ダイスロール
-// １ｄ２０＋{敏捷}＋｛格闘｝　{name}の格闘！
-// //敏捷=10+{敏捷A}
-// //敏捷A=10
-// //格闘＝１`);
-    palette.initialize();
-    this.appendChild(palette);
   }
 
   // パラメータ追加
