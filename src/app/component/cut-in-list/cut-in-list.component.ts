@@ -34,10 +34,10 @@ import { SaveDataService } from 'service/save-data.service';
   styleUrls: ['./cut-in-list.component.css']
 })
 export class CutInListComponent implements OnInit, OnDestroy {
-  
+
   minSize: number = 10;
   maxSize: number = 1200;
-  
+
   get cutInName(): string { return this.isEditable ? this.selectedCutIn.name : '' ; }
   set cutInName(cutInName: string) { if (this.isEditable) this.selectedCutIn.name = cutInName; }
 
@@ -87,8 +87,8 @@ export class CutInListComponent implements OnInit, OnDestroy {
     let file = ImageStorage.instance.get(this.selectedCutIn.imageIdentifier);
     return file ? file : ImageFile.Empty;
   }
-  
-  
+
+
 //  get cutInList(): CutInList { return ObjectStore.instance.get<CutInList>('CutInList'); }
 
   private lazyUpdateTimer: NodeJS.Timer = null;
@@ -102,7 +102,7 @@ export class CutInListComponent implements OnInit, OnDestroy {
   get isEmpty(): boolean { return false ; }
 
 
-  
+
 /*
   get volume(): number { return AudioPlayer.volume; }
   set volume(volume: number) { AudioPlayer.volume = volume; }
@@ -116,6 +116,10 @@ export class CutInListComponent implements OnInit, OnDestroy {
   readonly auditionPlayer: AudioPlayer = new AudioPlayer();
   private lazyUpdateTimer: NodeJS.Timer = null;
 */
+
+  isSaveing: boolean = false;
+  progresPercent: number = 0;
+
   constructor(
     private modalService: ModalService,
     private saveDataService: SaveDataService,
@@ -157,10 +161,22 @@ export class CutInListComponent implements OnInit, OnDestroy {
     this.selectCutIn(cutIn.identifier);
   }
 
-  save() {
-    if (!this.selectedCutIn) return;
+  async save() {
+    if (!this.selectedCutIn || this.isSaveing) return;
     this.selectedCutIn.selected = true;
-    this.saveDataService.saveGameObject(this.selectedCutIn, 'cut_' + this.selectedCutIn.name);
+    this.isSaveing = true;
+    this.progresPercent = 0;
+
+    let fileName: string = 'chat_' + this.selectedCutIn.name;
+
+    await this.saveDataService.saveGameObjectAsync(this.selectedCutIn, fileName, percent => {
+      this.progresPercent = percent;
+    });
+
+    setTimeout(() => {
+      this.isSaveing = false;
+      this.progresPercent = 0;
+    }, 500);
   }
 
 /*
