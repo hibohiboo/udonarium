@@ -12,6 +12,9 @@ import { ChatMessageService } from 'service/chat-message.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 
+//entyu
+import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
+
 @Component({
   selector: 'chat-input',
   templateUrl: './chat-input.component.html',
@@ -43,12 +46,47 @@ export class ChatInputComponent implements OnInit, OnDestroy {
   get text(): string { return this._text };
   set text(text: string) { this._text = text; this.textChange.emit(text); }
 
-  @Output() chat = new EventEmitter<{ text: string, gameType: string, sendFrom: string, sendTo: string }>();
+//entyu
+  @Input('tachieNum') _tachieNum: number = 0;  
+  @Output() chat = new EventEmitter<{ text: string, gameType: string, sendFrom: string, sendTo: string ,tachieNum: number }>();
+  get tachieNum(): number { return this._tachieNum };
+  set tachieNum(num:  number){ this._tachieNum = num};
 
+//
   get isDirect(): boolean { return this.sendTo != null && this.sendTo.length ? true : false }
   gameHelp: string = '';
 
+//entyu_10
+  get selectCharacterTachie(){
+    let object = ObjectStore.instance.get(this.sendFrom);
+    if (object instanceof GameCharacter) {
+      if( object.imageDataElement.children.length  > this.tachieNum){
+        return  object.imageDataElement.children[this.tachieNum];
+      }
+    }
+    return null;
+  }
+  
+  get selectCharacterTachieNum(){
+    let object = ObjectStore.instance.get(this.sendFrom);
+    if (object instanceof GameCharacter) {
+      return  object.imageDataElement.children.length;
+    } else if (object instanceof PeerCursor) {
+      return 0;
+    }
+    return 0;
+  }
+//entyu_10
+
   get imageFile(): ImageFile {
+    
+//entyu_10
+    if( this.selectCharacterTachie ){
+      let image:ImageFile = ImageStorage.instance.get(<string>this.selectCharacterTachie.value);
+      return image ? image : ImageFile.Empty;
+    }
+//
+
     let object = ObjectStore.instance.get(this.sendFrom);
     let image: ImageFile = null;
     if (object instanceof GameCharacter) {
@@ -168,7 +206,10 @@ export class ChatInputComponent implements OnInit, OnDestroy {
     if (event && event.keyCode !== 13) return;
 
     if (!this.sendFrom.length) this.sendFrom = this.myPeer.identifier;
-    this.chat.emit({ text: this.text, gameType: this.gameType, sendFrom: this.sendFrom, sendTo: this.sendTo });
+    
+    console.log('円柱TEST event: KeyboardEvent '+this.sendFrom + '  ' + this.tachieNum);
+    
+    this.chat.emit({ text: this.text, gameType: this.gameType, sendFrom: this.sendFrom, sendTo: this.sendTo , tachieNum : this.tachieNum});
 
     this.text = '';
     this.previousWritingLength = this.text.length;

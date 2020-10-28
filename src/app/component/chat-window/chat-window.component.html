@@ -6,6 +6,11 @@
 </div>
 <div class="sticky-bottom">
   <form>
+
+<!--  -->
+
+<chat-tachie [chatTabidentifier]="chatTabidentifier"></chat-tachie>
+<!-- entyu end -->
     <div class="chat-tab">
       <label *ngFor="let chatTab of chatMessageService.chatTabs; trackBy: trackByChatTab">
         <input name="chat-tab" type="radio" value="{{chatTab.identifier}}" ng-control="options" [(ngModel)]="chatTabidentifier">

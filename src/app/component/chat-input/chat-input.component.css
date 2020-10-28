@@ -60,3 +60,19 @@
   background-color: #555;
   color: #CCC;
 }
+
+
+.tachie-tag {
+  text-align: center;
+  vertical-align: bottom;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.tachie-num {
+  font-weight: bold;
+  width: 4em;
+  text-align: right;
+  font-family: inherit;
+}
+

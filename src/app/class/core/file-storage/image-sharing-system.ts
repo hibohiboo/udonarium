@@ -202,7 +202,7 @@ export class ImageSharingSystem {
         name: image.name,
         type: '',
         blob: null,
-        url: null,
+        url: null, 
         thumbnail: { type: '', blob: null, url: null, }
       };
 
