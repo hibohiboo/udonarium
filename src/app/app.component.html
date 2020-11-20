@@ -120,22 +120,22 @@
             <div>チャット</div>
           </a>
         </li>
-        <li (click)="open('JukeboxComponent')">
-            <a routerLink="/" routerLinkActive="active">
-              <div><i class="material-icons">queue_music</i></div>
-              <div>音楽</div>
-            </a>
-        </li>
         <li (click)="open('GameTableSettingComponent')">
           <a routerLink="/" routerLinkActive="active">
             <div><i class="material-icons icon-size">layers</i></div>
-            <div>テーブル</div>
+            <div>テーブル設定</div>
           </a>
         </li>
         <li (click)="open('FileStorageComponent')">
           <a routerLink="/" routerLinkActive="active">
             <div><i class="material-icons icon-size">photo_library</i></div>
             <div>画像</div>
+          </a>
+        </li>
+        <li (click)="open('JukeboxComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons">queue_music</i></div>
+            <div>音楽</div>
           </a>
         </li>
         <li (click)="open('GameObjectInventoryComponent')">
@@ -154,11 +154,17 @@
             </label>
           </a>
         </li>
-        <li (click)="open('PeerMenuComponent')">
-            <a routerLink="/" routerLinkActive="active">
-              <div><i class="material-icons icon-size">people</i></div>
-              <div>接続</div>
-            </a>
+        <li *ngIf="!isSaveing" (click)="save()">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons">sd_storage</i></div>
+            <div>保存</div>
+          </a>
+        </li>
+        <li *ngIf="isSaveing" style="pointer-events: none;">
+          <a>
+            <div><i class="material-icons vibration-amine">sd_storage</i></div>
+            <div>{{progresPercent}}%</div>
+          </a>
         </li>
       </ul>
     </nav>
