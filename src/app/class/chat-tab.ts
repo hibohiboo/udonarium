@@ -8,7 +8,6 @@ interface Window {
   gapi: any
 }
 declare var window: Window & typeof globalThis
-const gapi = window.gapi
 
 @SyncObject('chat-tab')
 export class ChatTab extends ObjectNode implements InnerXml {
@@ -150,7 +149,7 @@ export class ChatTab extends ObjectNode implements InnerXml {
       values: [[name,text,time,tabIdentifier]],
     }
     try {
-      const response = (await gapi.client.sheets.spreadsheets.values.append(params, body)).data;
+      const response = (await window.gapi.client.sheets.spreadsheets.values.append(params, body)).data;
     } catch (err) {
       console.error(err);
     }
