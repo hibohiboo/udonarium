@@ -17,11 +17,15 @@ type UpdateCallback = (percent: number) => void;
 
 //entyu_2 #92
 import { ImageTagList } from '@udonarium/image-tag-list';
+import { DiceTable } from '@udonarium/dice-table';
 //
 @Injectable({
   providedIn: 'root'
 })
 export class SaveDataService {
+  saveGameObject(selectedTable: DiceTable, arg1: string) {
+    throw new Error('Method not implemented.');
+  }
   private static queue: PromiseQueue = new PromiseQueue('SaveDataServiceQueue');
 
   constructor(
