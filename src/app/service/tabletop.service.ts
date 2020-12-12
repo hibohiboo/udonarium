@@ -25,7 +25,7 @@ import { Cutin } from '@udonarium/cutin';
 import { CutinView } from '@udonarium/cutin-view';
 type ObjectIdentifier = string;
 type LocationName = string;
-
+const hollowCardNumber = 132;
 @Injectable()
 export class TabletopService {
   dragAreaElement: HTMLElement = document.body;
@@ -419,7 +419,7 @@ export class TabletopService {
       ImageStorage.instance.add(back);
     }
 
-    [...Array(105).keys()].map(i=>i+1).forEach(id => {
+    [...Array(hollowCardNumber).keys()].map(i=>i+1).forEach(id => {
       const url =  `./assets/images/hollowflux_cardpng/card_${`000${id}`.slice(-3)}.png`;
       if (!ImageStorage.instance.get(url)) {
         ImageStorage.instance.add(url);
