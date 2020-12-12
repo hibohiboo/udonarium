@@ -23,7 +23,6 @@ export class CutIn extends GameObject {
   @SyncVar() originalSize: boolean = true;
   @SyncVar() x_pos: number = 50;
   @SyncVar() y_pos: number = 50;
-  
   //主にジュークボックス機能を参考に作成
   @SyncVar() imageIdentifier: string = 'imageIdentifier';
   @SyncVar() audioIdentifier: string = '';
@@ -56,5 +55,5 @@ export class CutIn extends GameObject {
   onStoreRemoved() {
     super.onStoreRemoved();
   }
-  
+
 }

@@ -11,7 +11,7 @@ export interface PanelOption {
   top?: number;
   width?: number;
   height?: number;
-  
+
   isCutIn?: boolean; //この方式でよいか検討のこと
   cutInIdentifier?: string;
 }
