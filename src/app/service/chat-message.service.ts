@@ -8,10 +8,7 @@ import { Network } from '@udonarium/core/system';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
 import { GameCharacter } from '@udonarium/game-character';
 import { PeerCursor } from '@udonarium/peer-cursor';
-
-//entyu
 import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
-
 
 const HOURS = 60 * 60 * 1000;
 
@@ -79,11 +76,8 @@ export class ChatMessageService {
     return Math.floor(this.timeOffset + (performance.now() - this.performanceOffset));
   }
 
-//entyu_8
-  sendMessage(chatTab: ChatTab, text: string, gameType: string, sendFrom: string, sendTo?: string, tachieNum?: number): ChatMessage {
-//
+  sendMessage(chatTab: ChatTab, text: string, gameType: string, sendFrom: string, sendTo?: string, tachieNum?: number): ChatMessage {//�{�Ƃ���achieNum?: number ��ǉ�
 
-//entyu_8
     let img;
     let imgIndex;
     if( tachieNum > 0 ){
@@ -96,15 +90,11 @@ export class ChatMessageService {
       from: Network.peerContext.id,
       to: this.findId(sendTo),
       name: this.makeMessageName(sendFrom, sendTo),
-//entyu_8
-      imageIdentifier: this.findImageIdentifier(sendFrom,imgIndex),
-//
+      imageIdentifier: this.findImageIdentifier(sendFrom,imgIndex),//lily
       timestamp: this.calcTimeStamp(chatTab),
       tag: gameType,
       text: text,
-//entyu
-      imagePos: this.findImagePos(sendFrom),
-//
+      imagePos: this.findImagePos(sendFrom),//lily
     };
 
     return chatTab.addMessage(chatMessage);

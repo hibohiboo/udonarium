@@ -365,6 +365,12 @@ input[type='range']::-ms-tooltip {
   font-size: 1.0rem;
 }
 
+.table {
+  display: table;
+  width: 100%;
+}
+
+
 .table-cell {
   display: table-cell;
 }
@@ -437,6 +443,15 @@ input[type='range']::-ms-tooltip {
   width: 10px;
 }
 
+.tag-slash {
+  font-size: 1.0em;
+  min-width: 0.1em;
+  max-width: 0.1em;
+  text-align: center;
+  font-family: inherit;
+}
+
+
 .tag-value {
   font-size: 1.0em;
   font-weight: bold;
@@ -445,10 +460,8 @@ input[type='range']::-ms-tooltip {
   max-width: 12em;
   text-align: center;
   font-family: inherit;
-
 }
 
-/*entyu_5*/
 .flex-item {
   margin: 5px 0px;
   padding: 10px;
@@ -461,17 +474,6 @@ input[type='range']::-ms-tooltip {
   background-color: rgba(234,201,157, 0.8);
   background-color: rgba(240,218,189, 0.8);
   color: #444;
-
-  /*
-  border-top: 1px solid #444;
-  border-bottom: 1px solid #444;
-  */
-
-  /*
-  background-color: rgba(70, 70, 70, 0.8);
-  color: #CCC;
-  */
-
 }
 
 .table {
@@ -491,4 +493,36 @@ input[type='range']::-ms-tooltip {
   box-sizing: border-box;
 }
 
+.sticky-top-left {
+  float: left;
+  position: sticky;
+  top : 0;
+  width: 20em;
+  
+  background-color: rgba(240,218,189, 0.8);
+  border-top:1px dotted #666;
+  padding:5px 5px;
+  margin-top: 0;
+}
 
+.controller-right {
+  position: absorute;
+  margin-left: 20em;
+}
+
+
+
+.tab-setting {
+  background-color: transparent;
+  color: #444; 
+  border: solid 1px #555;
+  padding: 2px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tab-setting:hover {
+  background-color: #888;
+  color: #eee;
+  border: solid 1px #555;
+}

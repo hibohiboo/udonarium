@@ -15,9 +15,8 @@ import { ContextMenuAction, ContextMenuService, ContextMenuSeparator } from 'ser
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-//entyu_3
+
 import { RemoteControllerComponent } from 'component/remote-controller/remote-controller.component';
-//
 
 @Component({
   selector: 'game-object-inventory',
@@ -32,6 +31,7 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
   selectedIdentifier: string = '';
 
   isEdit: boolean = false;
+  disptimer = null;
 
   get sortTag(): string { return this.inventoryService.sortTag; }
   set sortTag(sortTag: string) { this.inventoryService.sortTag = sortTag; }
@@ -75,13 +75,20 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
         }
       });
     this.inventoryTypes = ['table', 'common', Network.peerId, 'graveyard'];
+
   }
 
   ngAfterViewInit() {
+    this.disptimer = setInterval(() => {
+      this.changeDetector.detectChanges();
+    }, 200 );
+    //インベントリ非表示機能のために追加、操作を検知して更新する方式に変えたい
+    
   }
 
   ngOnDestroy() {
     EventSystem.unregister(this);
+    this.disptimer = null;
   }
 
   getTabTitle(inventoryType: string) {
@@ -111,7 +118,20 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
   }
 
   getGameObjects(inventoryType: string): TabletopObject[] {
-    return this.getInventory(inventoryType).tabletopObjects;
+    switch (inventoryType) {
+      case 'table':
+        
+        let tableCharacterList_dest = [] ;
+        let tableCharacterList_scr = this.inventoryService.tableInventory.tabletopObjects;
+        for (let character of tableCharacterList_scr) {
+          let character_ : GameCharacter = <GameCharacter>character;
+          if( !character_.hideInventory ) tableCharacterList_dest.push( <TabletopObject>character );
+        }
+        return tableCharacterList_dest;
+
+      default:
+        return this.getInventory(inventoryType).tabletopObjects;
+    }
   }
 
   getInventoryTags(gameObject: GameCharacter): DataElement[] {
@@ -134,9 +154,7 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
     actions.push({ name: '詳細を表示', action: () => { this.showDetail(gameObject); } });
     if (gameObject.location.name !== 'graveyard') {
       actions.push({ name: 'チャットパレットを表示', action: () => { this.showChatPalette(gameObject) } });
-//entyu_3 
       actions.push({ name: 'リモコンを表示', action: () => { this.showRemoteController(gameObject) } });
-//
     }
     actions.push(ContextMenuSeparator);
     let locations = [
@@ -209,16 +227,13 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
     component.character = gameObject;
   }
 
-//entyu_3
   private showRemoteController(gameObject: GameCharacter) {
-//      this.panelService.open(RemoteControllerComponent, { width: 700, height: 400, left: 100, top: 450 });
     let coordinate = this.pointerDeviceService.pointers[0];
-    let option: PanelOption = { left: coordinate.x - 250, top: coordinate.y - 175, width: 615, height: 350 };
+    let option: PanelOption = { left: coordinate.x - 250, top: coordinate.y - 175, width: 700, height: 600 };
     let component = this.panelService.open<RemoteControllerComponent>(RemoteControllerComponent, option);
     component.character = gameObject;
 
   }
-//
 
   selectGameObject(gameObject: GameObject) {
     let aliasName: string = gameObject.aliasName;

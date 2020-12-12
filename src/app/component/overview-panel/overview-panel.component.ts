@@ -17,6 +17,9 @@ import { TabletopObject } from '@udonarium/tabletop-object';
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 
+import { GameCharacter } from '@udonarium/game-character'; //
+import { TextNote } from '@udonarium/text-note'; //
+
 @Component({
   selector: 'overview-panel',
   templateUrl: './overview-panel.component.html',
@@ -156,4 +159,52 @@ export class OverviewPanelComponent implements AfterViewInit, OnDestroy {
   private getInventoryTags(gameObject: TabletopObject): DataElement[] {
     return this.inventoryService.tableInventory.dataElementMap.get(gameObject.identifier);
   }
+  
+  get overViewNoteWidth() : number {
+    
+    let note = <TextNote>this.tabletopObject;
+    if( ! note ) return 250;
+    let width = note.overViewWidth ;
+    if( width < 250 ) width = 250;
+    if( width > 800 ) width = 800;
+    
+    return width;
+  }
+
+  get overViewNoteMaxHeight() : number {
+    
+    let note = <TextNote>this.tabletopObject;
+    if( ! note ) return 250;
+    let maxHeight = note.overViewMaxHeight ;
+    if( maxHeight < 250 ) maxHeight = 250;
+    if( maxHeight > 1000 ) maxHeight = 1000;
+    
+    return maxHeight;
+    
+  }
+  
+  get overViewCharacterWidth() : number {
+    
+    let character = <GameCharacter>this.tabletopObject;
+    if( ! character ) return 270;
+    let width = character.overViewWidth ;
+    if( width < 270 ) width = 270;
+    if( width > 800 ) width = 800;
+    
+    return width;
+  }
+
+  get overViewCharacterMaxHeight() : number {
+    
+    let character = <GameCharacter>this.tabletopObject;
+    if( ! character ) return 250;
+    let maxHeight = character.overViewMaxHeight ;
+    if( maxHeight < 250 ) maxHeight = 250;
+    if( maxHeight > 1000 ) maxHeight = 1000;
+    
+    return maxHeight;
+    
+  }
+
+  
 }

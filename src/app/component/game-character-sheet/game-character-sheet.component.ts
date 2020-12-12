@@ -10,6 +10,8 @@ import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { SaveDataService } from 'service/save-data.service';
 
+import { GameCharacter } from '@udonarium/game-character'; //
+
 @Component({
   selector: 'game-character-sheet',
   templateUrl: './game-character-sheet.component.html',
@@ -91,11 +93,45 @@ export class GameCharacterSheetComponent implements OnInit, OnDestroy, AfterView
     }
   }
 
+  clickHide(){
+    //処理なし
+  }
+
+
+  clickNoTalk(){
+    //処理なし
+  }
+
+  clickLimitHeight(){
+    //高さが更新されない場合があるので雑だがこの方法で処理する
+    setTimeout(() => {
+      EventSystem.trigger('RESIZE_NOTE_OBJECT', {identifier :this.tabletopObject.identifier })
+    }, 100);
+  }
+
+  chkPopWidth( width ){
+    let character = <GameCharacter>this.tabletopObject;
+    if( width < 270 )
+      width = 270 ;
+    if( width > 800 )
+      width = 800 ;
+    character.overViewWidth = width;
+  }
+
+  chkPopMaxHeight( maxHeight ){
+    let character = <GameCharacter>this.tabletopObject;
+    if( maxHeight < 250 )
+      maxHeight = 250 ;
+    if( maxHeight > 1000 )
+      maxHeight = 1000 ;
+    character.overViewMaxHeight = maxHeight;
+  }
+
   async saveToXML() {
     if (!this.tabletopObject || this.isSaveing) return;
+
     this.isSaveing = true;
     this.progresPercent = 0;
-
     let element = this.tabletopObject.getElement('name', this.tabletopObject.commonDataElement);
     let objectName: string = element ? <string>element.value : '';
 

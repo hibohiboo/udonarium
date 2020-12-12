@@ -40,7 +40,7 @@ export class SaveDataService {
     files.push(new File([roomXml], 'data.xml', { type: 'text/plain' }));
     files.push(new File([chatXml], 'chat.xml', { type: 'text/plain' }));
     files.push(new File([summarySetting], 'summary.xml', { type: 'text/plain' }));
-//entyu_2 #92
+//本家PR #92より
 //    files = files.concat(this.searchImageFiles(roomXml));
 //    files = files.concat(this.searchImageFiles(chatXml));
 
@@ -69,7 +69,7 @@ export class SaveDataService {
     let xml: string = this.convertToXml(gameObject);
 
     files.push(new File([xml], 'data.xml', { type: 'text/plain' }));
-//entyu_2   #92
+//本家PR #92より
 //    files = files.concat(this.searchImageFiles(xml));
     let images: ImageFile[] = [];
     images = images.concat(this.searchImageFiles(xml));
@@ -96,16 +96,17 @@ export class SaveDataService {
 
   private convertToXml(gameObject: GameObject): string {
     let xmlDeclaration = '<?xml version="1.0" encoding="UTF-8"?>';
+//    return xmlDeclaration + '\n' + gameObject.toXml();
     return xmlDeclaration + '\n' + Beautify.xml(gameObject.toXml(), 2);
   }
 
-//entyu_2   #92
+//本家PR #92より
 //  private searchImageFiles(xml: string): File[] {
   private searchImageFiles(xml: string): ImageFile[] {
 //
     let xmlElement: Element = XmlUtil.xml2element(xml);
 
-//entyu_2   #92
+//本家PR #92より
 //    let files: File[] = [];
     let files: ImageFile[] = [];
 //
@@ -115,7 +116,6 @@ export class SaveDataService {
     let imageElements = xmlElement.ownerDocument.querySelectorAll('*[type="image"]');
 
     for (let i = 0; i < imageElements.length; i++) {
-      console.log( '円柱 SAVE 00:'+imageElements[i].innerHTML);
       let identifier = imageElements[i].innerHTML;
       images[identifier] = ImageStorage.instance.get(identifier);
     }
@@ -125,14 +125,12 @@ export class SaveDataService {
     for (let i = 0; i < imageElements.length; i++) {
       let identifier = imageElements[i].getAttribute('imageIdentifier');
       if (identifier) images[identifier] = ImageStorage.instance.get(identifier);
-      console.log( '円柱 SAVE 1:'+identifier);
       let backgroundImageIdentifier = imageElements[i].getAttribute('backgroundImageIdentifier');
       if (backgroundImageIdentifier) images[backgroundImageIdentifier] = ImageStorage.instance.get(backgroundImageIdentifier);
     }
     for (let identifier in images) {
-      console.log( '円柱 SAVE 2:'+images[identifier]+ '/' + identifier);
       let image = images[identifier];
-//entyu_2 #92
+//本家PR #92より
 //      if (image && image.state === ImageState.COMPLETE) {
 //        files.push(new File([image.blob], image.identifier + '.' + MimeType.extension(image.blob.type), { type: image.blob.type }));
 //      }

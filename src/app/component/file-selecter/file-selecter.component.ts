@@ -12,9 +12,9 @@ import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
-//entyu_2 #92
-import { ImageTag } from '@udonarium/image-tag';
-//
+
+import { ImageTag } from '@udonarium/image-tag';//本家PR #92より
+
 @Component({
   selector: 'file-selector',
   templateUrl: './file-selecter.component.html',
@@ -23,7 +23,7 @@ import { ImageTag } from '@udonarium/image-tag';
 })
 export class FileSelecterComponent implements OnInit, OnDestroy, AfterViewInit {
 
-//entyu_2 #92
+//本家PR #92より
   searchWord: string = '';
 
   private _searchWord: string;
@@ -34,13 +34,13 @@ export class FileSelecterComponent implements OnInit, OnDestroy, AfterViewInit {
       this._searchWord = this.searchWord;
       this._searchWords = this.searchWord != null && 0 < this.searchWord.trim().length ? this.searchWord.trim().split(/\s+/) : [];
     }
-    return this._searchWords; //
+    return this._searchWords; 
   }
 //
 
 
   @Input() isAllowedEmpty: boolean = false;
-//entyu_2 #92
+//本家PR #92より
   get images(): ImageFile[] {
       let imageFileList: ImageFile[] = [];
       if (this.selectTag == '全て') return this.fileStorageService.images;
@@ -48,9 +48,13 @@ export class FileSelecterComponent implements OnInit, OnDestroy, AfterViewInit {
       for (let imageFile of this.fileStorageService.images){
         let identifier = imageFile.context.identifier;
 
-        if( ImageTag.get(identifier) ){//
-          let tag: string = ImageTag.get(identifier).tag; //
-          if( tag == this.selectTag ){
+        if( ImageTag.get(identifier) ){
+          let tag: string = ImageTag.get(identifier).tag;
+          if( this.selectTag == tag ){
+            imageFileList.push(imageFile);
+          }
+        }else{//タグ未設定の場合 画像投下直後は ImageTag.get(identifier) は空文字ではなく該当なしとなるため
+          if( this.selectTag == '' ){
             imageFileList.push(imageFile);
           }
         }
@@ -81,13 +85,11 @@ export class FileSelecterComponent implements OnInit, OnDestroy, AfterViewInit {
     
     let tags2:  string[] = Array.from(new Set(tags));
     tags2.unshift('全て');
+    tags2.unshift('');
     return tags2;
-    
   }
   
-////
-//entyu_2
-  selectTag :string = '全て';
+  selectTag :string = '';
   fileStorageService = ImageStorage.instance;
 
   identifierList :string[] = [];
@@ -96,7 +98,6 @@ export class FileSelecterComponent implements OnInit, OnDestroy, AfterViewInit {
   resetBtn() {
 
   }
-//
 
   onChange(fileName:string, checked : boolean) {
 
@@ -114,7 +115,6 @@ export class FileSelecterComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-//
   get empty(): ImageFile { return ImageFile.Empty; }
 
   constructor(

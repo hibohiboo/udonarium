@@ -1,21 +1,17 @@
-//import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ElementRef, Input, ViewChild } from '@angular/core';
-//import { ElementRef, Input, ViewChild , NgZone} from '@angular/core';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 
 import { ChatPalette } from '@udonarium/chat-palette';
 import { ChatTab } from '@udonarium/chat-tab';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
-//import { EventSystem } from '@udonarium/core/system';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { DiceBot } from '@udonarium/dice-bot';
 import { GameCharacter } from '@udonarium/game-character';
 import { PeerCursor } from '@udonarium/peer-cursor';
 import { ControllerInputComponent } from 'component/controller-input/controller-input.component';
 import { ChatMessageService } from 'service/chat-message.service';
-//import { PanelService } from 'service/panel.service';
 import { PanelOption, PanelService } from 'service/panel.service';
-//-----------------
+
 import { GameObject } from '@udonarium/core/synchronize-object/game-object';
 import { DataElement } from '@udonarium/data-element';
 import { SortOrder } from '@udonarium/data-summary-setting';
@@ -26,9 +22,9 @@ import { GameCharacterSheetComponent } from 'component/game-character-sheet/game
 import { ContextMenuAction, ContextMenuService, ContextMenuSeparator } from 'service/context-menu.service';
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
- 
 
-//-----------------
+import { GameDataElementBuffComponent } from 'component/game-data-element-buff/game-data-element-buff.component'; 
+import { GameCharacterBuffViewComponent } from 'component/game-character-buff-view/game-character-buff-view.component'; 
 
 class RemotControllerSelect {
     identifier:string;
@@ -41,8 +37,6 @@ class RemotControllerSelect {
   templateUrl: './remote-controller.component.html',
   styleUrls: ['./remote-controller.component.css']
   
-//    changeDetection: ChangeDetectionStrategy.OnPush
- 
 })
 export class RemoteControllerComponent implements OnInit, OnDestroy {
   @ViewChild('controllerInput', { static: true }) controllerInputComponent: ControllerInputComponent;
@@ -62,11 +56,22 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
   set sendFrom(sendFrom: string) {
     this.onSelectedCharacter(sendFrom);
   }
-
+  
+  public buffAreaIsHide = false;
+  hideChkBoxEvent( eventValue : boolean) {
+    this.buffAreaIsHide = eventValue;
+  }
+  public controllerAreaIsHide = false;
+  controllerHideChkChange( eventValue : boolean ){
+    this.controllerAreaIsHide = eventValue;
+  }
+  
   chatTabidentifier: string = '';
 
   remotNumber: number = 0;
-
+  
+  disptimer = null;
+  
   selectCharacter = null;
   
   remotControllerSelect: RemotControllerSelect ={
@@ -95,22 +100,16 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
 
   constructor(
     public chatMessageService: ChatMessageService,
-//    private panelService: PanelService
     private panelService: PanelService,
-
-//--------------
-//    private ngZone: NgZone,
-
 
     private changeDetector: ChangeDetectorRef,
     private inventoryService: GameObjectInventoryService,
     private contextMenuService: ContextMenuService,
     private pointerDeviceService: PointerDeviceService 
 
-//--------------
-
   ) { }  
 
+  
   remotChangeValue(){
     let text :string ='';
     let gameObjects = this.getGameObjects(this.selectTab);
@@ -122,7 +121,11 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
 
     for (let identifier of this.charList){
       let object = ObjectStore.instance.get(identifier);
+            
       if (object instanceof GameCharacter) {
+
+        if( object.hideInventory ) continue; //チェックボックスが入ったままで非表示に変化した対象の除外のため
+
         let data = object.detailDataElement.getFirstElementByName(this.remotControllerSelect.identifier);
         if( data ){
           let oldNumS:string = '';
@@ -158,6 +161,7 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
 
   }
 
+
   remotSelect( identifier : string , type : string , name : string ){
     this.remotControllerSelect.identifier = identifier;
     this.remotControllerSelect.type = type;
@@ -167,9 +171,6 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
   charList :string[] = [];
 
   charListChange(charName:string, checked : boolean) {
-
-//    const imageTag = ImageTag.get(fileName);
-//    if( !imageTag ) ImageTag.create(fileName);
 
     if (checked) {
        if (this.charList.indexOf(charName) < 0) { 
@@ -197,8 +198,6 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
         }
       });
 
-//------------------------
-//    Promise.resolve().then(() => this.panelService.title = 'インベントリ');
     EventSystem.register(this)
       .on('SELECT_TABLETOP_OBJECT', -1000, event => {
         if (ObjectStore.instance.get(event.data.identifier) instanceof TabletopObject) {
@@ -219,15 +218,17 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
         }
       });
     this.inventoryTypes = ['table', 'common', Network.peerId, 'graveyard'];
-//------------------------
+
+    this.disptimer = setInterval(() => {
+      this.changeDetector.detectChanges();
+    }, 200 );
+
   }
-
-
-
 
 
   ngOnDestroy() {
     EventSystem.unregister(this);
+    this.disptimer = null;
     if (this.isEdit) this.toggleEditMode();
   }
 
@@ -276,7 +277,6 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     }
   }
 
-//----------------
 
   inventoryTypes: string[] = ['table', 'common', 'graveyard'];
   selectTab: string = 'table';
@@ -313,7 +313,9 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     }
   }
 
-  getInventory(inventoryType: string) {
+        
+
+  getInventory(inventoryType : string) {
     switch (inventoryType) {
       case 'table':
         return this.inventoryService.tableInventory;
@@ -327,7 +329,16 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
   }
 
   getGameObjects(inventoryType: string): TabletopObject[] {
-    return this.getInventory(inventoryType).tabletopObjects;
+    switch (inventoryType) {
+      case 'table':
+      let tableCharacterList_dest = [] ;
+      let tableCharacterList_scr = this.inventoryService.tableInventory.tabletopObjects;
+      for (let character of tableCharacterList_scr) {
+        let character_ : GameCharacter = <GameCharacter>character;
+        if( !character_.hideInventory ) tableCharacterList_dest.push( <TabletopObject>character );
+      }
+      return tableCharacterList_dest;
+    }
   }
 
   getInventoryTags(gameObject: GameCharacter): DataElement[] {
@@ -341,13 +352,10 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     let aliasName: string = gameObject.aliasName;
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: gameObject.identifier, className: gameObject.aliasName });
 
-//entyu_5    
     this.selectCharacter = gameObject;
-//
   }
 
 
-//entyu_5    
 
   remotBuffRound(gameCharacters :GameCharacter[]){
     let text :string ='';
@@ -382,10 +390,12 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     let mess = '';
 
     for (let identifier of this.charList){
-      let object = ObjectStore.instance.get(identifier);
+      let object : GameCharacter = <GameCharacter>ObjectStore.instance.get(identifier);
       if (object instanceof GameCharacter) {
-         gameCharactars.push(object);
-         text = text + '[' + object.name + ']';
+        if( object.hideInventory ) continue; //非表示対象の除外のため
+
+        gameCharactars.push(object);
+        text = text + '[' + object.name + ']';
       }
     }
     if( gameCharactars.length > 0){
@@ -405,6 +415,9 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
 
     for (let object of gameObjects){
       if (object instanceof GameCharacter) {
+        let charcter : GameCharacter = <GameCharacter>object;
+        if( charcter.hideInventory ) continue; //非表示対象の除外のため
+
          gameCharactars.push(object);
          text = text + '[' + object.name + ']';
       }
@@ -420,6 +433,8 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     let text :string ='';
     if( gameCharacters.length <= 0 ) return;
     for (let character of gameCharacters){
+      if( character.hideInventory ) continue; //非表示対象の除外のため
+
       if(character.buffDataElement.children){
         for (let dataElm of character.buffDataElement.children){
           for (let data  of dataElm.children){
@@ -430,7 +445,6 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
             num = parseInt(oldNumS);
             if( num <= 0){
               data.destroy();
-              //バフ消去
             }
           }
         }
@@ -450,6 +464,9 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     for (let identifier of this.charList){
       let object = ObjectStore.instance.get(identifier);
       if (object instanceof GameCharacter) {
+         let charcter : GameCharacter = <GameCharacter>object;
+         if( charcter.hideInventory ) continue; //非表示対象の除外のため
+
          gameCharactars.push(object);
          text = text + '[' + object.name + ']';
       }
@@ -471,6 +488,9 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
 
     for (let object of gameObjects){
       if (object instanceof GameCharacter) {
+        let charcter_ : GameCharacter = <GameCharacter>object;
+        if( charcter_.hideInventory ) continue; //非表示対象の除外のため
+
          gameCharactars.push(object);
          text = text + '[' + object.name + ']';
       }
@@ -491,6 +511,7 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     for (let character of gameCharacters){
       if(character.buffDataElement.children){
         for (let dataElm of character.buffDataElement.children){
+
 /*
           let isOld = false;
           for (let data of dataElm.children){
@@ -555,8 +576,10 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     for (let identifier of this.charList){
       let object = ObjectStore.instance.get(identifier);
       if (object instanceof GameCharacter) {
-         gameCharactars.push(object);
-         text = text + '[' + object.name + ']';
+        if( object.hideInventory ) continue; //非表示対象の除外のため
+
+        gameCharactars.push(object);
+        text = text + '[' + object.name + ']';
       }
     }
     if( gameCharactars.length > 0){
@@ -578,7 +601,13 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     return gameObject ? gameObject.identifier : index;
   }
 
-//----------------
-
+  buffEdit( gameCharacter :GameCharacter){
+      let coordinate = this.pointerDeviceService.pointers[0];
+      let option: PanelOption = { left: coordinate.x, top: coordinate.y, width: 420, height: 300 };
+      option.title = gameCharacter.name + 'のバフ編集';
+      let component = this.panelService.open(GameCharacterBuffViewComponent, option);
+      component.character = gameCharacter;
+    
+  }
 
 }

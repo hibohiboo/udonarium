@@ -4,29 +4,26 @@ import { AudioPlayer, VolumeType } from '@udonarium/core/file-storage/audio-play
 import { AudioStorage } from '@udonarium/core/file-storage/audio-storage';
 import { FileArchiver } from '@udonarium/core/file-storage/file-archiver';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
-//import { EventSystem } from '@udonarium/core/system';
 import { Jukebox } from '@udonarium/Jukebox';
+import { CutInLauncher } from '@udonarium/cut-in-launcher';
 
 import { ModalService } from 'service/modal.service';
-import { PanelService } from 'service/panel.service';
+import { PanelOption, PanelService } from 'service/panel.service';
 
 
-//import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
 import { ObjectSerializer } from '@udonarium/core/synchronize-object/object-serializer';
-//import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
+
 import { EventSystem, Network } from '@udonarium/core/system';
-////import { GameTable, GridType, FilterType } from '@udonarium/game-table';
 import { CutIn } from '@udonarium/cut-in';
 
 import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component';
-//import { ModalService } from 'service/modal.service';
-//import { PanelService } from 'service/panel.service';
+import { CutInBgmComponent } from 'component/cut-in-bgm/cut-in-bgm.component';
 import { SaveDataService } from 'service/save-data.service';
 
-
+import { PointerDeviceService } from 'service/pointer-device.service';
 
 @Component({
   selector: 'app-cut-in-list',
@@ -37,6 +34,8 @@ export class CutInListComponent implements OnInit, OnDestroy {
 
   minSize: number = 10;
   maxSize: number = 1200;
+
+  get cutInLauncher(): CutInLauncher { return ObjectStore.instance.get<CutInLauncher>('CutInLauncher'); }
 
   get cutInName(): string { return this.isEditable ? this.selectedCutIn.name : '' ; }
   set cutInName(cutInName: string) { if (this.isEditable) this.selectedCutIn.name = cutInName; }
@@ -80,16 +79,11 @@ export class CutInListComponent implements OnInit, OnDestroy {
 
   get audios(): AudioFile[] { return AudioStorage.instance.audios.filter(audio => !audio.isHidden); }
 
-
-
   get cutInImage(): ImageFile {
     if (!this.selectedCutIn) return ImageFile.Empty;
     let file = ImageStorage.instance.get(this.selectedCutIn.imageIdentifier);
     return file ? file : ImageFile.Empty;
   }
-
-
-//  get cutInList(): CutInList { return ObjectStore.instance.get<CutInList>('CutInList'); }
 
   private lazyUpdateTimer: NodeJS.Timer = null;
   selectedCutIn: CutIn = null;
@@ -98,29 +92,13 @@ export class CutInListComponent implements OnInit, OnDestroy {
   get isEditable(): boolean {
     return !this.isEmpty && this.isSelected;
   }
-//  get isEmpty(): boolean { return this.cutInSelecter ? (this.cutInSelecter.viewCutIn ? false : true) : true; }
+
   get isEmpty(): boolean { return false ; }
-
-
-
-/*
-  get volume(): number { return AudioPlayer.volume; }
-  set volume(volume: number) { AudioPlayer.volume = volume; }
-
-  get auditionVolume(): number { return AudioPlayer.auditionVolume; }
-  set auditionVolume(auditionVolume: number) { AudioPlayer.auditionVolume = auditionVolume; }
-
-  get audios(): AudioFile[] { return AudioStorage.instance.audios.filter(audio => !audio.isHidden); }
-  get jukebox(): Jukebox { return ObjectStore.instance.get<Jukebox>('Jukebox'); }
-
-  readonly auditionPlayer: AudioPlayer = new AudioPlayer();
-  private lazyUpdateTimer: NodeJS.Timer = null;
-*/
-
   isSaveing: boolean = false;
   progresPercent: number = 0;
 
   constructor(
+    private pointerDeviceService: PointerDeviceService,//
     private modalService: ModalService,
     private saveDataService: SaveDataService,
     private panelService: PanelService,
@@ -129,24 +107,15 @@ export class CutInListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     Promise.resolve().then(() => this.modalService.title = this.panelService.title = 'カットインリスト');
-/*
-    this.auditionPlayer.volumeType = VolumeType.AUDITION;
-    EventSystem.register(this)
-      .on('*', event => {
-        if (event.eventName.startsWith('FILE_')) this.lazyNgZoneUpdate();
-      });
-*/
   }
 
   ngOnDestroy() {
     EventSystem.unregister(this);
-//    this.stop();
   }
 
 
   selectCutIn(identifier: string) {
     this.selectedCutIn = ObjectStore.instance.get<CutIn>(identifier);
-//    this.selectedCutInXml = '';
   }
 
   getCutIns(): CutIn[] {
@@ -179,18 +148,10 @@ export class CutInListComponent implements OnInit, OnDestroy {
     }, 500);
   }
 
-/*
-  allsave(){
-    if ( this.getCutIns.length <= 0) return;
-    for( let i = 0 ; i<this.getCutIns.length ; i++){
-      this.saveDataService.saveGameObject(this.getCutIns[i] , 'cut_');
-    }
-  }
-*/
   delete() {
     if (!this.isEmpty && this.selectedCutIn) {
-//      this.selectedCutInXml = this.selectedCutIn.toXml();
       this.selectedCutIn.destroy();
+      this.selectedCutIn = null;
     }
   }
 
@@ -203,63 +164,47 @@ export class CutInListComponent implements OnInit, OnDestroy {
   }
 
   openCutInBgmModal() {
-    this.modalService.open<string>(FileSelecterComponent).then(value => {
+    if (!this.isSelected) return;
+    this.modalService.open<string>(CutInBgmComponent).then(value => {
+      console.log('CUTIN '+ value);
       if (!this.selectedCutIn || !value) return;
-      this.selectedCutIn.audioIdentifier = value;
+
+      this.cutInAudioIdentifier = value;
+
+      let audio = AudioStorage.instance.get(value);
+      if( audio ){
+        this.cutInAudioName = audio.name;
+        console.log('cutInAudioName'+ this.cutInAudioName);
+      }
     });
-
-/*
-    this.modalService.open<string>(FileSelecterComponent, { isAllowedEmpty: isAllowedEmpty }).then(value => {
-      if (!this.tabletopObject || !this.tabletopObject.imageDataElement || !value) return;
-      let element = this.tabletopObject.imageDataElement.getFirstElementByName(name);
-      if (!element) return;
-      element.value = value;
-    });
-*/
   }
 
 
+  isCutInBgmUploaded() {
+    if (!this.isSelected) return false;
 
-/*
-  restore() {
-    if (this.selectedTable && this.selectedTableXml) {
-      let restoreTable = ObjectSerializer.instance.parseXml(this.selectedTableXml);
-      this.selectGameTable(restoreTable.identifier);
-      this.selectedTableXml = '';
-    }
-  }
-*/
-
-
-/*
-  play(audio: AudioFile) {
-    this.auditionPlayer.play(audio);
+    let audio = AudioStorage.instance.get( this.cutInAudioIdentifier );
+    return audio ? true : false ;
   }
 
-  stop() {
-    this.auditionPlayer.stop();
+
+  previewCutIn(){
+    //jukuと同じにする
+  }
+  stoppreviewCutIn(){
+    //jukuと同じにする
   }
 
-  playBGM(audio: AudioFile) {
-    this.jukebox.play(audio.identifier, true);
+  playCutIn(){ //現状通常BGM(ジュークボックス)と平行で鳴る＞止めるかどうか検討したが現状このまま
+    if(!this.isSelected) return;
+    this.cutInLauncher.startCutIn( this.selectedCutIn );
+
   }
 
-  stopBGM(audio: AudioFile) {
-    if (this.jukebox.audio === audio) this.jukebox.stop();
+  stopCutIn(){
+    if(!this.isSelected) return;
+    this.cutInLauncher.stopCutIn( this.selectedCutIn );
+
   }
 
-  handleFileSelect(event: Event) {
-    let files = (<HTMLInputElement>event.target).files;
-    if (files.length) FileArchiver.instance.load(files);
   }
-
-  private lazyNgZoneUpdate() {
-    if (this.lazyUpdateTimer !== null) return;
-    this.lazyUpdateTimer = setTimeout(() => {
-      this.lazyUpdateTimer = null;
-      this.ngZone.run(() => { });
-    }, 100);
-  }
-*/
-
-}

@@ -58,11 +58,11 @@
 </ng-template>
 
 <ng-template #overviewNote let-note="note">
-  <div class="component-content is-large-size"
-    [ngClass]="{ 'is-pointer-events-auto': !this.isPointerDragging, 'pointer-events-none': this.isPointerDragging }">
-    <div class="component-title title-background">{{note.title}}</div>
-    <div class="component-background text-note-container">
-      <div style="position: relative;">
+  <div class="component-content is-large-size" [ngStyle]="{'max-width': 1000 + 'px','width': overViewNoteWidth + 'px'}" 
+    [ngClass]="{ 'is-pointer-events-auto': !this.isPointerDragging, 'pointer-events-none': this.isPointerDragging }" >
+    <div class="component-title title-background"  [ngStyle]="{'max-width': 1000 + 'px'}" >{{note.title}}</div>
+    <div class="component-background text-note-container" [ngStyle]="{'width': overViewNoteWidth + 'px','max-height': overViewNoteMaxHeight +'px'}">
+      <div style="position: relative; width:100%">
         <div class="is-fill">
           <textarea class="textarea" [(ngModel)]="note.text" spellcheck="false"></textarea>
         </div>
@@ -73,7 +73,7 @@
 </ng-template>
 
 <ng-template #overviewCharacter let-character="character">
-  <div class="component-content character-grid-container is-middle-size">
+  <div class="component-content character-grid-container is-middle-size" >
     <div class="title-bg-area title-background"
       [ngClass]="{ 'is-pointer-events-auto': !this.isPointerDragging, 'pointer-events-none': this.isPointerDragging }">
     </div>
@@ -87,8 +87,9 @@
     <div class="void-area is-pointer-events-none"></div>
     <div class="dataElm-area component-background"
       [ngClass]="{ 'is-pointer-events-auto': !this.isPointerDragging, 'pointer-events-none': this.isPointerDragging }">
-      <div class="grid-container-root" *ngIf="hasDataElms">
-        <!--<ng-container *ngFor="let dataElm of dataElms">-->
+      <div class="grid-container-root" *ngIf="hasDataElms"   
+      [ngStyle]="{'width': overViewCharacterWidth + 'px','max-height': overViewCharacterMaxHeight +'px'}">
+
         <ng-container *ngFor="let dataElm of inventoryDataElms">
           <ng-container *ngIf="dataElm && dataElm.name !== newLineString">
             <div class="grid-container">

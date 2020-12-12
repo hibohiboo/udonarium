@@ -19,6 +19,9 @@ import { Jukebox } from '@udonarium/Jukebox';
 import { PeerCursor } from '@udonarium/peer-cursor';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 
+import { CutIn } from '@udonarium/cut-in';
+import { CutInLauncher } from '@udonarium/cut-in-launcher';
+
 import { ChatWindowComponent } from 'component/chat-window/chat-window.component';
 import { ContextMenuComponent } from 'component/context-menu/context-menu.component';
 import { FileStorageComponent } from 'component/file-storage/file-storage.component';
@@ -41,6 +44,11 @@ import { SaveDataService } from 'service/save-data.service';
 import { ChatTab } from '@udonarium/chat-tab';
 import { isChatMessage } from './ports'
 
+
+import { CutInWindowComponent } from 'component/cut-in-window/cut-in-window.component';
+import { DiceTableSettingComponent } from 'component/dice-table-setting/dice-table-setting.component';
+
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -54,7 +62,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private openPanelCount: number = 0;
   isSaveing: boolean = false;
   progresPercent: number = 0;
-
+  dispcounter : number = 10 ;//表示更新用ダミーカットインを閉じるときに無理やり更新させている。
   constructor(
     private modalService: ModalService,
     private panelService: PanelService,
@@ -89,6 +97,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     let jukebox: Jukebox = new Jukebox('Jukebox');
     jukebox.initialize();
+
+    let cutInLauncher = new CutInLauncher('CutInLauncher');
+    cutInLauncher.initialize();
 
     let soundEffect: SoundEffect = new SoundEffect('SoundEffect');
     soundEffect.initialize();
@@ -160,6 +171,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     }
 
     EventSystem.register(this)
+      .on('START_CUT_IN', event => {
+        this.startCutIn( event.data.cutIn );
+      })
+      .on('STOP_CUT_IN', event => {
+        if( ! event.data.cutIn ) return;
+        console.log('カットインイベント_ストップ'  + event.data.cutIn.name );
+
+      })
       .on('UPDATE_GAME_OBJECT', event => { this.lazyNgZoneUpdate(event.isSendFromSelf); })
       .on('DELETE_GAME_OBJECT', event => { this.lazyNgZoneUpdate(event.isSendFromSelf); })
       .on('SYNCHRONIZE_AUDIO_LIST', event => { if (event.isSendFromSelf) this.lazyNgZoneUpdate(false); })
@@ -204,10 +223,63 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
       }
     }, 0);
+    setInterval(() => {
+      this.dispcounter = this.dispcounter +1;
+      if( this.dispcounter >100 )this.dispcounter = 0;
+    }, 200 );
   }
 
   ngOnDestroy() {
     EventSystem.unregister(this);
+  }
+
+  startCutIn( cutIn : CutIn ){
+    if( ! cutIn ) return;
+    console.log( 'カットインイベント_スタート' + cutIn.name );
+    let option: PanelOption = { width: 200, height: 100, left: 300 ,top: 100};
+    option.title = 'カットイン : ' + cutIn.name ;
+
+    console.log( '画面領域 w:' + window.innerWidth + ' h:'+ window.innerHeight );
+
+    let cutin_w = cutIn.width;
+    let cutin_h = cutIn.height;
+
+    if( cutIn.originalSize ){
+      let imageurl = cutIn.cutInImage.url;
+      if( imageurl.length > 0 ){
+        console.log( 'originalSize URL :' + imageurl);
+
+        let img_dummy = new Image();
+        let img = new Image();
+        img_dummy.src =  imageurl;
+        img.src = imageurl;
+        cutin_w = img.width;
+        cutin_h = img.height;
+
+      }
+    }
+    console.log( '画面領域サイズ w:' + cutin_w + ' h:'+ cutin_h );
+
+    let margin_w = window.innerWidth - cutin_w ;
+    let margin_h = window.innerHeight - cutin_h - 25 ;
+
+    if( margin_w < 0 )margin_w = 0 ;
+    if( margin_h < 0 )margin_h = 0 ;
+
+    let margin_x = margin_w * cutIn.x_pos / 100;
+    let margin_y = margin_h * cutIn.y_pos / 100;
+
+    option.width = cutin_w ;
+    option.height = cutin_h + 25 ;
+    option.left = margin_x ;
+    option.top = margin_y;
+    option.isCutIn = true;
+    option.cutInIdentifier = cutIn.identifier;
+
+    let component = this.panelService.open(CutInWindowComponent, option);
+    component.cutIn = cutIn;
+    component.startCutIn();
+
   }
 
   open(componentName: string) {
@@ -296,8 +368,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       }, 100);
     }
   }
-}
 
+}
 PanelService.UIPanelComponentClass = UIPanelComponent;
 ContextMenuService.ContextMenuComponentClass = ContextMenuComponent;
 ModalService.ModalComponentClass = ModalComponent;

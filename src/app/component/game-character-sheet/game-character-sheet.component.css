@@ -47,6 +47,7 @@
 
   /*min-width: 250px;*/
 }
+
 .flex-item {
   margin: 5px 0px;
   padding: 10px;
@@ -95,3 +96,15 @@ input {
   right: 0;
   font-size: 0.9em;
 }
+.top-header{
+  display:table;
+  width :100%;
+}
+.extra-setting {
+  text-align:right;
+}
+
+.table-cell {
+  display:table-cell;
+}
+

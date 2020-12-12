@@ -1,8 +1,3 @@
-<!--
-<div>試聴音量：<input [(ngModel)]="auditionVolume" type="range" min="0" max="1" step="0.01" /></div>
-<div>BGM音量：<input [(ngModel)]="volume" type="range" min="0" max="1" step="0.01" /></div>
--->
-カットインリストテスト
 <div class="flex-container">
   <div class="flex-item no-grow">
     <div>
@@ -12,7 +7,7 @@
       <option *ngFor="let cutIn of getCutIns()" value="{{cutIn.identifier}}">{{cutIn.name}}</option>
     </select>
   </div>
-  <div class="flex-item">
+  <div class="flex-item" style="width:380px">
     <ng-container *ngIf="!isEmpty || selectedCutIn">
       <div class="images-select">
         <div>
@@ -28,9 +23,20 @@
         <input [(ngModel)]="cutInName" placeholder="Name" [attr.disabled]="!isEditable ? '' : null" />
       </div>
 
-      <div>音楽データ :
-        <button (click)="openCutInBgmModal()">設定</button>
-        <span *ngIf="!isEditable" >{{this.cutInAudioName}}</span>LINK:
+      <div >音楽データ :
+        <button (click)="openCutInBgmModal()">設定</button><br>
+
+        <button  (click)="playCutIn()" [disabled]="" >カットイン/再生</button>
+        <button  (click)="stopCutIn()" [disabled]="" >カットイン/停止</button><br>
+
+
+　　　　LINK:<span *ngIf="isCutInBgmUploaded()" >OK：</span><span *ngIf="!isCutInBgmUploaded()" >NG：</span><br>
+        <ng-container *ngIf="!isCutInBgmUploaded()">
+          <span *ngIf="cutInAudioName.length>0 " >音楽ファイルがアップされていません</span>
+          <span *ngIf="cutInAudioName.length<=0 " >音楽ファイルが設定されていません</span>
+        </ng-container>
+        <br>
+        <ng-container *ngIf="isEditable" >{{cutInAudioName}}</ng-container><br>
 
       </div>
       <div>
@@ -59,14 +65,14 @@
       <div>
         タグ名称 :<input [(ngModel)]="cutInTagName" placeholder="タグ名称" style="width: 5em;" [attr.disabled]="!isEditable ? '' : null" />
       </div>
-
+<!-- 動画再生は後日検討。youtubeより.mp4に対法した方が実装上は良いのかも知れない
       <div>
         Youtube再生 :<input type="checkbox" [(ngModel)]="cutInUseOutUrl" name="cutInUseOutUrl" [attr.disabled]="!isEditable ? '' : null"/>
       </div>
       <div>
         URL :<input [(ngModel)]="cutInOutUrl" placeholder="URL" [attr.disabled]="!isEditable ? '' : null" />
       </div>
-
+-->
       <hr/>
       <div>
         <ng-container *ngIf="!isDeleted">
