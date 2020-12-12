@@ -9,6 +9,11 @@ import type { PostMessageChat, PostMessageDiceChat } from '../ports/types'
 import { ImageFile } from './core/file-storage/image-file';
 import { ImageStorage } from './core/file-storage/image-storage';
 //
+interface Window {
+  gapi: any
+}
+declare var window: Window & typeof globalThis
+const gapi = window.gapi
 
 @SyncObject('chat-tab')
 export class ChatTab extends ObjectNode implements InnerXml {
@@ -21,7 +26,7 @@ export class ChatTab extends ObjectNode implements InnerXml {
 
   @SyncVar() count:number = 0;
   @SyncVar() imageIdentifierDummy: string = 'test';//通信のどうきのために使わなくても書かなきゃだめっぽい？;
-  
+
   get chatMessages(): ChatMessage[] { return <ChatMessage[]>this.children; }
 
   get imageZposList( ): number[] {
@@ -48,13 +53,13 @@ export class ChatTab extends ObjectNode implements InnerXml {
   public tachieDispFlag = 1;
 
   replaceTachieZindex( toppos : number ){
-//  console.log( 'imageIdentifierZpos before ' + this.imageIdentifierZpos ); 
+//  console.log( 'imageIdentifierZpos before ' + this.imageIdentifierZpos );
     let index = this.imageIdentifierZpos.indexOf( Number(toppos) );
-//  console.log( 'index = ' + index ); 
+//  console.log( 'index = ' + index );
     if( index >= 0 ){
       this.imageIdentifierZpos.splice(index,1);
       this.imageIdentifierZpos.push( Number(toppos) );
-      console.log( 'imageIdentifierZpos = ' + this.imageIdentifierZpos ); 
+      console.log( 'imageIdentifierZpos = ' + this.imageIdentifierZpos );
     }
   }
 
@@ -63,7 +68,7 @@ export class ChatTab extends ObjectNode implements InnerXml {
   get dispCharctorIcon(): boolean { return this._dispCharctorIcon; }
   set dispCharctorIcon( flag : boolean) { this._dispCharctorIcon = flag; }
 
- 
+
 //
   private _unreadLength: number = 0;
   get unreadLength(): number { return this._unreadLength; }
@@ -73,13 +78,14 @@ export class ChatTab extends ObjectNode implements InnerXml {
     let lastIndex = this.chatMessages.length - 1;
     return lastIndex < 0 ? 0 : this.chatMessages[lastIndex].timestamp;
   }
-  
+
   // ObjectNode Lifecycle
   onChildAdded(child: ObjectNode) {
     super.onChildAdded(child);
 
     if (child.parent === this && child instanceof ChatMessage && child.isDisplayable) {
 
+      // @ts-ignore
       if (window && window.parent && window !== window.parent) {
         // const isDice = child.from === 'System-BCDice'
         // const type = isDice ? 'dice' :'chat'
@@ -131,12 +137,36 @@ export class ChatTab extends ObjectNode implements InnerXml {
         // }
 
       }
-
       this._unreadLength++;
       EventSystem.trigger('MESSAGE_ADDED', { tabIdentifier: this.identifier, messageIdentifier: child.identifier });
+      this.addSpreadSheet(child);
     }
   }
-
+  private async addSpreadSheet({timestamp=0, tabIdentifier="",text="",name=""}) {
+    let spreadsheetId = null;
+    location.search.replace('?', '').split('&').forEach(set=>{
+      const [id, value] = set.split('=');
+      if(id==='spreadsheet'){
+        spreadsheetId =value
+      }
+    })
+    if(!spreadsheetId) return;
+    const params = {
+      spreadsheetId,
+      range: 'A1',
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+    };
+    const time = new Date(timestamp + 32400000) // 60 * 60 * 1000 * 9.UTCとJSTの時差9時間
+    const body = {
+      values: [[name,text,time,tabIdentifier]],
+    }
+    try {
+      const response = (await gapi.client.sheets.spreadsheets.values.append(params, body)).data;
+    } catch (err) {
+      console.error(err);
+    }
+  }
   addMessage(message: ChatMessageContext): ChatMessage {
     message.tabIdentifier = this.identifier;
 
@@ -145,7 +175,7 @@ export class ChatTab extends ObjectNode implements InnerXml {
       console.log('addMessage:'+key);
       if (key === 'identifier') continue;
       if (key === 'tabIdentifier') continue;
-      
+
       if (key === 'text') {
         chat.value = message[key];
         continue;
@@ -166,14 +196,14 @@ export class ChatTab extends ObjectNode implements InnerXml {
            if( hideCommand ){
 
            }else{
-           
+
              this.imageIdentifier[this.pos_num] = message['imageIdentifier'];
              this.imageCharactorName[this.pos_num] =message['name'];
              this.replaceTachieZindex(this.pos_num);
-           
+
            }
            this.imageIdentifierDummy = message['imageIdentifier'];//同期方法がすこぶる怪しい後で確認
-           
+
         }
         continue;//v0.02.2で追加20201021
       }
@@ -181,7 +211,7 @@ export class ChatTab extends ObjectNode implements InnerXml {
       chat.setAttribute(key, message[key]);
     }
     chat.initialize();
- 
+
     EventSystem.trigger('SEND_MESSAGE', { tabIdentifier: this.identifier, messageIdentifier: chat.identifier });
     this.appendChild(chat);
     return chat;

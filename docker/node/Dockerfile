@@ -1,8 +1,9 @@
-FROM node:15.0.1
+FROM node:14.15.1
 
 # コンテナ上の作業ディレクトリ作成
 WORKDIR /app
 
 COPY package.json /app/package.json
-RUN npm install
+COPY package-lock.json /app/package-lock.json
+RUN npm ci
 # RUN npm audit fix

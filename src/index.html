@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Udonarium 1.12.0</title>
+  <title>Udonarium 1.12.1</title>
   <base href="./">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="mobile-web-app-capable" content="yes">
@@ -32,6 +32,11 @@
 
   <script type="text/yaml" src="./assets/config.yaml"></script>
   <script type="text/javascript" src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.min.js"></script>
+  <script async defer src="https://apis.google.com/js/api.js"
+    onload="this.onload=function(){};handleClientLoad()"
+    onreadystatechange="if (this.readyState === 'complete') this.onload()">
+  </script>
+  <script src="./assets/gapi/auth.js"></script>
 </body>
 
 </html>

@@ -14,5 +14,5 @@ services:
     ports:
       - 80:80
       - 4200:4200
-    command: [npm, run, start, --, "--host", "0.0.0.0", --poll, "1000"]
+    command: [npm, run, start, --, "--host", "0.0.0.0", --poll, "1000", --ssl]
     # command: [npm, run, build, --, --watch, --poll, "5000"]
