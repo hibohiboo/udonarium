@@ -69,11 +69,13 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "udonarium:build"
+            "browserTarget": "udonarium:build",
+            "disableHostCheck": true
           },
           "configurations": {
             "production": {
-              "browserTarget": "udonarium:build:production"
+              "browserTarget": "udonarium:build:production",
+              "ssl": true
             }
           }
         },
