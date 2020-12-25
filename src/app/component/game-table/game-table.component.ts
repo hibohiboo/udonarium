@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, HostBinding, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { Card } from '@udonarium/card';
 import { CardStack } from '@udonarium/card-stack';
@@ -25,6 +25,7 @@ import { TabletopService } from 'service/tabletop.service';
 import { GridLineRender } from './grid-line-render';
 import { TableTouchGesture, TableTouchGestureEvent } from './table-touch-gesture';
 import { gameBoardKeydownHook } from '../../plugins';
+import pluginConfig from '../../plugins/config';
 
 @Component({
   selector: 'game-table',
@@ -35,6 +36,7 @@ import { gameBoardKeydownHook } from '../../plugins';
   ],
 })
 export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
+  @HostBinding('class.is2d') is2d: boolean = pluginConfig.use2dMode;
   @ViewChild('root', { static: true }) rootElementRef: ElementRef<HTMLElement>;
   @ViewChild('gameTable', { static: true }) gameTable: ElementRef<HTMLElement>;
   @ViewChild('gameObjects', { static: true }) gameObjects: ElementRef<HTMLElement>;
@@ -68,9 +70,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   private viewPotisonY: number = 0;
   private viewPotisonZ: number = 0;
 
-  private viewRotateX: number = 50;
+  private viewRotateX: number = pluginConfig.use2dMode ? 0 : 50;
   private viewRotateY: number = 0;
-  private viewRotateZ: number = 10;
+  private viewRotateZ: number = pluginConfig.use2dMode ? 0 :10;
 
   private buttonCode: number = 0;
   private input: InputHandler = null;
