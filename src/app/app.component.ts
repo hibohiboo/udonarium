@@ -258,7 +258,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
       }
     }
-    console.log( '画面領域サイズ w:' + cutin_w + ' h:'+ cutin_h );
+    console.log( '画像サイズ w:' + cutin_w + ' h:'+ cutin_h );
 
     let margin_w = window.innerWidth - cutin_w ;
     let margin_h = window.innerHeight - cutin_h - 25 ;

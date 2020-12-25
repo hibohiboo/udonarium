@@ -47,8 +47,8 @@ export class CutInWindowComponent implements AfterViewInit,OnInit, OnDestroy {
 
   left : number = 0;
   top : number = 0;
-  width : number = 0;
-  height : number = 0;
+  width : number = 200;
+  height : number = 150;
   
   minSize: number = 10;
   maxSize: number = 1200;
@@ -106,6 +106,15 @@ export class CutInWindowComponent implements AfterViewInit,OnInit, OnDestroy {
           }
         }
       })
+      .on('STOP_CUT_IN_BY_BGM', event => { 
+        if( this.cutIn ){
+          let audio = AudioStorage.instance.get( this.cutIn.audioIdentifier );
+
+          if( this.cutIn.tagName == '' && audio ){
+            this.panelService.close();
+          }
+        }
+      })
       .on('STOP_CUT_IN', event => { 
         console.log('カットインウィンドウ>Event: ' + this.cutIn.name );
         if( this.cutIn ){
@@ -114,39 +123,24 @@ export class CutInWindowComponent implements AfterViewInit,OnInit, OnDestroy {
           }
         }
       });
-
   }
     
   ngAfterViewInit() {
-    this.calcCutInSize();
 
     if( this.cutIn ){
       setTimeout(() => {
         this.moveCutInPos();
-      },200);
+      },0);
     }
   }
 
-  calcCutInSize(){
+  moveCutInPos(){
     
     if( this.cutIn ){
       
       let cutin_w = this.cutIn.width;
       let cutin_h = this.cutIn.height;
-    
-      if( this.cutIn.originalSize ){
-        let imageurl = this.cutIn.cutInImage.url;
-        if( imageurl.length > 0 ){
-          console.log( 'CutInWindow originalSize URL :' + imageurl);
 
-          let img = new Image();
-          img.src = imageurl;
-          cutin_w = img.width;
-          cutin_h = img.height;
-         
-        }
-      }
-    
       let margin_w = window.innerWidth - cutin_w ;
       let margin_h = window.innerHeight - cutin_h - 25 ;
     
@@ -155,42 +149,21 @@ export class CutInWindowComponent implements AfterViewInit,OnInit, OnDestroy {
     
       let margin_x = margin_w * this.cutIn.x_pos / 100;
       let margin_y = margin_h * this.cutIn.y_pos / 100;
-/*
-      console.log( 'EventSystem.trigger > CUT_IN_PANEL_POS_CHANGE ');
-      EventSystem.trigger('CUT_IN_PANEL_POS_CHANGE', 
-         { width : cutin_w , 
-           height : cutin_h + 25 , 
-           left : margin_x ,
-           top : margin_y ,
-           cutInIdentifier : this.cutIn.identifier });
-*/
 
       this.width = cutin_w ;
       this.height = cutin_h + 25 ;
       this.left = margin_x ;
       this.top = margin_y;
-    }
-  }
-  
-  //画像が読み込めていなかったら500ms間隔で位置移動再実行
-  counter = 0;
-  moveCutInPos(){
-
-    if( this.width == 0 && this.height == 0 && this.left == 0 && this.top == 0 && this.counter < 200){
-      this.counter = this.counter +1 ;
-      setTimeout(() => {
-        console.log('ウィンドウ位置の再計算');
-        this.calcCutInSize();
-        this.moveCutInPos();
-      },500);
     }else{
       
-      this.panelService.width = this.width ;
-      this.panelService.height = this.height ;
-      this.panelService.left = this.left ;
-      this.panelService.top = this.top ;
-      
+      console.log("カットインが未定義で再生された");
     }
+  
+
+    this.panelService.width = this.width ;
+    this.panelService.height = this.height ;
+    this.panelService.left = this.left ;
+    this.panelService.top = this.top ;
 
   }
 

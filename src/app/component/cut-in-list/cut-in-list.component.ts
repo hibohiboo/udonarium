@@ -40,7 +40,9 @@ export class CutInListComponent implements OnInit, OnDestroy {
   get cutInName(): string { return this.isEditable ? this.selectedCutIn.name : '' ; }
   set cutInName(cutInName: string) { if (this.isEditable) this.selectedCutIn.name = cutInName; }
 
-  get cutInWidth(): number { return this.isEditable ? this.selectedCutIn.width : 0 ; }
+  get cutInWidth(): number { 
+    return this.isEditable ? this.selectedCutIn.width : 0 ; 
+  }
   set cutInWidth(cutInWidth: number) { if (this.isEditable) this.selectedCutIn.width = cutInWidth; }
 
   get cutInHeight(): number { return this.isEditable ? this.selectedCutIn.height : 0 ; }
@@ -78,6 +80,8 @@ export class CutInListComponent implements OnInit, OnDestroy {
   set cutInAudioIdentifier(cutInAudioIdentifier: string) { if (this.isEditable) this.selectedCutIn.audioIdentifier = cutInAudioIdentifier; }
 
   get audios(): AudioFile[] { return AudioStorage.instance.audios.filter(audio => !audio.isHidden); }
+
+  get jukebox(): Jukebox { return ObjectStore.instance.get<Jukebox>('Jukebox'); }
 
   get cutInImage(): ImageFile {
     if (!this.selectedCutIn) return ImageFile.Empty;
@@ -195,8 +199,27 @@ export class CutInListComponent implements OnInit, OnDestroy {
     //jukuと同じにする
   }
 
-  playCutIn(){ //現状通常BGM(ジュークボックス)と平行で鳴る＞止めるかどうか検討したが現状このまま
+  playCutIn(){ 
     if(!this.isSelected) return;
+
+    if( this.selectedCutIn.originalSize ){
+      let imageurl = this.selectedCutIn.cutInImage.url;
+      if( imageurl.length > 0 ){
+        console.log( 'CutInWindow originalSize URL :' + imageurl);
+        let img = new Image();
+        img.src = imageurl;
+        this.selectedCutIn.width = img.width;
+        this.selectedCutIn.height = img.height;
+      }
+    }
+    
+    //同名タグが再生中の場合そのタグのカットインを停止してから生成
+    //無タグ、かつ音楽が指定されている場合　jukebox　を停止する
+    //タグ名有りの場合、音楽が設定されていない場合　jukebox　は停止しない
+    if( this.isCutInBgmUploaded() && ( this.cutInTagName == '' ) ){
+      this.jukebox.stop();
+    }
+    
     this.cutInLauncher.startCutIn( this.selectedCutIn );
 
   }
