@@ -38,6 +38,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
+import { appRunOutsideAngularHook } from './plugins';
 
 @Component({
   selector: 'app-root',
@@ -134,6 +135,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PeerCursor.createMyCursor();
     PeerCursor.myCursor.name = 'プレイヤー';
     PeerCursor.myCursor.imageIdentifier = noneIconImage.identifier;
+    if (appRunOutsideAngularHook()) { return; }
 
     EventSystem.register(this)
       .on('UPDATE_GAME_OBJECT', event => { this.lazyNgZoneUpdate(event.isSendFromSelf); })

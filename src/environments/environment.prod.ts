@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  origin: 'https://create-now.now.sh'
 };

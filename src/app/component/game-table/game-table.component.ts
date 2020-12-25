@@ -24,7 +24,7 @@ import { TabletopService } from 'service/tabletop.service';
 
 import { GridLineRender } from './grid-line-render';
 import { TableTouchGesture, TableTouchGestureEvent } from './table-touch-gesture';
-import { gameBoardKeydownHook } from '../../plugins';
+import { gameBoardKeydownHook, updateGameObjectHook } from '../../plugins';
 import pluginConfig from '../../plugins/config';
 
 @Component({
@@ -101,6 +101,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
       .on('UPDATE_GAME_OBJECT', -1000, event => {
         if (event.data.identifier !== this.currentTable.identifier && event.data.identifier !== this.tableSelecter.identifier) return;
         console.log('UPDATE_GAME_OBJECT GameTableComponent ' + this.currentTable.identifier);
+        if (updateGameObjectHook(this)) { return }
 
         this.setGameTableGrid(this.currentTable.width, this.currentTable.height, this.currentTable.gridSize, this.currentTable.gridType, this.currentTable.gridColor);
       })

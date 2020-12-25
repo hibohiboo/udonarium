@@ -1,3 +1,4 @@
+import { chatTabOnChildAddedHook } from '../plugins';
 import { ChatMessage, ChatMessageContext } from './chat-message';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
@@ -22,6 +23,7 @@ export class ChatTab extends ObjectNode implements InnerXml {
   onChildAdded(child: ObjectNode) {
     super.onChildAdded(child);
     if (child.parent === this && child instanceof ChatMessage && child.isDisplayable) {
+      if(chatTabOnChildAddedHook(child))return;
       this._unreadLength++;
       EventSystem.trigger('MESSAGE_ADDED', { tabIdentifier: this.identifier, messageIdentifier: child.identifier });
     }
