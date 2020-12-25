@@ -24,7 +24,7 @@ import { TabletopService } from 'service/tabletop.service';
 
 import { GridLineRender } from './grid-line-render';
 import { TableTouchGesture, TableTouchGestureEvent } from './table-touch-gesture';
-import { keydownHook } from '../../plugins';
+import { gameBoardKeydownHook } from '../../plugins';
 
 @Component({
   selector: 'game-table',
@@ -264,7 +264,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener('document:keydown', ['$event'])
   onKeydown(e: KeyboardEvent) {
     if (!this.isTransformMode || document.body !== document.activeElement) return;
-    if(keydownHook(this.modalService, e)){
+    if(gameBoardKeydownHook(this.modalService, e)){
       return
     }
     let transformX = 0;
