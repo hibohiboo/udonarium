@@ -1,7 +1,8 @@
-FROM node:14.7.0
+FROM node:14.15.3
 
 # コンテナ上の作業ディレクトリ作成
 WORKDIR /app
 
 COPY package.json /app/package.json
-RUN npm install
+COPY package-lock.json /app/package-lock.json
+RUN npm ci
