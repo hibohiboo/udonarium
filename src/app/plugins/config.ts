@@ -4,11 +4,13 @@ const useCardTap = location.search.includes('cardTap=true')
 const usePostMessage = location.search.includes('usePostMessage=true')
 const useSpreadSheet = location.search.includes('spreadsheet')
 const useSpreadSheetSigninButton = location.search.includes('ss_auto=false')
+const useDeckSpreadSheet = location.search.includes('decksheet')
 export default {
   useKeyboardHelp,
   useCardTap,
   get use2dMode(){ return use2dMode},
   get usePostMessage(){return true},
   useSpreadSheet,
-  useSpreadSheetSigninButton
+  useSpreadSheetSigninButton,
+  useDeckSpreadSheet
 }

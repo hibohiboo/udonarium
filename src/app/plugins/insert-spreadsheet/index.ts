@@ -1,5 +1,6 @@
 import { ChatMessage } from "@udonarium/chat-message";
 import config from "../config";
+import * as utility from '../utility';
 
 export default {
   chatTabOnChildAddedHook(child: ChatMessage){
@@ -16,13 +17,7 @@ declare var window: Window & typeof globalThis
 const gapi = window.gapi
 
 async function addSpreadSheet({timestamp=0, tabIdentifier="",text="",name=""}) {
-  let spreadsheetId = null;
-  location.search.replace('?', '').split('&').forEach(set=>{
-    const [id, value] = set.split('=');
-    if(id==='spreadsheet'){
-      spreadsheetId =value
-    }
-  })
+  let spreadsheetId = utility.getQueryValue('spreadsheet')
   if(!spreadsheetId) return;
   const params = {
     spreadsheetId,
@@ -51,10 +46,10 @@ export const peerMenuMethods =
     gapi.auth2.getAuthInstance().signOut();
   },
   showSignin(){
-    return gapi.auth2 && !gapi.auth2.getAuthInstance().isSignedIn.get();
+    return gapi && gapi.auth2 && !gapi.auth2.getAuthInstance().isSignedIn.get();
   },
   showSignout(){
-    return gapi.auth2 && gapi.auth2.getAuthInstance().isSignedIn.get();
+    return gapi && gapi.auth2 && gapi.auth2.getAuthInstance().isSignedIn.get();
   }
 } : {
   handleSignInClick(){ return;},

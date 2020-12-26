@@ -24,7 +24,7 @@ import { TabletopService } from 'service/tabletop.service';
 
 import { GridLineRender } from './grid-line-render';
 import { TableTouchGesture, TableTouchGestureEvent } from './table-touch-gesture';
-import { gameBoardKeydownHook, updateGameObjectHook } from '../../plugins';
+import { gameBoardKeydownHook, onContextMenuHook, updateGameObjectHook } from '../../plugins';
 import pluginConfig from '../../plugins/config';
 
 @Component({
@@ -314,7 +314,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   @HostListener('contextmenu', ['$event'])
-  onContextMenu(e: any) {
+  async onContextMenu(e: any) {
     if (!document.activeElement.contains(this.gameObjects.nativeElement)) return;
     e.preventDefault();
 
@@ -325,6 +325,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     let menuActions: ContextMenuAction[] = [];
 
     Array.prototype.push.apply(menuActions, this.tabletopService.getContextMenuActionsForCreateObject(objectPosition));
+    await onContextMenuHook(menuActions, objectPosition);
     menuActions.push(ContextMenuSeparator);
     menuActions.push({
       name: 'テーブル設定', action: () => {
