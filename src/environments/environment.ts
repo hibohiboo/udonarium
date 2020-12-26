@@ -4,7 +4,10 @@
 
 export const environment = {
   production: false,
-  origin: 'http://192.168.50.10:3000'
+  origin: 'http://192.168.50.10:3000',
+  googleSpreadApiKey: 'hogehoge',
+  getImageUrl: 'hoge',
+  imageUrlKey: 'fuga'
 };
 
 /*
