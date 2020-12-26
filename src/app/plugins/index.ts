@@ -2,6 +2,7 @@ import config from './config'
 import keyboardHelp from './keyboard-help'
 import cardTap from './card-tap'
 import postMessage from './post-message'
+import insertSpreadsheet from './insert-spreadsheet'
 import type { ModalService } from 'service/modal.service'
 import type { CardComponent } from 'component/card/card.component';
 import type { GameTableComponent } from 'component/game-table/game-table.component'
@@ -36,6 +37,8 @@ export const updateGameObjectHook = (that: GameTableComponent)=>{
   return postMessage.updateGameObjectHook(that);
 }
 export const chatTabOnChildAddedHook = (child: ChatMessage)=>{
-  if (!config.usePostMessage) {return false;}
-  return postMessage.chatTabOnChildAddedHook(child)
+  if (config.usePostMessage && postMessage.chatTabOnChildAddedHook(child)) {return true;}
+  if (config.useSpreadSheet && insertSpreadsheet.chatTabOnChildAddedHook(child)) {return true;}
+
+  return false;
 }
