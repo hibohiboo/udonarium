@@ -55,8 +55,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 
 import { AppComponent } from './app.component';
-import { HelpKeyboardComponent } from './plugins/keyboard-help/component/help-keyboard/help-keyboard.component';
-
+import pluginComponents from './plugins/components'
 @NgModule({
   declarations: [
     AppComponent,
@@ -102,7 +101,7 @@ import { HelpKeyboardComponent } from './plugins/keyboard-help/component/help-ke
     DraggableDirective,
     ResizableDirective,
     ChatInputComponent,
-    HelpKeyboardComponent,
+    ...pluginComponents,
   ],
   imports: [
     BrowserModule,
