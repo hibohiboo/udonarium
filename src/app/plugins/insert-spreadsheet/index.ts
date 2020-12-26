@@ -41,21 +41,25 @@ async function addSpreadSheet({timestamp=0, tabIdentifier="",text="",name=""}) {
   }
 }
 
-export const peerMenuMethods = {
+export const peerMenuMethods =
+  config.useSpreadSheetSigninButton ?
+{
   handleSignInClick(){
-    if(!config.useSpreadSheetSigninButton) return;
     gapi.auth2.getAuthInstance().signIn();
   },
   handleSignOutClick(){
-    if(!config.useSpreadSheetSigninButton) return;
     gapi.auth2.getAuthInstance().signOut();
   },
   showSignin(){
-    if(!config.useSpreadSheetSigninButton) return false;
     return gapi.auth2 && !gapi.auth2.getAuthInstance().isSignedIn.get();
   },
   showSignout(){
-    if(!config.useSpreadSheetSigninButton) return false;
     return gapi.auth2 && gapi.auth2.getAuthInstance().isSignedIn.get();
   }
+} : {
+  handleSignInClick(){ return;},
+  handleSignOutClick(){ return;},
+  showSignin(){ return false; },
+  showSignout(){ return false; }
 }
+
