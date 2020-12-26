@@ -39,6 +39,8 @@
 <ng-container *ngIf="networkService.peerId.length <= 18">
   <div style="font-size: 12px;" *ngIf="networkService.peerContexts.length < 1">※プライベート接続を使用する場合は、お互いのIDをユドナリウム外で共有してください。</div>
   <div style="font-size: 12px;" *ngIf="networkService.peerContexts.length < 1">※一人で動作確認を行いたい場合はブラウザを2つ開くと良いと思います。</div>
+  <button (click)="handleSignInClick()" *ngIf="showSignin()">スプレッドシート連携</button>
+  <button (click)="handleSignOutClick()" *ngIf="showSignout()">連携解除</button>
 </ng-container>
 <ng-container *ngIf="18 < networkService.peerId.length">
   <div style="font-size: 12px;">※ルーム機能を利用している時はプライベート接続を利用できません。</div>

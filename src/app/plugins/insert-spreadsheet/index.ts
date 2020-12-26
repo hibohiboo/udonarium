@@ -1,9 +1,11 @@
 import { ChatMessage } from "@udonarium/chat-message";
+import config from "../config";
 
 export default {
   chatTabOnChildAddedHook(child: ChatMessage){
+    if(config.useSpreadSheetSigninButton && !gapi.auth2.getAuthInstance().isSignedIn.get()){ return false}
     addSpreadSheet(child);
-    return true;
+    return false;
   }
 }
 
@@ -36,5 +38,24 @@ async function addSpreadSheet({timestamp=0, tabIdentifier="",text="",name=""}) {
     const response = (await gapi.client.sheets.spreadsheets.values.append(params, body)).data;
   } catch (err) {
     console.error(err);
+  }
+}
+
+export const peerMenuMethods = {
+  handleSignInClick(){
+    if(!config.useSpreadSheetSigninButton) return;
+    gapi.auth2.getAuthInstance().signIn();
+  },
+  handleSignOutClick(){
+    if(!config.useSpreadSheetSigninButton) return;
+    gapi.auth2.getAuthInstance().signOut();
+  },
+  showSignin(){
+    if(!config.useSpreadSheetSigninButton) return false;
+    return gapi.auth2 && !gapi.auth2.getAuthInstance().isSignedIn.get();
+  },
+  showSignout(){
+    if(!config.useSpreadSheetSigninButton) return false;
+    return gapi.auth2 && gapi.auth2.getAuthInstance().isSignedIn.get();
   }
 }

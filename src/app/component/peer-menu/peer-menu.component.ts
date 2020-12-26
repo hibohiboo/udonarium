@@ -10,6 +10,7 @@ import { LobbyComponent } from 'component/lobby/lobby.component';
 import { AppConfigService } from 'service/app-config.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
+import { peerMenuMethods } from 'src/app/plugins/insert-spreadsheet';
 
 @Component({
   selector: 'peer-menu',
@@ -156,5 +157,19 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   findPeerName(peerId: string) {
     const peerCursor = PeerCursor.find(peerId);
     return peerCursor ? peerCursor.name : '';
+  }
+
+  handleSignInClick() {
+    peerMenuMethods.handleSignInClick();
+  }
+
+  handleSignOutClick() {
+    peerMenuMethods.handleSignOutClick();
+  }
+  showSignin() {
+    return peerMenuMethods.showSignin();
+  }
+  showSignout() {
+    return peerMenuMethods.showSignout();
   }
 }
