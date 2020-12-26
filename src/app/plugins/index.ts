@@ -15,27 +15,27 @@ import type { ChatMessage } from '@udonarium/chat-message'
  * @return boolean true: 処理中断, false: 処理継続
  */
 export const gameBoardKeydownHook = (modalService:ModalService, e: KeyboardEvent) => {
-  if (!config.useKeyboardHelp()) { return false;}
+  if (!config.useKeyboardHelp) { return false;}
   return keyboardHelp.keyboardHook(modalService, e)
 }
 
 export const cardPointerHook = (card: CardComponent, e: PointerEvent) => {
-  if (!config.useCardTap()) { return false;}
+  if (!config.useCardTap) { return false;}
   return cardTap.cardPointerHook(card, e)
 }
 export const cardOnKeydownHook = (card: CardComponent, e: KeyboardEvent) => {
-  if (!config.useCardTap()) { return false;}
+  if (!config.useCardTap) { return false;}
   return cardTap.cardOnKeydownHook(card, e);
 }
 export const appRunOutsideAngularHook = ()=>{
-  // if (!config.usePostMessage) {return false;}
+  if (!config.usePostMessage) {return false;}
   return postMessage.appRunOutsideAngular()
 }
 export const updateGameObjectHook = (that: GameTableComponent)=>{
-  // if (!config.usePostMessage) {return false;}
+  if (!config.usePostMessage) {return false;}
   return postMessage.updateGameObjectHook(that);
 }
 export const chatTabOnChildAddedHook = (child: ChatMessage)=>{
-  // if (!config.usePostMessage) {return false;}
+  if (!config.usePostMessage) {return false;}
   return postMessage.chatTabOnChildAddedHook(child)
 }
