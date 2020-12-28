@@ -39,6 +39,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { appComponentConstructorHook } from './plugins';
+import factory from './plugins/factory';
 
 @Component({
   selector: 'app-root',
@@ -202,7 +203,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         option = { width: 630, height: 400, left: 100 };
         break;
       case 'FileStorageComponent':
-        component = FileStorageComponent;
+        component = factory.storageComponentFactory();
         break;
       case 'GameCharacterSheetComponent':
         component = GameCharacterSheetComponent;

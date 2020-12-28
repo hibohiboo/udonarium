@@ -1,0 +1,36 @@
+<form>
+  <div class="image-chg">
+    <label *ngFor="let tag of tagList" >
+      <input name="image-chg"  type="radio" value="{{tag}}"  [(ngModel)]="selectTag" (change) ="resetBtn()" >
+      <div *ngIf= "tag.length == 0" >未設定</div>
+      <div *ngIf= "tag.length > 0" >{{tag}}</div>
+    </label>
+  </div>
+</form>
+<label>
+  <div class="drop-zone">
+    <div>
+      <i class="material-icons large-font">add_photo_alternate</i>
+    </div>
+    <div>ここに画像をドロップ</div>
+    <div class="small-font">またはここをクリックして選択</div>
+    <input type="file" style="display: none;" (change)="handleFileSelect($event)" multiple accept="image/*"/>
+    <div class="small-font">
+      <br>１ファイルにつき2MBまで</div>
+  </div>
+</label>
+<div class="sticky-top">
+  <div>
+    <button (click)="changeTag()">タグを変更</button>
+    <input class="input" maxlength="12" (input)="inputNewTag($event.target.value)" placeholder="新タグ名">
+  </div>
+</div>
+<div id="file-list">
+  <span *ngFor="let file of images" class="image_">
+    <div style="float:left">
+      <img *ngIf="(0 < file.url.length) " [src]="file.url | safe: 'resourceUrl'" [alt]="file.name" height="120" (click)="onSelectedFile(file)">
+      <img *ngIf="file.url.length <= 0 " src="assets/images/loading.gif" alt="{{file.name}}">
+      <input *ngIf="(0 < file.url.length) " name="tag_chg_chk" type="checkbox" (change) ="onChange(file.identifier , $event.target.checked)" [checked]="identifierList.indexOf(file.identifier) > -1" >
+    </div>
+  </span>
+</div>

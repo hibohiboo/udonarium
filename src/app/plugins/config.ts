@@ -8,6 +8,7 @@ const useDeckSpreadSheet = location.search.includes('decksheet')
 const useLilyCutin = location.search.includes('lily_cutin=true')
 const useLilyStand = location.search.includes('lily_stand=true')
 const useLilyDiceTable = location.search.includes('lily_dacetable=true')
+const useLilyFile = location.search.includes('lily_file=true')
 export default {
   useKeyboardHelp,
   useCardTap,
@@ -18,5 +19,6 @@ export default {
   useDeckSpreadSheet,
   useLilyCutin,
   useLilyStand,
-  useLilyDiceTable
+  useLilyDiceTable,
+  useLilyFile
 }
