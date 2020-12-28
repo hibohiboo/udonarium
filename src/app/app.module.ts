@@ -55,7 +55,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 
 import { AppComponent } from './app.component';
-import pluginComponents from './plugins/components'
+import pluginComponents from './plugins/module'
 @NgModule({
   declarations: [
     AppComponent,
@@ -101,13 +101,14 @@ import pluginComponents from './plugins/components'
     DraggableDirective,
     ResizableDirective,
     ChatInputComponent,
-    ...pluginComponents,
+    ...pluginComponents.components,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
-    FormsModule
+    FormsModule,
+    ...pluginComponents.imports
   ],
   providers: [
     AppConfigService,

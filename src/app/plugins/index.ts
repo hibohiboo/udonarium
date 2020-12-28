@@ -4,12 +4,17 @@ import cardTap from './card-tap'
 import postMessage from './post-message'
 import insertSpreadsheet from './insert-spreadsheet'
 import { getDeckMenu } from './sheet-deck'
+import lilyCutin from './lily/cutin';
 import type { ModalService } from 'service/modal.service'
 import type { CardComponent } from 'component/card/card.component';
 import type { GameTableComponent } from 'component/game-table/game-table.component'
 import type { ChatMessage } from '@udonarium/chat-message'
-import type { PointerCoordinate } from 'service/pointer-device.service'
+import type { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service'
 import type { ContextMenuAction } from 'service/context-menu.service'
+import type { PanelOption, PanelService } from 'service/panel.service'
+import type { GameObject } from '@udonarium/core/synchronize-object/game-object'
+import type { CutInLauncher } from './lily/cutin/class/cut-in-launcher'
+import type { Listener } from '@udonarium/core/system/event/listener'
 
 /**
  * テーブル上でキーボードを押したときのHook;
@@ -34,10 +39,12 @@ export const cardOnKeydownHook = (card: CardComponent, e: KeyboardEvent) => {
 }
 
 // ティラノスクリプト連携
-export const appRunOutsideAngularHook = ()=>{
-  if (!config.usePostMessage) {return false;}
-  return postMessage.appRunOutsideAngular()
+
+export const appComponentConstructorHook = (listener: Listener)=>{
+  if (config.usePostMessage) { postMessage.appComponentConstructorHook()}
+  if (config.useLilyCutin) {lilyCutin.appComponentConstructorHook(listener);} // Cutin
 }
+
 export const updateGameObjectHook = (that: GameTableComponent)=>{
   if (!config.usePostMessage) {return false;}
   return postMessage.updateGameObjectHook(that);
@@ -55,4 +62,26 @@ export const chatTabOnChildAddedHook = (child: ChatMessage)=>{
 export const onContextMenuHook = async (menuActions: ContextMenuAction[], position: PointerCoordinate)=>{
   if(!config.useDeckSpreadSheet)return;
   menuActions.push(await getDeckMenu(position));
+}
+
+// Cutin
+export const panelOpenHook = (option: PanelOption, childPanelService: PanelService) => {
+  if(!config.useLilyCutin) return;
+  lilyCutin.panelOpenHook(option, childPanelService);
+}
+export const roomInnerXmlObjectsHook = (objests: GameObject[]) => {
+  if(!config.useLilyCutin) return objests;
+  return lilyCutin.roomInnerXmlObjectsHook(objests);
+}
+export const jukeboxLauncher = ()=>{
+  if(!config.useLilyCutin) return null;
+  return lilyCutin.jukeboxLauncher();
+}
+export const jukeboxPlayBGMHook = (cutInLauncher: CutInLauncher)=>{
+  if(!config.useLilyCutin) return null;
+  lilyCutin.jukeboxPlayBGMHook(cutInLauncher);
+}
+export const jukeboxOpenCutInListHook = (pointerDeviceService: PointerDeviceService, panelService: PanelService) => {
+  if(!config.useLilyCutin) return;
+  lilyCutin.jukeboxOpenCutInListHook(pointerDeviceService, panelService);
 }

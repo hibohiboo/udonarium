@@ -5,6 +5,7 @@ const usePostMessage = location.search.includes('usePostMessage=true')
 const useSpreadSheet = location.search.includes('spreadsheet')
 const useSpreadSheetSigninButton = location.search.includes('ss_auto=false')
 const useDeckSpreadSheet = location.search.includes('decksheet')
+const useLilyCutin = location.search.includes('lily_cutin=true')
 export default {
   useKeyboardHelp,
   useCardTap,
@@ -12,5 +13,6 @@ export default {
   get usePostMessage(){return true},
   useSpreadSheet,
   useSpreadSheetSigninButton,
-  useDeckSpreadSheet
+  useDeckSpreadSheet,
+  useLilyCutin
 }

@@ -7,7 +7,7 @@ import type { GameTableComponent } from "component/game-table/game-table.compone
 
 
 export default {
-  appRunOutsideAngular(){
+  appComponentConstructorHook(){
     if (!window.parent) { return false;}
 
     window.addEventListener('message', (event: MessageEvent) => {

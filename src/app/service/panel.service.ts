@@ -1,4 +1,5 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, ViewContainerRef } from '@angular/core';
+import { panelOpenHook } from '../plugins';
 
 declare var Type: FunctionConstructor;
 interface Type<T> extends Function {
@@ -11,6 +12,9 @@ export interface PanelOption {
   top?: number;
   width?: number;
   height?: number;
+
+  isCutIn?: boolean; //この方式でよいか検討のこと
+  cutInIdentifier?: string;
 }
 
 @Injectable()
@@ -25,6 +29,8 @@ export class PanelService {
   top: number = 0;
   width: number = 100;
   height: number = 100;
+  isCutIn: boolean = false ; //この方式でよいか検討のこと
+  cutInIdentifier: string = '';
 
   scrollablePanel: HTMLDivElement = null;
 
@@ -59,6 +65,7 @@ export class PanelService {
       if (option.left) childPanelService.left = option.left;
       if (option.width) childPanelService.width = option.width;
       if (option.height) childPanelService.height = option.height;
+      panelOpenHook(option, childPanelService);
     }
     panelComponentRef.onDestroy(() => {
       childPanelService.panelComponentRef = null;

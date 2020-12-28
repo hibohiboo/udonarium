@@ -9,17 +9,14 @@ import { EventSystem } from '@udonarium/core/system';
 import { Jukebox } from '@udonarium/Jukebox';
 
 import { ModalService } from 'service/modal.service';
-import { PanelService } from 'service/panel.service';
-import { PointerDeviceService } from 'service/pointer-device.service';
-import { jukeboxLauncher, jukeboxOpenCutInListHook, jukeboxPlayBGMHook } from 'src/app/plugins';
-import config from 'src/app/plugins/config';
+import { PanelOption, PanelService } from 'service/panel.service';
 
 @Component({
-  selector: 'app-jukebox',
-  templateUrl: './jukebox.component.html',
-  styleUrls: ['./jukebox.component.css']
+  selector: 'app-cut-in-bgm',
+  templateUrl: './cut-in-bgm.component.html',
+  styleUrls: ['./cut-in-bgm.component.css']
 })
-export class JukeboxComponent implements OnInit, OnDestroy {
+export class CutInBgmComponent implements OnInit, OnDestroy {
 
   get volume(): number { return AudioPlayer.volume; }
   set volume(volume: number) { AudioPlayer.volume = volume; }
@@ -30,25 +27,21 @@ export class JukeboxComponent implements OnInit, OnDestroy {
   get audios(): AudioFile[] { return AudioStorage.instance.audios.filter(audio => !audio.isHidden); }
   get jukebox(): Jukebox { return ObjectStore.instance.get<Jukebox>('Jukebox'); }
 
-  get useCutin(): boolean { return config.useLilyCutin }
-  get cutInLauncher() { return jukeboxLauncher() }
-
   readonly auditionPlayer: AudioPlayer = new AudioPlayer();
   private lazyUpdateTimer: NodeJS.Timer = null;
+
 
   constructor(
     private modalService: ModalService,
     private panelService: PanelService,
-    private pointerDeviceService: PointerDeviceService,
     private ngZone: NgZone
   ) { }
 
   ngOnInit() {
-    Promise.resolve().then(() => this.modalService.title = this.panelService.title = 'ジュークボックス');
+    Promise.resolve().then(() => this.modalService.title = this.panelService.title = 'カットインBGM選択');
     this.auditionPlayer.volumeType = VolumeType.AUDITION;
     EventSystem.register(this)
       .on('*', event => {
-        if (event.eventName.startsWith('FILE_')) this.lazyNgZoneUpdate();
       });
   }
 
@@ -65,21 +58,21 @@ export class JukeboxComponent implements OnInit, OnDestroy {
     this.auditionPlayer.stop();
   }
 
-  playBGM(audio: AudioFile) {
-    jukeboxPlayBGMHook(this.cutInLauncher);
-    this.jukebox.play(audio.identifier, true);
+
+  selectBgm(file: AudioFile) {
+    if( !file )return;
+    console.log('onSelectedFile', file);
+
+    console.log('file.identifier' + file.identifier);
+    console.log('file.name' + file.name);
+
+    this.modalService.resolve(file.identifier);
   }
 
-  stopBGM(audio: AudioFile) {
-    if (this.jukebox.audio === audio) this.jukebox.stop();
-  }
 
   handleFileSelect(event: Event) {
     let files = (<HTMLInputElement>event.target).files;
     if (files.length) FileArchiver.instance.load(files);
-  }
-  openCutInList() {
-    jukeboxOpenCutInListHook(this.pointerDeviceService, this.panelService);
   }
 
   private lazyNgZoneUpdate() {
@@ -89,4 +82,6 @@ export class JukeboxComponent implements OnInit, OnDestroy {
       this.ngZone.run(() => { });
     }, 100);
   }
+
+
 }

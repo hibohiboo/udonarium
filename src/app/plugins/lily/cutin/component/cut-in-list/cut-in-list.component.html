@@ -1,0 +1,97 @@
+<div class="flex-container">
+  <div class="flex-item no-grow">
+    <div>
+      <button (click)="createCutIn()">新しいカットインを作る</button>
+    </div>
+    <select style="width: 15em;" size="20" (change)="selectCutIn($event.target.value)" [ngModel]="selectedCutIn?.identifier" >
+      <option *ngFor="let cutIn of getCutIns()" value="{{cutIn.identifier}}">{{cutIn.name}}</option>
+    </select>
+  </div>
+  <div class="flex-item" style="width:380px">
+    <ng-container *ngIf="!isEmpty || selectedCutIn">
+      <div class="images-select">
+        <div>
+          画像
+          <div (click)="openCutInImageModal()"  style="height:120px;" >
+            <img height="120" [src]="cutInImage.url | safe: 'resourceUrl'">
+          </div>
+        </div>
+        <div>
+        </div>
+      </div>
+      <div>名称 :
+        <input [(ngModel)]="cutInName" placeholder="Name" [attr.disabled]="!isEditable ? '' : null" />
+      </div>
+
+      <div >音楽データ :
+        <button (click)="openCutInBgmModal()">設定</button><br>
+
+        <button  (click)="playCutIn()" [disabled]="" >カットイン/再生</button>
+        <button  (click)="stopCutIn()" [disabled]="" >カットイン/停止</button><br>
+
+
+　　　　LINK:<span *ngIf="isCutInBgmUploaded()" >OK：</span><span *ngIf="!isCutInBgmUploaded()" >NG：</span><br>
+        <ng-container *ngIf="!isCutInBgmUploaded()">
+          <span *ngIf="cutInAudioName.length>0 " >音楽ファイルがアップされていません</span>
+          <span *ngIf="cutInAudioName.length<=0 " >音楽ファイルが設定されていません</span>
+        </ng-container>
+        <br>
+        <ng-container *ngIf="isEditable" >{{cutInAudioName}}</ng-container><br>
+
+      </div>
+      <div>
+        元サイズで表示：<input type="checkbox" [(ngModel)]="cutInOriginalSize" name="cutInOriginalSize" [attr.disabled]="!isEditable ? '' : null"/>
+      </div>
+      <div>
+        Width :<input [(ngModel)]="cutInWidth" type="number" min="{{minSize}}" max="{{maxSize}}" style="width: 5em;" [attr.disabled]="!isEditable ? '' : null">
+      </div>
+      <div>
+        Height :<input [(ngModel)]="cutInHeight" type="number" min="{{minSize}}" max="{{maxSize}}" style="width: 5em;" [attr.disabled]="!isEditable ? '' : null">
+      </div>
+      <div>
+        <input [(ngModel)]="cutInX_Pos" type="range" min="0" max="100" name="cutInX_PosWidth" [attr.disabled]="!isEditable ? '' : null"/>
+        X位置 :<input [(ngModel)]="cutInX_Pos" type="number" min="0" max="100" style="width: 5em;" [attr.disabled]="!isEditable ? '' : null">
+      </div>
+      <div>
+        <input [(ngModel)]="cutInY_Pos" type="range" min="0" max="100" name="cutInX_PosWidth" [attr.disabled]="!isEditable ? '' : null"/>
+        Y位置 :<input [(ngModel)]="cutInY_Pos" type="number" min="0" max="100" style="width: 5em;" [attr.disabled]="!isEditable ? '' : null">
+      </div>
+      <div>
+        ループ再生：<input type="checkbox" [(ngModel)]="cutInIsLoop" name="cutInIsLoop" [attr.disabled]="!isEditable ? '' : null"/>
+      </div>
+      <div>
+        再生時間 :<input [(ngModel)]="cutInOutTime" type="number" min="0" style="width: 5em;" [attr.disabled]="!isEditable ? '' : null">
+      </div>
+      <div>
+        タグ名称 :<input [(ngModel)]="cutInTagName" placeholder="" style="width: 5em;" [attr.disabled]="!isEditable ? '' : null" />
+      </div>
+      <div>
+<p style="font-size:0.4em">※カットインの挙動<br>
+タグ名称が同名のカットインは先に再生しているものを停止します(タグ空欄含む)<br>
+タグ名称が空欄で音楽が設定されている場合、ジュークボックスのBGMを停止します<br>
+また、そのようなカットインはジュークボックスでBGMを再生すると停止します<br>
+銃撃音のSE等、BGMと同時再生したいカットインはタグを設定してください<br>
+</p>
+      </div>
+
+<!-- 動画再生は後日検討。youtubeより.mp4に対法した方が実装上は良いのかも知れない
+      <div>
+        Youtube再生 :<input type="checkbox" [(ngModel)]="cutInUseOutUrl" name="cutInUseOutUrl" [attr.disabled]="!isEditable ? '' : null"/>
+      </div>
+      <div>
+        URL :<input [(ngModel)]="cutInOutUrl" placeholder="URL" [attr.disabled]="!isEditable ? '' : null" />
+      </div>
+-->
+      <hr/>
+      <div>
+        <ng-container *ngIf="!isDeleted">
+          <button (click)="save()">保存</button>
+          <button class="danger" (click)="delete()" [attr.disabled]="getCutIns().length <= 0 ? '' : null">削除</button>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</div>
+<ng-container *ngIf="isEmpty">
+  <div style="font-size: 12px;">※カットインが１つも作成されていません。「新しいカットインを作る」から新しいカットインを作成することができます。</div>
+</ng-container>
