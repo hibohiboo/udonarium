@@ -2,7 +2,7 @@ import { ChatTab } from './chat-tab';
 import { SyncObject } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
 import { InnerXml } from './core/synchronize-object/object-serializer';
-
+import factory from 'src/app/plugins/factory';
 @SyncObject('chat-tab-list')
 export class ChatTabList extends ObjectNode implements InnerXml {
   private static _instance: ChatTabList;
@@ -25,7 +25,7 @@ export class ChatTabList extends ObjectNode implements InnerXml {
     } else {
       let tabName: string = args[0];
       let identifier: string = args[1];
-      chatTab = new ChatTab(identifier);
+      chatTab = factory.chatTabFactory(identifier);
       chatTab.name = tabName;
       chatTab.initialize();
     }

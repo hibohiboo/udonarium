@@ -1,3 +1,4 @@
+import { diceBotOnStoreAddedHook } from '../plugins';
 import { ChatMessage, ChatMessageContext } from './chat-message';
 import { ChatTab } from './chat-tab';
 import { SyncObject } from './core/synchronize-object/decorator';
@@ -326,7 +327,7 @@ export class DiceBot extends GameObject {
   onStoreAdded() {
     super.onStoreAdded();
     DiceBot.queue.add(DiceBot.loadScriptAsync('./assets/cgiDiceBot.js'));
-    EventSystem.register(this)
+    const listener = EventSystem.register(this)
       .on('SEND_MESSAGE', async event => {
         let chatMessage = ObjectStore.instance.get<ChatMessage>(event.data.messageIdentifier);
         if (!chatMessage || !chatMessage.isSendFromSelf || chatMessage.isSystem) return;
@@ -354,6 +355,7 @@ export class DiceBot extends GameObject {
         }
         return;
       });
+      diceBotOnStoreAddedHook(listener);
   }
 
   // GameObject Lifecycle

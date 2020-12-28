@@ -3,8 +3,9 @@ import { HelpKeyboardComponent } from './keyboard-help/component/help-keyboard/h
 import { CutInListComponent } from './lily/cutin/component/cut-in-list/cut-in-list.component';
 import { CutInBgmComponent } from './lily/cutin/component/cut-in-bgm/cut-in-bgm.component';
 import { CutInWindowComponent } from './lily/cutin/component/cut-in-window/cut-in-window.component';
+import {DiceTableSettingComponent} from './lily/dice-table/component/dice-table-setting/dice-table-setting.component';
 
-const components = [HelpKeyboardComponent, CutInListComponent, CutInBgmComponent, CutInWindowComponent]
+const components = [HelpKeyboardComponent, CutInListComponent, CutInBgmComponent, CutInWindowComponent, DiceTableSettingComponent]
 const imports = []
 
 // 以下のように条件分岐で使用コンポーネントを変えようとすると、FormsModuleなどインポートが必要なディレクティブが使えなくなる

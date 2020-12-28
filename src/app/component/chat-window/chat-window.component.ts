@@ -8,6 +8,8 @@ import { ChatTabSettingComponent } from 'component/chat-tab-setting/chat-tab-set
 import { ChatMessageService } from 'service/chat-message.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import lilyDiceTable from '../../plugins/lily/dice-table/hooks/chat-window.component'
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'chat-window',
@@ -16,7 +18,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 })
 export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   sendFrom: string = 'Guest';
-
+  get useDiceTable(): boolean { return config.useLilyDiceTable }
   get gameType(): string { return this.chatMessageService.gameType; }
   set gameType(gameType: string) { this.chatMessageService.gameType = gameType; }
 
@@ -121,5 +123,9 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
 
   trackByChatTab(index: number, chatTab: ChatTab) {
     return chatTab.identifier;
+  }
+
+  showDiceTableSetting() {
+    lilyDiceTable.showDiceTableSetting(this.pointerDeviceService, this.panelService);
   }
 }

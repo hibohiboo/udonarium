@@ -4,7 +4,7 @@ import cardTap from './card-tap'
 import postMessage from './post-message'
 import insertSpreadsheet from './insert-spreadsheet'
 import { getDeckMenu } from './sheet-deck'
-import lilyCutin from './lily/cutin';
+import lily from './lily';
 import type { ModalService } from 'service/modal.service'
 import type { CardComponent } from 'component/card/card.component';
 import type { GameTableComponent } from 'component/game-table/game-table.component'
@@ -42,7 +42,7 @@ export const cardOnKeydownHook = (card: CardComponent, e: KeyboardEvent) => {
 
 export const appComponentConstructorHook = (listener: Listener)=>{
   if (config.usePostMessage) { postMessage.appComponentConstructorHook()}
-  if (config.useLilyCutin) {lilyCutin.appComponentConstructorHook(listener);} // Cutin
+  if (config.useLilyCutin) {lily.cutin.appComponentConstructorHook(listener);} // Cutin
 }
 
 export const updateGameObjectHook = (that: GameTableComponent)=>{
@@ -67,21 +67,26 @@ export const onContextMenuHook = async (menuActions: ContextMenuAction[], positi
 // Cutin
 export const panelOpenHook = (option: PanelOption, childPanelService: PanelService) => {
   if(!config.useLilyCutin) return;
-  lilyCutin.panelOpenHook(option, childPanelService);
+  lily.cutin.panelOpenHook(option, childPanelService);
 }
 export const roomInnerXmlObjectsHook = (objests: GameObject[]) => {
   if(!config.useLilyCutin) return objests;
-  return lilyCutin.roomInnerXmlObjectsHook(objests);
+  return lily.cutin.roomInnerXmlObjectsHook(objests);
 }
 export const jukeboxLauncher = ()=>{
   if(!config.useLilyCutin) return null;
-  return lilyCutin.jukeboxLauncher();
+  return lily.cutin.jukeboxLauncher();
 }
 export const jukeboxPlayBGMHook = (cutInLauncher: CutInLauncher)=>{
   if(!config.useLilyCutin) return null;
-  lilyCutin.jukeboxPlayBGMHook(cutInLauncher);
+  lily.cutin.jukeboxPlayBGMHook(cutInLauncher);
 }
 export const jukeboxOpenCutInListHook = (pointerDeviceService: PointerDeviceService, panelService: PanelService) => {
   if(!config.useLilyCutin) return;
-  lilyCutin.jukeboxOpenCutInListHook(pointerDeviceService, panelService);
+  lily.cutin.jukeboxOpenCutInListHook(pointerDeviceService, panelService);
+}
+
+// ダイス表
+export const diceBotOnStoreAddedHook = (listener: Listener) => {
+  if(config.useLilyDiceTable) {lily.diceTable.diceBotOnStoreAddedHook(listener)}
 }
