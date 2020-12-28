@@ -11,6 +11,7 @@ import { AppConfigService } from 'service/app-config.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { peerMenuMethods } from 'src/app/plugins/insert-spreadsheet';
+import factory from 'src/app/plugins/factory';
 
 @Component({
   selector: 'peer-menu',
@@ -49,7 +50,7 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   changeIcon() {
-    this.modalService.open<string>(FileSelecterComponent).then(value => {
+    this.modalService.open<string>(factory.storageSelectorComponentFactory()).then(value => {
       if (!this.myPeer || !value) return;
       this.myPeer.imageIdentifier = value;
     });

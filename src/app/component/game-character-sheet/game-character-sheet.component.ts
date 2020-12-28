@@ -9,6 +9,7 @@ import { FileSelecterComponent } from 'component/file-selecter/file-selecter.com
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { SaveDataService } from 'service/save-data.service';
+import factory from 'src/app/plugins/factory';
 
 @Component({
   selector: 'game-character-sheet',
@@ -114,7 +115,7 @@ export class GameCharacterSheetComponent implements OnInit, OnDestroy, AfterView
   }
 
   openModal(name: string = '', isAllowedEmpty: boolean = false) {
-    this.modalService.open<string>(FileSelecterComponent, { isAllowedEmpty: isAllowedEmpty }).then(value => {
+    this.modalService.open<string>(factory.storageSelectorComponentFactory(), { isAllowedEmpty: isAllowedEmpty }).then(value => {
       if (!this.tabletopObject || !this.tabletopObject.imageDataElement || !value) return;
       let element = this.tabletopObject.imageDataElement.getFirstElementByName(name);
       if (!element) return;

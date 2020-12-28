@@ -12,6 +12,7 @@ import { TableSelecter } from '@udonarium/table-selecter';
 import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
+import factory from 'src/app/plugins/factory';
 
 @Component({
   selector: 'game-character-generator',
@@ -70,6 +71,6 @@ export class GameCharacterGeneratorComponent implements OnInit, OnDestroy, After
   }
 
   openModal() {
-    this.modalService.open(FileSelecterComponent);
+    this.modalService.open(factory.storageSelectorComponentFactory());
   }
 }

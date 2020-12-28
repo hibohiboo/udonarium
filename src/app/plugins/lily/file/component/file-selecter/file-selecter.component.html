@@ -1,0 +1,20 @@
+<form>
+  <div class="image-chg">
+    <label *ngFor="let tag of tagList" >
+      <input name="image-chg"  type="radio" value="{{tag}}"  [(ngModel)]="selectTag" (change) ="resetBtn()" >
+      <div *ngIf= "tag.length == 0" >未設定</div>
+      <div *ngIf= "tag.length > 0" >{{tag}}</div>
+    </label>
+  </div>
+</form>
+<div id="file-list">
+  <span class="empty" *ngIf="isAllowedEmpty">
+    <button (click)="onSelectedFile(empty)">画像なし</button>
+  </span>
+    <span *ngFor="let file of images" class="image">
+    <div style="float:left">
+      <img *ngIf="(0 < file.url.length) " [src]="file.url | safe: 'resourceUrl'" [alt]="file.name" height="120" (click)="onSelectedFile(file)">
+      <img *ngIf="file.url.length <= 0 " src="assets/images/loading.gif" alt="{{file.name}}">
+    </div>
+    </span>
+</div>

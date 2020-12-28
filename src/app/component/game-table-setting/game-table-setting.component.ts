@@ -12,6 +12,7 @@ import { FileSelecterComponent } from 'component/file-selecter/file-selecter.com
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { SaveDataService } from 'service/save-data.service';
+import factory from 'src/app/plugins/factory';
 
 @Component({
   selector: 'game-table-setting',
@@ -155,7 +156,7 @@ export class GameTableSettingComponent implements OnInit, OnDestroy, AfterViewIn
 
   openBgImageModal() {
     if (this.isDeleted) return;
-    this.modalService.open<string>(FileSelecterComponent).then(value => {
+    this.modalService.open<string>(factory.storageSelectorComponentFactory()).then(value => {
       if (!this.selectedTable || !value) return;
       this.selectedTable.imageIdentifier = value;
     });
@@ -163,7 +164,7 @@ export class GameTableSettingComponent implements OnInit, OnDestroy, AfterViewIn
 
   openDistanceViewImageModal() {
     if (this.isDeleted) return;
-    this.modalService.open<string>(FileSelecterComponent, { isAllowedEmpty: true }).then(value => {
+    this.modalService.open<string>(factory.storageSelectorComponentFactory(), { isAllowedEmpty: true }).then(value => {
       if (!this.selectedTable || !value) return;
       this.selectedTable.backgroundImageIdentifier = value;
     });
