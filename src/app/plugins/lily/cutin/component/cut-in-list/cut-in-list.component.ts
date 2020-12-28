@@ -14,6 +14,7 @@ import { FileSelecterComponent } from 'component/file-selecter/file-selecter.com
 import { CutInBgmComponent } from '../cut-in-bgm/cut-in-bgm.component';
 import { SaveDataService } from 'service/save-data.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import factory from 'src/app/plugins/factory';
 
 @Component({
   selector: 'app-cut-in-list',
@@ -150,7 +151,7 @@ export class CutInListComponent implements OnInit, OnDestroy {
 
   openCutInImageModal() {
     if (!this.isSelected) return;
-    this.modalService.open<string>(FileSelecterComponent).then(value => {
+    this.modalService.open<string>(factory.storageSelectorComponentFactory()).then(value => {
       if (!this.selectedCutIn || !value) return;
       this.selectedCutIn.imageIdentifier = value;
     });

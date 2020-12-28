@@ -8,7 +8,7 @@ import lily from './lily';
 import type { ModalService } from 'service/modal.service'
 import type { CardComponent } from 'component/card/card.component';
 import type { GameTableComponent } from 'component/game-table/game-table.component'
-import type { ChatMessage } from '@udonarium/chat-message'
+import type { ChatMessage, ChatMessageContext } from '@udonarium/chat-message'
 import type { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service'
 import type { ContextMenuAction } from 'service/context-menu.service'
 import type { PanelOption, PanelService } from 'service/panel.service'
@@ -89,4 +89,29 @@ export const jukeboxOpenCutInListHook = (pointerDeviceService: PointerDeviceServ
 // ダイス表
 export const diceBotOnStoreAddedHook = (listener: Listener) => {
   if(config.useLilyDiceTable) {lily.diceTable.diceBotOnStoreAddedHook(listener)}
+}
+
+// ファイル
+
+export const saveDataSaveRoomHook = (files: File[], roomXml:string, chatXml: string)=>{
+  if(config.useLilyFile) return lily.file.saveDataSaveRoomHook(files, roomXml, chatXml);
+  return files;
+}
+export const saveDataSaveGameObjectHook = (files: File[], xml: string) => {
+  if(config.useLilyFile) return lily.file.saveDataSaveGameObjectHook(files, xml);
+  return files;
+}
+// 立ち絵
+
+export const chatInputGetImageFileHook = (selectCharacterTachie: any)=>{
+  if(config.useLilyStand) return lily.stand.chatInputGetImageFileHook(selectCharacterTachie);
+}
+
+export const chatInputAllowsChatHook = (gameCharacter: any)=>{
+  if(config.useLilyStand) return lily.stand.chatInputAllowsChatHook(gameCharacter);
+}
+
+export const chatMessageSendMessageHook = (chatMessage: ChatMessageContext, sendFrom, tachieNum?: number) =>{
+  if(config.useLilyStand) return lily.stand.chatMessageSendMessageHook(chatMessage, sendFrom, tachieNum);
+  return chatMessage;
 }

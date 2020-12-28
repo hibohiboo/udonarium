@@ -12,6 +12,7 @@ import { DataSummarySetting } from '@udonarium/data-summary-setting';
 import { Room } from '@udonarium/room';
 
 import * as Beautify from 'vkbeautify';
+import { saveDataSaveGameObjectHook, saveDataSaveRoomHook } from '../plugins';
 
 type UpdateCallback = (percent: number) => void;
 
@@ -40,6 +41,7 @@ export class SaveDataService {
 
     files = files.concat(this.searchImageFiles(roomXml));
     files = files.concat(this.searchImageFiles(chatXml));
+    files = saveDataSaveRoomHook(files, roomXml, chatXml);
 
     return this.saveAsync(files, this.appendTimestamp(fileName), updateCallback);
   }
@@ -54,6 +56,7 @@ export class SaveDataService {
 
     files.push(new File([xml], 'data.xml', { type: 'text/plain' }));
     files = files.concat(this.searchImageFiles(xml));
+    files = saveDataSaveGameObjectHook(files, xml);
 
     return this.saveAsync(files, this.appendTimestamp(fileName), updateCallback);
   }
