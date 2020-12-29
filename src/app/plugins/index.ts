@@ -131,7 +131,9 @@ export const gameCharacterOnContextMenuHook = (panelService: PanelService, gameO
 
 // バフ
 export const tabletopServiceMakeDefaultTabletopObjectsHook = () => {
+  if (config.hideSample) return true; // サンプルを初期表示させない
   if (config.useLilyBuff) return lily.buff.tabletopServiceMakeDefaultTabletopObjectsHook();
+
   return false;
 }
 

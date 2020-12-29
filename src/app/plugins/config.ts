@@ -5,6 +5,8 @@ const usePostMessage = location.search.includes('usePostMessage=true')
 const useSpreadSheet = location.search.includes('spreadsheet')
 const useSpreadSheetSigninButton = location.search.includes('ss_auto=false')
 const useDeckSpreadSheet = location.search.includes('decksheet')
+const hideSample = location.search.includes('hide_sample=true')
+
 const useLilyCutin = location.search.includes('lily_cutin=true')
 const useLilyStand = location.search.includes('lily_stand=true')
 const useLilyDiceTable = location.search.includes('lily_dacetable=true')
@@ -14,11 +16,12 @@ const useLilyRemocon = location.search.includes('lily_remocon=true')
 const useLilyTalkFlg = location.search.includes('lily_talk_flg=true')
 const useLilyHideInventoryFlg = location.search.includes('lily_hide_inventory_flg=true')
 
+
 export default {
   useKeyboardHelp,
   useCardTap,
   get use2dMode(){ return use2dMode},
-  get usePostMessage(){return true},
+  get usePostMessage(){return usePostMessage},
   useSpreadSheet,
   useSpreadSheetSigninButton,
   useDeckSpreadSheet,
@@ -31,5 +34,6 @@ export default {
   useLilyBuff,
   useLilyStand,
   useLilyTalkFlg,
-  useLilyHideInventoryFlg
+  useLilyHideInventoryFlg,
+  hideSample,
 }
