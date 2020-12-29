@@ -13,6 +13,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 
 import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
 import { GameCharacter } from '@udonarium/game-character';
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'controller-input',
@@ -20,6 +21,9 @@ import { GameCharacter } from '@udonarium/game-character';
   styleUrls: ['./controller-input.component.css']
 })
 export class ControllerInputComponent implements OnInit, OnDestroy {
+  get useBuff(){ return config.useLilyBuff }
+  get useStand(){ return config.useLilyStand }
+
   @ViewChild('textArea', { static: true }) textAreaElementRef: ElementRef;
 
   @Input() onlyCharacters: boolean = false;

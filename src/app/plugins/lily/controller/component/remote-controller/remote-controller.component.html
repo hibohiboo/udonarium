@@ -10,13 +10,13 @@
          </div>
         </form>
 
-        <controller-input [onlyCharacters]="true" [chatTabidentifier]="chatTabidentifier" 
-        [(gameType)]="gameType" [(sendFrom)]="sendFrom" [(text)]="text" (chat)="sendChat($event)" 
+        <controller-input [onlyCharacters]="true" [chatTabidentifier]="chatTabidentifier"
+        [(gameType)]="gameType" [(sendFrom)]="sendFrom" [(text)]="text" (chat)="sendChat($event)"
         (hideChkEvent)="hideChkBoxEvent($event)"
         #controllerInput>
         </controller-input>
 
-        <ng-container *ngIf="! buffAreaIsHide ">
+        <ng-container *ngIf="! (buffAreaIsHide || !useBuff)">
           <div *ngIf="errorMessageBuff.length > 0" >{{errorMessageBuff}}
           </div>
           <div *ngIf="isEdit" class="edit-info"><i class="material-icons" style="vertical-align: bottom; size:0.8rem;">info_outline</i> バフ編集中です</div>
@@ -26,7 +26,7 @@
   <form>
     <ng-container *ngIf="! buffHideIsChk ">
       <textarea class="controller-input" placeholder="Enterで送信" [(ngModel)]="text"
-        [ngModelOptions]="{standalone: true}" (input)="onInput()" (keydown.enter)="sendChat($event)" 
+        [ngModelOptions]="{standalone: true}" (input)="onInput()" (keydown.enter)="sendChat($event)"
       #textArea></textarea>
       <button type="submit" (click)="sendChat(null)">実行</button>
     </ng-container>
@@ -67,7 +67,7 @@
 
     <div style="width:100%;">カウンターリモコン
       <div style="float:right;text-align:right;">隠す
-        <input name="buff_hide_chk" type="checkbox" 
+        <input name="buff_hide_chk" type="checkbox"
         (change) ="controllerHideChkChange($event.target.checked)" >
       </div>
     </div>
@@ -75,7 +75,7 @@
     <ng-container *ngIf="! controllerAreaIsHide ">
       <div>
         変更量
-        <input style="width: 5em;   font-size: 1.2em;" size="1" 
+        <input style="width: 5em;   font-size: 1.2em;" size="1"
         type="number" [(ngModel)]="this.remotNumber" placeholder="Value" />
         <button type="submit" (click)="remotChangeValue()">
           <span>リモコン操作</span>
@@ -106,7 +106,7 @@
                 </ng-container>
               </ng-container>
             </ng-container >
-          </ng-container> 
+          </ng-container>
         </div>
       </div>
     </ng-container>
@@ -114,7 +114,7 @@
 
 <div class="controller-right" >
     <div *ngIf="getGameObjects(selectTab).length < 1">{{getTabTitle(selectTab)}}インベントリは空です</div>
-    <div 
+    <div
      *ngFor="let gameObject of getGameObjects(selectTab); trackBy: trackByGameObject"
      [ngClass]="{'box': true, 'selected': 0 }" >
       <ng-container *ngTemplateOutlet="gameObjectTags; context:{ gameObject: gameObject}"></ng-container>
@@ -127,11 +127,11 @@
 
     <div class="object-tags-box">
       <div>
-        <input name="tag_chg_chk" type="checkbox" 
-        (change) ="charListChange(gameObject.identifier , $event.target.checked)" 
+        <input name="tag_chg_chk" type="checkbox"
+        (change) ="charListChange(gameObject.identifier , $event.target.checked)"
         [checked]="charList.indexOf(gameObject.identifier) > -1" >
         <span class="object-name">{{gameObject.name}}</span>
-        <button class="tab-setting small-font" (click)="buffEdit( gameObject )">バフ編集</button>
+        <button *ngIf="useBuff" class="tab-setting small-font" (click)="buffEdit( gameObject )">バフ編集</button>
       </div>
       <div class="table">
         <div class="table-cell image-box">
@@ -157,7 +157,7 @@
         <div class="tag-name">{{dataElm.name}}</div>
         <div style="text-align: center;">
           <div style="display: inline-block;">
-            <div class="tag-value-box" >              
+            <div class="tag-value-box" >
               <div class="hidden-spacer" style="font-weight: bold;">&nbsp;&nbsp;{{dataElm.value}}</div>
               <div class="hidden-spacer" style="font-weight: bold;">&nbsp;&nbsp;{{dataElm.currentValue}}</div>
               <div class="table">
@@ -165,9 +165,9 @@
                   <div style="padding: 2px;">&nbsp;</div><div style="padding: 2px;">/</div>
                 </div>
                 <div class="table-cell">
-                  <input class="input tag-value" size="1" [(ngModel)]="dataElm.currentValue" 
+                  <input class="input tag-value" size="1" [(ngModel)]="dataElm.currentValue"
                   placeholder="" />
-                  <input class="input tag-value" size="1" [(ngModel)]="dataElm.value" 
+                  <input class="input tag-value" size="1" [(ngModel)]="dataElm.value"
                   placeholder="" />
                 </div>
               </div>

@@ -22,7 +22,7 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import lilyBuffer from 'src/app/plugins/lily/character-buff';
+import { gameCharacterOnContextMenuHook } from 'src/app/plugins';
 
 @Component({
   selector: 'game-character',
@@ -119,7 +119,7 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
     this.contextMenuService.open(position, [
       { name: '詳細を表示', action: () => { this.showDetail(this.gameCharacter); } },
       { name: 'チャットパレットを表示', action: () => { this.showChatPalette(this.gameCharacter) } },
-      ...lilyBuffer.gameCharacterComponentAddContextMenu(this.panelService, this.gameCharacter, position),
+      ...gameCharacterOnContextMenuHook(this.panelService, this.gameCharacter, position),
       ContextMenuSeparator,
       {
         name: '共有イベントリに移動', action: () => {

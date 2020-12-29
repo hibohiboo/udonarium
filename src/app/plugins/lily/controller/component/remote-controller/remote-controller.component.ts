@@ -20,7 +20,7 @@ import { ContextMenuService } from 'service/context-menu.service';
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { GameCharacterBuffViewComponent } from '../game-character-buff-view/game-character-buff-view.component';
-
+import config from 'src/app/plugins/config';
 
 class RemotControllerSelect {
     identifier:string;
@@ -35,6 +35,9 @@ class RemotControllerSelect {
 
 })
 export class RemoteControllerComponent implements OnInit, OnDestroy {
+  get useBuff(){ return config.useLilyBuff }
+  get useStand(){ return config.useLilyStand }
+
   @ViewChild('controllerInput', { static: true }) controllerInputComponent: ControllerInputComponent;
   @ViewChild('chatPlette') chatPletteElementRef: ElementRef<HTMLSelectElement>;
   @Input() character: GameCharacter = null;

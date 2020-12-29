@@ -114,6 +114,16 @@ export const tableTopServiceCreateTerrainHook = (position: PointerCoordinate)=>{
   if(config.useLilyFile) return lily.file.tableTopServiceCreateTerrainHook(position);
   return false;
 }
+
+// リモコン
+export const gameObjectInventoryOnContextMenuHook = (menuActions: ContextMenuAction[], panelService: PanelService, gameObject: GameCharacter, position: PointerCoordinate)=>{
+  if (config.useLilyRemocon) { lily.remocon.gameObjectOnContextMenuHook(menuActions, panelService, gameObject, position); }
+}
+export const gameCharacterOnContextMenuHook = (panelService: PanelService, gameObject: GameCharacter, position: PointerCoordinate)=>{
+  if (config.useLilyRemocon) { return lily.remocon.gameCharacterComponentAddContextMenu(panelService, gameObject, position); }
+  return [];
+}
+
 // バフ
 export const tabletopServiceMakeDefaultTabletopObjectsHook = () => {
   if (config.useLilyBuff) return lily.buff.tabletopServiceMakeDefaultTabletopObjectsHook();
@@ -124,12 +134,7 @@ export const tabletopServiceInitializeHook = (listener: Listener)=>{
   if (config.useLilyBuff) return lily.buff.tabletopServiceInitializeHook(listener);
 }
 
-export const gameObjectInventoryOnContextMenuHook = (menuActions: ContextMenuAction[], panelService: PanelService, gameObject: GameCharacter, position: PointerCoordinate)=>{
-  if (config.useLilyBuff) { lily.buff.gameObjectOnContextMenuHook(menuActions, panelService, gameObject, position); }
-}
-export const gameCharacterOnContextMenuHook = (menuActions: ContextMenuAction[], panelService: PanelService, gameObject: GameCharacter, position: PointerCoordinate)=>{
-  if (config.useLilyBuff) { lily.buff.gameObjectOnContextMenuHook(menuActions, panelService, gameObject, position); }
-}
+
 // 立ち絵
 
 export const chatInputGetImageFileHook = (selectCharacterTachie: any)=>{

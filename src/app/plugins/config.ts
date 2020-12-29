@@ -10,6 +10,7 @@ const useLilyStand = location.search.includes('lily_stand=true')
 const useLilyDiceTable = location.search.includes('lily_dacetable=true')
 const useLilyFile = location.search.includes('lily_file=true')
 const useLilyBuff = location.search.includes('lily_buff=true')
+const useLilyRemocon = location.search.includes('lily_remocon=true')
 
 export default {
   useKeyboardHelp,
@@ -20,8 +21,11 @@ export default {
   useSpreadSheetSigninButton,
   useDeckSpreadSheet,
   useLilyCutin,
-  useLilyStand,
   useLilyDiceTable,
   useLilyFile,
-  useLilyBuff
+  get useLilyRemocon() {
+    return useLilyRemocon || useLilyBuff || useLilyStand
+  },
+  useLilyBuff,
+  useLilyStand,
 }
