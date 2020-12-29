@@ -16,6 +16,7 @@ import type { GameObject } from '@udonarium/core/synchronize-object/game-object'
 import type { CutInLauncher } from './lily/cutin/class/cut-in-launcher'
 import type { Listener } from '@udonarium/core/system/event/listener'
 import type { GameCharacter } from '@udonarium/game-character'
+import type { TabletopObject } from '@udonarium/tabletop-object'
 
 /**
  * テーブル上でキーボードを押したときのHook;
@@ -144,6 +145,11 @@ export const chatInputAllowsChatHook = (gameCharacter: GameCharacter, peerId: st
   if(config.useLilyTalkFlg) return lily.stand.chatInputAllowsChatHook(gameCharacter, peerId);
 }
 
+// インベントリの表示/非表示を設定
+export const gameObjectInventoryComponentGetGameObjectsHook = (inventoryType: string, objects: TabletopObject[])=>{
+  if(config.useLilyHideInventoryFlg) { return lily.stand.gameObjectInventoryComponentGetGameObjectsHook(inventoryType, objects);}
+  return false;
+}
 
 // 立ち絵
 

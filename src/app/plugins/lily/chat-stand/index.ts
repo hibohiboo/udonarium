@@ -6,6 +6,7 @@ import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { GameCharacter } from '@udonarium/game-character';
 import { PeerCursor } from '@udonarium/peer-cursor';
+import { TabletopObject } from '@udonarium/tabletop-object';
 
 const findImageIdentifier = (sendFrom,index:number): string => {
   const object = ObjectStore.instance.get(sendFrom);
@@ -125,5 +126,14 @@ export default {
 
     that.appendChild(chat);
     return chat;
+  },
+  gameObjectInventoryComponentGetGameObjectsHook(inventoryType: string, tableCharacterList_scr: TabletopObject[]){
+    if(inventoryType !== 'table') return false;
+    const tableCharacterList_dest = [] ;
+    for (let character of tableCharacterList_scr) {
+      const character_ : GameCharacter = <GameCharacter>character;
+      if( !character_.hideInventory ) tableCharacterList_dest.push( <TabletopObject>character );
+    }
+    return tableCharacterList_dest;
   }
 }

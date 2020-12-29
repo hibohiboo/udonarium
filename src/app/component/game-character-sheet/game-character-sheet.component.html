@@ -34,6 +34,7 @@
     <option value="graveyard">墓地</option>
   </select>
   <div class="extra-setting">
+    <div *ngIf="useHideInventoryFlg"> テーブルインベントリ非表示<input type="checkbox" [(ngModel)]="tabletopObject.hideInventory" name="hideInventory"></div>
     <div *ngIf="useTalkFlg">発言をしない<input type="checkbox" [(ngModel)]="tabletopObject.nonTalkFlag" name="nonTalkFlag"></div>
   </div>
 </ng-container>

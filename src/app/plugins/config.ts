@@ -12,6 +12,7 @@ const useLilyFile = location.search.includes('lily_file=true')
 const useLilyBuff = location.search.includes('lily_buff=true')
 const useLilyRemocon = location.search.includes('lily_remocon=true')
 const useLilyTalkFlg = location.search.includes('lily_talk_flg=true')
+const useLilyHideInventoryFlg = location.search.includes('lily_hide_inventory_flg=true')
 
 export default {
   useKeyboardHelp,
@@ -29,5 +30,6 @@ export default {
   },
   useLilyBuff,
   useLilyStand,
-  useLilyTalkFlg
+  useLilyTalkFlg,
+  useLilyHideInventoryFlg
 }

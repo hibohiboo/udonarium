@@ -15,7 +15,7 @@ import { ContextMenuAction, ContextMenuService, ContextMenuSeparator } from 'ser
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { gameObjectInventoryOnContextMenuHook } from 'src/app/plugins';
+import { gameObjectInventoryComponentGetGameObjectsHook, gameObjectInventoryOnContextMenuHook } from 'src/app/plugins';
 
 @Component({
   selector: 'game-object-inventory',
@@ -109,7 +109,10 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
   }
 
   getGameObjects(inventoryType: string): TabletopObject[] {
-    return this.getInventory(inventoryType).tabletopObjects;
+    const objects = this.getInventory(inventoryType).tabletopObjects;
+    const hookResult = gameObjectInventoryComponentGetGameObjectsHook(inventoryType, objects);
+    if(hookResult) return hookResult;
+    return objects;
   }
 
   getInventoryTags(gameObject: GameCharacter): DataElement[] {

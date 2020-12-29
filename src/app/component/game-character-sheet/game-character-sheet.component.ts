@@ -18,6 +18,7 @@ import config from 'src/app/plugins/config';
   styleUrls: ['./game-character-sheet.component.css']
 })
 export class GameCharacterSheetComponent implements OnInit, OnDestroy, AfterViewInit {
+  get useHideInventoryFlg(){ return config.useLilyHideInventoryFlg; }
   get useTalkFlg(){ return config.useLilyTalkFlg; }
   @Input() tabletopObject: TabletopObject = null;
   isEdit: boolean = false;
