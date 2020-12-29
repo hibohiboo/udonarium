@@ -4,7 +4,7 @@
   <div class="component-content is-3d" [@bounceInOut]="'in'">
     <div class="component-content is-3d is-pointer-events-auto" appRotable [rotable.option]="rotableOption"
       (rotable.ondragstart)="onMove()" (rotable.ondragend)="onMoved()">
-      <div class="pedestal-inner"></div>
+      <div class="pedestal-inner" [class.sub-character]="this.gameCharacter.hideInventory"></div><!-- lily サブコマのサークルの色変更 -->
       <div class="pedestal-outer"></div>
       <div class="pedestal-grab rotate-grab">
         <div class="pedestal-grab-border">
@@ -17,8 +17,7 @@
           appRotable [(rotable.value)]="roll" (rotable.ondragstart)="onMove()" (rotable.ondragend)="onMoved()">
           <div class="rotate-inner is-3d">
 
-            <!-- start バフ表示 -->
-
+            <!-- lily start バフ表示 -->
             <div *ngIf="this.gameCharacter.buffDataElement" >
               <ng-container *ngIf="this.gameCharacter.buffDataElement.children.length == 1">
                 <ng-container *ngFor="let child of this.gameCharacter.buffDataElement.children">
@@ -37,7 +36,7 @@
                 </ng-container>
               </ng-container>
             </div>
-            <!-- end バフ表示 -->
+            <!-- lily end バフ表示 -->
 
             <div *ngIf="0 < name.length" class="name-tag is-nowrap is-black-background is-3d"
               [ngStyle]="{'transform': 'translateX(-50%) translateX(' + size * gridSize / 2 +'px)'}">
