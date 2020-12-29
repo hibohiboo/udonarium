@@ -1,11 +1,11 @@
 import { Component, ElementRef,   ChangeDetectorRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 
-import { ChatTab } from '../../class/chat-tab';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem } from '@udonarium/core/system';
 import { ChatMessageService } from 'service/chat-message.service';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
+import { ChatTab } from '@udonarium/chat-tab';
 
 @Component({
   selector: 'chat-tachie',

@@ -25,7 +25,7 @@ export class ChatTabList extends ObjectNode implements InnerXml {
     } else {
       let tabName: string = args[0];
       let identifier: string = args[1];
-      chatTab = factory.chatTabFactory(identifier);
+      chatTab = new ChatTab(identifier);
       chatTab.name = tabName;
       chatTab.initialize();
     }

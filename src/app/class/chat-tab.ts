@@ -66,6 +66,7 @@ export class ChatTab extends ObjectNode implements InnerXml {
     }
     chat.initialize();
     EventSystem.trigger('SEND_MESSAGE', { tabIdentifier: this.identifier, messageIdentifier: chat.identifier });
+    EventSystem.trigger('DICE_TABLE_MESSAGE', { tabIdentifier: this.identifier, messageIdentifier: chat.identifier }); // lily
     this.appendChild(chat);
     return chat;
   }
