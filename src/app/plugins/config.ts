@@ -6,6 +6,7 @@ const useSpreadSheet = location.search.includes('spreadsheet')
 const useSpreadSheetSigninButton = location.search.includes('ss_auto=false')
 const useDeckSpreadSheet = location.search.includes('decksheet')
 const hideSample = location.search.includes('hide_sample=true')
+const useKeyboardShortcut = location.search.includes('keyboard_shortcut=true')
 
 const useLilyCutin = location.search.includes('lily_cutin=true')
 const useLilyStand = location.search.includes('lily_stand=true')
@@ -36,4 +37,5 @@ export default {
   useLilyTalkFlg,
   useLilyHideInventoryFlg,
   hideSample,
+  useKeyboardShortcut,
 }
