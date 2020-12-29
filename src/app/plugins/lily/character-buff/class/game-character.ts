@@ -28,13 +28,6 @@ export default {
   addExtendData(that){
     if (!config.useLilyBuff) return;
     that.addBuffDataElement();
-
-    let istachie = that.detailDataElement.getElementsByName('立ち絵位置');
-    if( istachie.length == 0 ){
-      let testElement: DataElement = DataElement.create('立ち絵位置', '', {}, '立ち絵位置' + that.identifier);
-      that.detailDataElement.appendChild(testElement);
-      testElement.appendChild(DataElement.create('POS', 11, { 'type': 'numberResource', 'currentValue': '0' }, 'POS_' + that.identifier));
-    }
     let isbuff = that.buffDataElement.getElementsByName('バフ/デバフ');
     if( isbuff.length == 0 ){
       let buffElement: DataElement = DataElement.create('バフ/デバフ', '', {}, 'バフ/デバフ' + that.identifier);
@@ -48,6 +41,13 @@ export default {
 セイクリッドウェポン 命+1攻+2 18`);
       controller.initialize();
       that.appendChild(controller);
+    }
+    if (!config.useLilyStand) return;
+    let istachie = that.detailDataElement.getElementsByName('立ち絵位置');
+    if( istachie.length == 0 ){
+      let testElement: DataElement = DataElement.create('立ち絵位置', '', {}, '立ち絵位置' + that.identifier);
+      that.detailDataElement.appendChild(testElement);
+      testElement.appendChild(DataElement.create('POS', 11, { 'type': 'numberResource', 'currentValue': '0' }, 'POS_' + that.identifier));
     }
   },
   createTestGameDataElementExtendSampleHook(that,name: string, size: number, imageIdentifier: string) {
