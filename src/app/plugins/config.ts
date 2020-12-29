@@ -9,7 +9,7 @@ const useLilyCutin = location.search.includes('lily_cutin=true')
 const useLilyStand = location.search.includes('lily_stand=true')
 const useLilyDiceTable = location.search.includes('lily_dacetable=true')
 const useLilyFile = location.search.includes('lily_file=true')
-const useLilyBuffer = location.search.includes('lily_buffer=true')
+const useLilyBuff = location.search.includes('lily_buff=true')
 
 export default {
   useKeyboardHelp,
@@ -23,7 +23,5 @@ export default {
   useLilyStand,
   useLilyDiceTable,
   useLilyFile,
-  get useLilyBuff(){
-    return useLilyBuffer || useLilyStand;
-  }
+  useLilyBuff
 }

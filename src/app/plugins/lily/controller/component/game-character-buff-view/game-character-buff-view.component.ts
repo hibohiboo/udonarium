@@ -13,8 +13,6 @@ import { GameCharacter } from '@udonarium/game-character';
 })
 export class GameCharacterBuffViewComponent implements OnInit {
 
-//  @Input() title: string = '';
-
   @Input() character: TabletopObject = null;
 
   constructor(

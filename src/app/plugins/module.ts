@@ -8,10 +8,14 @@ import { ControllerInputComponent } from './lily/controller/component/controller
 import { FileStorageComponentLily } from './lily/file/component/file-storage/file-storage.component';
 import { FileSelecterComponentLily } from './lily/file/component/file-selecter/file-selecter.component';
 import { GameDataElementBuffComponent } from './lily/character-buff/component/game-data-element-buff/game-data-element-buff.component';
+import { RemoteControllerComponent } from './lily/controller/component/remote-controller/remote-controller.component';
+import { GameCharacterBuffViewComponent } from './lily/controller/component/game-character-buff-view/game-character-buff-view.component';
 
 const components = [
   HelpKeyboardComponent, CutInListComponent, CutInBgmComponent, CutInWindowComponent, DiceTableSettingComponent,
-  FileStorageComponentLily, FileSelecterComponentLily, GameDataElementBuffComponent, ChatTachieComponent, ControllerInputComponent,
+  FileStorageComponentLily, FileSelecterComponentLily, GameDataElementBuffComponent,
+  RemoteControllerComponent, ControllerInputComponent, GameCharacterBuffViewComponent,
+  ChatTachieComponent,
 ]
 const imports = []
 

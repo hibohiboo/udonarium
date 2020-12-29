@@ -15,6 +15,7 @@ import type { PanelOption, PanelService } from 'service/panel.service'
 import type { GameObject } from '@udonarium/core/synchronize-object/game-object'
 import type { CutInLauncher } from './lily/cutin/class/cut-in-launcher'
 import type { Listener } from '@udonarium/core/system/event/listener'
+import type { GameCharacter } from '@udonarium/game-character'
 
 /**
  * テーブル上でキーボードを押したときのHook;
@@ -123,6 +124,12 @@ export const tabletopServiceInitializeHook = (listener: Listener)=>{
   if (config.useLilyBuff) return lily.buff.tabletopServiceInitializeHook(listener);
 }
 
+export const gameObjectInventoryOnContextMenuHook = (menuActions: ContextMenuAction[], panelService: PanelService, gameObject: GameCharacter, position: PointerCoordinate)=>{
+  if (config.useLilyBuff) { lily.buff.gameObjectOnContextMenuHook(menuActions, panelService, gameObject, position); }
+}
+export const gameCharacterOnContextMenuHook = (menuActions: ContextMenuAction[], panelService: PanelService, gameObject: GameCharacter, position: PointerCoordinate)=>{
+  if (config.useLilyBuff) { lily.buff.gameObjectOnContextMenuHook(menuActions, panelService, gameObject, position); }
+}
 // 立ち絵
 
 export const chatInputGetImageFileHook = (selectCharacterTachie: any)=>{

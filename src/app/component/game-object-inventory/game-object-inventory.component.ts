@@ -15,6 +15,7 @@ import { ContextMenuAction, ContextMenuService, ContextMenuSeparator } from 'ser
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { gameObjectInventoryOnContextMenuHook } from 'src/app/plugins';
 
 @Component({
   selector: 'game-object-inventory',
@@ -132,6 +133,7 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
     if (gameObject.location.name !== 'graveyard') {
       actions.push({ name: 'チャットパレットを表示', action: () => { this.showChatPalette(gameObject) } });
     }
+    gameObjectInventoryOnContextMenuHook(actions, this.panelService, gameObject, position);
     actions.push(ContextMenuSeparator);
     let locations = [
       { name: 'table', alias: 'テーブルに移動' },
