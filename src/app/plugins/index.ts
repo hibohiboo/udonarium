@@ -30,19 +30,21 @@ import type { GameTable } from '@udonarium/game-table'
 export const gameBoardKeydownHook = (that, e: KeyboardEvent) => {
   let ret = false;
   if (config.useKeyboardHelp) { ret = keyboardHelp.keyboardHook(that.modalService, e);}
-  if (config.useKeyboardShortcut) { ret = keyboardShortcut.keyboardHook(that, e);}
+  if (!ret && config.useKeyboardShortcut) { ret = keyboardShortcut.keyboardHook(that, e);}
 
   return ret;
 }
 
 // t,uでカードタップ
-export const cardPointerHook = (card: CardComponent, e: PointerEvent) => {
+export const cardPointerHook = (card: {rotate: number}, e: PointerEvent) => {
   if (!config.useCardTap) { return false;}
   return cardTap.cardPointerHook(card, e)
 }
-export const cardOnKeydownHook = (card: CardComponent, e: KeyboardEvent) => {
-  if (!config.useCardTap) { return false;}
-  return cardTap.cardOnKeydownHook(card, e);
+export const cardOnKeydownHook = (card: {rotate: number, onContextMenu: any}, e: KeyboardEvent) => {
+  let ret = false
+  if (config.useCardTap) { ret = cardTap.cardOnKeydownHook(card, e);}
+  if (!ret && config.useKeyboardShortcut) { ret = keyboardShortcut.cardOnKeydownHook(card, e);}
+  return ret;
 }
 
 // ティラノスクリプト連携

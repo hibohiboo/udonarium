@@ -5,6 +5,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
   HostListener,
   Input,
   NgZone,
@@ -27,6 +28,7 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { cardOnKeydownHook, cardPointerHook } from 'src/app/plugins';
 
 @Component({
   selector: 'card-stack',
@@ -85,6 +87,8 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private input: InputHandler = null;
 
+  @HostBinding('tabIndex') tabIndex:string;//tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
+
   constructor(
     private ngZone: NgZone,
     private contextMenuService: ContextMenuService,
@@ -92,7 +96,9 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    this.tabIndex = "0"; //TabIndexを付与。これをしないとフォーカスできないのでコンポーネントに対するキーイベントを取得できない。
+  }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -323,6 +329,16 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
   onMoved() {
     SoundEffect.play(PresetSound.cardPut);
     this.ngZone.run(() => this.dispatchCardDropEvent());
+  }
+
+  @HostListener("pointerenter", ["$event"])
+  onPointerenter(e: PointerEvent) {
+    if(cardPointerHook(this, e)) return;
+  }
+
+  @HostListener("keydown", ["$event"])
+  onKeydown(e: KeyboardEvent) {
+    if(cardOnKeydownHook(this, e)) return;
   }
 
   private drawCard(): Card {
