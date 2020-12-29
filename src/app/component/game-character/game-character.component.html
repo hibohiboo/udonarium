@@ -39,6 +39,7 @@
             <!-- lily end バフ表示 -->
 
             <div *ngIf="0 < name.length" class="name-tag is-nowrap is-black-background is-3d"
+              [class.sub-character]="this.gameCharacter.nonTalkFlag"
               [ngStyle]="{'transform': 'translateX(-50%) translateX(' + size * gridSize / 2 +'px)'}">
               <div class="fornt-tag has-length-limit is-3d">{{name}}</div>
               <div class="back-tag has-length-limit is-3d">{{name}}</div>

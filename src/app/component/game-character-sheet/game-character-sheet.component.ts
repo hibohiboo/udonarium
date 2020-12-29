@@ -10,6 +10,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { SaveDataService } from 'service/save-data.service';
 import factory from 'src/app/plugins/factory';
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'game-character-sheet',
@@ -17,7 +18,7 @@ import factory from 'src/app/plugins/factory';
   styleUrls: ['./game-character-sheet.component.css']
 })
 export class GameCharacterSheetComponent implements OnInit, OnDestroy, AfterViewInit {
-
+  get useTalkFlg(){ return config.useLilyTalkFlg; }
   @Input() tabletopObject: TabletopObject = null;
   isEdit: boolean = false;
 

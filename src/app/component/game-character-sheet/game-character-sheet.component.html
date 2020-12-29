@@ -33,6 +33,9 @@
     <option value="{{networkService.peerId}}">個人インベントリ</option>
     <option value="graveyard">墓地</option>
   </select>
+  <div class="extra-setting">
+    <div *ngIf="useTalkFlg">発言をしない<input type="checkbox" [(ngModel)]="tabletopObject.nonTalkFlag" name="nonTalkFlag"></div>
+  </div>
 </ng-container>
 <div *ngIf="tabletopObject" class="flex-container">
   <div *ngIf="0 < tabletopObject.imageFile?.url.length" class="box main-image-box">

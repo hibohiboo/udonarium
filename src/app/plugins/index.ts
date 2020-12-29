@@ -65,6 +65,10 @@ export const onContextMenuHook = async (menuActions: ContextMenuAction[], positi
   menuActions.push(await getDeckMenu(position));
 }
 
+/// --------------------------------------------------------------------------------------------------------------
+// ユドナリウム リリィ
+/// --------------------------------------------------------------------------------------------------------------
+
 // Cutin
 export const panelOpenHook = (option: PanelOption, childPanelService: PanelService) => {
   if(!config.useLilyCutin) return;
@@ -134,15 +138,17 @@ export const tabletopServiceInitializeHook = (listener: Listener)=>{
   if (config.useLilyBuff) return lily.buff.tabletopServiceInitializeHook(listener);
 }
 
+// 発言の可否を設定
+
+export const chatInputAllowsChatHook = (gameCharacter: GameCharacter, peerId: string)=>{
+  if(config.useLilyTalkFlg) return lily.stand.chatInputAllowsChatHook(gameCharacter, peerId);
+}
+
 
 // 立ち絵
 
 export const chatInputGetImageFileHook = (selectCharacterTachie: any)=>{
   if(config.useLilyStand) return lily.stand.chatInputGetImageFileHook(selectCharacterTachie);
-}
-
-export const chatInputAllowsChatHook = (gameCharacter: GameCharacter, peerId: string)=>{
-  if(config.useLilyStand) return lily.stand.chatInputAllowsChatHook(gameCharacter, peerId);
 }
 
 export const chatMessageSendMessageHook = (chatMessage: ChatMessageContext, sendFrom, tachieNum?: number) =>{

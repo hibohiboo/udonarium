@@ -13,3 +13,18 @@ chat-input .tachie-num {
   font-family: inherit;
 }
 
+game-character-sheet .extra-setting {
+  text-align:right;
+  width: 400px;
+  padding-top: 5px;
+}
+
+/* サブキャラクター用の設定 */
+game-character .pedestal-inner.sub-character {
+  border: solid 6px #A0E0FF;
+}
+game-character .name-tag.sub-character {
+  background-color: rgba(255,255,255, 0.6);
+  color: #333;
+  border: solid 1px #555;
+}
