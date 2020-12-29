@@ -16,6 +16,29 @@
         <div class="rotate-frame is-3d" [style.width.px]="size * gridSize" [style.height.px]="size * gridSize"
           appRotable [(rotable.value)]="roll" (rotable.ondragstart)="onMove()" (rotable.ondragend)="onMoved()">
           <div class="rotate-inner is-3d">
+
+            <!-- start バフ表示 -->
+
+            <div *ngIf="this.gameCharacter.buffDataElement" >
+              <ng-container *ngIf="this.gameCharacter.buffDataElement.children.length == 1">
+                <ng-container *ngFor="let child of this.gameCharacter.buffDataElement.children">
+                  <ng-container *ngIf="child.children.length > 0">
+
+                    <div *ngIf="this.gameCharacter.buffDataElement" class="buff-tag is-nowrap is-buff-background is-3d"
+                     [ngStyle]="{'transform': 'translateX(-50%) translateX(' + size * gridSize / 2 +'px) translateY(-100%)'}">
+                      <div class="table">
+
+                        <div class="flex-item">
+                          <div class="table-row" game-data-element-buff [gameDataElement]="child" [isEdit]="isEdit" [isPieceMode]="true"></div>
+                        </div>
+                      </div>
+                     </div>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+            </div>
+            <!-- end バフ表示 -->
+
             <div *ngIf="0 < name.length" class="name-tag is-nowrap is-black-background is-3d"
               [ngStyle]="{'transform': 'translateX(-50%) translateX(' + size * gridSize / 2 +'px)'}">
               <div class="fornt-tag has-length-limit is-3d">{{name}}</div>
