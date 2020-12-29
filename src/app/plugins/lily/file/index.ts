@@ -72,7 +72,7 @@ export default {
     images = images.concat(searchImageFiles(xml));
     return createFiles(files, images);
   },
-  tableTopServiceCreateTerrainHook(position: PointerCoordinate){
+  tableTopServiceCreateTerrainHook(viewTable: GameTable, position: PointerCoordinate){
     let url: string = './assets/images/tex.jpg';
     let image: ImageFile = ImageStorage.instance.get(url)
 
@@ -80,7 +80,6 @@ export default {
       image = ImageStorage.instance.add(url);
       ImageTag.create(image.identifier).tag = 'default 地形';
     }
-    let viewTable = this.tableSelecter.viewTable;
     if (!viewTable) return;
 
     let terrain = Terrain.create('地形', 2, 2, 2, image.identifier, image.identifier);

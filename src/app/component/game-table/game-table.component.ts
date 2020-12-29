@@ -267,7 +267,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener('document:keydown', ['$event'])
   onKeydown(e: KeyboardEvent) {
     if (!this.isTransformMode || document.body !== document.activeElement) return;
-    if(gameBoardKeydownHook(this.modalService, e)){
+    if(gameBoardKeydownHook(this, e)){
       return
     }
     let transformX = 0;

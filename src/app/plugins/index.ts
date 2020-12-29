@@ -5,6 +5,7 @@ import postMessage from './post-message'
 import insertSpreadsheet from './insert-spreadsheet'
 import { getDeckMenu } from './sheet-deck'
 import lily from './lily';
+import keyboardShortcut from './keyboard-shortcut';
 import type { ModalService } from 'service/modal.service'
 import type { CardComponent } from 'component/card/card.component';
 import type { GameTableComponent } from 'component/game-table/game-table.component'
@@ -17,6 +18,7 @@ import type { CutInLauncher } from './lily/cutin/class/cut-in-launcher'
 import type { Listener } from '@udonarium/core/system/event/listener'
 import type { GameCharacter } from '@udonarium/game-character'
 import type { TabletopObject } from '@udonarium/tabletop-object'
+import type { GameTable } from '@udonarium/game-table'
 
 /**
  * テーブル上でキーボードを押したときのHook;
@@ -25,9 +27,12 @@ import type { TabletopObject } from '@udonarium/tabletop-object'
  * @param e
  * @return boolean true: 処理中断, false: 処理継続
  */
-export const gameBoardKeydownHook = (modalService:ModalService, e: KeyboardEvent) => {
-  if (!config.useKeyboardHelp) { return false;}
-  return keyboardHelp.keyboardHook(modalService, e)
+export const gameBoardKeydownHook = (that, e: KeyboardEvent) => {
+  let ret = false;
+  if (config.useKeyboardHelp) { ret = keyboardHelp.keyboardHook(that.modalService, e);}
+  if (config.useKeyboardShortcut) { ret = keyboardShortcut.keyboardHook(that, e);}
+
+  return ret;
 }
 
 // t,uでカードタップ
@@ -115,8 +120,8 @@ export const tableTopServiceCreateTrumpHook = (position: PointerCoordinate) => {
   if(config.useLilyFile) return lily.file.tableTopServiceCreateTrump(position);
   return false;
 }
-export const tableTopServiceCreateTerrainHook = (position: PointerCoordinate)=>{
-  if(config.useLilyFile) return lily.file.tableTopServiceCreateTerrainHook(position);
+export const tableTopServiceCreateTerrainHook = (viewTable: GameTable, position: PointerCoordinate)=>{
+  if(config.useLilyFile) return lily.file.tableTopServiceCreateTerrainHook(viewTable, position);
   return false;
 }
 

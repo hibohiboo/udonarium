@@ -243,7 +243,7 @@ export class TabletopService {
   }
 
   createTerrain(position: PointerCoordinate): Terrain {
-    const hookResult = tableTopServiceCreateTerrainHook(position);
+    const hookResult = tableTopServiceCreateTerrainHook(this.tableSelecter.viewTable, position);
     if(hookResult) return hookResult;
 
     let url: string = './assets/images/tex.jpg';
