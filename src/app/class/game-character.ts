@@ -2,11 +2,23 @@ import { ChatPalette } from './chat-palette';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { DataElement } from './data-element';
 import { TabletopObject } from './tabletop-object';
+import lily from 'src/app/plugins/lily/character-buff/class/game-character';
 
 @SyncObject('character')
 export class GameCharacter extends TabletopObject {
   @SyncVar() rotate: number = 0;
   @SyncVar() roll: number = 0;
+
+  // start lily
+  @SyncVar() hideInventory: boolean = false;
+  @SyncVar() nonTalkFlag: boolean = false;
+  @SyncVar() overViewWidth: number = 270;
+  @SyncVar() overViewMaxHeight: number = 250;
+  get buffDataElement(): DataElement { return this.getElement('buff'); }
+  get remoteController() {
+    return lily.remoteControllerHook(this);
+  }
+  // end lily
 
   get name(): string { return this.getCommonValue('name', ''); }
   get size(): number { return this.getCommonValue('size', 1); }
@@ -86,5 +98,23 @@ export class GameCharacter extends TabletopObject {
 //格闘＝１`);
     palette.initialize();
     this.appendChild(palette);
+
+    this.addExtendData(); // lily
   }
+
+  // lily start
+  addExtendData(){
+    lily.addExtendData(this);
+  }
+  addBuffDataElement(){
+    lily.addBuffDataElement(this);
+  }
+  createDataElements(){
+    super.createDataElements();
+    lily.createDataElementsHook(this);
+  }
+  createTestGameDataElementExtendSample(name: string, size: number, imageIdentifier: string){
+    lily.createTestGameDataElementExtendSampleHook(this, name, size, imageIdentifier);
+  }
+  // lily end
 }

@@ -18,6 +18,7 @@ import { TableSelecter } from '@udonarium/table-selecter';
 import { TabletopObject } from '@udonarium/tabletop-object';
 import { Terrain } from '@udonarium/terrain';
 import { TextNote } from '@udonarium/text-note';
+import { tableTopServiceCreateTerrainHook, tableTopServiceCreateTrumpHook, tabletopServiceInitializeHook, tabletopServiceMakeDefaultTableHook, tabletopServiceMakeDefaultTabletopObjectsHook } from '../plugins';
 
 import { ContextMenuAction } from './context-menu.service';
 import { PointerCoordinate, PointerDeviceService } from './pointer-device.service';
@@ -73,7 +74,7 @@ export class TabletopService {
 
   private initialize() {
     this.refreshCacheAll();
-    EventSystem.register(this)
+    const listener = EventSystem.register(this)
       .on('UPDATE_GAME_OBJECT', -1000, event => {
         if (event.data.identifier === this.currentTable.identifier || event.data.identifier === this.tableSelecter.identifier) {
           this.refreshCache(GameTableMask.aliasName);
@@ -112,6 +113,7 @@ export class TabletopService {
           ChatTabList.instance.addChatTab(gameObject);
         }
       });
+      tabletopServiceInitializeHook(listener);
   }
 
   addBatch(task: Function, key: any = {}) {
@@ -241,6 +243,9 @@ export class TabletopService {
   }
 
   createTerrain(position: PointerCoordinate): Terrain {
+    const hookResult = tableTopServiceCreateTerrainHook(position);
+    if(hookResult) return hookResult;
+
     let url: string = './assets/images/tex.jpg';
     let image: ImageFile = ImageStorage.instance.get(url)
     if (!image) image = ImageStorage.instance.add(url);
@@ -283,6 +288,9 @@ export class TabletopService {
   }
 
   createTrump(position: PointerCoordinate): CardStack {
+    const hookResult = tableTopServiceCreateTrumpHook(position);
+    if(hookResult) return hookResult;
+
     let cardStack = CardStack.create('トランプ山札');
     cardStack.location.x = position.x - 25;
     cardStack.location.y = position.y - 25;
@@ -320,6 +328,7 @@ export class TabletopService {
   }
 
   makeDefaultTable() {
+    if (tabletopServiceMakeDefaultTableHook()) { return;}
     let tableSelecter = new TableSelecter('tableSelecter');
     tableSelecter.initialize();
 
@@ -343,6 +352,7 @@ export class TabletopService {
   }
 
   makeDefaultTabletopObjects() {
+    if (tabletopServiceMakeDefaultTabletopObjectsHook()) { return; }
     let testCharacter: GameCharacter = null;
     let testFile: ImageFile = null;
     let fileContext: ImageContext = null;

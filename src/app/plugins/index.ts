@@ -101,6 +101,28 @@ export const saveDataSaveGameObjectHook = (files: File[], xml: string) => {
   if(config.useLilyFile) return lily.file.saveDataSaveGameObjectHook(files, xml);
   return files;
 }
+export const tabletopServiceMakeDefaultTableHook = () =>{
+  if(config.useLilyFile) return lily.file.tabletopServiceMakeDefaultTable();
+  return false;
+}
+export const tableTopServiceCreateTrumpHook = (position: PointerCoordinate) => {
+  if(config.useLilyFile) return lily.file.tableTopServiceCreateTrump(position);
+  return false;
+}
+export const tableTopServiceCreateTerrainHook = (position: PointerCoordinate)=>{
+  if(config.useLilyFile) return lily.file.tableTopServiceCreateTerrainHook(position);
+  return false;
+}
+// バフ
+export const tabletopServiceMakeDefaultTabletopObjectsHook = () => {
+  if (config.useLilyBuff) return lily.buff.tabletopServiceMakeDefaultTabletopObjectsHook();
+  return false;
+}
+
+export const tabletopServiceInitializeHook = (listener: Listener)=>{
+  if (config.useLilyBuff) return lily.buff.tabletopServiceInitializeHook(listener);
+}
+
 // 立ち絵
 
 export const chatInputGetImageFileHook = (selectCharacterTachie: any)=>{

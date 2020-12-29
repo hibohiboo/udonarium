@@ -1,0 +1,15 @@
+game-character .buff-tag {
+  box-sizing: border-box;
+  font-size: 12px;
+  padding: 3px 9px;
+  border: 1px #222 solid;
+  border-radius: 12px;
+  position: absolute;
+  margin: auto;
+  top: -35px;
+}
+
+game-character .is-buff-background {
+  color: #222;
+  background-color: rgba(240,229,215, 0.8);
+}
