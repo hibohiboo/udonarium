@@ -69,7 +69,7 @@ export default {
   },
   saveDataSaveGameObjectHook(files: File[], xml: string){
     let images: ImageFile[] = [];
-    images = images.concat(this.searchImageFiles(xml));
+    images = images.concat(searchImageFiles(xml));
     return createFiles(files, images);
   },
   tableTopServiceCreateTerrainHook(position: PointerCoordinate){
