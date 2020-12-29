@@ -11,6 +11,9 @@ import { TextViewComponent } from 'component/text-view/text-view.component';
 import { ChatMessageService } from 'service/chat-message.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { chatInputAllowsChatHook, chatInputGetImageFileHook } from 'src/app/plugins';
+import config from 'src/app/plugins/config';
+import factory from 'src/app/plugins/factory';
 
 @Component({
   selector: 'chat-input',
@@ -19,6 +22,8 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 })
 export class ChatInputComponent implements OnInit, OnDestroy {
   @ViewChild('textArea', { static: true }) textAreaElementRef: ElementRef;
+
+  get useLilyStand(): boolean { return config.useLilyStand }
 
   @Input() onlyCharacters: boolean = false;
   @Input() chatTabidentifier: string = '';
@@ -43,12 +48,39 @@ export class ChatInputComponent implements OnInit, OnDestroy {
   get text(): string { return this._text };
   set text(text: string) { this._text = text; this.textChange.emit(text); }
 
-  @Output() chat = new EventEmitter<{ text: string, gameType: string, sendFrom: string, sendTo: string }>();
+  // add start tachieNum
+  @Input('tachieNum') _tachieNum: number = 0;
+  @Output() chat = factory.chatInputEventEmitterFactory();
+  get tachieNum(): number { return this._tachieNum };
+  set tachieNum(num:  number){ this._tachieNum = num};
+  get selectCharacterTachie(){
+    let object = ObjectStore.instance.get(this.sendFrom);
+    if (object instanceof GameCharacter) {
+      if( object.imageDataElement.children.length  > this.tachieNum){
+        return  object.imageDataElement.children[this.tachieNum];
+      }
+    }
+    return null;
+  }
+
+  get selectCharacterTachieNum(){
+    let object = ObjectStore.instance.get(this.sendFrom);
+    if (object instanceof GameCharacter) {
+      return  object.imageDataElement.children.length;
+    } else if (object instanceof PeerCursor) {
+      return 0;
+    }
+    return 0;
+  }
+  // add end tachieNum
 
   get isDirect(): boolean { return this.sendTo != null && this.sendTo.length ? true : false }
   gameHelp: string = '';
 
   get imageFile(): ImageFile {
+    const hookResult = chatInputGetImageFileHook(this.selectCharacterTachie);
+    if (hookResult !== undefined) return hookResult;
+
     let object = ObjectStore.instance.get(this.sendFrom);
     let image: ImageFile = null;
     if (object instanceof GameCharacter) {
@@ -168,7 +200,8 @@ export class ChatInputComponent implements OnInit, OnDestroy {
     if (event && event.keyCode !== 13) return;
 
     if (!this.sendFrom.length) this.sendFrom = this.myPeer.identifier;
-    this.chat.emit({ text: this.text, gameType: this.gameType, sendFrom: this.sendFrom, sendTo: this.sendTo });
+
+    this.chat.emit(factory.chatInputChatMessageFactory(this));
 
     this.text = '';
     this.previousWritingLength = this.text.length;
@@ -232,6 +265,8 @@ export class ChatInputComponent implements OnInit, OnDestroy {
   }
 
   private allowsChat(gameCharacter: GameCharacter): boolean {
+    const hookResult = chatInputAllowsChatHook(gameCharacter, this.myPeer.peerId);
+    if(hookResult !==undefined) return hookResult;
     switch (gameCharacter.location.name) {
       case 'table':
       case this.myPeer.peerId:

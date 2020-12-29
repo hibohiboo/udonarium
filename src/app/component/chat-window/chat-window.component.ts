@@ -18,7 +18,10 @@ import config from 'src/app/plugins/config';
 })
 export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
   sendFrom: string = 'Guest';
+
   get useDiceTable(): boolean { return config.useLilyDiceTable }
+  get useLilyStand(): boolean { return config.useLilyStand }
+
   get gameType(): string { return this.chatMessageService.gameType; }
   set gameType(gameType: string) { this.chatMessageService.gameType = gameType; }
 
@@ -115,9 +118,9 @@ export class ChatWindowComponent implements OnInit, OnDestroy, AfterViewInit {
     component.selectedTab = this.chatTab;
   }
 
-  sendChat(value: { text: string, gameType: string, sendFrom: string, sendTo: string }) {
+  sendChat(value: { text: string, gameType: string, sendFrom: string, sendTo: string, tachieNum?: number}) {
     if (this.chatTab) {
-      this.chatMessageService.sendMessage(this.chatTab, value.text, value.gameType, value.sendFrom, value.sendTo);
+      this.chatMessageService.sendMessage(this.chatTab, value.text, value.gameType, value.sendFrom, value.sendTo, value.tachieNum);
     }
   }
 

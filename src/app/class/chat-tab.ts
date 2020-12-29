@@ -1,4 +1,4 @@
-import { chatTabOnChildAddedHook } from '../plugins';
+import { chatTabAddMessageHook, chatTabOnChildAddedHook } from '../plugins';
 import { ChatMessage, ChatMessageContext } from './chat-message';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
@@ -8,6 +8,24 @@ import { EventSystem } from './core/system';
 @SyncObject('chat-tab')
 export class ChatTab extends ObjectNode implements InnerXml {
   @SyncVar() name: string = 'タブ';
+
+  // lily start
+  @SyncVar() pos_num: number = -1;
+  @SyncVar() imageIdentifier: string[] = ['a','b','c','d','e','f','g','h','i','j','k','l'];
+  @SyncVar() imageCharactorName: string[] = ['#0','#1','#2','#3','#4','#5','#6','#7','#8','#9','#10','#11'];
+  @SyncVar() imageIdentifierZpos: number[] = [0,1,2,3,4,5,6,7,8,9,10,11];
+
+  @SyncVar() count:number = 0;
+  @SyncVar() imageIdentifierDummy: string = 'test';//通信開始ために使わなくても書かなきゃだめっぽい後日見直し
+
+  get imageZposList( ): number[] {
+    let ret:number[] = this.imageIdentifierZpos.slice();
+    return ret;
+  }
+  private _dispCharctorIcon: boolean = true;
+  get dispCharctorIcon(): boolean { return this._dispCharctorIcon; }
+  set dispCharctorIcon( flag : boolean) { this._dispCharctorIcon = flag; }
+  // lily end
   get chatMessages(): ChatMessage[] { return <ChatMessage[]>this.children; }
 
   private _unreadLength: number = 0;
@@ -30,6 +48,9 @@ export class ChatTab extends ObjectNode implements InnerXml {
   }
 
   addMessage(message: ChatMessageContext): ChatMessage {
+    const hookResult = chatTabAddMessageHook(this, message);
+    if(hookResult) return hookResult;
+
     message.tabIdentifier = this.identifier;
 
     let chat = new ChatMessage();
@@ -65,4 +86,29 @@ export class ChatTab extends ObjectNode implements InnerXml {
   parseInnerXml(element: Element) {
     return super.parseInnerXml(element);
   };
+
+  // lily start
+  getImageCharactorPos(name:string){
+    for (let i = 0; i < this.imageCharactorName.length ; i++) {
+      if( name == this.imageCharactorName[i] ){
+        return i;
+      }
+    }
+    return -1;
+  }
+  tachieZindex( toppos : number ):number {
+    let index = this.imageIdentifierZpos.indexOf( Number(toppos) );
+    return index;
+  }
+
+  public tachieDispFlag = 1;
+  replaceTachieZindex( toppos : number ){
+    let index = this.imageIdentifierZpos.indexOf( Number(toppos) );
+    if( index >= 0 ){
+      this.imageIdentifierZpos.splice(index,1);
+      this.imageIdentifierZpos.push( Number(toppos) );
+      console.log( 'imageIdentifierZpos = ' + this.imageIdentifierZpos );
+    }
+  }
+  // lily end
 }

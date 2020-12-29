@@ -1,0 +1,15 @@
+
+chat-input .tachie-tag {
+  text-align: center;
+  vertical-align: bottom;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+chat-input .tachie-num {
+  font-weight: bold;
+  width: 4em;
+  text-align: right;
+  font-family: inherit;
+}
+

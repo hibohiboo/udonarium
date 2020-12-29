@@ -141,11 +141,16 @@ export const chatInputGetImageFileHook = (selectCharacterTachie: any)=>{
   if(config.useLilyStand) return lily.stand.chatInputGetImageFileHook(selectCharacterTachie);
 }
 
-export const chatInputAllowsChatHook = (gameCharacter: any)=>{
-  if(config.useLilyStand) return lily.stand.chatInputAllowsChatHook(gameCharacter);
+export const chatInputAllowsChatHook = (gameCharacter: GameCharacter, peerId: string)=>{
+  if(config.useLilyStand) return lily.stand.chatInputAllowsChatHook(gameCharacter, peerId);
 }
 
 export const chatMessageSendMessageHook = (chatMessage: ChatMessageContext, sendFrom, tachieNum?: number) =>{
   if(config.useLilyStand) return lily.stand.chatMessageSendMessageHook(chatMessage, sendFrom, tachieNum);
   return chatMessage;
+}
+
+export const chatTabAddMessageHook = (that, message: ChatMessageContext)=>{
+  if(config.useLilyStand) return lily.stand.chatTabAddMessageHook(that, message);
+  return false;
 }

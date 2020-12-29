@@ -8,6 +8,7 @@ import { Network } from '@udonarium/core/system';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
 import { GameCharacter } from '@udonarium/game-character';
 import { PeerCursor } from '@udonarium/peer-cursor';
+import { chatMessageSendMessageHook } from '../plugins';
 
 const HOURS = 60 * 60 * 1000;
 
@@ -75,7 +76,7 @@ export class ChatMessageService {
     return Math.floor(this.timeOffset + (performance.now() - this.performanceOffset));
   }
 
-  sendMessage(chatTab: ChatTab, text: string, gameType: string, sendFrom: string, sendTo?: string): ChatMessage {
+  sendMessage(chatTab: ChatTab, text: string, gameType: string, sendFrom: string, sendTo?: string, tachieNum?: number): ChatMessage {
     let chatMessage: ChatMessageContext = {
       from: Network.peerContext.id,
       to: this.findId(sendTo),
@@ -85,6 +86,7 @@ export class ChatMessageService {
       tag: gameType,
       text: text,
     };
+    chatMessage = chatMessageSendMessageHook(chatMessage, sendFrom, tachieNum);
 
     return chatTab.addMessage(chatMessage);
   }
