@@ -15,14 +15,19 @@ const useLilyFile = location.search.includes('lily_file=true')
 const useLilyBuff = location.search.includes('lily_buff=true')
 const useLilyRemocon = location.search.includes('lily_remocon=true')
 const useLilyTalkFlg = location.search.includes('lily_talk_flg=true')
-const useLilyHideInventoryFlg = location.search.includes('lily_hide_inventory_flg=true')
-
+const useLilyHideInventoryFlg = location.search.includes(
+  'lily_hide_inventory_flg=true',
+)
 
 export default {
   useKeyboardHelp,
   useCardTap,
-  get use2dMode(){ return use2dMode},
-  get usePostMessage(){return usePostMessage},
+  get use2dMode() {
+    return use2dMode
+  },
+  get usePostMessage() {
+    return usePostMessage
+  },
   useSpreadSheet,
   useSpreadSheetSigninButton,
   useDeckSpreadSheet,

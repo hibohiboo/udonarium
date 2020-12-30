@@ -1,19 +1,24 @@
-import { environment } from "src/environments/environment"
+import { environment } from 'src/environments/environment'
 
 const fetchUrl = 'https://sheets.googleapis.com/v4/spreadsheets'
 
-const cache = new Map();
-const createBookData = (c)=>({
+const cache = new Map()
+const createBookData = (c) => ({
   title: c.properties.title,
-  sheets: c.sheets.map(sheet=>sheet.properties.title)  });
-export const getBookData = async (spreadId: string): Promise<{title: string, sheets: string[]}>=>{
-  const url = `${fetchUrl}/${spreadId}?key=${environment.googleSpreadApiKey}`;
+  sheets: c.sheets.map((sheet) => sheet.properties.title),
+})
+export const getBookData = async (
+  spreadId: string,
+): Promise<{ title: string; sheets: string[] }> => {
+  const url = `${fetchUrl}/${spreadId}?key=${environment.googleSpreadApiKey}`
   const c = cache.get(url)
 
-  if(c) { return createBookData(c) }
+  if (c) {
+    return createBookData(c)
+  }
   const res = await fetch(url)
   const json = await res.json()
-  cache.set(url, json);
+  cache.set(url, json)
   return createBookData(json)
 }
 
