@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
   HostListener,
   Input,
   NgZone,
@@ -24,6 +25,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
+import { terrainOnKeydownHook } from 'src/app/plugins';
 
 @Component({
   selector: 'terrain',
@@ -62,6 +64,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private input: InputHandler = null;
 
+  @HostBinding('tabIndex') tabIndex:string;
   constructor(
     private ngZone: NgZone,
     private tabletopService: TabletopService,
@@ -70,7 +73,9 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    this.tabIndex = "0";
+  }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -181,6 +186,11 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
       ContextMenuSeparator,
       { name: 'オブジェクト作成', action: null, subActions: this.tabletopService.getContextMenuActionsForCreateObject(objectPosition) }
     ], this.name);
+  }
+
+  @HostListener("keydown", ["$event"])
+  onKeydown(e: KeyboardEvent) {
+    if(terrainOnKeydownHook(this, e)) return;
   }
 
   onMove() {

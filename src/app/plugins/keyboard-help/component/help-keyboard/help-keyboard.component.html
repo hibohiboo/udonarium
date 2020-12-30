@@ -1,11 +1,25 @@
 
 <div>
   <h3>キーボード</h3>
-  <dl class="help-list">
+  <h4 *ngIf="useTap">カード</h4>
+  <dl *ngIf="useTap" class="help-list">
     <dt>カードの上で[t]</dt>
     <dd>カードを横にする</dd>
     <dt>カードの上で[u]</dt>
     <dd>カードを縦にする</dd>
+  </dl>
+  <h4 *ngIf="useShortcut">地形</h4>
+  <p>※対象の地形をクリックしてからキーボードを押してください。</p>
+  <dl *ngIf="useShortcut" class="help-list">
+    <dt>[{{constants.terrainCopyKey}}]</dt>
+    <dd>地形をコピー</dd>
+    <dt>[{{constants.terrainDeleteKey}}]</dt>
+    <dd>地形を削除</dd>
+    <dt>[{{constants.terrainEditKey}}]</dt>
+    <dd>地形設定を編集</dd>
+  </dl>
+  <h4>テーブル</h4>
+  <dl class="help-list">
     <dt>[→]</dt>
     <dd>テーブルを左に移動</dd>
     <dt>[↑]</dt>
@@ -27,6 +41,7 @@
     <dt>[ESC]</dt>
     <dd>キーボードショートカットを閉じる</dd>
   </dl>
+
   <h3>マウス</h3>
   <dl class="help-list">
     <dt>カードの上でダブルクリック</dt>

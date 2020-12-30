@@ -1,4 +1,5 @@
-import { CardComponent } from 'component/card/card.component'
+import { PresetSound, SoundEffect } from '@udonarium/sound-effect'
+import * as constants from 'src/app/plugins/constants';
 const menuKey = 'm'
 
 export default {
@@ -22,6 +23,29 @@ export default {
     }
     return false
   },
+  // thatはterraincomponent
+  terrainOnKeydownHook(that, e: KeyboardEvent) {
+    e.stopPropagation()
+    e.preventDefault()
+
+    if (e.key === constants.terrainCopyKey) {
+      let cloneObject = that.terrain.clone();
+      cloneObject.location.x += that.gridSize;
+      cloneObject.location.y += that.gridSize;
+      cloneObject.isLocked = false;
+      if (that.terrain.parent) that.terrain.parent.appendChild(cloneObject);
+      SoundEffect.play(PresetSound.blockPut);
+      return true
+    }else if (e.key === constants.terrainEditKey) {
+      that.showDetail(that.terrain);
+      return true;
+    }else if (e.key === constants.terrainDeleteKey) {
+      that.terrain.destroy();
+      SoundEffect.play(PresetSound.sweep);
+      return true;
+    }
+    return false
+  }
 }
 // ショートカットキー希望は
 // コピーを作る　C

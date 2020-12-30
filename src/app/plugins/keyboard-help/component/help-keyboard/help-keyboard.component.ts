@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit, HostListener } from '@angular/core'
 import { EventSystem, Network } from '@udonarium/core/system'
 import { ModalService } from 'service/modal.service'
 import { PanelService } from 'service/panel.service'
+import * as constants from 'src/app/plugins/constants';
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'help-keyboard',
@@ -13,7 +15,9 @@ export class HelpKeyboardComponent implements OnInit, OnDestroy {
     private panelService: PanelService,
     private modalService: ModalService,
   ) {}
-
+  get useTap(){ return config.useCardTap}
+  get useShortcut(){return config.useKeyboardShortcut}
+  get constants(){return constants}
   ngOnInit() {
     Promise.resolve().then(() => this.changeTitle())
   }
