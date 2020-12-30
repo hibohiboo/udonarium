@@ -129,6 +129,16 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
 
         if( object.hideInventory ) continue; //チェックボックスが入ったままで非表示に変化した対象の除外のため
 
+        let getGameObjects = this.getGameObjects(this.selectTab);
+        let isInInventry = false ;
+        for( let object2 of  getGameObjects){
+          if( object2 == object){
+            isInInventry = true;
+            break;
+          }
+        }
+        if( !isInInventry )continue;
+
         let data = object.detailDataElement.getFirstElementByName(this.remotControllerSelect.identifier);
         if( data ){
           let oldNumS:string = '';
@@ -369,6 +379,16 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     if( gameCharacters.length <= 0 ) return;
 
     for (let character of gameCharacters){
+      let getGameObjects = this.getGameObjects(this.selectTab);
+      let isInInventry = false ;
+      for( let object2 of  getGameObjects){
+        if( object2 == character){
+          isInInventry = true;
+          break;
+        }
+      }
+      if( !isInInventry )continue;
+
       if(character.buffDataElement.children){
         for (let dataElm of character.buffDataElement.children){
           for (let data  of dataElm.children){
@@ -440,6 +460,16 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     if( gameCharacters.length <= 0 ) return;
     for (let character of gameCharacters){
       if( character.hideInventory ) continue; //非表示対象の除外のため
+
+      let getGameObjects = this.getGameObjects(this.selectTab);
+      let isInInventry = false ;
+      for( let object2 of  getGameObjects){
+        if( object2 == character){
+          isInInventry = true;
+          break;
+        }
+      }
+      if( !isInInventry )continue;
 
       if(character.buffDataElement.children){
         for (let dataElm of character.buffDataElement.children){
@@ -584,6 +614,15 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
       if (object instanceof GameCharacter) {
         if( object.hideInventory ) continue; //非表示対象の除外のため
 
+        let getGameObjects = this.getGameObjects(this.selectTab);
+        let isInInventry = false ;
+        for( let object2 of  getGameObjects){
+          if( object2 == object){
+            isInInventry = true;
+            break;
+          }
+        }
+        if( !isInInventry )continue;
         gameCharactars.push(object);
         text = text + '[' + object.name + ']';
       }
