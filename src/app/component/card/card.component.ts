@@ -27,7 +27,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
-import { cardOnKeydownHook, cardPointerHook } from 'src/app/plugins';
+import { cardComponentDispatchCardDropEventHook, cardComponentOnInputStartHook, cardOnKeydownHook, cardPointerHook } from 'src/app/plugins';
 
 @Component({
   selector: 'card',
@@ -71,6 +71,8 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   private doubleClickPoint = { x: 0, y: 0 };
 
   private input: InputHandler = null;
+
+  private topOfCards = []; // 重なりカード移動のために追加
 
   @HostBinding('tabIndex') tabIndex:string;//tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
   constructor(
@@ -187,6 +189,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onInputStart(e: MouseEvent | TouchEvent) {
+    cardComponentOnInputStartHook(this);
     this.startDoubleClickTimer(e);
     this.card.toTopmost();
     this.startIconHiddenTimer();
@@ -300,6 +303,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private dispatchCardDropEvent() {
     console.log('dispatchCardDropEvent');
+    cardComponentDispatchCardDropEventHook(this);
     let element: HTMLElement = this.elementRef.nativeElement;
     let parent = element.parentElement;
     let children = parent.children;
