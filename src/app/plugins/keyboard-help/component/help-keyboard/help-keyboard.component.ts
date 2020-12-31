@@ -15,8 +15,7 @@ export class HelpKeyboardComponent implements OnInit, OnDestroy {
     private panelService: PanelService,
     private modalService: ModalService,
   ) {}
-  get useTap(){ return config.useCardTap}
-  get useShortcut(){return config.useKeyboardShortcut}
+  get config(){return config}
   get constants(){return constants}
   ngOnInit() {
     Promise.resolve().then(() => this.changeTitle())

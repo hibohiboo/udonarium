@@ -63,13 +63,22 @@ export const cardOnKeydownHook = (
   return ret
 }
 
-// ショートカット作成
+// キーボードショートカット
 export const terrainOnKeydownHook = (that, e)=>{
   let ret = false
   if (config.useKeyboardShortcut) {
     ret = keyboardShortcut.terrainOnKeydownHook(that, e)
   }
   return ret
+}
+
+export const characterOnKeydownHook = (that, e) =>{
+  let ret = false
+  if (config.useKeyboardShortcut) {
+    ret = keyboardShortcut.characterOnKeydownHook(that, e)
+  }
+  return ret
+
 }
 
 // ティラノスクリプト連携

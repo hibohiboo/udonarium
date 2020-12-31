@@ -1,46 +1,74 @@
 
 <div>
-  <h3>キーボード</h3>
-  <h4 *ngIf="useTap">カード</h4>
-  <dl *ngIf="useTap" class="help-list">
-    <dt>カードの上で[t]</dt>
-    <dd>カードを横にする</dd>
-    <dt>カードの上で[u]</dt>
-    <dd>カードを縦にする</dd>
-  </dl>
-  <h4 *ngIf="useShortcut">地形</h4>
-  <p>※対象の地形をクリックしてからキーボードを押してください。</p>
-  <dl *ngIf="useShortcut" class="help-list">
-    <dt>[{{constants.terrainCopyKey}}]</dt>
-    <dd>地形をコピー</dd>
-    <dt>[{{constants.terrainDeleteKey}}]</dt>
-    <dd>地形を削除</dd>
-    <dt>[{{constants.terrainEditKey}}]</dt>
-    <dd>地形設定を編集</dd>
-  </dl>
-  <h4>テーブル</h4>
-  <dl class="help-list">
-    <dt>[→]</dt>
-    <dd>テーブルを左に移動</dd>
-    <dt>[↑]</dt>
-    <dd>テーブルを下に移動</dd>
-    <dt>[←]</dt>
-    <dd>テーブルを右に移動</dd>
-    <dt>[↓]</dt>
-    <dd>テーブルを上に移動</dd>
-    <dt>[shift]+[→]</dt>
-    <dd>テーブルを時計回りに回転</dd>
-    <dt>[shift]+[↑]</dt>
-    <dd>テーブルを手前に倒す</dd>
-    <dt>[shift]+[←]</dt>
-    <dd>テーブルを逆時計回りに移動</dd>
-    <dt>[shift]+[↓]</dt>
-    <dd>テーブルを奥に倒す</dd>
-    <dt>[?]</dt>
-    <dd>キーボードショートカット表示</dd>
-    <dt>[ESC]</dt>
-    <dd>キーボードショートカットを閉じる</dd>
-  </dl>
+  <h3>キーボードショートカット</h3>
+  <section *ngIf="config.useCardTap">
+    <h4>カード</h4>
+    <dl class="help-list">
+      <dt>カードの上で[t]</dt>
+      <dd>カードを横にする</dd>
+      <dt>カードの上で[u]</dt>
+      <dd>カードを縦にする</dd>
+    </dl>
+  </section>
+
+  <section *ngIf="config.useKeyboardShortcut">
+    <h4>地形</h4>
+    <p>※対象の地形をクリックしてからキーボードを押してください。</p>
+    <dl class="help-list">
+      <dt>[{{constants.terrainCopyKey}}]</dt>
+      <dd>地形をコピー</dd>
+      <dt>[{{constants.terrainDeleteKey}}]</dt>
+      <dd>地形を削除</dd>
+      <dt>[{{constants.terrainEditKey}}]</dt>
+      <dd>地形設定を編集</dd>
+    </dl>
+  </section>
+
+  <section *ngIf="config.useKeyboardShortcut">
+    <h4>キャラクター</h4>
+    <p>※対象のキャラクターをクリックしてからキーボードを押してください。</p>
+    <dl class="help-list">
+      <dt>[{{constants.characterCopyKey}}]</dt>
+      <dd>キャラクターをコピー</dd>
+      <dt>[{{constants.characterDeleteKey}}]</dt>
+      <dd>キャラクターを墓場へ移動</dd>
+      <dt>[{{constants.characterEditKey}}]</dt>
+      <dd>キャラクターの詳細を表示</dd>
+      <dt>[{{constants.characterChatPalletKey}}]</dt>
+      <dd>キャラクターのチャットパレットを表示</dd>
+      <dt *ngIf="config.useLilyRemocon">[{{constants.characterRemoconKey}}]</dt>
+      <dd *ngIf="config.useLilyRemocon">キャラクターのリモコンを表示</dd>
+      <dt>[shift]+[{{constants.characterMoveInventoryCommonKey.toLowerCase()}}]</dt>
+      <dd>キャラクターを共有インベントリに移動</dd>
+      <dt>[shift]+[{{constants.characterMoveInventoryIndividualKey.toLowerCase()}}]</dt>
+      <dd>キャラクターを個人インベントリに移動</dd>
+    </dl>
+  </section>
+  <section>
+    <h4>テーブル</h4>
+    <dl class="help-list">
+      <dt>[→]</dt>
+      <dd>テーブルを左に移動</dd>
+      <dt>[↑]</dt>
+      <dd>テーブルを下に移動</dd>
+      <dt>[←]</dt>
+      <dd>テーブルを右に移動</dd>
+      <dt>[↓]</dt>
+      <dd>テーブルを上に移動</dd>
+      <dt>[shift]+[→]</dt>
+      <dd>テーブルを時計回りに回転</dd>
+      <dt>[shift]+[↑]</dt>
+      <dd>テーブルを手前に倒す</dd>
+      <dt>[shift]+[←]</dt>
+      <dd>テーブルを逆時計回りに移動</dd>
+      <dt>[shift]+[↓]</dt>
+      <dd>テーブルを奥に倒す</dd>
+      <dt>[?]</dt>
+      <dd>キーボードショートカット表示</dd>
+      <dt>[ESC]</dt>
+      <dd>キーボードショートカットを閉じる</dd>
+    </dl>
+  </section>
 
   <h3>マウス</h3>
   <dl class="help-list">

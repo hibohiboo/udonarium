@@ -20,7 +20,7 @@ const getRemoconMenuAction = (panelService: PanelService, gameObject: GameCharac
   return { name: 'リモコンを表示', action: () => { showRemoteController(panelService, gameObject, position) } };
 }
 
-const showRemoteController = (panelService: PanelService, gameObject: GameCharacter, coordinate: PointerCoordinate) => {
+export const showRemoteController = (panelService: PanelService, gameObject: GameCharacter, coordinate: PointerCoordinate) => {
   let option: PanelOption = { left: coordinate.x - 250, top: coordinate.y - 175, width: 700, height: 600 };
   let component = panelService.open<RemoteControllerComponent>(RemoteControllerComponent, option);
   component.character = gameObject;

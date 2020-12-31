@@ -1,5 +1,9 @@
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect'
 import * as constants from 'src/app/plugins/constants';
+import { showRemoteController } from '../lily/controller';
+import config from 'src/app/plugins/config';
+import { Network } from '@udonarium/core/system';
+
 const menuKey = 'm'
 
 export default {
@@ -42,6 +46,42 @@ export default {
     }else if (e.key === constants.terrainDeleteKey) {
       that.terrain.destroy();
       SoundEffect.play(PresetSound.sweep);
+      return true;
+    }
+    return false
+  },
+  // thatはGameCharacterComponent
+  characterOnKeydownHook(that, e: KeyboardEvent){
+    if(e.key === constants.characterCopyKey) {
+      let cloneObject = that.gameCharacter.clone();
+      cloneObject.location.x += that.gridSize;
+      cloneObject.location.y += that.gridSize;
+      cloneObject.update();
+      SoundEffect.play(PresetSound.piecePut);
+      return true;
+    } else if (e.key === constants.characterDeleteKey) {
+      that.gameCharacter.setLocation('graveyard');
+      SoundEffect.play(PresetSound.sweep);
+      return true;
+    } else if (e.key === constants.characterEditKey) {
+      that.showDetail(that.gameCharacter);
+      return true;
+    } else if (e.key === constants.characterRemoconKey && config.useLilyRemocon) {
+      if (!that.pointerDeviceService.isAllowedToOpenContextMenu) return;
+
+      let position = that.pointerDeviceService.pointers[0];
+      showRemoteController(that.panelService, that.gameCharacter, position)
+      return true;
+    } else if (e.key === constants.characterMoveInventoryCommonKey){
+      that.gameCharacter.setLocation('common');
+      SoundEffect.play(PresetSound.piecePut);
+      return true;
+    } else if (e.key === constants.characterChatPalletKey) {
+      that.showChatPalette(that.gameCharacter)
+      return true;
+    } else if (e.key === constants.characterMoveInventoryIndividualKey) {
+      that.gameCharacter.setLocation(Network.peerId);
+      SoundEffect.play(PresetSound.piecePut);
       return true;
     }
     return false

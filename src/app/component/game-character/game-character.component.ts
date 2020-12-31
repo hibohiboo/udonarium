@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  HostBinding,
   HostListener,
   Input,
   OnDestroy,
@@ -22,7 +23,7 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { gameCharacterOnContextMenuHook } from 'src/app/plugins';
+import { characterOnKeydownHook, gameCharacterOnContextMenuHook } from 'src/app/plugins';
 
 @Component({
   selector: 'game-character',
@@ -63,12 +64,15 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   movableOption: MovableOption = {};
   rotableOption: RotableOption = {};
 
+  @HostBinding('tabIndex') tabIndex:string;
   constructor(
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    this.tabIndex = "0";
+  }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -150,6 +154,11 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
         }
       },
     ], this.name);
+  }
+
+  @HostListener("keydown", ["$event"])
+  onKeydown(e: KeyboardEvent) {
+    if(characterOnKeydownHook(this, e)) return;
   }
 
   onMove() {
