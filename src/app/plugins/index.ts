@@ -63,7 +63,7 @@ export const cardOnKeydownHook = (
 }
 
 // キーボードショートカット
-export const terrainOnKeydownHook = (that, e)=>{
+export const terrainOnKeydownHook = (that, e) => {
   let ret = false
   if (config.useKeyboardShortcut) {
     ret = keyboardShortcut.terrainOnKeydownHook(that, e)
@@ -71,23 +71,26 @@ export const terrainOnKeydownHook = (that, e)=>{
   return ret
 }
 
-export const characterOnKeydownHook = (that, e) =>{
+export const characterOnKeydownHook = (that, e) => {
   let ret = false
   if (config.useKeyboardShortcut) {
     ret = keyboardShortcut.characterOnKeydownHook(that, e)
   }
   return ret
-
 }
 
 // 重ねカード移動
 
-export const cardComponentOnInputStartHook = (that)=>{
-  if(config.useCardOnTopMove){cardOnTopMove.cardComponentOnInputStartHook(that);}
+export const cardComponentOnInputStartHook = (that) => {
+  if (config.useCardOnTopMove) {
+    cardOnTopMove.cardComponentOnInputStartHook(that)
+  }
 }
 
-export const cardComponentDispatchCardDropEventHook = (that)=>{
-  if(config.useCardOnTopMove){cardOnTopMove.cardComponentDispatchCardDropEventHook(that);}
+export const cardComponentDispatchCardDropEventHook = (that) => {
+  if (config.useCardOnTopMove) {
+    cardOnTopMove.cardComponentDispatchCardDropEventHook(that)
+  }
 }
 
 // ティラノスクリプト連携
