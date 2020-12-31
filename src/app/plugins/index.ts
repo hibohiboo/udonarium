@@ -6,8 +6,7 @@ import insertSpreadsheet from './insert-spreadsheet'
 import { getDeckMenu } from './sheet-deck'
 import lily from './lily'
 import keyboardShortcut from './keyboard-shortcut'
-import type { ModalService } from 'service/modal.service'
-import type { CardComponent } from 'component/card/card.component'
+import cardOnTopMove from './card-on-top-move'
 import type { GameTableComponent } from 'component/game-table/game-table.component'
 import type { ChatMessage, ChatMessageContext } from '@udonarium/chat-message'
 import type {
@@ -79,6 +78,16 @@ export const characterOnKeydownHook = (that, e) =>{
   }
   return ret
 
+}
+
+// 重ねカード移動
+
+export const cardComponentOnInputStartHook = (that)=>{
+  if(config.useCardOnTopMove){cardOnTopMove.cardComponentOnInputStartHook(that);}
+}
+
+export const cardComponentDispatchCardDropEventHook = (that)=>{
+  if(config.useCardOnTopMove){cardOnTopMove.cardComponentDispatchCardDropEventHook(that);}
 }
 
 // ティラノスクリプト連携

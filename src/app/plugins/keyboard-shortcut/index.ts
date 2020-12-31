@@ -47,6 +47,22 @@ export default {
       that.terrain.destroy()
       SoundEffect.play(PresetSound.sweep)
       return true
+    } else if (e.key === constants.terrainEditKey) {
+      that.showDetail(that.terrain)
+      return true
+    } else if (e.key === constants.terrainDeleteKey) {
+      that.terrain.destroy()
+      SoundEffect.play(PresetSound.sweep)
+      return true
+    } else if (e.key === constants.terrainFixKey) {
+      if (that.isLocked) {
+        that.isLocked = false
+        SoundEffect.play(PresetSound.unlock)
+      } else {
+        that.isLocked = true
+        SoundEffect.play(PresetSound.lock)
+      }
+      return true
     }
     return false
   },
