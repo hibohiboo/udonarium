@@ -6,6 +6,7 @@ interface TopOfCard {
   distanceY: number,
   distanceZ: number
 }
+
 export default {
   // that = CardComponent
   cardComponentOnInputStartHook(that){
