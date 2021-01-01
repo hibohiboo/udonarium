@@ -29,6 +29,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { cardOnKeydownHook, cardPointerHook } from 'src/app/plugins';
+import { TabletopService } from 'service/tabletop.service';
 
 @Component({
   selector: 'card-stack',
@@ -70,7 +71,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
   get ownerName(): string { return this.cardStack.ownerName; }
 
   get topCard(): Card { return this.cardStack.topCard; }
-  get imageFile(): ImageFile { return this.cardStack.imageFile; }
+  get imageFile(): ImageFile { return this.tabletopService.getSkeletonImageOr(this.cardStack.imageFile); }
 
   animeState: string = 'inactive';
 
@@ -95,6 +96,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     private panelService: PanelService,
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
+    private tabletopService: TabletopService,
     private pointerDeviceService: PointerDeviceService
   ) {
     this.tabIndex = "0"; //TabIndexを付与。これをしないとフォーカスできないのでコンポーネントに対するキーイベントを取得できない。
@@ -113,7 +115,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!this.cardStack || !object) return;
         if ((this.cardStack === object)
           || (object instanceof ObjectNode && this.cardStack.contains(object))
-          || (object instanceof PeerCursor && object.peerId === this.cardStack.owner)) {
+          || (object instanceof PeerCursor && object.userId === this.cardStack.owner)) {
           this.changeDetector.markForCheck();
         }
       })
@@ -127,7 +129,8 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
         this.changeDetector.markForCheck();
       })
       .on('DISCONNECT_PEER', event => {
-        if (this.cardStack.owner === event.data.peer) this.changeDetector.markForCheck();
+        let cursor = PeerCursor.findByPeerId(event.data.peerId);
+        if (!cursor || this.cardStack.owner === cursor.userId) this.changeDetector.markForCheck();
       });
     this.movableOption = {
       tabletopObject: this.cardStack,
@@ -439,7 +442,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     let coordinate = this.pointerDeviceService.pointers[0];
     let option: PanelOption = { left: coordinate.x - 200, top: coordinate.y - 300, width: 400, height: 600 };
 
-    this.cardStack.owner = Network.peerId;
+    this.cardStack.owner = Network.peerContext.userId;
     let component = this.panelService.open<CardStackListComponent>(CardStackListComponent, option);
     component.cardStack = gameObject;
   }

@@ -31,9 +31,6 @@ import pluginConfig from '../../plugins/config';
   selector: 'game-table',
   templateUrl: './game-table.component.html',
   styleUrls: ['./game-table.component.css'],
-  providers: [
-    TabletopService,
-  ],
 })
 export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('class.is2d') is2d: boolean = pluginConfig.use2dMode;
@@ -47,7 +44,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   get tableImage(): ImageFile {
     let file: ImageFile = ImageStorage.instance.get(this.currentTable.imageIdentifier);
-    return file ? file : ImageFile.Empty;
+    return this.tabletopService.getSkeletonImageOr(file);
   }
 
   get backgroundImage(): ImageFile {
@@ -123,6 +120,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.input.onStart = this.onInputStart.bind(this);
     this.input.onMove = this.onInputMove.bind(this);
     this.input.onEnd = this.onInputEnd.bind(this);
+    this.cancelInput();
 
     this.setGameTableGrid(this.currentTable.width, this.currentTable.height, this.currentTable.gridSize, this.currentTable.gridType, this.currentTable.gridColor);
     this.setTransform(0, 0, 0, 0, 0, 0);

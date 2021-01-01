@@ -55,9 +55,9 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   get hasOwner(): boolean { return this.card.hasOwner; }
   get ownerName(): string { return this.card.ownerName; }
 
-  get imageFile(): ImageFile { return this.card.imageFile; }
-  get frontImage(): ImageFile { return this.card.frontImage; }
-  get backImage(): ImageFile { return this.card.backImage; }
+  get imageFile(): ImageFile { return this.tabletopService.getSkeletonImageOr(this.card.imageFile); }
+  get frontImage(): ImageFile { return this.tabletopService.getSkeletonImageOr(this.card.frontImage); }
+  get backImage(): ImageFile { return this.tabletopService.getSkeletonImageOr(this.card.backImage); }
 
   private iconHiddenTimer: NodeJS.Timer = null;
   get isIconHidden(): boolean { return this.iconHiddenTimer != null };
@@ -94,7 +94,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!this.card || !object) return;
         if ((this.card === object)
           || (object instanceof ObjectNode && this.card.contains(object))
-          || (object instanceof PeerCursor && object.peerId === this.card.owner)) {
+          || (object instanceof PeerCursor && object.userId === this.card.owner)) {
           this.changeDetector.markForCheck();
         }
       })
@@ -105,7 +105,8 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.changeDetector.markForCheck();
       })
       .on('DISCONNECT_PEER', event => {
-        if (this.card.owner === event.data.peer) this.changeDetector.markForCheck();
+        let cursor = PeerCursor.findByPeerId(event.data.peerId);
+        if (!cursor || this.card.owner === cursor.userId) this.changeDetector.markForCheck();
       });
     this.movableOption = {
       tabletopObject: this.card,
@@ -227,7 +228,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
           name: '自分だけ見る', action: () => {
             SoundEffect.play(PresetSound.cardDraw);
             this.card.faceDown();
-            this.owner = Network.peerId;
+            this.owner = Network.peerContext.userId;
           }
         }),
       ContextMenuSeparator,
