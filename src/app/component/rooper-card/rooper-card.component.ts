@@ -32,6 +32,12 @@ import { PointerDeviceService } from "service/pointer-device.service";
 import { TabletopService } from "service/tabletop.service";
 import { RooperCard } from "@udonarium/rooper-card";
 
+interface TopOfCard {
+  card: Card
+  distanceX: number
+  distanceY: number
+  distanceZ: number
+}
 @Component({
   selector: "rooper-card",
   templateUrl: "./rooper-card.component.html",
@@ -41,6 +47,8 @@ import { RooperCard } from "@udonarium/rooper-card";
 export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() card: RooperCard = null;
   @Input() is3D: boolean = false;
+
+  private topOfCards: TopOfCard[] = []
 
   get name(): string {
     return this.card.name;
@@ -118,6 +126,7 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
     private panelService: PanelService,
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
+    private tabletopService: TabletopService,
     private pointerDeviceService: PointerDeviceService
   ) {
     this.tabIndex = "0"; //TabIndexを付与。これをしないとフォーカスできないのでコンポーネントに対するキーイベントを取得できない。
@@ -225,6 +234,20 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onInputStart(e: MouseEvent | TouchEvent) {
     this.input.cancel();
+
+    this.topOfCards = []
+    for (const card of this.tabletopService.cards) {
+      const distanceX = card.location.x - this.card.location.x
+      const distanceY = card.location.y - this.card.location.y
+      const distanceZ = card.posZ - this.card.posZ
+      const coefficient = 2;
+      const distance: number = distanceX ** 2 + distanceY ** 2 + distanceZ ** 2
+
+      if (distance < 200 ** 2 && this.zindex < card.zindex) {
+        this.topOfCards.push({ card, distanceX, distanceY, distanceZ })
+      }
+    }
+
     this.onDoubleClick(e);
     this.card.toTopmost();
     if (e instanceof MouseEvent) this.startIconHiddenTimer();
@@ -334,33 +357,16 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  // private createStack() {
-  //   let cardStack = CardStack.create('山札');
-  //   cardStack.location.x = this.card.location.x;
-  //   cardStack.location.y = this.card.location.y;
-  //   cardStack.posZ = this.card.posZ;
-  //   cardStack.location.name = this.card.location.name;
-  //   cardStack.rotate = this.rotate;
-  //   cardStack.zindex = this.card.zindex;
-
-  //   let cards: RooperCard[] = this.tabletopService.rooperCards.filter(card => {
-  //     let distance: number = (card.location.x - this.card.location.x) ** 2 + (card.location.y - this.card.location.y) ** 2 + (card.posZ - this.card.posZ) ** 2;
-  //     return distance < 100 ** 2;
-  //   });
-
-  //   cards.sort((a, b) => {
-  //     if (a.zindex < b.zindex) return 1;
-  //     if (a.zindex > b.zindex) return -1;
-  //     return 0;
-  //   });
-
-  //   for (let card of cards) {
-  //     cardStack.putOnBottom(card);
-  //   }
-  // }
-
   private dispatchCardDropEvent() {
     console.log("dispatchCardDropEvent");
+    for (const topOfCard of this.topOfCards) {
+      topOfCard.card.location.x = this.card.location.x + topOfCard.distanceX
+      topOfCard.card.location.y = this.card.location.y + topOfCard.distanceY
+      topOfCard.card.posZ = this.card.posZ + topOfCard.distanceZ
+      topOfCard.card.toTopmost()
+    }
+    this.topOfCards = []
+
     let element: HTMLElement = this.elementRef.nativeElement;
     let parent = element.parentElement;
     let children = parent.children;
