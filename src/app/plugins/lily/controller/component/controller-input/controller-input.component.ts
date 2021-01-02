@@ -150,7 +150,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
       })
       .on('DISCONNECT_PEER', event => {
         let object = ObjectStore.instance.get(this.sendTo);
-        if (object instanceof PeerCursor && object.peerId === event.data.peer) {
+        if (object instanceof PeerCursor && object.peerId === event.data.peerId) {
           this.sendTo = '';
         }
       })
@@ -185,7 +185,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
         let object = ObjectStore.instance.get(this.sendTo);
         if (object instanceof PeerCursor) {
           let peer = PeerContext.create(object.peerId);
-          if (peer) sendTo = peer.id;
+          if (peer) sendTo = peer.userId;
         }
       }
       EventSystem.call('WRITING_A_MESSAGE', this.chatTabidentifier, sendTo);
@@ -285,7 +285,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
         return false;
       default:
         for (const conn of Network.peerContexts) {
-          if (conn.isOpen && gameCharacter.location.name === conn.fullstring) {
+          if (conn.isOpen && gameCharacter.location.name === conn.peerId) {
             return false;
           }
         }

@@ -22,7 +22,7 @@ export default {
         const { message, tab } = event.data.payload
 
         const chatMessage = {
-          from: Network.peerContext.id,
+          from: Network.peerContext.userId,
           to: message.to,
           name: message.name,
           imageIdentifier: message.imageIdentifier,

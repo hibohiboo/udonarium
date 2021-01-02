@@ -53,7 +53,7 @@ export default {
       default:
         if( gameCharacter.nonTalkFlag ) return false;
         for (const conn of Network.peerContexts) {
-          if (conn.isOpen && gameCharacter.location.name === conn.fullstring) {
+          if (conn.isOpen && gameCharacter.location.name === conn.peerId) {
             return false;
           }
         }
