@@ -3,7 +3,9 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit } from
 
 import { ChatMessage } from '@udonarium/chat-message';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { PeerCursor } from '@udonarium/peer-cursor';
 import { ChatMessageService } from 'service/chat-message.service';
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'chat-message',
@@ -32,6 +34,18 @@ export class ChatMessageComponent implements OnInit, AfterViewInit {
   @Input() chatMessage: ChatMessage;
   imageFile: ImageFile = ImageFile.Empty;
   animeState: string = 'inactive';
+
+  // start with fly
+  get isMine(): boolean {
+    return PeerCursor.myCursor.userId.substring(0, 5) == this.chatMessage.from.substring(0, 5)
+    || PeerCursor.myCursor.userId.substring(0, 5) == this.chatMessage.originFrom.substring(0, 5);
+  }
+  get isMyMessage(): boolean {
+    return PeerCursor.myCursor.userId.substring(0, 5) == this.chatMessage.from.substring(0, 5);
+  }
+  get usePlayerColor(){ return config.usePlayerColor; }
+  get playerColor() { return PeerCursor.myCursor.color; }
+  // end with fly
 
   constructor(
     private chatMessageService: ChatMessageService

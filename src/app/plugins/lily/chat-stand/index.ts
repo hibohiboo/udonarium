@@ -24,6 +24,7 @@ const findImageIdentifier = (sendFrom,index:number): string => {
 const findImagePos = (identifier: string): number => {
   let object = ObjectStore.instance.get(identifier);
   if (object instanceof GameCharacter) {
+      // @ts-ignore
       let element = object.getElement('POS', object.detailDataElement);
       if(element)
           if( 0 <= <number>element.currentValue && <number>element.currentValue <= 11)

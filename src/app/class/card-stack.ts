@@ -21,6 +21,12 @@ export class CardStack extends TabletopObject {
     return object ? object.name : '';
   }
   get hasOwner(): boolean { return 0 < this.owner.length; }
+  // start with fly
+  get ownerColor(): string {
+    let object = PeerCursor.findByUserId(this.owner);
+    return object ? object.color : '#444444';
+  }
+  // end with fly
 
   private get cardRoot(): ObjectNode {
     for (let node of this.children) {

@@ -16,6 +16,14 @@ export class PeerCursor extends GameObject {
   @SyncVar() name: string = '';
   @SyncVar() imageIdentifier: string = '';
 
+  // start with fly
+  @SyncVar() color: string = PeerCursor.CHAT_DEFAULT_COLOR;
+  static readonly CHAT_MY_NAME_LOCAL_STORAGE_KEY = 'udonanaumu-chat-my-name-local-storage';
+  static readonly CHAT_MY_COLOR_LOCAL_STORAGE_KEY = 'udonanaumu-chat-my-color-local-storage';
+  static readonly CHAT_DEFAULT_COLOR = '#444444';
+  static readonly CHAT_TRANSPARENT_COLOR = '#ffffff';
+  // end with fly
+
   static myCursor: PeerCursor = null;
   private static userIdMap: Map<UserId, ObjectIdentifier> = new Map();
   private static peerIdMap: Map<PeerId, ObjectIdentifier> = new Map();
@@ -75,6 +83,16 @@ export class PeerCursor extends GameObject {
     PeerCursor.myCursor = new PeerCursor();
     PeerCursor.myCursor.peerId = Network.peerId;
     PeerCursor.myCursor.initialize();
+
+    // start with fly
+    if (window.localStorage && localStorage.getItem(PeerCursor.CHAT_MY_NAME_LOCAL_STORAGE_KEY)) {
+      PeerCursor.myCursor.name = localStorage.getItem(PeerCursor.CHAT_MY_NAME_LOCAL_STORAGE_KEY);
+    }
+    if (window.localStorage && localStorage.getItem(PeerCursor.CHAT_MY_COLOR_LOCAL_STORAGE_KEY)) {
+      PeerCursor.myCursor.color = localStorage.getItem(PeerCursor.CHAT_MY_COLOR_LOCAL_STORAGE_KEY);
+    }
+    // end with fly
+
     return PeerCursor.myCursor;
   }
 

@@ -40,6 +40,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { appComponentConstructorHook } from './plugins';
 import factory from './plugins/factory';
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'app-root',
@@ -134,7 +135,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     AudioStorage.instance.get(PresetSound.sweep).isHidden = true;
 
     PeerCursor.createMyCursor();
-    PeerCursor.myCursor.name = 'プレイヤー';
+    if (!config.usePlayerColor || !PeerCursor.myCursor.name) PeerCursor.myCursor.name = 'プレイヤー';
     PeerCursor.myCursor.imageIdentifier = noneIconImage.identifier;
 
     const listener = EventSystem.register(this)

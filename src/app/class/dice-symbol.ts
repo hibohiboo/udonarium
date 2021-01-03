@@ -40,6 +40,12 @@ export class DiceSymbol extends TabletopObject {
     let object = PeerCursor.findByUserId(this.owner);
     return object ? object.name : '';
   }
+  // start with fly
+  get ownerColor(): string {
+    let object = PeerCursor.findByUserId(this.owner);
+    return object ? object.color : '#444444';
+  }
+  // end with fly
   get hasOwner(): boolean { return 0 < this.owner.length; }
   get isMine(): boolean { return Network.peerContext.userId === this.owner; }
   get isVisible(): boolean { return !this.hasOwner || this.isMine; }

@@ -6,6 +6,7 @@ import { PeerCursor } from '@udonarium/peer-cursor';
 
 import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'peer-cursor, [peer-cursor]',
@@ -21,6 +22,8 @@ export class PeerCursorComponent implements OnInit, AfterViewInit, OnDestroy {
   get iconUrl(): string { return this.cursor.image.url; }
   get name(): string { return this.cursor.name }
   get isMine(): boolean { return this.cursor.isMine; }
+  get color(): string { return (this.cursor.color && this.cursor.color != '#ffffff') ? this.cursor.color : '#f0dabd'; } // with fly
+  get usePlayerColor(){ return config.usePlayerColor; }
 
   private cursorElement: HTMLElement = null;
   private opacityElement: HTMLElement = null;

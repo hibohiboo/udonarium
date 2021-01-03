@@ -4,10 +4,24 @@
     (click)="changeIcon()">
     <!--<img *ngIf="myPeer.image" [src]="myPeer.image.url | safe: 'resourceUrl'" />-->
   </div>
-  <span>あなたのニックネーム：  <input [(ngModel)]="myPeer.name"  placeholder="ニックネーム" /></span>
+  <span *ngIf="!usePlayerColor">あなたのニックネーム：  <input [(ngModel)]="myPeer.name"  placeholder="ニックネーム" /></span>
+  <span *ngIf="usePlayerColor">あなたの色とニックネーム：<input type="color" style="width:1em; margin-right: 0.5em" [(ngModel)]="myPeerColor">　<input [(ngModel)]="myPeerName" [style.color]="myPeerColor" style="font-weight: bolder;" placeholder="ニックネーム" />
+    <br>※最後に使った色とニックネームをブラウザに保存、<br>　色を初期値に戻す際は白(255,255,255)を選択。</span>
 </div>
 <div>
-  <span>あなたのID：<span *ngIf="networkService.isOpen" style="font-weight: bold;">{{networkService.peerContext.userId}}</span>
+  <span *ngIf="!usePlayerColor">あなたのID：<span *ngIf="networkService.isOpen" style="font-weight: bold;">{{networkService.peerContext.userId}}</span>
+  <span *ngIf="!networkService.isOpen" style="font-weight: bold;">???</span>
+  </span>
+  <span *ngIf="usePlayerColor">あなたのID：<span>
+    <ng-container *ngIf="networkService.isOpen">
+      <span style="display: inline-block;">
+        <span #idSpacer class="id-spacer">{{ networkService.peerContext.userId }}</span>
+        <input #idInput class="id-input" type="text" value="{{ networkService.peerContext.userId }}" readonly>
+      </span>
+      <button *ngIf="isAbleClipboardCopy" (click)="copyPeerId()" [disabled]="isCopied"><b class="material-icons" style="font-size: 1em; vertical-align: bottom">content_copy</b></button>
+      <span [@fadeInOut]="isCopied" class="copied" [style.color]="myPeerColor"> {{ isCopied ? 'クリップボードにコピーしました。' : '' }}</span>
+    </ng-container>
+  </span>
   <span *ngIf="!networkService.isOpen" style="font-weight: bold;">???</span>
   </span>
 </div>
@@ -25,7 +39,8 @@
 <div *ngFor="let context of networkService.peerContexts">
   <div>
     <span *ngIf="!context.isOpen">[接続中]</span>
-    <span>他の参加者：{{findUserId(context.peerId)}} [{{findPeerName(context.peerId)}}]</span>
+    <span *ngIf="!usePlayerColor">他の参加者：{{findUserId(context.peerId)}} [{{findPeerName(context.peerId)}}]</span>
+    <span *ngIf="usePlayerColor">他の参加者：{{findUserId(context.peerId)}} [<b [style.color]="findPeerColor(context.peerId)">{{findPeerName(context.peerId)}}</b>]</span>
   </div>
 </div>
 <div>

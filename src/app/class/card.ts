@@ -38,6 +38,13 @@ export class Card extends TabletopObject {
   get isFront(): boolean { return this.state === CardState.FRONT; }
   get isVisible(): boolean { return this.isHand || this.isFront; }
 
+  // start with fly
+  get ownerColor(): string {
+    let object = PeerCursor.findByUserId(this.owner);
+    return object ? object.color : '#ff0';
+  }
+  // end with fly
+
   faceUp() {
     this.state = CardState.FRONT;
     this.owner = '';

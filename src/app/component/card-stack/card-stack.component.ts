@@ -30,6 +30,8 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { cardOnKeydownHook, cardPointerHook } from 'src/app/plugins';
 import { TabletopService } from 'service/tabletop.service';
+import config from 'src/app/plugins/config';
+
 
 @Component({
   selector: 'card-stack',
@@ -69,6 +71,8 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get hasOwner(): boolean { return this.cardStack.hasOwner; }
   get ownerName(): string { return this.cardStack.ownerName; }
+  get ownerColor(): string { return this.cardStack.ownerColor; } //with fly
+  get usePlayerColor(){ return config.usePlayerColor; }
 
   get topCard(): Card { return this.cardStack.topCard; }
   get imageFile(): ImageFile { return this.tabletopService.getSkeletonImageOr(this.cardStack.imageFile); }

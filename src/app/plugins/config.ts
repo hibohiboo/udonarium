@@ -9,6 +9,7 @@ const hideSample = location.search.includes('hide_sample=true')
 const useKeyboardShortcut = location.search.includes('keyboard_shortcut=true')
 const useCardOnTopMove = location.search.includes('ontopcardmove=true')
 
+// lily
 const useLilyCutin = location.search.includes('lily_cutin=true')
 const useLilyStand = location.search.includes('lily_stand=true')
 const useLilyDiceTable = location.search.includes('lily_dacetable=true')
@@ -19,6 +20,9 @@ const useLilyTalkFlg = location.search.includes('lily_talk_flg=true')
 const useLilyHideInventoryFlg = location.search.includes(
   'lily_hide_inventory_flg=true',
 )
+
+// with fly
+const usePlayerColor = location.search.includes('withfly_player_color=true');
 
 export default {
   useKeyboardHelp,
@@ -33,6 +37,7 @@ export default {
   useSpreadSheetSigninButton,
   useDeckSpreadSheet,
   useCardOnTopMove,
+  // lily
   useLilyCutin,
   useLilyDiceTable,
   useLilyFile,
@@ -45,4 +50,6 @@ export default {
   useLilyHideInventoryFlg,
   hideSample,
   useKeyboardShortcut,
+  // with fly
+  usePlayerColor,
 }

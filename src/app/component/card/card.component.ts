@@ -28,6 +28,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 import { cardComponentDispatchCardDropEventHook, cardComponentOnInputStartHook, cardOnKeydownHook, cardPointerHook } from 'src/app/plugins';
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'card',
@@ -61,7 +62,8 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private iconHiddenTimer: NodeJS.Timer = null;
   get isIconHidden(): boolean { return this.iconHiddenTimer != null };
-
+  get ownerColor(): string { return this.card.ownerColor; } // with fly
+  get usePlayerColor(){ return config.usePlayerColor; }
   gridSize: number = 50;
 
   movableOption: MovableOption = {};

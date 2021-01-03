@@ -25,6 +25,7 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuAction, ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'dice-symbol',
@@ -100,6 +101,9 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
   private doubleClickPoint = { x: 0, y: 0 };
 
   private input: InputHandler = null;
+
+  get usePlayerColor(){ return config.usePlayerColor; }
+  get ownerColor(): string { return this.diceSymbol.ownerColor; } // with fly
 
   constructor(
     private ngZone: NgZone,
