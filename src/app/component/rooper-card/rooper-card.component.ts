@@ -237,10 +237,10 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.topOfCards = []
     for (const card of this.tabletopService.cards) {
+      if(card.frontImage.url.indexOf('action_cards') === -1) continue;
       const distanceX = card.location.x - this.card.location.x
       const distanceY = card.location.y - this.card.location.y
       const distanceZ = card.posZ - this.card.posZ
-      const coefficient = 2;
       const distance: number = distanceX ** 2 + distanceY ** 2 + distanceZ ** 2
 
       if (distance < 200 ** 2 && this.zindex < card.zindex) {
@@ -363,6 +363,7 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
       topOfCard.card.location.x = this.card.location.x + topOfCard.distanceX
       topOfCard.card.location.y = this.card.location.y + topOfCard.distanceY
       topOfCard.card.posZ = this.card.posZ + topOfCard.distanceZ
+      topOfCard.card.zindex = this.zindex + 1;
       topOfCard.card.toTopmost()
     }
     this.topOfCards = []
