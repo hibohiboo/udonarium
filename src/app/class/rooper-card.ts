@@ -156,7 +156,7 @@ export const rooperCharacterList: {
   {name:'サラリーマン', card_num:'06', default_position: '都市'},
   {name:'情報屋', card_num:'07', default_position: '都市' },
   {name:'医者', card_num:'08', default_position: '病院' },
-  {name:'患者', card_num:'09', default_position: '病院' },
+  {name:'入院患者', card_num:'09', default_position: '病院' },
   {name:'委員長', card_num:'10', default_position: '学校' },
   {name:'イレギュラー', card_num:'11', default_position: '学校' },
   {name:'異世界人', card_num:'12', default_position: '神社' },
