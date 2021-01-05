@@ -8,7 +8,7 @@ const useDeckSpreadSheet = location.search.includes('decksheet')
 const hideSample = location.search.includes('hide_sample=true')
 const useKeyboardShortcut = location.search.includes('keyboard_shortcut=true')
 const useCardOnTopMove = location.search.includes('ontopcardmove=true')
-const useHandStorage = true
+const useHandStorage = location.search.includes('hand_storage=true')
 
 // lily
 const useLilyCutin = location.search.includes('lily_cutin=true')
