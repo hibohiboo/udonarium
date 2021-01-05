@@ -7,6 +7,7 @@ import { getDeckMenu } from './sheet-deck'
 import lily from './lily'
 import keyboardShortcut from './keyboard-shortcut'
 import cardOnTopMove from './card-on-top-move'
+import handStorage from './hand-storage'
 import type { GameTableComponent } from 'component/game-table/game-table.component'
 import type { ChatMessage, ChatMessageContext } from '@udonarium/chat-message'
 import type {
@@ -126,13 +127,20 @@ export const chatTabOnChildAddedHook = (child: ChatMessage) => {
   return false
 }
 
-// カードデッキ追加
 export const onContextMenuHook = async (
   menuActions: ContextMenuAction[],
   position: PointerCoordinate,
+  that
 ) => {
-  if (!config.useDeckSpreadSheet) return
-  menuActions.push(await getDeckMenu(position))
+  // カードデッキ追加
+  if (config.useDeckSpreadSheet){
+    menuActions.push(await getDeckMenu(position))
+  }
+  // カード置き場
+  if (config.useHandStorage) {
+    menuActions.push(handStorage.onContextMenuHook(that))
+  }
+
 }
 
 /// --------------------------------------------------------------------------------------------------------------

@@ -108,7 +108,7 @@ import pluginComponents from './plugins/module'
     BrowserAnimationsModule,
     CommonModule,
     FormsModule,
-    ...pluginComponents.imports
+    ...pluginComponents.imports,
   ],
   providers: [
     AppConfigService,
@@ -119,6 +119,7 @@ import pluginComponents from './plugins/module'
     PanelService,
     PointerDeviceService,
     TabletopService,
+    ...pluginComponents.services,
   ],
   bootstrap: [AppComponent]
 })

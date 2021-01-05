@@ -8,6 +8,7 @@ const useDeckSpreadSheet = location.search.includes('decksheet')
 const hideSample = location.search.includes('hide_sample=true')
 const useKeyboardShortcut = location.search.includes('keyboard_shortcut=true')
 const useCardOnTopMove = location.search.includes('ontopcardmove=true')
+const useHandStorage = true
 
 // lily
 const useLilyCutin = location.search.includes('lily_cutin=true')
@@ -37,6 +38,7 @@ export default {
   useSpreadSheetSigninButton,
   useDeckSpreadSheet,
   useCardOnTopMove,
+  useHandStorage,
   // lily
   useLilyCutin,
   useLilyDiceTable,

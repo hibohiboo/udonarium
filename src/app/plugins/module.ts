@@ -10,6 +10,8 @@ import { FileSelecterComponentLily } from './lily/file/component/file-selecter/f
 import { GameDataElementBuffComponent } from './lily/character-buff/component/game-data-element-buff/game-data-element-buff.component'
 import { RemoteControllerComponent } from './lily/controller/component/remote-controller/remote-controller.component'
 import { GameCharacterBuffViewComponent } from './lily/controller/component/game-character-buff-view/game-character-buff-view.component'
+import { HandStorageComponent } from './hand-storage/component/hand-storage.component'
+import { HandStorageService } from './hand-storage/service/hand-storage.service'
 
 const components = [
   HelpKeyboardComponent,
@@ -24,12 +26,14 @@ const components = [
   ControllerInputComponent,
   GameCharacterBuffViewComponent,
   ChatTachieComponent,
+  HandStorageComponent,
 ]
 const imports = []
+const services = [HandStorageService]
 
 // 以下のように条件分岐で使用コンポーネントを変えようとすると、FormsModuleなどインポートが必要なディレクティブが使えなくなる
 // if (config.useKeyboardHelp) { components.push(HelpKeyboardComponent) }
 // if (config.useLilyCutin) {
 //   components.push(CutInListComponent)
 //  }
-export default { components, imports }
+export default { components, imports, services }

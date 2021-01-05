@@ -26,7 +26,7 @@ import { GridLineRender } from './grid-line-render';
 import { TableTouchGesture, TableTouchGestureEvent } from './table-touch-gesture';
 import { gameBoardKeydownHook, onContextMenuHook, updateGameObjectHook } from '../../plugins';
 import pluginConfig from '../../plugins/config';
-
+import { HandStorageService } from 'src/app/plugins/hand-storage/service/hand-storage.service';
 @Component({
   selector: 'game-table',
   templateUrl: './game-table.component.html',
@@ -83,6 +83,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   get textNotes(): TextNote[] { return this.tabletopService.textNotes; }
   get diceSymbols(): DiceSymbol[] { return this.tabletopService.diceSymbols; }
   get peerCursors(): PeerCursor[] { return this.tabletopService.peerCursors; }
+  get handStorages(){ return this.handStorageService.handStorages; }
 
   constructor(
     private ngZone: NgZone,
@@ -91,6 +92,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     private pointerDeviceService: PointerDeviceService,
     private tabletopService: TabletopService,
     private modalService: ModalService,
+    private handStorageService: HandStorageService,
   ) { }
 
   ngOnInit() {
@@ -323,7 +325,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     let menuActions: ContextMenuAction[] = [];
 
     Array.prototype.push.apply(menuActions, this.tabletopService.getContextMenuActionsForCreateObject(objectPosition));
-    await onContextMenuHook(menuActions, objectPosition);
+    await onContextMenuHook(menuActions, objectPosition, this);
     menuActions.push(ContextMenuSeparator);
     menuActions.push({
       name: 'テーブル設定', action: () => {
