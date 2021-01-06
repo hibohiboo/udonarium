@@ -130,17 +130,16 @@ export const chatTabOnChildAddedHook = (child: ChatMessage) => {
 export const onContextMenuHook = async (
   menuActions: ContextMenuAction[],
   position: PointerCoordinate,
-  that
+  that,
 ) => {
   // カードデッキ追加
-  if (config.useDeckSpreadSheet){
+  if (config.useDeckSpreadSheet) {
     menuActions.push(await getDeckMenu(position))
   }
   // カード置き場
   if (config.useHandStorage) {
-    menuActions.push(handStorage.onContextMenuHook(that))
+    menuActions.push(handStorage.onContextMenuHook(position))
   }
-
 }
 
 /// --------------------------------------------------------------------------------------------------------------

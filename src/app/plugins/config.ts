@@ -23,7 +23,7 @@ const useLilyHideInventoryFlg = location.search.includes(
 )
 
 // with fly
-const usePlayerColor = location.search.includes('withfly_player_color=true');
+const usePlayerColor = location.search.includes('withfly_player_color=true')
 
 export default {
   useKeyboardHelp,
