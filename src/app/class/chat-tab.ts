@@ -101,7 +101,7 @@ export class ChatTab extends ObjectNode implements InnerXml {
     let index = this.imageIdentifierZpos.indexOf( Number(toppos) );
     return index;
   }
-
+  public chatSimpleDispFlag = 0;
   public tachieDispFlag = 1;
   replaceTachieZindex( toppos : number ){
     let index = this.imageIdentifierZpos.indexOf( Number(toppos) );

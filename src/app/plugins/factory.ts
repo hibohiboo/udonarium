@@ -17,6 +17,15 @@ export default {
     return FileSelecterComponent
   },
   chatInputEventEmitterFactory() {
+    if (config.useLilyStand && config.useLilyMessageColor)
+      return new EventEmitter<{
+        text: string
+        gameType: string
+        sendFrom: string
+        sendTo: string
+        tachieNum: number
+        messColor: string
+      }>()
     if (config.useLilyStand)
       return new EventEmitter<{
         text: string
@@ -25,6 +34,13 @@ export default {
         sendTo: string
         tachieNum: number
       }>()
+    if (config.useLilyMessageColor) return  new EventEmitter<{
+      text: string
+      gameType: string
+      sendFrom: string
+      sendTo: string
+      messColor: string
+    }>()
     return new EventEmitter<{
       text: string
       gameType: string
@@ -40,6 +56,10 @@ export default {
       sendTo: that.sendTo,
     }
 
+    if (config.useLilyStand && config.useLilyMessageColor) {
+      return { ...retObj, tachieNum: that.tachieNum, messColor: that.selectChatColor }
+    }
+
     if (config.useLilyStand) {
       console.log(
         '円柱TEST event: KeyboardEvent ' +
@@ -48,6 +68,10 @@ export default {
           that.tachieNum,
       )
       return { ...retObj, tachieNum: that.tachieNum }
+    }
+
+    if (config.useLilyMessageColor) {
+      return { ...retObj, messColor: that.selectChatColor }
     }
 
     return retObj

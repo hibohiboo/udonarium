@@ -75,7 +75,7 @@ export class ChatMessageService {
     return Math.floor(this.timeOffset + (performance.now() - this.performanceOffset));
   }
 
-  sendMessage(chatTab: ChatTab, text: string, gameType: string, sendFrom: string, sendTo?: string, tachieNum?: number): ChatMessage {
+  sendMessage(chatTab: ChatTab, text: string, gameType: string, sendFrom: string, sendTo?: string, tachieNum?: number, color?:string): ChatMessage {
     let chatMessage: ChatMessageContext = {
       from: Network.peerContext.userId,
       to: this.findId(sendTo),
@@ -85,7 +85,7 @@ export class ChatMessageService {
       tag: gameType,
       text: text,
     };
-    chatMessage = chatMessageSendMessageHook(chatMessage, sendFrom, tachieNum);
+    chatMessage = chatMessageSendMessageHook(chatMessage, sendFrom, tachieNum, color);
 
     return chatTab.addMessage(chatMessage);
   }

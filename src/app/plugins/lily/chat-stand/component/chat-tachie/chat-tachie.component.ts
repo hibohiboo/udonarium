@@ -1,11 +1,17 @@
 import { Component, ElementRef,   ChangeDetectorRef, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 
+import { ChatMessage } from '@udonarium/chat-message';
+import { ChatTab } from '@udonarium/chat-tab';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem } from '@udonarium/core/system';
+import { PeerCursor } from '@udonarium/peer-cursor';
 import { ChatMessageService } from 'service/chat-message.service';
+import { PanelOption, PanelService } from 'service/panel.service';
+import { PointerDeviceService } from 'service/pointer-device.service';
+
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
-import { ChatTab } from '@udonarium/chat-tab';
+import { ChatMessageSettingComponent } from '../../../chat-color/component/chat-message-setting/chat-message-setting.component';
 
 @Component({
   selector: 'chat-tachie',
@@ -46,6 +52,9 @@ export class ChatTachieComponent implements OnInit, OnDestroy{
     return 0;
   }
 
+  private timerId;
+
+//立ち絵表示幅取得
   ngAfterViewInit() {
     this._tachieAreaWidth = this.tachieArea.nativeElement.offsetWidth;
     this.changeDetectionRef.detectChanges();
@@ -56,6 +65,7 @@ export class ChatTachieComponent implements OnInit, OnDestroy{
     this.changeDetectionRef.detectChanges();
   }
 
+//z-index取得
   private _zindexOffset = 10;
 
   get zIndex_00(): number { return this.chatTab.tachieZindex(0) + this._zindexOffset; }
@@ -87,6 +97,7 @@ export class ChatTachieComponent implements OnInit, OnDestroy{
   get opacity_11(): number { if( this.chatTab.tachieZindex(11) == 11 ){return 1;}else{ return this._opacity ;}  }
 
 
+//この実装は後でどうにかしたい
   get imageFileUrl_00(): string {
      if( ! this.chatTab.imageIdentifier )return '';
      let image:ImageFile = ImageStorage.instance.get(this.chatTab.imageIdentifier[0]);
@@ -171,10 +182,20 @@ export class ChatTachieComponent implements OnInit, OnDestroy{
      return '';
   }
 
+  shoeMessageSetting(){
+
+    let coordinate = this.pointerDeviceService.pointers[0];
+    let title = 'チャット詳細設定';
+    let option: PanelOption = { title: title, left: coordinate.x + 50, top: coordinate.y - 150, width: 300, height: 120 };
+    let component = this.panelService.open<ChatMessageSettingComponent>(ChatMessageSettingComponent, option);
+  }
+
 
   constructor(
     public chatMessageService: ChatMessageService,
     private changeDetectionRef: ChangeDetectorRef,
+    private panelService: PanelService,
+    private pointerDeviceService: PointerDeviceService
   ) { }
 
   ngOnInit() {

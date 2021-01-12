@@ -295,14 +295,21 @@ export const chatMessageSendMessageHook = (
   chatMessage: ChatMessageContext,
   sendFrom,
   tachieNum?: number,
+  _color?: string
 ) => {
+  let ret = chatMessage
   if (config.useLilyStand)
-    return lily.stand.chatMessageSendMessageHook(
+    ret = lily.stand.chatMessageSendMessageHook(
       chatMessage,
       sendFrom,
       tachieNum,
     )
-  return chatMessage
+  if (config.useLilyMessageColor) {
+    const messColor =  _color ? _color : '#000000'
+    return {...ret, messColor }
+  }
+
+  return ret
 }
 
 export const chatTabAddMessageHook = (that, message: ChatMessageContext) => {

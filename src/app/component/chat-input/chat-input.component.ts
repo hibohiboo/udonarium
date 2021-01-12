@@ -16,6 +16,7 @@ import { chatInputAllowsChatHook, chatInputGetImageFileHook } from 'src/app/plug
 import config from 'src/app/plugins/config';
 import factory from 'src/app/plugins/factory';
 import { TabletopService } from 'service/tabletop.service';
+import { shoeColorSetting } from 'src/app/plugins/lily/chat-color/class/chat-input.component';
 @Component({
   selector: 'chat-input',
   templateUrl: './chat-input.component.html',
@@ -25,6 +26,7 @@ export class ChatInputComponent implements OnInit, OnDestroy {
   @ViewChild('textArea', { static: true }) textAreaElementRef: ElementRef;
 
   get useLilyStand(): boolean { return config.useLilyStand }
+  get useLilyMessageColor(): boolean { return config.useLilyMessageColor }
 
   @Input() onlyCharacters: boolean = false;
   @Input() chatTabidentifier: string = '';
@@ -49,6 +51,7 @@ export class ChatInputComponent implements OnInit, OnDestroy {
   get text(): string { return this._text };
   set text(text: string) { this._text = text; this.textChange.emit(text); }
 
+  // start lily
   // add start tachieNum
   @Input('tachieNum') _tachieNum: number = 0;
   @Output() chat = factory.chatInputEventEmitterFactory();
@@ -74,6 +77,107 @@ export class ChatInputComponent implements OnInit, OnDestroy {
     return 0;
   }
   // add end tachieNum
+  // start message color
+  colorSelectNo_ = 0;
+  @Input() isChatWindow: boolean = false;
+  get colorSelectNo(){
+    return this.colorSelectNo_;
+  }
+
+  set colorSelectNo( num : number ){
+    if( num < 0){
+      this.colorSelectNo_ = 0;
+    }else if( num > 2){
+      this.colorSelectNo_ = 2;
+    }else{
+      this.colorSelectNo_ = num ;
+    }
+  }
+
+  get colorSelectorBoxBorder_0(){
+    if( 0 == this.colorSelectNo ) return '3px';
+    return '1px';
+  }
+
+  get colorSelectorBoxBorder_1(){
+    if( 1 == this.colorSelectNo ) return '3px';
+    return '1px';
+  }
+
+  get colorSelectorBoxBorder_2(){
+    if( 2 == this.colorSelectNo ) return '3px';
+    return '1px';
+  }
+
+  get colorSelectorRadius_0(){
+    if( 0 == this.colorSelectNo ) return '9px';
+    return '0px';
+  }
+
+  get colorSelectorRadius_1(){
+    if( 1 == this.colorSelectNo ) return '9px';
+    return '0px';
+  }
+
+  get colorSelectorRadius_2(){
+    if( 2 == this.colorSelectNo ) return '9px';
+    return '0px';
+  }
+
+  charactorChatColor(num){
+    let object = ObjectStore.instance.get(this.sendFrom);
+    if (object instanceof GameCharacter) {
+      return object.chatColorCode[num];
+    }else{
+      return '#000000';
+    }
+  }
+
+  get selectChatColor(){
+    if( this.isChatWindow ){
+      return this.playerChatColor(this.colorSelectNo);
+    }else{
+      return this.charactorChatColor(this.colorSelectNo);
+    }
+  }
+
+
+  get charactorChatColor_0(){
+    return this.charactorChatColor(0);
+  }
+
+  get charactorChatColor_1(){
+    return this.charactorChatColor(1);
+  }
+
+  get charactorChatColor_2(){
+    return this.charactorChatColor(2);
+  }
+
+  playerChatColor(num){
+    return this.myPeer.chatColorCode[num];
+  }
+
+  get playerChatColor_0(){
+    return this.playerChatColor(0);
+  }
+
+  get playerChatColor_1(){
+    return this.playerChatColor(1);
+  }
+
+  get playerChatColor_2(){
+    return this.playerChatColor(2);
+  }
+
+
+  setColorNum( num : number ){
+    this.colorSelectNo = num ;
+  }
+
+  // end message color
+  // end lily
+
 
   get isDirect(): boolean { return this.sendTo != null && this.sendTo.length ? true : false }
   gameHelp: string = '';
@@ -288,4 +392,9 @@ export class ChatInputComponent implements OnInit, OnDestroy {
         return true;
     }
   }
+  // start lily
+  shoeColorSetting(){
+    shoeColorSetting(this)
+  }
+  // end lily
 }
