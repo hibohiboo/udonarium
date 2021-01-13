@@ -107,8 +107,7 @@ export class DiceSymbol extends TabletopObject {
     return faces;
   }
 
-  static create(name: string, type: DiceType, size: number,
-    identifier?: string): DiceSymbol {
+  static create(name: string, type: DiceType, size: number, identifier?: string): DiceSymbol {
     let object: DiceSymbol = identifier ? new DiceSymbol(identifier) : new DiceSymbol();
 
     object.createDataElements();
