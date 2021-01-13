@@ -16,6 +16,8 @@ export class PeerCursor extends GameObject {
   @SyncVar() name: string = '';
   @SyncVar() imageIdentifier: string = '';
 
+  chatColorCode: string[]  = ["#000000","#FF0000","#0099FF"]; // lily
+
   // start with fly
   @SyncVar() color: string = PeerCursor.CHAT_DEFAULT_COLOR;
   static readonly CHAT_MY_NAME_LOCAL_STORAGE_KEY = 'udonanaumu-chat-my-name-local-storage';
@@ -111,7 +113,7 @@ export class PeerCursor extends GameObject {
     super.apply(context);
   }
 
-  isPeerAUdon() {
+  isPeerAUdon(): boolean {
     return /u.*d.*o.*n/ig.exec(this.peerId) != null;
   }
 }

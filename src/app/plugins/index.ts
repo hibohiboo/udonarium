@@ -134,7 +134,11 @@ export const onContextMenuHook = async (
 ) => {
   // カードデッキ追加
   if (config.useDeckSpreadSheet) {
-    menuActions.push(await getDeckMenu(position))
+    try {
+      menuActions.push(await getDeckMenu(position))
+    } catch (e) {
+      console.error(e)
+    }
   }
   // カード置き場
   if (config.useHandStorage) {
@@ -294,14 +298,21 @@ export const chatMessageSendMessageHook = (
   chatMessage: ChatMessageContext,
   sendFrom,
   tachieNum?: number,
+  _color?: string,
 ) => {
+  let ret = chatMessage
   if (config.useLilyStand)
-    return lily.stand.chatMessageSendMessageHook(
+    ret = lily.stand.chatMessageSendMessageHook(
       chatMessage,
       sendFrom,
       tachieNum,
     )
-  return chatMessage
+  if (config.useLilyMessageColor) {
+    const messColor = _color ? _color : '#000000'
+    return { ...ret, messColor }
+  }
+
+  return ret
 }
 
 export const chatTabAddMessageHook = (that, message: ChatMessageContext) => {

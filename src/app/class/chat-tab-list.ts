@@ -2,7 +2,7 @@ import { ChatTab } from './chat-tab';
 import { SyncObject } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
 import { InnerXml } from './core/synchronize-object/object-serializer';
-import factory from 'src/app/plugins/factory';
+
 @SyncObject('chat-tab-list')
 export class ChatTabList extends ObjectNode implements InnerXml {
   private static _instance: ChatTabList;
@@ -16,9 +16,28 @@ export class ChatTabList extends ObjectNode implements InnerXml {
 
   get chatTabs(): ChatTab[] { return this.children as ChatTab[]; }
 
-  addChatTab(chatTab: ChatTab)
-  addChatTab(tabName: string, identifier?: string)
-  addChatTab(...args: any[]) {
+  // start lily
+  //チャット簡易表示フラグ、拡張余地のため整数型
+  private simpleDispFlagTime_ : number = 0;
+  set simpleDispFlagTime( flag : number ){
+    this.simpleDispFlagTime_ = flag;
+  }
+
+  get simpleDispFlagTime(): number{
+    return this.simpleDispFlagTime_;
+  }
+
+  private simpleDispFlagUserId_ : number = 0;
+  set simpleDispFlagUserId(flag : number){
+    this.simpleDispFlagUserId_ = flag;
+  }
+  get simpleDispFlagUserId(): number{
+    return this.simpleDispFlagUserId_;
+  }
+  // end lily
+  addChatTab(chatTab: ChatTab): ChatTab
+  addChatTab(tabName: string, identifier?: string): ChatTab
+  addChatTab(...args: any[]): ChatTab {
     let chatTab: ChatTab = null;
     if (args[0] instanceof ChatTab) {
       chatTab = args[0];
@@ -29,7 +48,7 @@ export class ChatTabList extends ObjectNode implements InnerXml {
       chatTab.name = tabName;
       chatTab.initialize();
     }
-    this.appendChild(chatTab);
+    return this.appendChild(chatTab);
   }
 
   parseInnerXml(element: Element) {

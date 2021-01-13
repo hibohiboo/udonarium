@@ -1,8 +1,10 @@
+
 import { ImageFile } from './core/file-storage/image-file';
 import { ImageStorage } from './core/file-storage/image-storage';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
 import { Network } from './core/system';
+import * as lilyChat from '../plugins/lily/chat-color/class/chat-message';
 
 export interface ChatMessageContext {
   identifier?: string;
@@ -17,6 +19,7 @@ export interface ChatMessageContext {
   dicebot?: string;
   imageIdentifier?: string;
   imagePos?: number; // lily
+  messColor?: string; // lily
 }
 
 @SyncObject('chat')
@@ -29,6 +32,7 @@ export class ChatMessage extends ObjectNode implements ChatMessageContext {
   @SyncVar() dicebot: string;
   @SyncVar() imageIdentifier: string;
   @SyncVar() imagePos: number; // lily
+  @SyncVar() messColor: string; // lily
 
   get tabIdentifier(): string { return this.parent.identifier; }
   get text(): string { return <string>this.value }
@@ -64,4 +68,10 @@ export class ChatMessage extends ObjectNode implements ChatMessageContext {
   get isSystem(): boolean { return -1 < this.tags.indexOf('system') ? true : false; }
   get isDicebot(): boolean { return this.isSystem && this.from === 'System-BCDice' ? true : false; }
   get isSecret(): boolean { return -1 < this.tags.indexOf('secret') ? true : false; }
+  // start lily
+  get chatTabList() { return lilyChat.chatTabList(); }
+  get chatSimpleDispFlag(): boolean { return lilyChat.chatSimpleDispFlag(this); }
+  get simpleDispFlagTime(): boolean { return lilyChat.simpleDispFlagTime(this); }
+  get simpleDispFlagUserId(): boolean { return lilyChat.simpleDispFlagUserId(this); }
+  // end lily
 }

@@ -14,6 +14,10 @@ export class GameCharacter extends TabletopObject {
   @SyncVar() nonTalkFlag: boolean = false;
   @SyncVar() overViewWidth: number = 270;
   @SyncVar() overViewMaxHeight: number = 250;
+
+  @SyncVar() chatColorCode: string[]  = ["#000000","#FF0000","#0099FF"];
+  @SyncVar() syncDummyCounter: number = 0;
+
   get buffDataElement(): DataElement { return this.getElement('buff'); }
   get remoteController() {
     return lily.remoteControllerHook(this);

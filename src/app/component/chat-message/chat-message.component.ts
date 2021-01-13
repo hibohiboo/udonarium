@@ -6,6 +6,7 @@ import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { PeerCursor } from '@udonarium/peer-cursor';
 import { ChatMessageService } from 'service/chat-message.service';
 import config from 'src/app/plugins/config';
+import { chatTabList } from 'src/app/plugins/lily/chat-color/class/chat-message.component';
 
 @Component({
   selector: 'chat-message',
@@ -34,6 +35,9 @@ export class ChatMessageComponent implements OnInit, AfterViewInit {
   @Input() chatMessage: ChatMessage;
   imageFile: ImageFile = ImageFile.Empty;
   animeState: string = 'inactive';
+
+  get useLilyMessageColor(): boolean { return config.useLilyMessageColor }
+  get chatTabList() { return chatTabList() } // lily
 
   // start with fly
   get isMine(): boolean {

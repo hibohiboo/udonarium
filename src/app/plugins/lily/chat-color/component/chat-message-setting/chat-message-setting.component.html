@@ -1,0 +1,22 @@
+<div id="file-list">
+  <div class="table">
+    <div class="table-cell" style = "width:16em">
+        簡易表示で時間を表示:
+    </div>
+    <div class="table-cell" >
+      <input type="checkbox" value="simpleDispFlagTime"  [(ngModel)]="chatTabList.simpleDispFlagTime"
+       name="hideInventory" (click)="changeDispFlagTime()">
+    </div>
+  </div>
+  <div class="table">
+    <div class="table-cell" style = "width:16em">
+        簡易表示でIDを表示:
+    </div>
+    <div class="table-cell" >
+      <input type="checkbox" value="simpleDispFlagUserId"  [(ngModel)]="chatTabList.simpleDispFlagUserId"
+       name="hideInventory" (click)="changeDispFlagUserId()">
+    </div>
+  </div>
+
+
+</div>

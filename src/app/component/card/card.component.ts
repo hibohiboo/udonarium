@@ -24,6 +24,7 @@ import { InputHandler } from 'directive/input-handler';
 import { MovableOption } from 'directive/movable.directive';
 import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
+import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
@@ -56,9 +57,9 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   get hasOwner(): boolean { return this.card.hasOwner; }
   get ownerName(): string { return this.card.ownerName; }
 
-  get imageFile(): ImageFile { return this.tabletopService.getSkeletonImageOr(this.card.imageFile); }
-  get frontImage(): ImageFile { return this.tabletopService.getSkeletonImageOr(this.card.frontImage); }
-  get backImage(): ImageFile { return this.tabletopService.getSkeletonImageOr(this.card.backImage); }
+  get imageFile(): ImageFile { return this.imageService.getSkeletonOr(this.card.imageFile); }
+  get frontImage(): ImageFile { return this.imageService.getSkeletonOr(this.card.frontImage); }
+  get backImage(): ImageFile { return this.imageService.getSkeletonOr(this.card.backImage); }
 
   private iconHiddenTimer: NodeJS.Timer = null;
   get isIconHidden(): boolean { return this.iconHiddenTimer != null };
@@ -84,6 +85,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
     private tabletopService: TabletopService,
+    private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService
   ) {
     this.tabIndex = "0"; //TabIndexを付与。これをしないとフォーカスできないのでコンポーネントに対するキーイベントを取得できない。

@@ -7,6 +7,7 @@ import { ObjectStore } from './core/synchronize-object/object-store';
 import { EventSystem } from './core/system';
 import { PromiseQueue } from './core/system/util/promise-queue';
 import { StringUtil } from './core/system/util/string-util';
+import pluginConfig from '../plugins/config';
 
 declare var Opal
 
@@ -390,6 +391,11 @@ export class DiceBot extends GameObject {
         diceBotMessage.to += ' ' + originalMessage.from;
       }
     }
+
+    if (pluginConfig.useLilyMessageColor) {
+      diceBotMessage.messColor = originalMessage.messColor
+    }
+
     let chatTab = ObjectStore.instance.get<ChatTab>(originalMessage.tabIdentifier);
     if (chatTab) chatTab.addMessage(diceBotMessage);
   }

@@ -21,6 +21,7 @@ const useLilyTalkFlg = location.search.includes('lily_talk_flg=true')
 const useLilyHideInventoryFlg = location.search.includes(
   'lily_hide_inventory_flg=true',
 )
+const useLilyMessageColor = location.search.includes('lily_message_color=true')
 
 // with fly
 const usePlayerColor = location.search.includes('withfly_player_color=true')
@@ -39,6 +40,8 @@ export default {
   useDeckSpreadSheet,
   useCardOnTopMove,
   useHandStorage,
+  hideSample,
+  useKeyboardShortcut,
   // lily
   useLilyCutin,
   useLilyDiceTable,
@@ -50,8 +53,7 @@ export default {
   useLilyStand,
   useLilyTalkFlg,
   useLilyHideInventoryFlg,
-  hideSample,
-  useKeyboardShortcut,
+  useLilyMessageColor,
   // with fly
   usePlayerColor,
 }
