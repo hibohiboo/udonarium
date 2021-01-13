@@ -12,6 +12,7 @@ import { RemoteControllerComponent } from './lily/controller/component/remote-co
 import { GameCharacterBuffViewComponent } from './lily/controller/component/game-character-buff-view/game-character-buff-view.component'
 import { HandStorageComponent } from './hand-storage/component/hand-storage.component'
 import { HandStorageService } from './hand-storage/service/hand-storage.service'
+import { ChatMessageSettingComponent } from './lily/chat-color/component/chat-message-setting/chat-message-setting.component'
 
 const components = [
   HelpKeyboardComponent,
@@ -27,6 +28,7 @@ const components = [
   GameCharacterBuffViewComponent,
   ChatTachieComponent,
   HandStorageComponent,
+  ChatMessageSettingComponent,
 ]
 const imports = []
 const services = [HandStorageService]

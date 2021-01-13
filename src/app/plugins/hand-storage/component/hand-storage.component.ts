@@ -25,6 +25,8 @@ import { TabletopService } from 'service/tabletop.service';
 import { HandStorage } from '../class/hand-storage';
 import config from 'src/app/plugins/config';
 import { TabletopObject } from '@udonarium/tabletop-object';
+import { CoordinateService } from 'service/coordinate.service';
+import { TabletopActionService } from 'service/tabletop-action.service';
 
 interface TopOfObject {
   obj: TabletopObject
@@ -69,7 +71,9 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     private elementRef: ElementRef<HTMLElement>,
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
-    private pointerDeviceService: PointerDeviceService
+    private pointerDeviceService: PointerDeviceService,
+    private coordinateService: CoordinateService,
+    private tabletopActionService: TabletopActionService,
   ) { }
 
   ngOnInit() {
@@ -145,7 +149,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
     let menuPosition = this.pointerDeviceService.pointers[0];
-    let objectPosition = this.tabletopService.calcTabletopLocalCoordinate();
+    let objectPosition = this.coordinateService.calcTabletopLocalCoordinate();
     this.contextMenuService.open(menuPosition, [
       (this.isLock
         ? {
@@ -170,7 +174,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
       ContextMenuSeparator,
-      { name: 'オブジェクト作成', action: null, subActions: this.tabletopService.getContextMenuActionsForCreateObject(objectPosition) }
+      { name: 'オブジェクト作成', action: null, subActions: this.tabletopActionService.makeDefaultContextMenuActions(objectPosition) }
     ], this.name);
   }
 

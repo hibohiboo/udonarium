@@ -16,6 +16,7 @@ import { TextNote } from '@udonarium/text-note';
 
 import { ContextMenuAction } from './context-menu.service';
 import { PointerCoordinate } from './pointer-device.service';
+import { tableTopServiceCreateTerrainHook, tableTopServiceCreateTrumpHook, tabletopServiceInitializeHook, tabletopServiceMakeDefaultTableHook, tabletopServiceMakeDefaultTabletopObjectsHook } from '../plugins';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,8 @@ export class TabletopActionService {
   }
 
   createTerrain(position: PointerCoordinate): Terrain {
+    const hookResult = tableTopServiceCreateTerrainHook(this.getViewTable(), position);
+    if(hookResult) return hookResult;
     let url: string = './assets/images/tex.jpg';
     let image: ImageFile = ImageStorage.instance.get(url)
     if (!image) image = ImageStorage.instance.add(url);
@@ -88,6 +91,8 @@ export class TabletopActionService {
   }
 
   createTrump(position: PointerCoordinate): CardStack {
+    const hookResult = tableTopServiceCreateTrumpHook(position);
+    if(hookResult) return hookResult;
     let cardStack = CardStack.create('トランプ山札');
     cardStack.location.x = position.x - 25;
     cardStack.location.y = position.y - 25;
@@ -122,6 +127,7 @@ export class TabletopActionService {
   }
 
   makeDefaultTable() {
+    if (tabletopServiceMakeDefaultTableHook()) { return; }
     let tableSelecter = new TableSelecter('tableSelecter');
     tableSelecter.initialize();
 
@@ -140,6 +146,7 @@ export class TabletopActionService {
   }
 
   makeDefaultTabletopObjects() {
+    if (tabletopServiceMakeDefaultTabletopObjectsHook()) { return; }
     let testCharacter: GameCharacter = null;
     let testFile: ImageFile = null;
     let fileContext: ImageContext = null;
@@ -257,6 +264,7 @@ export class TabletopActionService {
     let dices: { menuName: string, diceName: string, type: DiceType, imagePathPrefix: string }[] = [
       { menuName: 'D4', diceName: 'D4', type: DiceType.D4, imagePathPrefix: '4_dice' },
       { menuName: 'D6', diceName: 'D6', type: DiceType.D6, imagePathPrefix: '6_dice' },
+      { menuName: 'D6 (Black)', diceName: 'D6', type: DiceType.D6, imagePathPrefix: '6_dice_black' }, // with Fly
       { menuName: 'D8', diceName: 'D8', type: DiceType.D8, imagePathPrefix: '8_dice' },
       { menuName: 'D10', diceName: 'D10', type: DiceType.D10, imagePathPrefix: '10_dice' },
       { menuName: 'D10 (00-90)', diceName: 'D10', type: DiceType.D10_10TIMES, imagePathPrefix: '100_dice' },

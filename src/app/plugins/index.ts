@@ -134,7 +134,11 @@ export const onContextMenuHook = async (
 ) => {
   // カードデッキ追加
   if (config.useDeckSpreadSheet){
-    menuActions.push(await getDeckMenu(position))
+    try {
+      menuActions.push(await getDeckMenu(position))
+    } catch(e){
+      console.error(e)
+    }
   }
   // カード置き場
   if (config.useHandStorage) {
