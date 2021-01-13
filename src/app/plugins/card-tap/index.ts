@@ -1,5 +1,3 @@
-import type { CardComponent } from 'component/card/card.component'
-
 export default {
   cardPointerHook(card: { rotate: number; elementRef?: any }, e: PointerEvent) {
     e.stopPropagation()
