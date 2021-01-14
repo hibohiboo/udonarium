@@ -148,10 +148,12 @@ export const onContextMenuHook = async (
 }
 
 // that = ChatInputComponent
-export const chatInputInitHook = (that)=>{
-  const gameType = utility.getQueryValue('use_dicebot')
-  that.gameType = gameType;
-  that.loadDiceBot(gameType);
+export const chatInputInitHook = (that) => {
+  if (config.useDicebot) {
+    const gameType = utility.getQueryValue('use_dicebot')
+    that.gameType = gameType;
+    that.loadDiceBot(gameType);
+  }
 }
 
 /// --------------------------------------------------------------------------------------------------------------

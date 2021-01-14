@@ -272,9 +272,7 @@ export class ChatInputComponent implements OnInit, OnDestroy {
         this.updateWritingPeerNames();
         this.batchService.add(() => this.ngZone.run(() => { }), this);
       });
-      if (config.useDicebot) {
-        chatInputInitHook(this)
-      }
+      chatInputInitHook(this)
   }
 
   ngOnDestroy() {
