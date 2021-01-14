@@ -13,7 +13,7 @@ import { BatchService } from 'service/batch.service';
 import { ChatMessageService } from 'service/chat-message.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { chatInputAllowsChatHook, chatInputGetImageFileHook } from 'src/app/plugins';
+import { chatInputAllowsChatHook, chatInputGetImageFileHook, chatInputInitHook } from 'src/app/plugins';
 import config from 'src/app/plugins/config';
 import factory from 'src/app/plugins/factory';
 import { shoeColorSetting } from 'src/app/plugins/lily/chat-color/class/chat-input.component';
@@ -28,6 +28,7 @@ export class ChatInputComponent implements OnInit, OnDestroy {
 
   get useLilyStand(): boolean { return config.useLilyStand }
   get useLilyMessageColor(): boolean { return config.useLilyMessageColor }
+  get useDicebot(): boolean { return config.useDicebot }
 
   @Input() onlyCharacters: boolean = false;
   @Input() chatTabidentifier: string = '';
@@ -271,6 +272,9 @@ export class ChatInputComponent implements OnInit, OnDestroy {
         this.updateWritingPeerNames();
         this.batchService.add(() => this.ngZone.run(() => { }), this);
       });
+      if (config.useDicebot) {
+        chatInputInitHook(this)
+      }
   }
 
   ngOnDestroy() {

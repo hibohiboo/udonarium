@@ -8,6 +8,7 @@ import lily from './lily'
 import keyboardShortcut from './keyboard-shortcut'
 import cardOnTopMove from './card-on-top-move'
 import handStorage from './hand-storage'
+import * as utility from './utility'
 import type { GameTableComponent } from 'component/game-table/game-table.component'
 import type { ChatMessage, ChatMessageContext } from '@udonarium/chat-message'
 import type {
@@ -144,6 +145,13 @@ export const onContextMenuHook = async (
   if (config.useHandStorage) {
     menuActions.push(handStorage.onContextMenuHook(position))
   }
+}
+
+// that = ChatInputComponent
+export const chatInputInitHook = (that)=>{
+  const gameType = utility.getQueryValue('use_dicebot')
+  that.gameType = gameType;
+  that.loadDiceBot(gameType);
 }
 
 /// --------------------------------------------------------------------------------------------------------------

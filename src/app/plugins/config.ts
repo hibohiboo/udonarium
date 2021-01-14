@@ -2,13 +2,14 @@ const useKeyboardHelp = location.search.includes('keyboardHelp=true')
 const use2dMode = location.search.includes('2d=true')
 const useCardTap = location.search.includes('cardTap=true')
 const usePostMessage = location.search.includes('usePostMessage=true')
-const useSpreadSheet = location.search.includes('spreadsheet')
+const useSpreadSheet = location.search.includes('spreadsheet=')
 const useSpreadSheetSigninButton = location.search.includes('ss_auto=false')
-const useDeckSpreadSheet = location.search.includes('decksheet')
+const useDeckSpreadSheet = location.search.includes('decksheet=')
 const hideSample = location.search.includes('hide_sample=true')
 const useKeyboardShortcut = location.search.includes('keyboard_shortcut=true')
 const useCardOnTopMove = location.search.includes('ontopcardmove=true')
 const useHandStorage = location.search.includes('hand_storage=true')
+const useDicebot = location.search.includes('use_dicebot=')
 
 // lily
 const useLilyCutin = location.search.includes('lily_cutin=true')
@@ -42,6 +43,7 @@ export default {
   useHandStorage,
   hideSample,
   useKeyboardShortcut,
+  useDicebot,
   // lily
   useLilyCutin,
   useLilyDiceTable,
