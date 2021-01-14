@@ -150,9 +150,13 @@ export const onContextMenuHook = async (
 // that = ChatInputComponent
 export const chatInputInitHook = (that) => {
   if (config.useDicebot) {
-    const gameType = utility.getQueryValue('use_dicebot')
-    that.gameType = gameType;
-    that.loadDiceBot(gameType);
+    // 少し待たないと、Opal is not definedのエラーが出る
+    setTimeout(() => {
+      const gameType = utility.getQueryValue('use_dicebot')
+      that.gameType = gameType;
+      that.loadDiceBot(gameType);
+    }, 200);
+
   }
 }
 
