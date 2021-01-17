@@ -11,7 +11,9 @@ nav ul {
   display: flex;
   flex-wrap:wrap;
 }
-
+.for-rooper-pc nav ul {
+  display: block;
+}
 nav ul > li {
   text-align: center;
   padding: 5px;

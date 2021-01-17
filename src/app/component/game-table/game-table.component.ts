@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  HostBinding,
   HostListener,
   NgZone,
   OnDestroy,
@@ -61,6 +62,7 @@ enum Keyboard {
   styleUrls: ['./game-table.component.css'],
 })
 export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
+  @HostBinding('class.is2d') is2d: boolean = true;
   @ViewChild("root", { static: true }) rootElementRef: ElementRef<HTMLElement>;
   @ViewChild("gameTable", { static: true }) gameTable: ElementRef<HTMLElement>;
   @ViewChild("gameObjects", { static: true }) gameObjects: ElementRef<
@@ -191,7 +193,25 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         this.pointerDeviceService.isDragging = false;
         let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
         this.gridCanvas.nativeElement.style.opacity = opacity + "";
-      });
+      })
+      .on('RESET_POINT_OF_VIEW', event => {
+        this.isTransformMode = false;
+        this.pointerDeviceService.isDragging = false;
+
+        this.viewRotateX = 0;
+        this.viewRotateY = 0;
+        this.viewRotateZ = 0;
+        this.viewPotisonX = viewPotisonXDefault;
+        this.viewPotisonY = 0;
+        this.viewPotisonZ = viewPotisonZDefault;
+        if(Device.isMobile()){
+          this.viewPotisonZ = -3500;
+          this.viewPotisonX = 0;
+        }
+        this.setTransform(0, 0, 0, 0, 0, 0);
+        this.removeFocus();
+      })
+      ;
     this.tabletopActionService.makeDefaultTable();
     this.tabletopActionService.makeDefaultTabletopObjects();
   }

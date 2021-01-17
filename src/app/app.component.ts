@@ -182,13 +182,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PanelService.defaultParentViewContainerRef = ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
       if(Device.isMobile()) {
-        this.panelService.open(PeerMenuComponent, { width: 190, height: 190, left: 0, top: 80 });
+        this.panelService.open(PeerMenuComponent, { width: 300, height: 250, left: 0, top: 90 });
         return;
       }
-      this.panelService.open(ChatWindowComponent, { width: 340, height: 400, left: 0, top: 450 });
-      this.panelService.open(PeerMenuComponent, { width: 340, height: 450, left: 0, top: 100 });
-      this.panelService.open(CutinListComponent, { width: 300, height: 450, left: 250, top: 100 });
-      this.panelService.open(RooperGameSheetComponent, { width: 500, height: 450, left: 500, top: 100 });
+      this.panelService.open(ChatWindowComponent, { width: 640, height: 400, left: 0, top: 600 });
+      this.panelService.open(PeerMenuComponent, { width: 200, height: 450, left: 100, top: 0 });
+      this.panelService.open(CutinListComponent, { width: 300, height: 450, left: 100, top: 350 });
+      this.panelService.open(RooperGameSheetComponent, { width: 500, height: 450, left: 300, top: 0 });
     }, 0);
   }
 
@@ -289,6 +289,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.ngZone.run(() => { });
       }, 100);
     }
+  }
+
+  resetPointOfView() {
+     EventSystem.trigger('RESET_POINT_OF_VIEW', null);
   }
 }
 
