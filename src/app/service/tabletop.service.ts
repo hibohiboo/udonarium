@@ -27,6 +27,7 @@ import { RooperCard, rooperCharacterList, Board } from '@udonarium/rooper-card';
 import { Device } from '@udonarium/device/device';
 
 import { CoordinateService } from './coordinate.service';
+import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
 
 type ObjectIdentifier = string;
 type LocationName = string;
@@ -179,7 +180,7 @@ export class TabletopService {
           // todo:立体地形の上にドロップした時の挙動
           let gameObject = ObjectSerializer.instance.parseXml(xmlElement);
           if (gameObject instanceof TabletopObject) {
-            let pointer = this.calcTabletopLocalCoordinate();
+            let pointer = this.coordinateService.calcTabletopLocalCoordinate();
             gameObject.location.x = pointer.x - 25;
             gameObject.location.y = pointer.y - 25;
             gameObject.posZ = pointer.z;

@@ -152,7 +152,7 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.changeDetector.markForCheck();
       })
       .on("DISCONNECT_PEER", event => {
-        if (this.card.owner === event.data.peer)
+        if (this.card.owner === event.data.peerId)
           this.changeDetector.markForCheck();
       });
     this.movableOption = {
