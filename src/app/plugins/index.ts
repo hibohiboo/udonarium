@@ -153,10 +153,9 @@ export const chatInputInitHook = (that) => {
     // 少し待たないと、Opal is not definedのエラーが出る
     setTimeout(() => {
       const gameType = utility.getQueryValue('use_dicebot')
-      that.gameType = gameType;
-      that.loadDiceBot(gameType);
-    }, 200);
-
+      that.gameType = gameType
+      that.loadDiceBot(gameType)
+    }, 200)
   }
 }
 
@@ -341,25 +340,29 @@ export const chatTabAddMessageHook = (that, message: ChatMessageContext) => {
 
 export const gameTableComponentInitHook = (that, listener: Listener) => {
   if (config.useWithFlyResetPoint) {
-    listener.on('RESET_POINT_OF_VIEW', event => {
-      that.isTransformMode = false;
-      that.pointerDeviceService.isDragging = false;
+    listener.on('RESET_POINT_OF_VIEW', (event) => {
+      that.isTransformMode = false
+      that.pointerDeviceService.isDragging = false
 
-      that.viewRotateX = 0;
-      that.viewRotateY = 0;
-      that.viewPotisonX = 0;
-      that.viewPotisonY = 0;
-      that.viewRotateZ = 0;
-      if (!(event?.data === 'rotate')){
-        that.viewPotisonZ = 0;
+      that.viewRotateX = 0
+      that.viewRotateY = 0
+      that.viewPotisonX = 0
+      that.viewPotisonY = 0
+      that.viewRotateZ = 0
+      if (!(event?.data === 'rotate')) {
+        that.viewPotisonZ = 0
       }
 
-      if (!config.use2dMode && event?.data !== 'top' && event?.data !== 'rotate') {
-        that.setTransform(100, 0, 0, 50, 0, 10);
+      if (
+        !config.use2dMode &&
+        event?.data !== 'top' &&
+        event?.data !== 'rotate'
+      ) {
+        that.setTransform(100, 0, 0, 50, 0, 10)
       } else {
-        that.setTransform(0, 0, 0, 0, 0, 0);
+        that.setTransform(0, 0, 0, 0, 0, 0)
       }
-      that.removeFocus();
+      that.removeFocus()
     })
   }
   return false

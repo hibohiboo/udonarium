@@ -26,7 +26,9 @@ const useLilyMessageColor = location.search.includes('lily_message_color=true')
 
 // with fly
 const usePlayerColor = location.search.includes('withfly_player_color=true')
-const useWithFlyResetPoint = location.search.includes('withfly_reset_point=true')
+const useWithFlyResetPoint = location.search.includes(
+  'withfly_reset_point=true',
+)
 
 export default {
   useKeyboardHelp,
