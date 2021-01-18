@@ -334,3 +334,33 @@ export const chatTabAddMessageHook = (that, message: ChatMessageContext) => {
     return lily.stand.chatTabAddMessageHook(that, message)
   return false
 }
+
+/// --------------------------------------------------------------------------------------------------------------
+// ユドナリウム with fly
+/// --------------------------------------------------------------------------------------------------------------
+
+export const gameTableComponentInitHook = (that, listener: Listener) => {
+  if (config.useWithFlyResetPoint) {
+    listener.on('RESET_POINT_OF_VIEW', event => {
+      that.isTransformMode = false;
+      that.pointerDeviceService.isDragging = false;
+
+      that.viewRotateX = 0;
+      that.viewRotateY = 0;
+      that.viewPotisonX = 0;
+      that.viewPotisonY = 0;
+      that.viewRotateZ = 0;
+      if (!(event?.data === 'rotate')){
+        that.viewPotisonZ = 0;
+      }
+
+      if (!config.use2dMode && event?.data !== 'top' && event?.data !== 'rotate') {
+        that.setTransform(100, 0, 0, 50, 0, 10);
+      } else {
+        that.setTransform(0, 0, 0, 0, 0, 0);
+      }
+      that.removeFocus();
+    })
+  }
+  return false
+}

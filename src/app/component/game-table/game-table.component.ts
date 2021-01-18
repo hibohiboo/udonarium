@@ -27,7 +27,7 @@ import { TabletopService } from 'service/tabletop.service';
 
 import { GridLineRender } from './grid-line-render';
 import { TableTouchGesture, TableTouchGestureEvent } from './table-touch-gesture';
-import { gameBoardKeydownHook, onContextMenuHook, updateGameObjectHook } from '../../plugins';
+import { gameBoardKeydownHook, gameTableComponentInitHook, onContextMenuHook, updateGameObjectHook } from '../../plugins';
 import pluginConfig from '../../plugins/config';
 import { HandStorageService } from 'src/app/plugins/hand-storage/service/hand-storage.service';
 
@@ -110,7 +110,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   ) { }
 
   ngOnInit() {
-    EventSystem.register(this)
+    const listener = EventSystem.register(this)
       .on('UPDATE_GAME_OBJECT', -1000, event => {
         if (event.data.identifier !== this.currentTable.identifier && event.data.identifier !== this.tableSelecter.identifier) return;
         console.log('UPDATE_GAME_OBJECT GameTableComponent ' + this.currentTable.identifier);
@@ -124,6 +124,8 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
         this.gridCanvas.nativeElement.style.opacity = opacity + '';
       });
+
+    if (gameTableComponentInitHook(this, listener)) { return }
     this.tabletopActionService.makeDefaultTable();
     this.tabletopActionService.makeDefaultTabletopObjects();
   }

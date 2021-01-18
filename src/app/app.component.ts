@@ -56,6 +56,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   isSaveing: boolean = false;
   progresPercent: number = 0;
 
+  get useResetPoint() { return config.useWithFlyResetPoint }
+  get uiPanelHeight() { return config.useWithFlyResetPoint ? 550 : 470 }
+
   constructor(
     private modalService: ModalService,
     private panelService: PanelService,
@@ -63,7 +66,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private chatMessageService: ChatMessageService,
     private appConfigService: AppConfigService,
     private saveDataService: SaveDataService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private contextMenuService: ContextMenuService, // with fly
   ) {
 
     this.ngZone.runOutsideAngular(() => {
@@ -277,6 +281,16 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       }, 100);
     }
   }
+
+  // start with fly
+  resetPointOfView() {
+    this.contextMenuService.open(this.pointerDeviceService.pointers[0], [
+      { name: '初期視点に戻す', action: () => { EventSystem.trigger('RESET_POINT_OF_VIEW', null); console.log('trigger');} },
+      { name: '真上から視る', action: () => EventSystem.trigger('RESET_POINT_OF_VIEW', 'top') },
+      { name: '拡大率はそのままで真上から', action: () => EventSystem.trigger('RESET_POINT_OF_VIEW', 'rotate') }
+    ], '視点リセット');
+  }
+  // end with fly
 }
 
 PanelService.UIPanelComponentClass = UIPanelComponent;
