@@ -369,9 +369,17 @@ export const gameTableComponentInitHook = (that, listener: Listener) => {
   return false
 }
 
-// that = ChatInputComponent
 export const diceSymbolComponentInitHook = (that, listener: Listener) => {
   if (config.useWithFlyDiceAllOpen) {
     withFly.diceAllOpen.diceSymbolComponentInitHook(that, listener)
   }
+}
+
+export const cardStackComponentOnContextMenuHook = (that, position) => {
+  let ret = false
+  if (config.useWithFlyCardNdraw) {
+    withFly.cardNDraw.cardStackComponentOnContextMenuHook(that, position)
+    ret = true
+  }
+  return ret;
 }

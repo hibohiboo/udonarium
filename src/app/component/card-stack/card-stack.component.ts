@@ -29,7 +29,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { cardOnKeydownHook, cardPointerHook } from 'src/app/plugins';
+import { cardOnKeydownHook, cardPointerHook, cardStackComponentOnContextMenuHook } from 'src/app/plugins';
 import config from 'src/app/plugins/config';
 
 
@@ -239,6 +239,9 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
     let position = this.pointerDeviceService.pointers[0];
+    if (cardStackComponentOnContextMenuHook(this, position)) {
+      return
+    }
     this.contextMenuService.open(position, [
       {
         name: '１枚引く', action: () => {
