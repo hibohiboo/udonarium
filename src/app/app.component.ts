@@ -298,7 +298,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       { name: '拡大率はそのままで真上から', action: () => EventSystem.trigger('RESET_POINT_OF_VIEW', 'rotate') }
     ], '視点リセット');
   }
-  diceAllOpne() {
+  diceAllOpen() {
     if (confirm('「一斉公開しない」設定ではないダイスをすべて公開します。\nよろしいですか？')) {
       EventSystem.trigger('DICE_ALL_OPEN', null);
     }
