@@ -40,6 +40,12 @@
           <div>インベントリ</div>
         </a>
       </li>
+      <li *ngIf="useDiceAllOpen" (click)="diceAllOpne()">
+        <a routerLink="/" routerLinkActive="active">
+          <div><i class="material-icons icon-size">all_out</i></div>
+          <div>ダイス一斉公開</div>
+        </a>
+      </li>
       <li *ngIf="useResetPoint" (click)="resetPointOfView()" class="with-fly">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">remove_red_eye</i></div>

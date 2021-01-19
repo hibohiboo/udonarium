@@ -25,6 +25,7 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuAction, ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { diceSymbolComponentInitHook } from 'src/app/plugins';
 import config from 'src/app/plugins/config';
 
 @Component({
@@ -63,6 +64,7 @@ import config from 'src/app/plugins/config';
 export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() diceSymbol: DiceSymbol = null;
   @Input() is3D: boolean = false;
+
 
   get face(): string { return this.diceSymbol.face; }
   set face(face: string) { this.diceSymbol.face = face; }
@@ -103,8 +105,12 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
   private input: InputHandler = null;
 
   get usePlayerColor(){ return config.usePlayerColor; }
-  get ownerColor(): string { return this.diceSymbol.ownerColor; } // with fly
-
+  // start with fly
+  get ownerColor(): string { return this.diceSymbol.ownerColor; }
+  get nothingFaces(): string[] { return this.diceSymbol.nothingFaces; }
+  get isLock(): boolean { return this.diceSymbol.isLock; }
+  set isLock(isLock: boolean) { this.diceSymbol.isLock = isLock; }
+  // end with fly
   constructor(
     private ngZone: NgZone,
     private panelService: PanelService,
@@ -114,7 +120,7 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
     private pointerDeviceService: PointerDeviceService) { }
 
   ngOnInit() {
-    EventSystem.register(this)
+    const listener = EventSystem.register(this)
       .on('ROLL_DICE_SYNBOL', -1000, event => {
         if (event.data.identifier === this.diceSymbol.identifier) {
           this.ngZone.run(() => {
@@ -143,6 +149,9 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
         let cursor = PeerCursor.findByPeerId(event.data.peerId);
         if (!cursor || this.diceSymbol.owner === cursor.userId) this.changeDetector.markForCheck();
       });
+
+    diceSymbolComponentInitHook(this, listener)
+
     this.movableOption = {
       tabletopObject: this.diceSymbol,
       transformCssOffset: 'translateZ(1.0px)',
@@ -245,8 +254,34 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
 
+    if (config.useWithFlyDiceAllOpen) {
+      actions.push((this.isLock
+        ? {
+          name: '☑ 一斉公開しない', action: () => {
+            this.isLock = false;
+            SoundEffect.play(PresetSound.unlock);
+          }
+        } : {
+          name: '☐ 一斉公開しない', action: () => {
+            this.isLock = true;
+            SoundEffect.play(PresetSound.lock);
+          }
+        }));
+    }
+
     if (this.isVisible) {
       let subActions: ContextMenuAction[] = [];
+      if (config.useWithFlyDiceAllOpen && this.nothingFaces.length > 0) {
+        this.nothingFaces.forEach(face => {
+          subActions.push({
+            name: `${this.face == face ? '◉' : '○'} ${face}　`, action: () => {
+              SoundEffect.play(PresetSound.dicePut);
+              this.face = face;
+            }
+          });
+        });
+        subActions.push(ContextMenuSeparator);
+      }
       this.faces.forEach(face => {
         subActions.push({
           name: `${face}`, action: () => {

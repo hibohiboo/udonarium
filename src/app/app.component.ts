@@ -56,8 +56,16 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   isSaveing: boolean = false;
   progresPercent: number = 0;
 
+  // start with fly
+  get useDiceAllOpen() {return config.useWithFlyDiceAllOpen }
   get useResetPoint() { return config.useWithFlyResetPoint }
-  get uiPanelHeight() { return config.useWithFlyResetPoint ? 550 : 470 }
+  get uiPanelHeight() {
+    let height = 470;
+    if (config.useWithFlyDiceAllOpen) height += 60
+    if (config.useWithFlyResetPoint) height += 70
+    return height
+  }
+  // end with fly
 
   constructor(
     private modalService: ModalService,
@@ -289,6 +297,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       { name: '真上から視る', action: () => EventSystem.trigger('RESET_POINT_OF_VIEW', 'top') },
       { name: '拡大率はそのままで真上から', action: () => EventSystem.trigger('RESET_POINT_OF_VIEW', 'rotate') }
     ], '視点リセット');
+  }
+  diceAllOpne() {
+    if (confirm('「一斉公開しない」設定ではないダイスをすべて公開します。\nよろしいですか？')) {
+      EventSystem.trigger('DICE_ALL_OPEN', null);
+    }
   }
   // end with fly
 }

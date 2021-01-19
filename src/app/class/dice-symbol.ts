@@ -4,6 +4,7 @@ import { Network } from './core/system';
 import { DataElement } from './data-element';
 import { PeerCursor } from './peer-cursor';
 import { TabletopObject } from './tabletop-object';
+import config from 'src/app/plugins/config';
 
 export enum DiceType {
   D2,
@@ -21,13 +22,20 @@ export class DiceSymbol extends TabletopObject {
   @SyncVar() face: string = '0';
   @SyncVar() owner: string = '';
   @SyncVar() rotate: number = 0;
+  @SyncVar() isLock: boolean = false; // with fly
 
   get name(): string { return this.getCommonValue('name', ''); }
   set name(name: string) { this.setCommonValue('name', name); }
   get size(): number { return this.getCommonValue('size', 1); }
   set size(size: number) { this.setCommonValue('size', size); }
 
-  get faces(): string[] { return this.imageDataElement.children.map(element => (element as DataElement).name); }
+  get faces(): string[] {
+    if (config.useWithFlyDiceAllOpen) {
+      return this.imageDataElement.children.filter(element => (element as DataElement).currentValue != 'nothing')
+                                              .map(element => (element as DataElement).name);
+    }
+    return this.imageDataElement.children.map(element => (element as DataElement).name);
+  }
   get imageFile(): ImageFile {
     return this.isVisible ?
       this.getImageFile(this.face)
@@ -41,6 +49,7 @@ export class DiceSymbol extends TabletopObject {
     return object ? object.name : '';
   }
   // start with fly
+  get nothingFaces(): string[] { return this.imageDataElement.children.filter(element => (element as DataElement).currentValue == 'nothing').map(element => (element as DataElement).name); }
   get ownerColor(): string {
     let object = PeerCursor.findByUserId(this.owner);
     return object ? object.color : '#444444';
@@ -74,6 +83,10 @@ export class DiceSymbol extends TabletopObject {
         break;
       case DiceType.D6:
         sided = 6;
+        if (config.useWithFlyDiceAllOpen) {
+          let identifier = identifierSuffix != null ? 'nothing_' + identifierSuffix : null;
+          faces.push(DataElement.create('なし', '', { type: 'image', currentValue: 'nothing' }, identifier));
+        }
         break;
       case DiceType.D8:
         sided = 8;
@@ -103,6 +116,10 @@ export class DiceSymbol extends TabletopObject {
     this.imageDataElement.children.forEach(element => element.destroy());
     faces.forEach(element => this.imageDataElement.appendChild(element));
     this.face = faces[0].name;
+
+    if (config.useWithFlyDiceAllOpen) {
+      this.face = this.faces[0];
+    }
 
     return faces;
   }

@@ -9,6 +9,7 @@ import keyboardShortcut from './keyboard-shortcut'
 import cardOnTopMove from './card-on-top-move'
 import handStorage from './hand-storage'
 import * as utility from './utility'
+import withFly from './with-fly'
 import type { GameTableComponent } from 'component/game-table/game-table.component'
 import type { ChatMessage, ChatMessageContext } from '@udonarium/chat-message'
 import type {
@@ -366,4 +367,11 @@ export const gameTableComponentInitHook = (that, listener: Listener) => {
     })
   }
   return false
+}
+
+// that = ChatInputComponent
+export const diceSymbolComponentInitHook = (that, listener: Listener) => {
+  if (config.useWithFlyDiceAllOpen) {
+    withFly.diceAllOpen.diceSymbolComponentInitHook(that, listener)
+  }
 }
