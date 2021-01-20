@@ -4,8 +4,10 @@ import { TabletopObject } from '@udonarium/tabletop-object';
 import { BatchService } from 'service/batch.service';
 import { CoordinateService } from 'service/coordinate.service';
 import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service';
+import { TabletopService } from 'service/tabletop.service';
 
 import { InputHandler } from './input-handler';
+import config from 'src/app/plugins/config';
 
 export interface RotableTabletopObject extends TabletopObject {
   rotate: number;
@@ -66,6 +68,7 @@ export class RotableDirective implements AfterViewInit, OnDestroy {
     private batchService: BatchService,
     private pointerDeviceService: PointerDeviceService,
     private coordinateService: CoordinateService,
+    private tabletopService: TabletopService,
   ) { }
 
   ngAfterViewInit() {
@@ -108,6 +111,7 @@ export class RotableDirective implements AfterViewInit, OnDestroy {
     this.input.cancel();
     this.grabbingElement = null;
     this.setAnimatedTransition(true);
+    if (config.useWithFlyGridHeight) this.tabletopService.tableSelecter.viewTable.gridHeight = 0;
   }
 
   onInputStart(e: MouseEvent | TouchEvent) {
@@ -119,6 +123,11 @@ export class RotableDirective implements AfterViewInit, OnDestroy {
     let pointer = this.coordinateService.convertLocalToLocal(this.input.pointer, this.grabbingElement, this.input.target.parentElement);
     this.rotateOffset = this.calcRotate(pointer, this.rotate);
     this.setAnimatedTransition(false);
+
+    if (config.useWithFlyGridHeight && this.tabletopObject) {
+      this.tabletopService.tableSelecter.viewTable.gridHeight = this.tabletopObject.posZ + 0.5;
+      this.setUpdateTimer();
+    }
   }
 
   onInputMove(e: MouseEvent | TouchEvent) {

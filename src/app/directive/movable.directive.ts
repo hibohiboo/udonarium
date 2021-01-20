@@ -6,8 +6,10 @@ import { TabletopObject } from '@udonarium/tabletop-object';
 import { BatchService } from 'service/batch.service';
 import { CoordinateService } from 'service/coordinate.service';
 import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service';
+import { TabletopService } from 'service/tabletop.service';
 
 import { InputHandler } from './input-handler';
+import config from 'src/app/plugins/config';
 
 export interface MovableOption {
   readonly tabletopObject?: TabletopObject;
@@ -75,6 +77,7 @@ export class MovableDirective implements AfterViewInit, OnDestroy {
     private batchService: BatchService,
     private pointerDeviceService: PointerDeviceService,
     private coordinateService: CoordinateService,
+    private tabletopService: TabletopService,
   ) { }
 
   ngAfterViewInit() {
@@ -118,6 +121,7 @@ export class MovableDirective implements AfterViewInit, OnDestroy {
     this.setPointerEvents(true);
     this.setAnimatedTransition(true);
     this.setCollidableLayer(false);
+    if (config.useWithFlyGridHeight) this.tabletopService.tableSelecter.viewTable.gridHeight = 0;
   }
 
   onInputStart(e: MouseEvent | TouchEvent) {
@@ -150,6 +154,10 @@ export class MovableDirective implements AfterViewInit, OnDestroy {
 
     this.width = this.input.target.clientWidth;
     this.height = this.input.target.clientHeight;
+    if (config.useWithFlyGridHeight) {
+      this.tabletopService.tableSelecter.viewTable.gridHeight = this.posZ + 0.5;
+      this.setUpdateTimer();
+    }
   }
 
   onInputMove(e: MouseEvent | TouchEvent) {
@@ -179,6 +187,11 @@ export class MovableDirective implements AfterViewInit, OnDestroy {
     this.posX = this.pointer3d.x + (this.pointerOffset3d.x * this.ratio) + (-(this.width / 2) * (1.0 - this.ratio));
     this.posY = this.pointer3d.y + (this.pointerOffset3d.y * this.ratio) + (-(this.height / 2) * (1.0 - this.ratio));
     this.posZ = this.pointer3d.z;
+
+    if (config.useWithFlyGridHeight) {
+      let tableSelecter = ObjectStore.instance.get<TableSelecter>('tableSelecter');
+      tableSelecter.viewTable.gridHeight = this.posZ + 0.5;
+    }
   }
 
   onInputEnd(e: MouseEvent | TouchEvent) {

@@ -96,6 +96,10 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   get peerCursors(): PeerCursor[] { return this.tabletopService.peerCursors; }
   get handStorages(){ return this.handStorageService.handStorages; }
 
+  // start with fly
+  get gridHeight(): number { return this.tabletopService.currentTable.gridHeight; }
+  get useGridHeight(): boolean { return pluginConfig.useWithFlyGridHeight }
+  // end with fly
   constructor(
     private ngZone: NgZone,
     private contextMenuService: ContextMenuService,
