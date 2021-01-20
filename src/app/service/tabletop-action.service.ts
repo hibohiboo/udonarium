@@ -17,6 +17,7 @@ import { TextNote } from '@udonarium/text-note';
 import { ContextMenuAction } from './context-menu.service';
 import { PointerCoordinate } from './pointer-device.service';
 import { tableTopServiceCreateTerrainHook, tableTopServiceCreateTrumpHook, tabletopServiceInitializeHook, tabletopServiceMakeDefaultTableHook, tabletopServiceMakeDefaultTabletopObjectsHook } from '../plugins';
+import config from 'src/app/plugins/config';
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +77,15 @@ export class TabletopActionService {
   createDiceSymbol(position: PointerCoordinate, name: string, diceType: DiceType, imagePathPrefix: string): DiceSymbol {
     let diceSymbol = DiceSymbol.create(name, diceType, 1);
     let image: ImageFile = null;
+
+    if (config.useWithFlyDiceAllOpen) {
+      diceSymbol.nothingFaces.forEach(face => {
+        let url: string = `./assets/images/dice/${imagePathPrefix}/${imagePathPrefix}[0].png`;
+        image = ImageStorage.instance.get(url)
+        if (!image) { image = ImageStorage.instance.add(url); }
+        diceSymbol.imageDataElement.getFirstElementByName(face).value = image.identifier;
+      });
+    }
 
     diceSymbol.faces.forEach(face => {
       let url: string = `./assets/images/dice/${imagePathPrefix}/${imagePathPrefix}[${face}].png`;
