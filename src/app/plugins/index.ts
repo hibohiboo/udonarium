@@ -261,7 +261,10 @@ export const gameCharacterOnContextMenuHook = (
     )
   }
   if (config.useWithFlyOpenUrl) {
-    ret = [...ret, ...withFly.openUrl.gameCharacterComponentAddContextMenu(that)]
+    ret = [
+      ...ret,
+      ...withFly.openUrl.gameCharacterComponentAddContextMenu(that),
+    ]
   }
   return ret
 }
@@ -384,5 +387,5 @@ export const cardStackComponentOnContextMenuHook = (that, position) => {
     withFly.cardNDraw.cardStackComponentOnContextMenuHook(that, position)
     ret = true
   }
-  return ret;
+  return ret
 }

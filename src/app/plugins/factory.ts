@@ -34,13 +34,14 @@ export default {
         sendTo: string
         tachieNum: number
       }>()
-    if (config.useLilyMessageColor) return  new EventEmitter<{
-      text: string
-      gameType: string
-      sendFrom: string
-      sendTo: string
-      messColor: string
-    }>()
+    if (config.useLilyMessageColor)
+      return new EventEmitter<{
+        text: string
+        gameType: string
+        sendFrom: string
+        sendTo: string
+        messColor: string
+      }>()
     return new EventEmitter<{
       text: string
       gameType: string
@@ -57,7 +58,11 @@ export default {
     }
 
     if (config.useLilyStand && config.useLilyMessageColor) {
-      return { ...retObj, tachieNum: that.tachieNum, messColor: that.selectChatColor }
+      return {
+        ...retObj,
+        tachieNum: that.tachieNum,
+        messColor: that.selectChatColor,
+      }
     }
 
     if (config.useLilyStand) {

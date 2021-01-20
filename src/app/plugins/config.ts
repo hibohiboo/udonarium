@@ -29,9 +29,13 @@ const usePlayerColor = location.search.includes('withfly_player_color=true')
 const useWithFlyResetPoint = location.search.includes(
   'withfly_reset_point=true',
 )
-const useWithFlyDiceAllOpen = location.search.includes('withfly_dice_all_open=true')
+const useWithFlyDiceAllOpen = location.search.includes(
+  'withfly_dice_all_open=true',
+)
 const useWithFlyCardNdraw = location.search.includes('withfly_card_n_draw=true')
-const useWithFlyGridHeight = location.search.includes('withfly_grid_height=true')
+const useWithFlyGridHeight = location.search.includes(
+  'withfly_grid_height=true',
+)
 const useWithFlyOpenUrl = location.search.includes('withfly_open_url=true')
 
 export default {
