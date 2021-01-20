@@ -256,7 +256,7 @@ export const gameCharacterOnContextMenuHook = (
   if (config.useLilyRemocon) {
     ret = lily.remocon.gameCharacterComponentAddContextMenu(
       that.panelService,
-      that.gameObject,
+      that.gameCharacter,
       position,
     )
   }
