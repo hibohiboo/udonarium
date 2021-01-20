@@ -1,4 +1,4 @@
 import diceAllOpen from './dice-all-open'
 import cardNDraw from './card-n-draw'
-
-export default { diceAllOpen, cardNDraw }
+import openUrl from './open-url'
+export default { diceAllOpen, cardNDraw, openUrl }

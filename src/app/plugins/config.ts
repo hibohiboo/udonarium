@@ -32,6 +32,7 @@ const useWithFlyResetPoint = location.search.includes(
 const useWithFlyDiceAllOpen = location.search.includes('withfly_dice_all_open=true')
 const useWithFlyCardNdraw = location.search.includes('withfly_card_n_draw=true')
 const useWithFlyGridHeight = location.search.includes('withfly_grid_height=true')
+const useWithFlyOpenUrl = location.search.includes('withfly_open_url=true')
 
 export default {
   useKeyboardHelp,
@@ -68,4 +69,5 @@ export default {
   useWithFlyDiceAllOpen,
   useWithFlyCardNdraw,
   useWithFlyGridHeight,
+  useWithFlyOpenUrl,
 }

@@ -2,6 +2,7 @@ import { XmlUtil } from '../system/util/xml-util';
 import { Attributes } from './attributes';
 import { GameObject, ObjectContext } from './game-object';
 import { ObjectFactory } from './object-factory';
+import config from 'src/app/plugins/config';
 
 export interface XmlAttributes extends GameObject {
   toAttributes(): Attributes;
@@ -159,6 +160,11 @@ export class ObjectSerializer {
       }
       obj[key] = value;
     }
+
+    if (config.useWithFlyOpenUrl && syncData['name'] === 'URL') {
+      syncData['type'] = 'url'
+    }
+
     return syncData;
   }
 

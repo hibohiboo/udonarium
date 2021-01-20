@@ -21,6 +21,7 @@ import { GameCharacterSheetComponent } from 'component/game-character-sheet/game
 import { MovableOption } from 'directive/movable.directive';
 import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
+import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { characterOnKeydownHook, gameCharacterOnContextMenuHook } from 'src/app/plugins';
@@ -69,7 +70,8 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
-    private pointerDeviceService: PointerDeviceService
+    private pointerDeviceService: PointerDeviceService,
+    private modalService: ModalService, // with fly
   ) {
     this.tabIndex = "0";
   }
@@ -123,7 +125,7 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
     this.contextMenuService.open(position, [
       { name: '詳細を表示', action: () => { this.showDetail(this.gameCharacter); } },
       { name: 'チャットパレットを表示', action: () => { this.showChatPalette(this.gameCharacter) } },
-      ...gameCharacterOnContextMenuHook(this.panelService, this.gameCharacter, position),
+      ...gameCharacterOnContextMenuHook(this, position),
       ContextMenuSeparator,
       {
         name: '共有イベントリに移動', action: () => {

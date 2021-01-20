@@ -108,4 +108,10 @@ export class TabletopObject extends ObjectNode {
     this.location.name = location;
     this.update();
   }
+
+  // start with fly
+  getUrls(): DataElement[] {
+    return this.rootDataElement.getElementsByType('url'); // 参照URL
+  }
+  // end with fly
 }

@@ -13,6 +13,7 @@ import { GameCharacterBuffViewComponent } from './lily/controller/component/game
 import { HandStorageComponent } from './hand-storage/component/hand-storage.component'
 import { HandStorageService } from './hand-storage/service/hand-storage.service'
 import { ChatMessageSettingComponent } from './lily/chat-color/component/chat-message-setting/chat-message-setting.component'
+import { OpenUrlComponent } from './with-fly/open-url/component/open-url/open-url.component'
 
 const components = [
   HelpKeyboardComponent,
@@ -29,6 +30,7 @@ const components = [
   ChatTachieComponent,
   HandStorageComponent,
   ChatMessageSettingComponent,
+  OpenUrlComponent,
 ]
 const imports = []
 const services = [HandStorageService]

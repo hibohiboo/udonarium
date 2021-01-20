@@ -249,18 +249,21 @@ export const gameObjectInventoryOnContextMenuHook = (
   }
 }
 export const gameCharacterOnContextMenuHook = (
-  panelService: PanelService,
-  gameObject: GameCharacter,
+  that, // gamecharactercomponent
   position: PointerCoordinate,
 ) => {
+  let ret = []
   if (config.useLilyRemocon) {
-    return lily.remocon.gameCharacterComponentAddContextMenu(
-      panelService,
-      gameObject,
+    ret = lily.remocon.gameCharacterComponentAddContextMenu(
+      that.panelService,
+      that.gameObject,
       position,
     )
   }
-  return []
+  if (config.useWithFlyOpenUrl) {
+    ret = [...ret, ...withFly.openUrl.gameCharacterComponentAddContextMenu(that)]
+  }
+  return ret
 }
 
 // バフ
