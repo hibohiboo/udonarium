@@ -391,3 +391,12 @@ export const cardStackComponentOnContextMenuHook = (that, position) => {
   }
   return ret
 }
+
+export const terrainComponentOnContextMenuHook = (that) => {
+  let ret = false
+  if (config.useWithFlyContextMenuHeightTerrain) {
+    withFly.contextMenuHeight.terrainComponentOnContextMenuHook(that)
+    ret = true
+  }
+  return ret
+}

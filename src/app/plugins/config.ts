@@ -37,6 +37,7 @@ const useWithFlyGridHeight = location.search.includes(
   'withfly_grid_height=true',
 )
 const useWithFlyOpenUrl = location.search.includes('withfly_open_url=true')
+const useWithFlyContextMenuHeightTerrain = location.search.includes('withfly_context_menu_height=true')
 
 export default {
   useKeyboardHelp,
@@ -74,4 +75,5 @@ export default {
   useWithFlyCardNdraw,
   useWithFlyGridHeight,
   useWithFlyOpenUrl,
+  useWithFlyContextMenuHeightTerrain,
 }

@@ -26,8 +26,9 @@ import { CoordinateService } from 'service/coordinate.service';
 import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { terrainOnKeydownHook } from 'src/app/plugins';
+import { terrainComponentOnContextMenuHook, terrainOnKeydownHook } from 'src/app/plugins';
 import { TabletopActionService } from 'service/tabletop-action.service';
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'terrain',
@@ -66,6 +67,37 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private input: InputHandler = null;
 
+  // start with fly
+  get useSetHeightContext(): boolean { return config.useWithFlyContextMenuHeightTerrain }
+  get altitude(): number { return this.terrain.altitude; }
+  set altitude(altitude: number) { this.terrain.altitude = altitude; }
+
+  get isDropShadow(): boolean { return this.terrain.isDropShadow; }
+  set isDropShadow(isDropShadow: boolean) { this.terrain.isDropShadow = isDropShadow; }
+  get isSurfaceShading(): boolean { return this.terrain.isSurfaceShading; }
+  set isSurfaceShading(isSurfaceShading: boolean) { this.terrain.isSurfaceShading = isSurfaceShading; }
+
+  get isInteract(): boolean { return this.terrain.isInteract; }
+  set isInteract(isInteract: boolean) { this.terrain.isInteract = isInteract; }
+
+  get isSlope(): boolean { return this.terrain.isSlope; }
+  set isSlope(isSlope: boolean) { this.terrain.isSlope = isSlope; }
+
+  get isAltitudeIndicate(): boolean { return this.terrain.isAltitudeIndicate; }
+  set isAltitudeIndicate(isAltitudeIndicate: boolean) { this.terrain.isAltitudeIndicate = isAltitudeIndicate; }
+  get isWallExist(): boolean {
+    return this.hasWall && this.wallImage && this.wallImage.url && this.wallImage.url.length > 0;
+  }
+
+  get terreinAltitude(): number {
+    let ret = this.altitude;
+    if (this.altitude < 0 || (!this.isSlope && !this.isWallExist)) ret += this.height;
+    return ret;
+  }
+  math = Math;
+  viewRotateZ = 10;
+  // end with fly
+
   @HostBinding('tabIndex') tabIndex:string;
   constructor(
     private ngZone: NgZone,
@@ -95,7 +127,15 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
       })
       .on('UPDATE_FILE_RESOURE', -1000, event => {
         this.changeDetector.markForCheck();
+      })
+      // start with fly
+      .on<object>('TABLE_VIEW_ROTATE', -1000, event => {
+        this.ngZone.run(() => {
+          this.viewRotateZ = event.data['z'];
+          this.changeDetector.markForCheck();
+        });
       });
+      // end with fly
     this.movableOption = {
       tabletopObject: this.terrain,
       colideLayers: ['terrain']
@@ -141,6 +181,11 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
 
     let menuPosition = this.pointerDeviceService.pointers[0];
     let objectPosition = this.coordinateService.calcTabletopLocalCoordinate();
+
+    if (terrainComponentOnContextMenuHook(this)) {
+      return
+    }
+
     this.contextMenuService.open(menuPosition, [
       (this.isLocked
         ? {

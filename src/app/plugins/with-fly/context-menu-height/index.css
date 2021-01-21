@@ -1,0 +1,17 @@
+/* angular の component内のcssに負けないように[identifer]の代わりに[class]をつけて優先度UP */
+terrain .of-wall-left.is-slope[class], .of-wall-right.is-slope[class] {
+  clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+}
+
+terrain .of-wall-top.no-shadow[class], .of-wall-left.no-shadow[class], .of-wall-right.no-shadow[class] {
+  filter: brightness(1.0);
+}
+
+terrain .altitude-indicator[class] {
+  padding-left: 2px;
+  font-size: 11px;
+  font-weight: bolder;
+  color: blanchedalmond;
+  text-shadow: #444 0px 0px 3px;
+  backface-visibility: hidden;
+}

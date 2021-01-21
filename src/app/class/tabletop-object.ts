@@ -113,5 +113,20 @@ export class TabletopObject extends ObjectNode {
   getUrls(): DataElement[] {
     return this.rootDataElement.getElementsByType('url'); // 参照URL
   }
+  /// start context menu height
+  @SyncVar() isAltitudeIndicate: boolean = false;
+  get altitude(): number {
+    let element = this.getElement('altitude', this.commonDataElement);
+    if (!element && this.commonDataElement) {
+      this.commonDataElement.appendChild(DataElement.create('altitude', 0, {}, 'altitude_' + this.identifier));
+    }
+    let num = element ? +element.value : 0;
+    return Number.isNaN(num) ? 0 : num;
+  }
+  set altitude(altitude: number) {
+    let element = this.getElement('altitude', this.commonDataElement);
+    if (element) element.value = altitude;
+  }
+  /// end context menu height
   // end with fly
 }

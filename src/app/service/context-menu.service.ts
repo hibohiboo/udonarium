@@ -1,4 +1,7 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, ViewContainerRef } from '@angular/core';
+import { TabletopObject } from '@udonarium/tabletop-object';
+import config from 'src/app/plugins/config';
+import { WithFlyContextMenuComponent } from '../plugins/with-fly/context-menu-height/component/context-menu/context-menu.component';
 
 interface ContextMenuPoint {
   x: number,
@@ -22,6 +25,7 @@ export interface ContextMenuAction {
   enabled?: boolean,
   type?: ContextMenuType,
   subActions?: ContextMenuAction[]
+  altitudeHande?: TabletopObject, // with fly
 }
 
 @Injectable()
@@ -53,7 +57,9 @@ export class ContextMenuService {
     let panelComponentRef: ComponentRef<any>;
 
     const injector = parentViewContainerRef.injector;
-    const panelComponentFactory = this.componentFactoryResolver.resolveComponentFactory(ContextMenuService.ContextMenuComponentClass);
+    const panelComponentFactory = this.componentFactoryResolver.resolveComponentFactory(
+      config.useWithFlyContextMenuHeightTerrain ? WithFlyContextMenuComponent :  ContextMenuService.ContextMenuComponentClass
+    );
 
     panelComponentRef = parentViewContainerRef.createComponent(panelComponentFactory, parentViewContainerRef.length, injector);
 

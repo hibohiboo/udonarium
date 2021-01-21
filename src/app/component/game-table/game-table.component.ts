@@ -388,6 +388,13 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.viewPotisonX += transformX;
     this.viewPotisonY += transformY;
     this.viewPotisonZ += transformZ;
+    if (pluginConfig.useWithFlyContextMenuHeightTerrain && (rotateX != 0 || rotateY != 0 || rotateX != 0)) {
+      EventSystem.trigger<object>('TABLE_VIEW_ROTATE', {
+        x: this.viewRotateX,
+        y: this.viewRotateY,
+        z: this.viewRotateZ
+      });
+    }
 
     this.gameTable.nativeElement.style.transform = 'translateZ(' + this.viewPotisonZ + 'px) translateY(' + this.viewPotisonY + 'px) translateX(' + this.viewPotisonX + 'px) rotateY(' + this.viewRotateY + 'deg) rotateX(' + this.viewRotateX + 'deg) rotateZ(' + this.viewRotateZ + 'deg) ';
   }

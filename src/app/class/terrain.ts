@@ -2,6 +2,7 @@ import { ImageFile } from './core/file-storage/image-file';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { DataElement } from './data-element';
 import { TabletopObject } from './tabletop-object';
+import config from 'src/app/plugins/config';
 
 export enum TerrainViewState {
   NULL = 0,
@@ -15,7 +16,12 @@ export class Terrain extends TabletopObject {
   @SyncVar() isLocked: boolean = false;
   @SyncVar() mode: TerrainViewState = TerrainViewState.ALL;
   @SyncVar() rotate: number = 0;
-
+  // start with fly
+  @SyncVar() isDropShadow: boolean = true;
+  @SyncVar() isSurfaceShading: boolean = true
+  @SyncVar() isInteract: boolean = true;
+  @SyncVar() isSlope: boolean = false;
+  // end with fly
   get width(): number { return this.getCommonValue('width', 1); }
   set width(width: number) { this.setCommonValue('width', width); }
   get height(): number { return this.getCommonValue('height', 1); }
@@ -47,6 +53,9 @@ export class Terrain extends TabletopObject {
     object.commonDataElement.appendChild(DataElement.create('depth', depth, {}, 'depth_' + object.identifier));
     object.imageDataElement.appendChild(DataElement.create('wall', wall, { type: 'image' }, 'wall_' + object.identifier));
     object.imageDataElement.appendChild(DataElement.create('floor', floor, { type: 'image' }, 'floor_' + object.identifier));
+    if (config.useWithFlyContextMenuHeightTerrain) {
+      object.commonDataElement.appendChild(DataElement.create('altitude', 0, {}, 'altitude_' + object.identifier)); // with fly
+    }
     object.initialize();
 
     return object;
