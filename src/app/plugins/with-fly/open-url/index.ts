@@ -34,18 +34,22 @@ export default {
       },
     ]
   },
-  tabletopServiceInitializeHook(listener: Listener){
-    listener.on('XML_LOADED', event => {
+  tabletopServiceInitializeHook(listener: Listener) {
+    listener.on('XML_LOADED', (event) => {
       // URLのタイプをnoteからurlに変更
-      let objects: TabletopObject[] = ObjectStore.instance.getObjects(GameCharacter);
-      for (let gameObject of objects) {
+      const objects: TabletopObject[] = ObjectStore.instance.getObjects(
+        GameCharacter,
+      )
+      for (const gameObject of objects) {
         if (gameObject instanceof GameCharacter) {
-          let gameCharacter:GameCharacter =  gameObject;
-          const [urlElement] = gameCharacter.detailDataElement.getElementsByName('URL');
+          const gameCharacter: GameCharacter = gameObject
+          const [
+            urlElement,
+          ] = gameCharacter.detailDataElement.getElementsByName('URL')
           if (!urlElement) continue
-          urlElement.setAttribute('type', 'url');
+          urlElement.setAttribute('type', 'url')
         }
       }
-    });
-  }
+    })
+  },
 }

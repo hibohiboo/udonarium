@@ -279,8 +279,7 @@ export const tabletopServiceMakeDefaultTabletopObjectsHook = () => {
 }
 
 export const tabletopServiceInitializeHook = (listener: Listener) => {
-  if (config.useLilyBuff)
-    lily.buff.tabletopServiceInitializeHook(listener)
+  if (config.useLilyBuff) lily.buff.tabletopServiceInitializeHook(listener)
   if (config.useWithFlyOpenUrl)
     withFly.openUrl.tabletopServiceInitializeHook(listener)
 }
