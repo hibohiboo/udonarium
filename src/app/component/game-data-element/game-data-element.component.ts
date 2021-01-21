@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { EventSystem } from '@udonarium/core/system';
 import { DataElement } from '@udonarium/data-element';
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'game-data-element, [game-data-element]',
@@ -22,6 +23,7 @@ export class GameDataElementComponent implements OnInit, OnDestroy, AfterViewIni
   @Input() isTagLocked: boolean = false;
   @Input() isValueLocked: boolean = false;
 
+  get useOpenUrl(): boolean { return config.useWithFlyOpenUrl }
   private _name: string = '';
   get name(): string { return this._name; }
   set name(name: string) { this._name = name; this.setUpdateTimer(); }

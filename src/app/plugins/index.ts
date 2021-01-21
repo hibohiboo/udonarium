@@ -280,7 +280,9 @@ export const tabletopServiceMakeDefaultTabletopObjectsHook = () => {
 
 export const tabletopServiceInitializeHook = (listener: Listener) => {
   if (config.useLilyBuff)
-    return lily.buff.tabletopServiceInitializeHook(listener)
+    lily.buff.tabletopServiceInitializeHook(listener)
+  if (config.useWithFlyOpenUrl)
+    withFly.openUrl.tabletopServiceInitializeHook(listener)
 }
 
 // 発言の可否を設定

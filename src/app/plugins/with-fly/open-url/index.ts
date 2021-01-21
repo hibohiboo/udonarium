@@ -1,4 +1,8 @@
+import { ObjectStore } from '@udonarium/core/synchronize-object/object-store'
+import { Listener } from '@udonarium/core/system'
 import { StringUtil } from '@udonarium/core/system/util/string-util'
+import { GameCharacter } from '@udonarium/game-character'
+import { TabletopObject } from '@udonarium/tabletop-object'
 import { ContextMenuSeparator } from 'service/context-menu.service'
 import { OpenUrlComponent } from './component/open-url/open-url.component'
 
@@ -30,4 +34,18 @@ export default {
       },
     ]
   },
+  tabletopServiceInitializeHook(listener: Listener){
+    listener.on('XML_LOADED', event => {
+      // URLのタイプをnoteからurlに変更
+      let objects: TabletopObject[] = ObjectStore.instance.getObjects(GameCharacter);
+      for (let gameObject of objects) {
+        if (gameObject instanceof GameCharacter) {
+          let gameCharacter:GameCharacter =  gameObject;
+          const [urlElement] = gameCharacter.detailDataElement.getElementsByName('URL');
+          if (!urlElement) continue
+          urlElement.setAttribute('type', 'url');
+        }
+      }
+    });
+  }
 }
