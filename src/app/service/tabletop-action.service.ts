@@ -26,6 +26,169 @@ import { PointerCoordinate } from './pointer-device.service';
 export class TabletopActionService {
 
   constructor() { }
+  private getCreateRooperMenu(position: PointerCoordinate): ContextMenuAction {
+    return {
+      name: "惨劇RoopeR",
+      action: null,
+      subActions: this.getCreateRooperSubMenu(position)
+    };
+  }
+  private getCreateRooperSubMenu(position: PointerCoordinate) : ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+
+    subMenus.push({
+      name: "キャラクター追加",
+      action: null,
+      subActions: this.getCreateRooperSubSubMenu(position)
+    });
+    subMenus.push({
+      name: "手札追加",
+      action: null,
+      subActions: this.createRooperHandsMenu(position)
+    });
+    subMenus.push({
+      name: "拡張カード追加",
+      action: null,
+      subActions: this.createRooperExtraMenu(position)
+    });
+    subMenus.push({
+      name: "トークン追加",
+      action: null,
+      subActions: this.createRooperTokenMenu(position)
+    });
+    return subMenus;
+  }
+  private createRooperHandsMenu(position):ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    subMenus.push({
+      name: '脚本家手札',
+      action: ()=>{
+        this.createRooperScripterHands(position, '脚本家手札','a_writer_cards', 'hand_s');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公A手札',
+      action: ()=>{
+        this.createRooperProtagonistHands(position, '主人公A手札','a_heroA_cards', 'hand_a');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公B手札',
+      action: ()=>{
+        this.createRooperProtagonistHands(position, '主人公B手札','a_heroB_cards', 'hand_b');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公C手札',
+      action: ()=>{
+        this.createRooperProtagonistHands(position, '主人公C手札','a_heroC_cards', 'hand_c');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
+  }
+  private createRooperTokenMenu(position):ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_tokens = `${prefix_path_rooper}/tokens`;
+
+    const createCard = (position, title, path)=>{
+      const back = `${prefix_path_tokens}/${path}.png`;
+      if (!ImageStorage.instance.get(back)) {
+        ImageStorage.instance.add(back);
+      }
+      const front = `${prefix_path_tokens}/${path}.png`;
+      if (!ImageStorage.instance.get(front)) {
+        ImageStorage.instance.add(front);
+      }
+      const card = Card.create(title, front, back, 1);
+      card.location.x = position.x - 25;
+      card.location.y = position.y - 25;
+    }
+
+    subMenus.push({
+      name: '暗躍カウンター',
+      action: ()=>{
+        createCard(position, '暗躍カウンター','chip_03');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '事件カウンター',
+      action: ()=>{
+        createCard(position, '事件カウンター','chip_08');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '刑事カウンター',
+      action: ()=>{
+        createCard(position, '刑事カウンター','guard');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '大物カウンター',
+      action: ()=>{
+        createCard(position, '大物カウンター','turf');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
+  }
+
+  private createRooperExtraMenu(position:PointerCoordinate) :ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_extra = `${prefix_path_rooper}/extra`;
+    const back = `${prefix_path_extra}/extra_back.png`;
+    if (!ImageStorage.instance.get(back)) {
+      ImageStorage.instance.add(back);
+    }
+    const createCard = (position, title,id)=>{
+      const front = `${prefix_path_extra}/${id}.png`;
+      if (!ImageStorage.instance.get(front)) {
+        ImageStorage.instance.add(front);
+      }
+      const card = Card.create(title, front, back);
+      card.location.x = position.x - 25;
+      card.location.y = position.y - 25;
+    }
+
+    subMenus.push({
+      name: 'ExtraA',
+      action: ()=>{
+        createCard(position, 'ExtraA','extra_a');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: 'ExtraB',
+      action: ()=>{
+        createCard(position, 'ExtraB','extra_b');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: 'ExtraC',
+      action: ()=>{
+        createCard(position, 'ExtraC','extra_c');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: 'ExtraD',
+      action: ()=>{
+        createCard(position, 'ExtraD','extra_d');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
+  }
+
   private createRooperScripterHands(
     position: PointerCoordinate,
     title: string,
@@ -416,6 +579,7 @@ export class TabletopActionService {
 
   makeDefaultContextMenuActions(position: PointerCoordinate): ContextMenuAction[] {
     return [
+      this.getCreateRooperMenu(position),
       this.getCreateCharacterMenu(position),
       this.getCreateTableMaskMenu(position),
       this.getCreateTerrainMenu(position),

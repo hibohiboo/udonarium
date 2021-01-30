@@ -203,10 +203,11 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         this.viewRotateZ = 0;
         this.viewPotisonX = viewPotisonXDefault;
         this.viewPotisonY = 0;
-        this.viewPotisonZ = viewPotisonZDefault;
         if(Device.isMobile()){
-          this.viewPotisonZ = -3500;
+          // this.viewPotisonZ = -3500;
           this.viewPotisonX = 0;
+        } else {
+          this.viewPotisonZ = viewPotisonZDefault;
         }
         this.setTransform(0, 0, 0, 0, 0, 0);
         this.removeFocus();
