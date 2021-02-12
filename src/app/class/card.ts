@@ -5,6 +5,7 @@ import { DataElement } from './data-element';
 import { PeerCursor } from './peer-cursor';
 import { TabletopObject } from './tabletop-object';
 import { moveToTopmost } from './tabletop-object-util';
+import config from 'src/app/plugins/config';
 
 export enum CardState {
   FRONT,
@@ -17,6 +18,7 @@ export class Card extends TabletopObject {
   @SyncVar() rotate: number = 0;
   @SyncVar() owner: string = '';
   @SyncVar() zindex: number = 0;
+  @SyncVar() isSelfHide: boolean = false;
 
   get isVisibleOnTable(): boolean { return this.location.name === 'table' && (!this.parentIsAssigned || this.parentIsDestroyed); }
 
@@ -36,7 +38,13 @@ export class Card extends TabletopObject {
   get hasOwner(): boolean { return 0 < this.owner.length; }
   get isHand(): boolean { return Network.peerContext.userId === this.owner; }
   get isFront(): boolean { return this.state === CardState.FRONT; }
-  get isVisible(): boolean { return this.isHand || this.isFront; }
+  get isVisible(): boolean {
+    if(config.useCardOnlySelfHide){
+      return this.isHand && !this.isSelfHide || this.isOtherSelfHide || this.isFront;
+    }
+    return this.isHand || this.isFront;
+  }
+  get isOtherSelfHide(): boolean { return this.owner !== '' && Network.peerContext.userId !== this.owner && this.isSelfHide }
 
   // start with fly
   get ownerColor(): string {
@@ -44,6 +52,12 @@ export class Card extends TabletopObject {
     return object ? object.color : '#ff0';
   }
   // end with fly
+
+  // 自分だけ隠す
+  setSelfHide() {
+    this.owner = Network.peerContext.userId;
+    this.isSelfHide = true
+  }
 
   faceUp() {
     this.state = CardState.FRONT;

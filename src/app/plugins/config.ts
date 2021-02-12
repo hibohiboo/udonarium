@@ -40,6 +40,7 @@ const useWithFlyOpenUrl = location.search.includes('withfly_open_url=true')
 const useWithFlyContextMenuHeightTerrain = location.search.includes(
   'withfly_context_menu_height=true',
 )
+const useCardOnlySelfHide = location.search.includes('use_card_only_self_hide=true')
 
 export default {
   useKeyboardHelp,
@@ -58,6 +59,7 @@ export default {
   hideSample,
   useKeyboardShortcut,
   useDicebot,
+  useCardOnlySelfHide,
   // lily
   useLilyCutin,
   useLilyDiceTable,

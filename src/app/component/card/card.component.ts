@@ -28,7 +28,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
-import { cardComponentDispatchCardDropEventHook, cardComponentOnInputStartHook, cardOnKeydownHook, cardPointerHook } from 'src/app/plugins';
+import { cardComponentDispatchCardDropEventHook, cardComponentOnContextMenuHook, cardComponentOnInputStartHook, cardOnKeydownHook, cardPointerHook } from 'src/app/plugins';
 import config from 'src/app/plugins/config';
 
 @Component({
@@ -65,6 +65,9 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   get isIconHidden(): boolean { return this.iconHiddenTimer != null };
   get ownerColor(): string { return this.card.ownerColor; } // with fly
   get usePlayerColor(){ return config.usePlayerColor; }
+
+  get isOtherSelfHide(){ return this.card.isOtherSelfHide } // 自分以外に見せる
+  get isSelfHide(){return this.card.isSelfHide }
   gridSize: number = 50;
 
   movableOption: MovableOption = {};
@@ -206,6 +209,9 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     e.preventDefault();
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
     let position = this.pointerDeviceService.pointers[0];
+    if(cardComponentOnContextMenuHook(this, position)){
+      return;
+    }
     this.contextMenuService.open(position, [
       (!this.isVisible || this.isHand
         ? {
