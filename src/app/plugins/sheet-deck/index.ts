@@ -38,6 +38,7 @@ export async function getDeckMenu(
   const spreadsheetId = utility.getQueryValue('decksheet')
   if (!spreadsheetId) return
   const book = await getBook(spreadsheetId)
+  if(!book) return
   const subMenus: ContextMenuAction[] = book.sheets.map((name) => ({
     name,
     action: async () => {

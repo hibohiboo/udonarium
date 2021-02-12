@@ -13,6 +13,8 @@ import { GameCharacter } from '@udonarium/game-character';
 })
 export class GameCharacterBuffViewComponent implements OnInit {
 
+//  @Input() title: string = '';
+
   @Input() character: TabletopObject = null;
 
   constructor(
@@ -21,7 +23,15 @@ export class GameCharacterBuffViewComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
+/*
+    Promise.resolve().then(() => {
+      this.panelService.title = this.title;
+      if (this.modalService.option && this.modalService.option.title != null) {
+        this.modalService.title = this.modalService.option.title ? this.modalService.option.title : '';
+        this.text = this.modalService.option.text ? this.modalService.option.text : '';
+      }
+    });
+*/
   }
 
 }

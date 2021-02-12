@@ -22,6 +22,25 @@ export class GameCharacter extends TabletopObject {
   get remoteController() {
     return lily.remoteControllerHook(this);
   }
+  _selectedTachieNum:number = 0;
+  get selectedTachieNum(): number {
+    if( this._selectedTachieNum > ( this.imageDataElement.children.length - 1) ){
+      this._selectedTachieNum = this.imageDataElement.children.length - 1;
+    }
+    if( this._selectedTachieNum < 0 ){
+      this._selectedTachieNum = 0;
+    }
+    return this._selectedTachieNum;
+  }
+  set selectedTachieNum(num : number){
+    if( num > ( this.imageDataElement.children.length - 1 ) ){
+      num = this.imageDataElement.children.length - 1;
+    }
+    if( num < 0 ){
+      num = 0;
+    }
+    this._selectedTachieNum = num
+  }
   // end lily
 
   get name(): string { return this.getCommonValue('name', ''); }

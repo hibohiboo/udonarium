@@ -19,7 +19,10 @@ export const getBookData = async (
   const res = await fetch(url)
   const json = await res.json()
   cache.set(url, json)
-  return createBookData(json)
+  if(json && json.properties && json.properties.title && json.sheets && json.sheets.length){
+    return createBookData(json)
+  }
+  return null
 }
 
 export const getSheetData = async (

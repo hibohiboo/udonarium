@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { ControllerInputComponent } from './controller-input.component';
+import { GameDataElementBuffComponent } from './game-data-element-buff.component';
 
-describe('ControllerInputComponent', () => {
-  let component: ControllerInputComponent;
-  let fixture: ComponentFixture<ControllerInputComponent>;
+describe('GameDataElementBuffComponent', () => {
+  let component: GameDataElementBuffComponent;
+  let fixture: ComponentFixture<GameDataElementBuffComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ControllerInputComponent ]
+      declarations: [ GameDataElementBuffComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ControllerInputComponent);
+    fixture = TestBed.createComponent(GameDataElementBuffComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

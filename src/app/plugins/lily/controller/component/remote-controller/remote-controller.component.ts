@@ -1,5 +1,5 @@
 import { ElementRef, Input, ViewChild } from '@angular/core';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 
 import { ChatPalette } from '@udonarium/chat-palette';
 import { ChatTab } from '@udonarium/chat-tab';
@@ -15,10 +15,15 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { GameObject } from '@udonarium/core/synchronize-object/game-object';
 import { DataElement } from '@udonarium/data-element';
 import { SortOrder } from '@udonarium/data-summary-setting';
+import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { TabletopObject } from '@udonarium/tabletop-object';
-import { ContextMenuService } from 'service/context-menu.service';
+import { ChatPaletteComponent } from 'component/chat-palette/chat-palette.component';
+import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
+import { ContextMenuAction, ContextMenuService, ContextMenuSeparator } from 'service/context-menu.service';
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+
+import { GameDataElementBuffComponent } from '../game-data-element-buff/game-data-element-buff.component';
 import { GameCharacterBuffViewComponent } from '../game-character-buff-view/game-character-buff-view.component';
 import config from 'src/app/plugins/config';
 
@@ -132,10 +137,7 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
         let getGameObjects = this.getGameObjects(this.selectTab);
         let isInInventry = false ;
         for( let object2 of  getGameObjects){
-          if( object2 == object){
-            isInInventry = true;
-            break;
-          }
+          if( object2 == object) isInInventry = true;
         }
         if( !isInInventry )continue;
 
@@ -382,10 +384,7 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
       let getGameObjects = this.getGameObjects(this.selectTab);
       let isInInventry = false ;
       for( let object2 of  getGameObjects){
-        if( object2 == character){
-          isInInventry = true;
-          break;
-        }
+        if( object2 == character) isInInventry = true;
       }
       if( !isInInventry )continue;
 
@@ -461,15 +460,12 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
     for (let character of gameCharacters){
       if( character.hideInventory ) continue; //非表示対象の除外のため
 
-      let getGameObjects = this.getGameObjects(this.selectTab);
-      let isInInventry = false ;
-      for( let object2 of  getGameObjects){
-        if( object2 == character){
-          isInInventry = true;
-          break;
+        let getGameObjects = this.getGameObjects(this.selectTab);
+        let isInInventry = false ;
+        for( let object2 of  getGameObjects){
+          if( object2 == character) isInInventry = true;
         }
-      }
-      if( !isInInventry )continue;
+        if( !isInInventry )continue;
 
       if(character.buffDataElement.children){
         for (let dataElm of character.buffDataElement.children){
@@ -617,10 +613,7 @@ export class RemoteControllerComponent implements OnInit, OnDestroy {
         let getGameObjects = this.getGameObjects(this.selectTab);
         let isInInventry = false ;
         for( let object2 of  getGameObjects){
-          if( object2 == object){
-            isInInventry = true;
-            break;
-          }
+          if( object2 == object) isInInventry = true;
         }
         if( !isInInventry )continue;
         gameCharactars.push(object);

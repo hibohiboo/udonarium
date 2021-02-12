@@ -4,15 +4,21 @@ import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
+
+import { ResettableTimeout } from '@udonarium/core/system/util/resettable-timeout';
+
 import { DiceBot } from '@udonarium/dice-bot';
+import { GameCharacter } from '@udonarium/game-character';
 import { PeerCursor } from '@udonarium/peer-cursor';
 import { TextViewComponent } from 'component/text-view/text-view.component';
+
+import { BatchService } from 'service/batch.service';
+
 import { ChatMessageService } from 'service/chat-message.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 
 import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
-import { GameCharacter } from '@udonarium/game-character';
 import config from 'src/app/plugins/config';
 import { ChatColorSettingComponent } from '../../../chat-color/component/chat-color-setting/chat-color-setting.component';
 
@@ -26,7 +32,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
   get useBuff(){ return config.useLilyBuff }
   get useStand(){ return config.useLilyStand }
 
-  @ViewChild('textArea', { static: true }) textAreaElementRef: ElementRef;
+  @ViewChild('textArea', { static: true }) textAreaElementRef?: ElementRef;
 
   @Input() onlyCharacters: boolean = false;
   @Input() chatTabidentifier: string = '';
@@ -51,16 +57,28 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
   get text(): string { return this._text };
   set text(text: string) { this._text = text; this.textChange.emit(text); }
 
-  @Input('tachieNum') _tachieNum: number = 0;
-  @Output() chat = new EventEmitter<{ text: string, gameType: string, sendFrom: string, sendTo: string ,tachieNum: number ,messColor: string}>();
-  get tachieNum(): number { return this._tachieNum };
-  set tachieNum(num:  number){ this._tachieNum = num};
+//  @Input('tachieNum') _tachieNum: number = 0;
 
+  @Output() chat = new EventEmitter<{ text: string, gameType: string, sendFrom: string, sendTo: string ,tachieNum: number ,messColor: string}>();
+
+  get tachieNum(): number {
+    let object = ObjectStore.instance.get(this.sendFrom);
+    if (object instanceof GameCharacter) {
+      return object.selectedTachieNum;
+    }
+    return 0;
+  }
+
+  set tachieNum(num:  number){
+    let object = ObjectStore.instance.get(this.sendFrom);
+    if (object instanceof GameCharacter) {
+      object.selectedTachieNum = num;
+    }
+  }
   @Output() hideChkEvent = new EventEmitter<boolean>();
 
   get isDirect(): boolean { return this.sendTo != null && this.sendTo.length ? true : false }
   gameHelp: string = '';
-
 
   colorSelectNo_ = 0;
 
@@ -200,7 +218,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
 
   private writingEventInterval: NodeJS.Timer = null;
   private previousWritingLength: number = 0;
-  writingPeers: Map<string, NodeJS.Timer> = new Map();
+  writingPeers: Map<string, ResettableTimeout> = new Map();
   writingPeerNames: string[] = [];
 
   get diceBotInfos() { return DiceBot.diceBotInfos }
@@ -210,6 +228,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
   constructor(
     private ngZone: NgZone,
     public chatMessageService: ChatMessageService,
+    private batchService: BatchService,
     private panelService: PanelService,
     private pointerDeviceService: PointerDeviceService
   ) { }
@@ -219,9 +238,10 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
       .on('MESSAGE_ADDED', event => {
         if (event.data.tabIdentifier !== this.chatTabidentifier) return;
         let message = ObjectStore.instance.get<ChatMessage>(event.data.messageIdentifier);
-        let sendFrom = message ? message.from : '?';
+        let peerCursor = ObjectStore.instance.getObjects<PeerCursor>(PeerCursor).find(obj => obj.userId === message.from);
+        let sendFrom = peerCursor ? peerCursor.peerId : '?';
         if (this.writingPeers.has(sendFrom)) {
-          clearTimeout(this.writingPeers.get(sendFrom));
+          this.writingPeers.get(sendFrom).stop();
           this.writingPeers.delete(sendFrom);
           this.updateWritingPeerNames();
         }
@@ -247,19 +267,22 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
       })
       .on<string>('WRITING_A_MESSAGE', event => {
         if (event.isSendFromSelf || event.data !== this.chatTabidentifier) return;
-        this.ngZone.run(() => {
-          if (this.writingPeers.has(event.sendFrom)) clearTimeout(this.writingPeers.get(event.sendFrom));
-          this.writingPeers.set(event.sendFrom, setTimeout(() => {
+        if (!this.writingPeers.has(event.sendFrom)) {
+          this.writingPeers.set(event.sendFrom, new ResettableTimeout(() => {
             this.writingPeers.delete(event.sendFrom);
             this.updateWritingPeerNames();
+            this.ngZone.run(() => { });
           }, 2000));
-          this.updateWritingPeerNames();
-        });
+        }
+        this.writingPeers.get(event.sendFrom).reset();
+        this.updateWritingPeerNames();
+        this.batchService.add(() => this.ngZone.run(() => { }), this);
       });
   }
 
   ngOnDestroy() {
     EventSystem.unregister(this);
+    this.batchService.remove(this);
   }
 
   private updateWritingPeerNames() {
@@ -275,7 +298,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
       if (this.isDirect) {
         let object = ObjectStore.instance.get(this.sendTo);
         if (object instanceof PeerCursor) {
-          let peer = PeerContext.create(object.peerId);
+          let peer = PeerContext.parse(object.peerId);
           if (peer) sendTo = peer.userId;
         }
       }
@@ -296,17 +319,19 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
 
     if (!this.sendFrom.length) this.sendFrom = this.myPeer.identifier;
     this.chat.emit({ text: this.text, gameType: this.gameType, sendFrom: this.sendFrom
-      , sendTo: this.sendTo ,tachieNum :this.tachieNum , messColor : this.selectChatColor });
+    , sendTo: this.sendTo ,tachieNum :this.tachieNum , messColor : this.selectChatColor });
 
     this.text = '';
     this.previousWritingLength = this.text.length;
-    let textArea: HTMLTextAreaElement = this.textAreaElementRef.nativeElement;
+    let textArea: HTMLTextAreaElement = this.textAreaElementRef?.nativeElement;
+    if (!textArea) return
     textArea.value = '';
     this.calcFitHeight();
   }
 
   calcFitHeight() {
-    let textArea: HTMLTextAreaElement = this.textAreaElementRef.nativeElement;
+    let textArea: HTMLTextAreaElement = this.textAreaElementRef?.nativeElement;
+    if (!textArea) return
     textArea.style.height = '';
     if (textArea.scrollHeight >= textArea.offsetHeight) {
       textArea.style.height = textArea.scrollHeight + 'px';
