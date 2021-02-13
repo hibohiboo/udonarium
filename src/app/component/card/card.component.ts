@@ -75,7 +75,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     if (config.useCardOnlySelfHide){
       ret = ret && !this.isSelfHide || this.isOtherSelfHide
     }
-    if (config.useCardOnlySelfHide && !ret) {
+    if (config.useCardGMView && !ret) {
       ret = this.isCardGMView && !this.isFront
     }
     return ret
