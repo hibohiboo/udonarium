@@ -30,6 +30,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 import { cardComponentDispatchCardDropEventHook, cardComponentOnContextMenuHook, cardComponentOnInputStartHook, cardOnKeydownHook, cardPointerHook } from 'src/app/plugins';
 import config from 'src/app/plugins/config';
+import { ChatMessageService } from 'service/chat-message.service';
 
 @Component({
   selector: 'card',
@@ -102,7 +103,8 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     private changeDetector: ChangeDetectorRef,
     private tabletopService: TabletopService,
     private imageService: ImageService,
-    private pointerDeviceService: PointerDeviceService
+    private pointerDeviceService: PointerDeviceService,
+    private chatMessageService: ChatMessageService, // plus
   ) {
     this.tabIndex = "0"; //TabIndexを付与。これをしないとフォーカスできないのでコンポーネントに対するキーイベントを取得できない。
    }

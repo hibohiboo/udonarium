@@ -9,6 +9,8 @@ import config from 'src/app/plugins/config'
 import * as pluginConstants from 'src/app/plugins/constants'
 
 export const createCardMenues = (that) => {
+  const [firstTab] = that.chatMessageService.chatTabs
+
   const menues = []
   if (!that.isVisible || that.isHand) {
     menues.push({
@@ -73,6 +75,7 @@ export const createCardMenues = (that) => {
           PeerCursor.myCursor.isCardGMView = true
           sendSystemChatMessage(
             `${PeerCursor.myCursor.name}は全ての裏カードを見ることができます。`,
+            firstTab.identifier
           )
         },
       })
@@ -84,6 +87,7 @@ export const createCardMenues = (that) => {
           PeerCursor.myCursor.isCardGMView = false
           sendSystemChatMessage(
             `${PeerCursor.myCursor.name}は裏カードを見ることができなくなりました。`,
+            firstTab.identifier
           )
         },
       })
@@ -131,10 +135,10 @@ const getTimeStamp = () => {
   return Math.floor(timeOffset + (performance.now() - performanceOffset))
 }
 
-const sendSystemChatMessage = (text: string) => {
+const sendSystemChatMessage = (text: string, tabIdentifier: string) => {
   const diceBotMessage: ChatMessageContext = {
     identifier: '',
-    tabIdentifier: pluginConstants.systemTabIdentifier,
+    tabIdentifier,
     originFrom: Network.peerContext.userId,
     from: pluginConstants.systemChatIdentifier,
     timestamp: getTimeStamp(),
@@ -144,8 +148,6 @@ const sendSystemChatMessage = (text: string) => {
     text,
   }
 
-  const chatTab = ObjectStore.instance.get<ChatTab>(
-    pluginConstants.systemTabIdentifier,
-  )
+  const chatTab = ObjectStore.instance.get<ChatTab>(tabIdentifier)
   if (chatTab) chatTab.addMessage(diceBotMessage)
 }
