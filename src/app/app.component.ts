@@ -41,6 +41,7 @@ import { SaveDataService } from 'service/save-data.service';
 import { appComponentConstructorHook } from './plugins';
 import factory from './plugins/factory';
 import config from 'src/app/plugins/config';
+import * as pluginConstants from 'src/app/plugins/constants';
 
 @Component({
   selector: 'app-root',
@@ -108,6 +109,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
     ChatTabList.instance.addChatTab('メインタブ', 'MainTab');
     ChatTabList.instance.addChatTab('サブタブ', 'SubTab');
+    if (config.useCardGMView) {
+      ChatTabList.instance.addChatTab(pluginConstants.systemTabName, pluginConstants.systemTabIdentifier);
+    }
 
     let fileContext = ImageFile.createEmpty('none_icon').toContext();
     fileContext.url = './assets/images/ic_account_circle_black_24dp_2x.png';

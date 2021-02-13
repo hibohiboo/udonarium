@@ -66,8 +66,21 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   get ownerColor(): string { return this.card.ownerColor; } // with fly
   get usePlayerColor(){ return config.usePlayerColor; }
 
+  // start plus
   get isOtherSelfHide(){ return this.card.isOtherSelfHide } // 自分以外に見せる
   get isSelfHide(){return this.card.isSelfHide }
+  get isCardGMView(){return this.card.isCardGMView}
+  get isVisibleTranslucentCard() {
+    let ret = this.isHand && !!this.frontImage
+    if (config.useCardOnlySelfHide){
+      ret = ret && !this.isSelfHide || this.isOtherSelfHide
+    }
+    if (config.useCardOnlySelfHide && !ret) {
+      ret = this.isCardGMView && !this.isFront
+    }
+    return ret
+  }
+  // end plus
   gridSize: number = 50;
 
   movableOption: MovableOption = {};
@@ -184,7 +197,11 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     if (distance < 10 ** 2) {
       console.log('onDoubleClick !!!!');
       if (this.hasOwner && !this.isHand) return;
-      this.state = this.isVisible && !this.isHand ? CardState.BACK : CardState.FRONT;
+      if(config.useCardGMView && PeerCursor.myCursor.isCardGMView){
+        this.state = this.isFront && !this.isHand ? CardState.BACK : CardState.FRONT;
+      }else{
+        this.state = this.isVisible && !this.isHand ? CardState.BACK : CardState.FRONT;
+      }
       this.owner = '';
       SoundEffect.play(PresetSound.cardDraw);
     }

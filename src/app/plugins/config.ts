@@ -41,6 +41,8 @@ const useWithFlyContextMenuHeightTerrain = location.search.includes(
   'withfly_context_menu_height=true',
 )
 const useCardOnlySelfHide = location.search.includes('use_card_only_self_hide=true')
+const useCardGMView = location.search.includes('use_card_gm_view=true')
+
 
 export default {
   useKeyboardHelp,
@@ -60,6 +62,7 @@ export default {
   useKeyboardShortcut,
   useDicebot,
   useCardOnlySelfHide,
+  useCardGMView,
   // lily
   useLilyCutin,
   useLilyDiceTable,

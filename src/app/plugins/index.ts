@@ -8,7 +8,7 @@ import lily from './lily'
 import keyboardShortcut from './keyboard-shortcut'
 import cardOnTopMove from './card-on-top-move'
 import handStorage from './hand-storage'
-import cardSelfHide from './card-self-hide'
+import cardContextMenu from './card-context-menu'
 import * as utility from './utility'
 import withFly from './with-fly'
 import type { GameTableComponent } from 'component/game-table/game-table.component'
@@ -163,8 +163,8 @@ export const chatInputInitHook = (that) => {
 
 // 自分以外だけみせる
 export const cardComponentOnContextMenuHook = (that, position) => {
-  if (config.useCardOnlySelfHide) {
-    cardSelfHide.cardComponentOnContextMenuHook(that, position)
+  if (config.useCardOnlySelfHide || config.useCardGMView) {
+    cardContextMenu.cardComponentOnContextMenuHook(that, position)
     return true
   }
   return false

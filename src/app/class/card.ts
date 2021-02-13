@@ -39,12 +39,19 @@ export class Card extends TabletopObject {
   get isHand(): boolean { return Network.peerContext.userId === this.owner; }
   get isFront(): boolean { return this.state === CardState.FRONT; }
   get isVisible(): boolean {
+    if(this.isCardGMView && PeerCursor.myCursor.isCardGMView) return true
     if(config.useCardOnlySelfHide){
+      console.log('isHand', this.isHand)
+      console.log('isSelfHide', this.isSelfHide)
+      console.log('isOtherSelfHide', this.isOtherSelfHide)
+      console.log('isFront', this.isFront)
+
       return this.isHand && !this.isSelfHide || this.isOtherSelfHide || this.isFront;
     }
     return this.isHand || this.isFront;
   }
   get isOtherSelfHide(): boolean { return this.owner !== '' && Network.peerContext.userId !== this.owner && this.isSelfHide }
+  get isCardGMView(): boolean{ return config.useCardGMView && PeerCursor.myCursor.isCardGMView }
 
   // start with fly
   get ownerColor(): string {
@@ -53,7 +60,7 @@ export class Card extends TabletopObject {
   }
   // end with fly
 
-  // 自分だけ隠す
+  // 自分だけ隠す with-plus
   setSelfHide() {
     this.owner = Network.peerContext.userId;
     this.isSelfHide = true
