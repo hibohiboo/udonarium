@@ -6,7 +6,7 @@ import { PeerCursor } from '@udonarium/peer-cursor'
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect'
 import { ContextMenuSeparator } from 'service/context-menu.service'
 import config from 'src/app/plugins/config'
-import * as pluginConstants from 'src/app/plugins/constants';
+import * as pluginConstants from 'src/app/plugins/constants'
 
 export const createCardMenues = (that) => {
   const menues = []
@@ -18,7 +18,7 @@ export const createCardMenues = (that) => {
         SoundEffect.play(PresetSound.cardDraw)
       },
     })
-  } else if(PeerCursor.myCursor.isCardGMView && !that.isFront) {
+  } else if (PeerCursor.myCursor.isCardGMView && !that.isFront) {
     menues.push({
       name: '表にする',
       action: () => {
@@ -64,24 +64,27 @@ export const createCardMenues = (that) => {
   }
 
   menues.push(ContextMenuSeparator)
-  if(config.useCardGMView){
-    if (!PeerCursor.myCursor.isCardGMView){
+  if (config.useCardGMView) {
+    if (!PeerCursor.myCursor.isCardGMView) {
       menues.push({
         name: '全ての裏カードを見る',
         action: () => {
           SoundEffect.play(PresetSound.cardDraw)
-          PeerCursor.myCursor.isCardGMView = true;
-          sendSystemChatMessage(`${PeerCursor.myCursor.name}は全ての裏カードを見ることができます。`)
+          PeerCursor.myCursor.isCardGMView = true
+          sendSystemChatMessage(
+            `${PeerCursor.myCursor.name}は全ての裏カードを見ることができます。`,
+          )
         },
       })
-    }else {
+    } else {
       menues.push({
         name: '裏カードを見るのをやめる',
         action: () => {
           SoundEffect.play(PresetSound.cardDraw)
-          PeerCursor.myCursor.isCardGMView = false;
-          sendSystemChatMessage(`${PeerCursor.myCursor.name}は裏カードを見ることができなくなりました。`)
-
+          PeerCursor.myCursor.isCardGMView = false
+          sendSystemChatMessage(
+            `${PeerCursor.myCursor.name}は裏カードを見ることができなくなりました。`,
+          )
         },
       })
     }
@@ -122,14 +125,14 @@ export const createCardMenues = (that) => {
   return menues
 }
 
-const getTimeStamp = ()=>{
-  const timeOffset: number = Date.now();
-  const performanceOffset: number = performance.now();
-  return Math.floor(timeOffset + (performance.now() - performanceOffset));
+const getTimeStamp = () => {
+  const timeOffset: number = Date.now()
+  const performanceOffset: number = performance.now()
+  return Math.floor(timeOffset + (performance.now() - performanceOffset))
 }
 
-const sendSystemChatMessage = (text:string) => {
-  let diceBotMessage: ChatMessageContext = {
+const sendSystemChatMessage = (text: string) => {
+  const diceBotMessage: ChatMessageContext = {
     identifier: '',
     tabIdentifier: pluginConstants.systemTabIdentifier,
     originFrom: Network.peerContext.userId,
@@ -138,9 +141,11 @@ const sendSystemChatMessage = (text:string) => {
     imageIdentifier: '',
     tag: 'system',
     name: pluginConstants.systemChatName,
-    text
-  };
+    text,
+  }
 
-  let chatTab = ObjectStore.instance.get<ChatTab>(pluginConstants.systemTabIdentifier);
-  if (chatTab) chatTab.addMessage(diceBotMessage);
+  const chatTab = ObjectStore.instance.get<ChatTab>(
+    pluginConstants.systemTabIdentifier,
+  )
+  if (chatTab) chatTab.addMessage(diceBotMessage)
 }
