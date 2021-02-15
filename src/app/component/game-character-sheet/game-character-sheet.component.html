@@ -58,6 +58,13 @@
       </div>
     </div>
   </ng-container>
+  <ng-container *ngIf="useLilyStand">
+    <div class="flex-item">
+      <div class="table">
+        <div class="table-row" game-stand-data-element [gameDataElement]="tabletopObject.imageDataElement" [isTagLocked]="true" [isEdit]="isEdit" [isImage]="true"></div>
+      </div>
+    </div>
+  </ng-container>
 
   <ng-container *ngIf="isEdit">
     <div class="flex-item">

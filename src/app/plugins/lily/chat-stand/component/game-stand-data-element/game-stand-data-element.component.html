@@ -1,0 +1,125 @@
+<ng-container *ngIf="gameDataElement">
+  <ng-container *ngIf="gameDataElement.children.length < 1">
+    <div *ngIf="isEdit" class="table-cell table-cell_solid">
+      <ng-container *ngIf="isImage && indexNum >= 1">
+        <ng-container *ngTemplateOutlet="editButtonsImage01"></ng-container>
+      </ng-container>
+    </div>
+    <div class="table-cell table-cell_solid">
+      <ng-container *ngIf="isTagLocked">
+      </ng-container>
+      <ng-container *ngIf="!isTagLocked">
+        <div
+          class="hidden-spacer"
+          style="font-family: Cambria, Georgia; font-size: 0.9rem"
+        >
+          {{ name }}
+        </div>
+        <input
+          style="
+            width: 100%;
+            min-width: 10px;
+            font-family: Cambria, Georgia;
+            font-size: 0.9rem;
+          "
+          size="1"
+          [(ngModel)]="name"
+          placeholder="Value"
+        />
+      </ng-container>
+    </div>
+    <div class="table-cell">
+      <div class="table-2">
+        <div class="table-cell-2 sub-image-box">
+          <img
+            *ngIf="imageFileUrl"
+            class="sub-image"
+            [src]="imageFileUrl | safe: 'resourceUrl'"
+            [alt]="gameDataElement.value"
+          />
+        </div>
+        <div class="table-cell-2 sub-table">
+          <input
+            style="width: 100%; min-width: 10px"
+            size="1"
+            [(ngModel)]="currentValue"
+            placeholder="立ち絵名"
+          />
+          <button
+            class="tachie-button"
+            (click)="openModal('imageIdentifier', true)"
+            style="font-size: 1em"
+          >
+            画像変更
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="0 < gameDataElement.children.length">
+    <div
+      *ngIf="isEdit"
+      class="table-cell table-cell_solid"
+      style="vertical-align: top"
+    >
+      <ng-container *ngTemplateOutlet="editButtonsImage02"></ng-container>
+    </div>
+    <div
+      class="table-cell table-cell_inner-table"
+      style="padding: 0; width: 0"
+    ></div>
+    <div class="table-cell_inner-table">
+      <div class="table-cell_inner-table-title">
+        <ng-container *ngIf="isTagLocked">
+          <div
+            style="
+              padding: 2px;
+              font-family: Cambria, Georgia;
+              font-size: 1rem;
+              font-weight: bold;
+            "
+          >
+            {{ name }}
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!isTagLocked">
+          <input
+            style="
+              width: 100%;
+              min-width: 10px;
+              font-family: Cambria, Georgia;
+              font-size: 1rem;
+              font-weight: bold;
+            "
+            size="1"
+            [(ngModel)]="name"
+            placeholder="Value"
+          />
+        </ng-container>
+      </div>
+      <div class="table" *ngIf="0 < gameDataElement.children.length">
+        <div
+          game-stand-data-element
+          class="table-row"
+          *ngFor="let childElement of gameDataElement.children; let i = index"
+          [gameDataElement]="childElement"
+          [isEdit]="isEdit"
+          [isTagLocked]="isTagLocked"
+          [isImage]="isImage"
+          [indexNum]="i"
+        ></div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-template #editButtonsImage01>
+  <button (click)="deleteImageElement()">
+    <i class="material-icons">remove_circle_outline</i>
+  </button>
+</ng-template>
+<ng-template #editButtonsImage02>
+  <button (click)="addImageElement()">
+    <i class="material-icons">add_circle</i>
+  </button>
+</ng-template>

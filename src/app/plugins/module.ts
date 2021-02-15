@@ -15,6 +15,7 @@ import { HandStorageService } from './hand-storage/service/hand-storage.service'
 import { ChatMessageSettingComponent } from './lily/chat-color/component/chat-message-setting/chat-message-setting.component'
 import { OpenUrlComponent } from './with-fly/open-url/component/open-url/open-url.component'
 import { WithFlyContextMenuComponent } from './with-fly/context-menu-height/component/context-menu/context-menu.component'
+import { GameStandDataElementComponent } from './lily/chat-stand/component/game-stand-data-element/game-stand-data-element.component'
 
 const components = [
   HelpKeyboardComponent,
@@ -33,6 +34,7 @@ const components = [
   ChatMessageSettingComponent,
   OpenUrlComponent,
   WithFlyContextMenuComponent,
+  GameStandDataElementComponent,
 ]
 const imports = []
 const services = [HandStorageService]

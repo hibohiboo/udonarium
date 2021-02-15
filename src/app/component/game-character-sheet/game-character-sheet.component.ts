@@ -11,6 +11,7 @@ import { PanelService } from 'service/panel.service';
 import { SaveDataService } from 'service/save-data.service';
 import factory from 'src/app/plugins/factory';
 import config from 'src/app/plugins/config';
+import { GameCharacter } from '@udonarium/game-character';
 
 @Component({
   selector: 'game-character-sheet',
@@ -20,6 +21,7 @@ import config from 'src/app/plugins/config';
 export class GameCharacterSheetComponent implements OnInit, OnDestroy, AfterViewInit {
   get useHideInventoryFlg(){ return config.useLilyHideInventoryFlg; }
   get useTalkFlg(){ return config.useLilyTalkFlg; }
+  get useLilyStand(): boolean { return config.useLilyStand && this.tabletopObject.aliasName === GameCharacter.aliasName && !!this.tabletopObject.imageDataElement}
   @Input() tabletopObject: TabletopObject = null;
   isEdit: boolean = false;
 
