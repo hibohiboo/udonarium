@@ -23,6 +23,9 @@ const useLilyHideInventoryFlg = location.search.includes(
   'lily_hide_inventory_flg=true',
 )
 const useLilyMessageColor = location.search.includes('lily_message_color=true')
+const useLilyUdonariumLog = location.search.includes('lily_udonarium_log=true')
+const useLilyDeleteLog = location.search.includes('lily_delete_log=true')
+
 
 // with fly
 const usePlayerColor = location.search.includes('withfly_player_color=true')
@@ -75,6 +78,8 @@ export default {
   useLilyTalkFlg,
   useLilyHideInventoryFlg,
   useLilyMessageColor,
+  useLilyUdonariumLog,
+  useLilyDeleteLog,
   // with fly
   usePlayerColor,
   useWithFlyResetPoint,

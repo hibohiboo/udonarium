@@ -3,7 +3,7 @@ import { ChatMessage, ChatMessageContext } from './chat-message';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
 import { InnerXml, ObjectSerializer } from './core/synchronize-object/object-serializer';
-import { EventSystem } from './core/system';
+import { EventSystem, Network } from './core/system';
 
 @SyncObject('chat-tab')
 export class ChatTab extends ObjectNode implements InnerXml {
@@ -89,6 +89,13 @@ export class ChatTab extends ObjectNode implements InnerXml {
   };
 
   // lily start
+  tachieReset(){
+    this.imageIdentifier = ['a','b','c','d','e','f','g','h','i','j','k','l'];
+    this.imageCharactorName = ['#0','#1','#2','#3','#4','#5','#6','#7','#8','#9','#10','#11'];
+    this.imageIdentifierZpos = [0,1,2,3,4,5,6,7,8,9,10,11];
+    this.imageIdentifierDummy = 'test';
+  }
+
   getImageCharactorPos(name:string){
     for (let i = 0; i < this.imageCharactorName.length ; i++) {
       if( name == this.imageCharactorName[i] ){
@@ -110,6 +117,90 @@ export class ChatTab extends ObjectNode implements InnerXml {
       this.imageIdentifierZpos.push( Number(toppos) );
       console.log( 'imageIdentifierZpos = ' + this.imageIdentifierZpos );
     }
+  }
+
+  logHtml( ): string {
+    let head : string =
+    "<?xml version='1.0' encoding='UTF-8'?>"+'\n'+
+    "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>"+'\n'+
+    "<html xmlns='http://www.w3.org/1999/xhtml' lang='ja'>"+'\n'+
+    "  <head>"+'\n'+
+    "    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />"+'\n'+
+    "    <title>チャットログ：" + this.escapeHtml( this.name ) + "</title>"+'\n'+
+    "  </head>"+'\n'+
+    "  <body>"+'\n';
+
+    let last : string =
+    ""+'\n'+
+    "  </body>"+'\n'+
+    "</html>";
+
+    let main : string = "";
+
+
+    for (let mess of this.chatMessages ) {
+      let to = mess.to;
+      let from = mess.from;
+      let myId = Network.peerContext.userId;//1.13.xとのmargeで修正
+      if( to ){
+        if( ( to != myId) && ( from != myId) ){
+          continue;
+        }
+      }
+
+      main += this.messageHtml( true , '' , mess );
+    }
+    let str :string = head + main + last;
+
+    return str;
+  }
+
+  messageHtml( isTime : boolean , tabName : string, message : ChatMessage ): string{
+    let str :string = '';
+    if( message ) {
+
+      if( tabName ) str += "[" + this.escapeHtml( tabName ) + "]";
+
+      if( isTime ){
+        let date = new Date( message.timestamp );
+        str += ( '00' + date.getHours() ).slice( -2 ) + ":" +  ( '00' + date.getMinutes()).slice( -2 ) + "：";
+      }
+
+      str += "<font color='";
+      if( message.messColor ) str += message.messColor.toLowerCase();
+      str += "'>";
+
+      str += "<b>";
+      if( message.name ) str += this.escapeHtml( message.name );
+      str += "</b>";
+
+      str += "：";
+      if( !message.isSecret || message.isSendFromSelf ){
+        if( message.text ) str += this.escapeHtml( message.text );
+      }else{
+        str += "（シークレットダイス）";
+      }
+      str += "</font><br>";
+
+      str += '\n';
+    }
+    return str;
+  }
+
+  escapeHtml(string) {
+    if(typeof string !== 'string') {
+      return string;
+    }
+    return string.replace(/[&'`"<>]/g, function(match){
+      return {
+        '&': '&amp;',
+        "'": '&#x27;',
+        '`': '&#x60;',
+        '"': '&quot;',
+        '<': '&lt;',
+        '>': '&gt;',
+      }[match]
+    });
   }
   // lily end
 }

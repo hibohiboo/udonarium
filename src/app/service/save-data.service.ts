@@ -1,4 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
+import { ChatTab } from '@udonarium/chat-tab';
 
 import { ChatTabList } from '@udonarium/chat-tab-list';
 import { FileArchiver } from '@udonarium/core/file-storage/file-archiver';
@@ -117,4 +118,19 @@ export class SaveDataService {
 
     return fileName + `_${year}-${month}-${day}_${hours}${minutes}`;
   }
+
+  // lily start
+  saveHtmlChatLog(chatTab: ChatTab, fileName: string ){
+    let text: string = chatTab.logHtml();
+
+    let blob = new Blob( [text], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, fileName + ".html");
+  }
+  saveHtmlChatLogAll( fileName: string ){
+    let text: string = ChatTabList.instance.logHtml();
+
+    let blob = new Blob( [text], {type: "text/plain;charset=utf-8"});
+    saveAs(blob, fileName + ".html");
+  }
+  // lily end
 }

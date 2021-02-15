@@ -2,6 +2,7 @@ import { ChatTab } from './chat-tab';
 import { SyncObject } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
 import { InnerXml } from './core/synchronize-object/object-serializer';
+import { Network } from './core/system';
 
 @SyncObject('chat-tab-list')
 export class ChatTabList extends ObjectNode implements InnerXml {
@@ -65,4 +66,75 @@ export class ChatTabList extends ObjectNode implements InnerXml {
     super.parseInnerXml.apply(ChatTabList.instance, [element]);
     this.destroy();
   }
+
+  // start lily
+  logHtml( ): string {
+    let head : string =
+    "<?xml version='1.0' encoding='UTF-8'?>"+'\n'+
+    "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>"+'\n'+
+    "<html xmlns='http://www.w3.org/1999/xhtml' lang='ja'>"+'\n'+
+    "  <head>"+'\n'+
+    "    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />"+'\n'+
+    "    <title>チャットログ：" + "全タブ" + "</title>"+'\n'+
+    "  </head>"+'\n'+
+    "  <body>"+'\n';
+
+    let last : string =
+    ""+'\n'+
+    "  </body>"+'\n'+
+    "</html>";
+
+    let main : string = "";
+
+    //泥臭くやる
+    if( this.chatTabs ){
+      let tabNum = this.chatTabs.length;
+      let indexList : number[] = [] ;
+      console.log( 'tabNum :' + tabNum );
+      for( let i = 0 ; i < tabNum ;i++){
+        indexList.push(0);
+      }
+
+      let fastTabIndex : number = null;
+      let chkTimestamp : number = null;
+
+      while( 1 ){
+        fastTabIndex = -1;
+        chkTimestamp = -1;
+
+        for( let i = 0 ; i < tabNum ; i++){
+          if( this.chatTabs[i].chatMessages.length <= indexList[i] ) continue;
+
+          if( chkTimestamp == -1){
+            chkTimestamp = this.chatTabs[i].chatMessages[indexList[i]].timestamp ;
+            fastTabIndex = i;
+          }
+          if( chkTimestamp > this.chatTabs[i].chatMessages[indexList[i]].timestamp ){
+            chkTimestamp = this.chatTabs[i].chatMessages[indexList[i]].timestamp;
+            fastTabIndex = i;
+          }
+        }
+        if( fastTabIndex == -1)break;
+
+        let to = this.chatTabs[ fastTabIndex ].chatMessages[ indexList[fastTabIndex] ].to;
+        let from = this.chatTabs[ fastTabIndex ].chatMessages[ indexList[fastTabIndex] ].from;
+        let myId = Network.peerContext.userId; //1.13.xとのmargeで修正
+        if( to ){
+          if( ( to != myId) && ( from != myId) ){
+            console.log( " SKIP " + from + " > " + to + " : " + this.chatTabs[ fastTabIndex ].chatMessages[ indexList[fastTabIndex] ].text );
+            indexList[ fastTabIndex ] ++;
+            continue;
+          }
+        }
+
+        main += this.chatTabs[ fastTabIndex ].messageHtml( this.simpleDispFlagTime ? true : false  , this.chatTabs[ fastTabIndex ].name , this.chatTabs[ fastTabIndex ].chatMessages[ indexList[fastTabIndex] ] );
+        indexList[ fastTabIndex ] ++;
+      }
+    }
+
+    let str :string = head + main + last;
+
+    return str;
+  }
+  // end lily
 }

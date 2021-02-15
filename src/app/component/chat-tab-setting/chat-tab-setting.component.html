@@ -30,6 +30,21 @@
         </ng-container>
       </div>
     </ng-container>
+    <ng-container *ngIf="useLilyUdonariumLog">
+      <ng-container *ngIf="!isDeleted">
+          <hr>
+          <button (click)="saveLog()" style = "width:9em">ログ保存</button><span style= "font-size:12px">リストから選んだログを保存</span><br>
+          <button (click)="saveAllLog()" style = "width:9em">全タブログ保存</button><span style= "font-size:12px">時系列順にまとめて保存</span>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="useLilyDeleteLog">
+      <hr>
+      <br><br><br>
+      <ng-container *ngIf="!isDeleted">
+        <button class="danger" (click)="deleteLog()" [attr.disabled]="chatTabs.length <= 1 ? '' : null" style = "width:9em">選択ログ消去</button>
+        <button class="danger" (click)="deleteLogALL()" [attr.disabled]="chatTabs.length <= 1 ? '' : null" style = "width:9em">全ログ消去</button>
+      </ng-container>
+    </ng-container>
   </div>
 </div>
 <ng-container *ngIf="isEmpty">
