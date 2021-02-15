@@ -2,6 +2,7 @@ import { animate, keyframes, style, transition, trigger } from '@angular/animati
 import { Component, ElementRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import config from 'src/app/plugins/config';
 
 @Component({
   selector: 'ui-panel',
@@ -50,6 +51,8 @@ export class UIPanelComponent implements OnInit {
 
   get isPointerDragging(): boolean { return this.pointerDeviceService.isDragging; }
 
+  get useLilyStand(): boolean { return config.useLilyStand && !!this.panelService.chatTab }
+
   constructor(
     public panelService: PanelService,
     private pointerDeviceService: PointerDeviceService
@@ -96,4 +99,20 @@ export class UIPanelComponent implements OnInit {
   close() {
     if (this.panelService) this.panelService.close();
   }
+
+  // start lily
+  private tachieDispByMouse: boolean = true;
+
+  showTachie(flag:boolean){
+    this.tachieDispByMouse = flag;
+  }
+  get padding_(): string {
+    if( this.panelService.isCutIn ) return '0px';
+    else return '8px';
+  }
+
+  get isCutIn(): boolean {
+    return this.panelService.isCutIn;
+  }
+  // end lily
 }

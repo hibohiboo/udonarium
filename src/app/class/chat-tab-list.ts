@@ -18,6 +18,11 @@ export class ChatTabList extends ObjectNode implements InnerXml {
   get chatTabs(): ChatTab[] { return this.children as ChatTab[]; }
 
   // start lily
+
+  public tachieHeightValue = 200;
+  public minTachieSize = 100;
+  public maxTachieSize = 500;
+  public isTachieInWindow = false;
   //チャット簡易表示フラグ、拡張余地のため整数型
   private simpleDispFlagTime_ : number = 0;
   set simpleDispFlagTime( flag : number ){

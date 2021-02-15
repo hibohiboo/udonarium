@@ -57,8 +57,19 @@ export class ChatInputComponent implements OnInit, OnDestroy {
   // add start tachieNum
   @Input('tachieNum') _tachieNum: number = 0;
   @Output() chat = factory.chatInputEventEmitterFactory();
-  get tachieNum(): number { return this._tachieNum };
-  set tachieNum(num:  number){ this._tachieNum = num};
+  get tachieNum(): number {
+    let object = ObjectStore.instance.get(this.sendFrom);
+    if (object instanceof GameCharacter) {
+      return object.selectedTachieNum;
+    }
+    return 0;
+  }
+  set tachieNum(num:  number){
+    let object = ObjectStore.instance.get(this.sendFrom);
+    if (object instanceof GameCharacter) {
+      object.selectedTachieNum = num;
+    }
+  }
   get selectCharacterTachie(){
     let object = ObjectStore.instance.get(this.sendFrom);
     if (object instanceof GameCharacter) {

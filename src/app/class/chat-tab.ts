@@ -25,6 +25,7 @@ export class ChatTab extends ObjectNode implements InnerXml {
   private _dispCharctorIcon: boolean = true;
   get dispCharctorIcon(): boolean { return this._dispCharctorIcon; }
   set dispCharctorIcon( flag : boolean) { this._dispCharctorIcon = flag; }
+  imageDispFlag: boolean[] = [true,true,true,true,true,true,true,true,true,true,true,true];
   // lily end
   get chatMessages(): ChatMessage[] { return <ChatMessage[]>this.children; }
 
@@ -89,6 +90,15 @@ export class ChatTab extends ObjectNode implements InnerXml {
   };
 
   // lily start
+  tachiePosHide( pos :number ){
+    this.imageDispFlag[pos] = false;
+    console.log( this.imageDispFlag );
+  }
+
+  tachiePosIsDisp( pos :number ):boolean{
+    return this.imageDispFlag[pos];
+  }
+
   tachieReset(){
     this.imageIdentifier = ['a','b','c','d','e','f','g','h','i','j','k','l'];
     this.imageCharactorName = ['#0','#1','#2','#3','#4','#5','#6','#7','#8','#9','#10','#11'];

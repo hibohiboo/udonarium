@@ -26,28 +26,30 @@ export default {
     if (!that.buffDataElement) that.rootDataElement.appendChild(DataElement.create('buff', '', {}, 'buff_' + that.identifier));//entyu
   },
   addExtendData(that){
-    if (!config.useLilyBuff) return;
-    that.addBuffDataElement();
-    let isbuff = that.buffDataElement.getElementsByName('バフ/デバフ');
-    if( isbuff.length == 0 ){
-      let buffElement: DataElement = DataElement.create('バフ/デバフ', '', {}, 'バフ/デバフ' + that.identifier);
-      that.buffDataElement.appendChild(buffElement);
+    if (config.useLilyBuff) {
+      that.addBuffDataElement();
+      let isbuff = that.buffDataElement.getElementsByName('バフ/デバフ');
+      if( isbuff.length == 0 ){
+        let buffElement: DataElement = DataElement.create('バフ/デバフ', '', {}, 'バフ/デバフ' + that.identifier);
+        that.buffDataElement.appendChild(buffElement);
+      }
+      if( that.remoteController == null){
+        let controller: BuffPalette = new BuffPalette('RemotController_' + that.identifier);
+        controller.setPalette(`コントローラ入力例：
+  マッスルベアー DB+2 3
+  クリティカルレイ A 18
+  セイクリッドウェポン 命+1攻+2 18`);
+        controller.initialize();
+        that.appendChild(controller);
+      }
     }
-    if( that.remoteController == null){
-      let controller: BuffPalette = new BuffPalette('RemotController_' + that.identifier);
-      controller.setPalette(`コントローラ入力例：
-マッスルベアー DB+2 3
-クリティカルレイ A 18
-セイクリッドウェポン 命+1攻+2 18`);
-      controller.initialize();
-      that.appendChild(controller);
-    }
-    if (!config.useLilyStand) return;
-    let istachie = that.detailDataElement.getElementsByName('立ち絵位置');
-    if( istachie.length == 0 ){
-      let testElement: DataElement = DataElement.create('立ち絵位置', '', {}, '立ち絵位置' + that.identifier);
-      that.detailDataElement.appendChild(testElement);
-      testElement.appendChild(DataElement.create('POS', 11, { 'type': 'numberResource', 'currentValue': '0' }, 'POS_' + that.identifier));
+    if (config.useLilyStand) {
+      let istachie = that.detailDataElement.getElementsByName('立ち絵位置');
+      if( istachie.length == 0 ){
+        let testElement: DataElement = DataElement.create('立ち絵位置', '', {}, '立ち絵位置' + that.identifier);
+        that.detailDataElement.appendChild(testElement);
+        testElement.appendChild(DataElement.create('POS', 11, { 'type': 'numberResource', 'currentValue': '0' }, 'POS_' + that.identifier));
+      }
     }
   },
   createTestGameDataElementExtendSampleHook(that,name: string, size: number, imageIdentifier: string) {

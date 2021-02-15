@@ -1,4 +1,5 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, ViewContainerRef } from '@angular/core';
+import { ChatTab } from '@udonarium/chat-tab';
 import { panelOpenHook } from '../plugins';
 
 declare var Type: FunctionConstructor;
@@ -29,8 +30,11 @@ export class PanelService {
   top: number = 0;
   width: number = 100;
   height: number = 100;
+  // start lily
   isCutIn: boolean = false ; //この方式でよいか検討のこと
   cutInIdentifier: string = '';
+  chatTab: ChatTab = null;
+  // end lily
 
   scrollablePanel: HTMLDivElement = null;
 

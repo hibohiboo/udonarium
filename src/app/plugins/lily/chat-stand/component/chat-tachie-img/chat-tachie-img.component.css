@@ -1,6 +1,6 @@
 .message-setting {
   background-color: transparent;
-  color: #444;
+  color: #444; 
   border: solid 1px #555;
   padding: 2px 4px;
   border-radius: 5px;
@@ -61,7 +61,7 @@ img{
 
 .tachie{
 
-/*
+/* 
  position: absolute;
 */
 }

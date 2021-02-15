@@ -21,6 +21,7 @@ import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem } from '@udonarium/core/system';
 import { ResettableTimeout } from '@udonarium/core/system/util/resettable-timeout';
 import { setZeroTimeout } from '@udonarium/core/system/util/zero-timeout';
+import config from 'src/app/plugins/config';
 
 import { PanelService } from 'service/panel.service';
 
@@ -127,7 +128,7 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
     }
     this.sampleMessages = messages;
 
-    EventSystem.register(this)
+    const register = EventSystem.register(this)
       .on('MESSAGE_ADDED', event => {
         let message = ObjectStore.instance.get<ChatMessage>(event.data.messageIdentifier);
         if (!message || !this.chatTab.contains(message)) return;
@@ -146,6 +147,13 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
           this.changeDetector.markForCheck();
         }
       });
+    if (config.useLilyStand) {
+      register.on('RE_DRAW_CHAT', event => {
+        console.log("チャット再描画");
+        setTimeout(() => this.redraw() , 0);
+        //フラグの更新前にイベントが走るためタイマーを使う。ひとまずやむなし
+      });
+    }
   }
 
   ngAfterViewInit() {
@@ -204,6 +212,13 @@ export class ChatTabComponent implements OnInit, AfterViewInit, OnDestroy, OnCha
   trackByChatMessage(index: number, message: ChatMessage) {
     return message.identifier;
   }
+
+  // start lily
+  redraw() {
+    // 強制的に再描画させる
+    this.changeDetector.detectChanges();
+  }
+  // end lily
 
   private adjustIndex() {
     let chatMessages = this.chatTab ? this.chatTab.chatMessages : [];

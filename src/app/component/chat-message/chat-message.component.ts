@@ -33,11 +33,17 @@ import { chatTabList } from 'src/app/plugins/lily/chat-color/class/chat-message.
 
 export class ChatMessageComponent implements OnInit, AfterViewInit {
   @Input() chatMessage: ChatMessage;
+
   imageFile: ImageFile = ImageFile.Empty;
   animeState: string = 'inactive';
 
+  // start lily
   get useLilyMessageColor(): boolean { return config.useLilyMessageColor }
-  get chatTabList() { return chatTabList() } // lily
+  @Input() simpleDispFlagTime: boolean = false;
+  @Input() simpleDispFlagUserId: boolean = false;
+  @Input() chatSimpleDispFlag: boolean = false;
+  get chatTabList() { return chatTabList() }
+  // end lily
 
   // start with fly
   get isMine(): boolean {

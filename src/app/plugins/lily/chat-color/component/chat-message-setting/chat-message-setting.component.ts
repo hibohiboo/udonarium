@@ -42,13 +42,15 @@ export class ChatMessageSettingComponent implements OnInit, OnDestroy, AfterView
   }
 
   changeDispFlagTime(){
-    //
+    EventSystem.trigger('RE_DRAW_CHAT', {  });
   }
 
   changeDispFlagUserId(){
-    //
+    EventSystem.trigger('RE_DRAW_CHAT', {  });
   }
-
+  changeTachieInWindow() {
+    //中身なし
+  }
 
   ngOnInit() {
   }
