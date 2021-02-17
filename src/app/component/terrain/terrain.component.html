@@ -5,7 +5,7 @@
     <div class="component-content is-3d is-pointer-events-auto" [ngClass]="{'is-grab': !isLocked}"
       appRotable [rotable.option]="rotableOption" (rotable.ondragstart)="onMove()" (rotable.ondragend)="onMoved()" [rotable.disable]="isLocked">
       <ng-container *ngIf="hasFloor && isVisibleFloor && 0 < floorImage?.url.length">
-        <div class="texture" [ngClass]="{'blinking-animation': !isLocked}" [ngStyle]="{'transform': 'translateZ(' + height * gridSize +'px)'}"
+        <div class="texture" [ngClass]="{'blinking-animation': !isLocked}" [ngStyle]="{'transform': use2d ? 'none' : 'translateZ(' + height * gridSize +'px)'}"
           [style.background-image]="'url(' + floorImage.url + ')' | safe: 'style'"></div>
       </ng-container>
       <ng-container *ngIf="hasWall && 0 < wallImage?.url.length">
