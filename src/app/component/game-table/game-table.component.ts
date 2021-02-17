@@ -30,6 +30,7 @@ import { TableTouchGesture, TableTouchGestureEvent } from './table-touch-gesture
 import { gameBoardKeydownHook, gameTableComponentInitHook, onContextMenuHook, updateGameObjectHook } from '../../plugins';
 import pluginConfig from '../../plugins/config';
 import { HandStorageService } from 'src/app/plugins/hand-storage/service/hand-storage.service';
+import config from 'src/app/plugins/config';
 
 enum Keyboard {
   ArrowLeft = 'ArrowLeft',
@@ -388,6 +389,13 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.viewPotisonX += transformX;
     this.viewPotisonY += transformY;
     this.viewPotisonZ += transformZ;
+
+    if (config.useRotateOff) {
+      this.viewRotateX -= rotateX;
+      this.viewRotateY -= rotateY;
+      this.viewRotateZ -= rotateZ;
+    }
+
     if (pluginConfig.useWithFlyContextMenuHeightTerrain && (rotateX != 0 || rotateY != 0 || rotateX != 0)) {
       EventSystem.trigger<object>('TABLE_VIEW_ROTATE', {
         x: this.viewRotateX,

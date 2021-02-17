@@ -10,6 +10,7 @@ const useKeyboardShortcut = location.search.includes('keyboard_shortcut=true')
 const useCardOnTopMove = location.search.includes('ontopcardmove=true')
 const useHandStorage = location.search.includes('hand_storage=true')
 const useDicebot = location.search.includes('use_dicebot=')
+const useRotateOff = location.search.includes('use_lodate_off=true')
 
 // lily
 const useLilyCutin = location.search.includes('lily_cutin=true')
@@ -66,6 +67,7 @@ export default {
   useDicebot,
   useCardOnlySelfHide,
   useCardGMView,
+  useRotateOff,
   // lily
   useLilyCutin,
   useLilyDiceTable,
