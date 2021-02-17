@@ -14,6 +14,7 @@ import { DataElement } from '@udonarium/data-element';
 import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component';
 import { ModalService } from 'service/modal.service';
 import config from 'src/app/plugins/config';
+import factory from 'src/app/plugins/factory';
 
 @Component({
   selector: 'game-stand-data-element, [game-stand-data-element]',
@@ -79,7 +80,7 @@ export class GameStandDataElementComponent implements OnInit, OnDestroy, AfterVi
  }
 
  openModal(name: string = '', isAllowedEmpty: boolean = false) {
-   this.modalService.open<string>(FileSelecterComponent, { isAllowedEmpty: isAllowedEmpty }).then(value => {
+   this.modalService.open<string>(factory.storageSelectorComponentFactory(), { isAllowedEmpty: isAllowedEmpty }).then(value => {
      if (!value) return;
      let element = this.gameDataElement;
      if (!element) return;
