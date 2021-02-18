@@ -1,10 +1,12 @@
 import { EventEmitter } from '@angular/core'
+import { ObjectStore } from '@udonarium/core/synchronize-object/object-store'
+import { GameCharacter } from '@udonarium/game-character'
 import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component'
 import { FileStorageComponent } from 'component/file-storage/file-storage.component'
 import config from './config'
 import { FileSelecterComponentLily } from './lily/file/component/file-selecter/file-selecter.component'
 import { FileStorageComponentLily } from './lily/file/component/file-storage/file-storage.component'
-
+import lilyPlus from './lily-plus'
 export default {
   storageComponentFactory() {
     if (config.useLilyFile) {
@@ -50,8 +52,14 @@ export default {
     }>()
   },
   chatInputChatMessageFactory(that) {
+    let text = that.text
+    if (config.useLilyPlusStandChatChange && text.replace('＠','@').includes('@') ){
+      text = lilyPlus.stand.chatInputChatMessageFactoryHook(that);
+
+    }
+
     const retObj = {
-      text: that.text,
+      text,
       gameType: that.gameType,
       sendFrom: that.sendFrom,
       sendTo: that.sendTo,

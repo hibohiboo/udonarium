@@ -27,6 +27,9 @@ const useLilyMessageColor = location.search.includes('lily_message_color=true')
 const useLilyUdonariumLog = location.search.includes('lily_udonarium_log=true')
 const useLilyDeleteLog = location.search.includes('lily_delete_log=true')
 
+// lily plus
+const useLilyPlusStandChatChange = useLilyStand
+
 
 // with fly
 const usePlayerColor = location.search.includes('withfly_player_color=true')
@@ -82,6 +85,8 @@ export default {
   useLilyMessageColor,
   useLilyUdonariumLog,
   useLilyDeleteLog,
+  // lily plus
+  useLilyPlusStandChatChange,
   // with fly
   usePlayerColor,
   useWithFlyResetPoint,

@@ -5,6 +5,7 @@ import postMessage from './post-message'
 import insertSpreadsheet from './insert-spreadsheet'
 import { getDeckMenu } from './sheet-deck'
 import lily from './lily'
+import lilyPlus from './lily-plus'
 import keyboardShortcut from './keyboard-shortcut'
 import cardOnTopMove from './card-on-top-move'
 import handStorage from './hand-storage'
@@ -282,6 +283,7 @@ export const gameCharacterOnContextMenuHook = (
 // バフ
 export const tabletopServiceMakeDefaultTabletopObjectsHook = () => {
   if (config.hideSample) return true // サンプルを初期表示させない
+  if (config.useLilyPlusStandChatChange) return lilyPlus.stand.tabletopServiceMakeDefaultTabletopObjectsHook()
   if (config.useLilyBuff)
     return lily.buff.tabletopServiceMakeDefaultTabletopObjectsHook()
 
