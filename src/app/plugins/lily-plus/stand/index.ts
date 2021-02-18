@@ -30,10 +30,10 @@ export default {
   },
 
   tabletopServiceMakeDefaultTabletopObjectsHook() {
-    const testCharacter = new GameCharacter('gon1');
-    const fileContext = ImageFile.createEmpty('gon1_image').toContext();
+    let testCharacter = new GameCharacter('gon1');
+    let fileContext = ImageFile.createEmpty('gon1_image').toContext();
     fileContext.url = './assets/images/gon/gon1.png';
-    const testFile = ImageStorage.instance.add(fileContext);
+    let testFile = ImageStorage.instance.add(fileContext);
     testCharacter.location.x = 10 * 50;
     testCharacter.location.y = 5 * 50;
     testCharacter.initialize();
@@ -62,6 +62,30 @@ export default {
     d4.currentValue = d4.name = 'ん';
     d4.value = ImageStorage.instance.add('./assets/images/gon/gon1.png').identifier;
     testCharacter.imageDataElement.appendChild(d4);
+
+    fileContext = ImageFile.createEmpty('testCharacter_1_image').toContext();
+    fileContext.url = './assets/images/mon_052.gif';
+    testFile = ImageStorage.instance.add(fileContext);
+
+    fileContext = ImageFile.createEmpty('testCharacter_3_image').toContext();
+    fileContext.url = './assets/images/mon_128.gif';
+    testFile = ImageStorage.instance.add(fileContext);
+
+    fileContext = ImageFile.createEmpty('testCharacter_4_image').toContext();
+    fileContext.url = './assets/images/mon_150.gif';
+    testFile = ImageStorage.instance.add(fileContext);
+
+    fileContext = ImageFile.createEmpty('testCharacter_5_image').toContext();
+    fileContext.url = './assets/images/mon_211.gif';
+    testFile = ImageStorage.instance.add(fileContext);
+
+    fileContext = ImageFile.createEmpty('testCharacter_6_image').toContext();
+    fileContext.url = './assets/images/mon_135.gif';
+    testFile = ImageStorage.instance.add(fileContext);
+
+    let url: string = './assets/images/tex.jpg';
+    let image: ImageFile = ImageStorage.instance.get(url)
+    if (!image) image = ImageStorage.instance.add(url);
 
     testCharacter.setLocation(Network.peerId)
     return true
