@@ -4,6 +4,7 @@ import { ObjectStore } from "@udonarium/core/synchronize-object/object-store";
 import { Network } from "@udonarium/core/system";
 import { DataElement } from "@udonarium/data-element";
 import { GameCharacter } from "@udonarium/game-character";
+import { ImageTag } from "../../lily/file/class/image-tag";
 
 export default {
   chatInputChatMessageFactoryHook(that) {
@@ -48,6 +49,8 @@ export default {
     d1.value = img1.identifier;
     testCharacter.imageDataElement.appendChild(d1);
 
+
+
     const d2 = DataElement.create('imageIdentifier', '', { type: 'image' });
     d2.currentValue = d2.name = 'おこ';
     d2.value = ImageStorage.instance.add('./assets/images/gon/gon3.png').identifier;
@@ -62,6 +65,14 @@ export default {
     d4.currentValue = d4.name = 'ん';
     d4.value = ImageStorage.instance.add('./assets/images/gon/gon1.png').identifier;
     testCharacter.imageDataElement.appendChild(d4);
+
+    ImageTag.create(img1.identifier).tag = '立ち絵';
+    ImageTag.create(d2.value).tag = '立ち絵';
+    ImageTag.create(d3.value).tag = '立ち絵';
+    ImageTag.create(testFile.identifier).tag = '立ち絵';
+
+    testCharacter.setLocation(Network.peerId)
+
 
     fileContext = ImageFile.createEmpty('testCharacter_1_image').toContext();
     fileContext.url = './assets/images/mon_052.gif';
@@ -83,11 +94,68 @@ export default {
     fileContext.url = './assets/images/mon_135.gif';
     testFile = ImageStorage.instance.add(fileContext);
 
+    fileContext = ImageFile.createEmpty('testCharacter_7_image').toContext();
+    fileContext.url = './assets/images/pawn/pawnBlack.png';
+    testFile = ImageStorage.instance.add(fileContext);
+    ImageTag.create(testFile.identifier).tag = 'ポーン';
+
+    fileContext = ImageFile.createEmpty('testCharacter_8_image').toContext();
+    fileContext.url = './assets/images/pawn/pawnBlue.png';
+    testFile = ImageStorage.instance.add(fileContext);
+    ImageTag.create(testFile.identifier).tag = 'ポーン';
+
+    fileContext = ImageFile.createEmpty('testCharacter_9_image').toContext();
+    fileContext.url = './assets/images/pawn/pawnGreen.png';
+    testCharacter = new GameCharacter('testCharacter_9');
+    testFile = ImageStorage.instance.add(fileContext);
+    ImageTag.create(testFile.identifier).tag = 'ポーン';
+    testCharacter.location.x = 10 * 50;
+    testCharacter.location.y = 2 * 50;
+    testCharacter.initialize();
+    testCharacter.createTestGameDataElement('キャラクター', 1, testFile.identifier);
+
+    fileContext = ImageFile.createEmpty('testCharacter_10_image').toContext();
+    fileContext.url = './assets/images/pawn/pawnLightBlue.png';
+    testFile = ImageStorage.instance.add(fileContext);
+    ImageTag.create(testFile.identifier).tag = 'ポーン';
+
+    fileContext = ImageFile.createEmpty('testCharacter_11_image').toContext();
+    fileContext.url = './assets/images/pawn/pawnOrange.png';
+    testFile = ImageStorage.instance.add(fileContext);
+    ImageTag.create(testFile.identifier).tag = 'ポーン';
+
+    fileContext = ImageFile.createEmpty('testCharacter_12_image').toContext();
+    fileContext.url = './assets/images/pawn/pawnPink.png';
+    testFile = ImageStorage.instance.add(fileContext);
+    ImageTag.create(testFile.identifier).tag = 'ポーン';
+
+    fileContext = ImageFile.createEmpty('testCharacter_13_image').toContext();
+    fileContext.url = './assets/images/pawn/pawnPurple.png';
+    testFile = ImageStorage.instance.add(fileContext);
+    ImageTag.create(testFile.identifier).tag = 'ポーン';
+
+    fileContext = ImageFile.createEmpty('testCharacter_14_image').toContext();
+    fileContext.url = './assets/images/pawn/pawnRed.png';
+    testFile = ImageStorage.instance.add(fileContext);
+    ImageTag.create(testFile.identifier).tag = 'ポーン';
+
+    fileContext = ImageFile.createEmpty('testCharacter_15_image').toContext();
+    fileContext.url = './assets/images/pawn/pawnWhite.png';
+    testFile = ImageStorage.instance.add(fileContext);
+    ImageTag.create(testFile.identifier).tag = 'ポーン';
+
+    fileContext = ImageFile.createEmpty('testCharacter_16_image').toContext();
+    fileContext.url = './assets/images/pawn/pawnYellow.png';
+    testFile = ImageStorage.instance.add(fileContext);
+    ImageTag.create(testFile.identifier).tag = 'ポーン';
+
+
+
     let url: string = './assets/images/tex.jpg';
     let image: ImageFile = ImageStorage.instance.get(url)
     if (!image) image = ImageStorage.instance.add(url);
+    ImageTag.create(image.identifier).tag = '地形';
 
-    testCharacter.setLocation(Network.peerId)
     return true
   }
 }
