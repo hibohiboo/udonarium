@@ -1,6 +1,6 @@
 import { ChatMessage } from '@udonarium/chat-message'
-import config from '../config'
-import * as utility from '../utility'
+import config from '../../config'
+import * as utility from '../../utility'
 
 export default {
   chatTabOnChildAddedHook(child: ChatMessage) {

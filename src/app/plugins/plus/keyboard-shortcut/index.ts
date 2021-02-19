@@ -1,6 +1,6 @@
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect'
 import * as constants from 'src/app/plugins/constants'
-import { showRemoteController } from '../lily/controller'
+import { showRemoteController } from '../../lily/controller'
 import config from 'src/app/plugins/config'
 import { Network } from '@udonarium/core/system'
 

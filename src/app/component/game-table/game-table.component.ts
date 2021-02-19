@@ -29,7 +29,7 @@ import { GridLineRender } from './grid-line-render';
 import { TableTouchGesture, TableTouchGestureEvent } from './table-touch-gesture';
 import { gameBoardKeydownHook, gameTableComponentInitHook, onContextMenuHook, updateGameObjectHook } from '../../plugins';
 import pluginConfig from '../../plugins/config';
-import { HandStorageService } from 'src/app/plugins/hand-storage/service/hand-storage.service';
+import { HandStorageService } from 'src/app/plugins/plus/hand-storage/service/hand-storage.service';
 import config from 'src/app/plugins/config';
 
 enum Keyboard {

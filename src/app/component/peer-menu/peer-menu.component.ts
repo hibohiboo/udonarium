@@ -10,7 +10,7 @@ import { LobbyComponent } from 'component/lobby/lobby.component';
 import { AppConfigService } from 'service/app-config.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
-import { peerMenuMethods } from 'src/app/plugins/insert-spreadsheet';
+import { peerMenuMethods } from 'src/app/plugins/plus/insert-spreadsheet';
 import factory from 'src/app/plugins/factory';
 import config from 'src/app/plugins/config';
 import { animate, style, transition, trigger } from '@angular/animations';
