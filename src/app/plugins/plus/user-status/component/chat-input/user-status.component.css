@@ -1,0 +1,108 @@
+.table {
+  box-sizing: border-box;
+  padding : 5px;
+  /*position : fixed;*/
+  /*bottom : 0;*/
+  display: table;
+  /*width: calc(100% - 30px);*/
+  width: 100%;
+}
+.users {
+  width: 150px;
+  margin: 0 auto;
+}
+.users summary {
+  cursor: pointer;
+}
+.user-name {
+  border-radius: 10px;
+  display: block;
+  background: black;
+  color: white;
+  padding: 5px 10px;
+  width: fit-content;
+  margin: 0 auto;
+  margin-bottom: 3px;
+}
+.table .table-cell {
+  display: table-cell;
+}
+
+.imagebox {
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+  /* max-width: 250px;
+  max-height: 250px; */
+  vertical-align: top;
+  text-align: center;
+  border: solid 2px;
+  position: relative;
+}
+.imagebox.speeching{
+  box-shadow: 0 0 6px deepskyblue;
+}
+.image{
+  width: 100%;
+  height: 100%;
+  vertical-align: bottom;
+  object-fit: cover;
+  object-position: 50% 0%;
+
+}
+
+.speeching-info {
+  font-size: 8px;
+  height: 1.3em;
+  margin-bottom: 5px;
+}
+
+.speech-button {
+  width: fit-content;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.speech-button:hover {
+  color: #CCC;
+  background-color: rgba(30, 30, 30, 0.8);
+}
+.speech-button > a {
+  height: 128px;
+  width: 128px;
+  font-size: 8px;
+  user-select: none;
+}
+.speech-button > a > label {
+  cursor: -moz-pointer;
+  cursor: -webkit-pointer;
+  cursor: pointer;
+}
+
+.speech-name {
+  text-align: center;
+  font-weight: bold;
+}
+
+.speech{
+  animation-iteration-count: infinite;
+  animation-duration: 0.4s;
+  animation-name: fade_anime;
+  position: absolute;
+  top:0;
+  left:0;
+}
+.speech1{
+  animation-delay: -0.2s;
+  opacity: 1;
+}
+/* .speech2{
+  opacity: 0;
+} */
+
+@keyframes fade_anime {
+  1% { opacity: 0; }
+  49% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 1; }
+}

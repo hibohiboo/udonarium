@@ -1,0 +1,96 @@
+<div>
+
+  <div class="users">
+    <div class="user-name">{{ myPeer?.name }}</div>
+    <div class=" imagebox">
+      <img
+        *ngIf="0 < imageFile.url.length"
+        class="image"
+        [src]="imageFile.url | safe: 'resourceUrl'"
+      />
+    </div>
+    <div>
+      <select style="width: 12em" [(ngModel)]="sendFrom">
+        <option *ngIf="!onlyCharacters" value="{{ myPeer?.identifier }}">
+          {{ myPeer?.name }}（あなた）
+        </option>
+        <option
+          *ngFor="let gameCharacter of gameCharacters"
+          value="{{ gameCharacter.identifier }}"
+        >
+          {{ gameCharacter.name }}
+        </option>
+      </select>
+    </div>
+    <div class="speeching-info">
+      <ng-container *ngIf="0 < speechingPeerNames.length">
+        <span
+          *ngFor="let peerName of speechingPeerNames; index as i"
+          style="font-weight: bold"
+          >{{ peerName
+          }}<span *ngIf="speechingPeerNames.length !== i + 1">, </span></span
+        >
+        <span> が発言中...</span>
+      </ng-container>
+    </div>
+    <details open="true">
+      <summary>設定</summary>
+      <label  *ngIf="!isSpeechConnect" (click)="speechStart()" class="speech-button">
+        <div><i class="material-icons">voice_over_off</i></div>
+        <div>マイク<input type="checkbox" name="isSpeechConnect" /></div>
+      </label>
+      <label  *ngIf="isSpeechConnect"  (click)="speechEnd()" class="speech-button">
+        <div><i class="material-icons">record_voice_over</i></div>
+        <div>マイク<input type="checkbox" checked="true" name="isSpeechConnect" /></div>
+      </label>
+      <div>
+        音量:
+        <input value="{{volume}}" disabled=true type="range" min="0" max="{{100}}" style="width: 8em;">
+      </div>
+      <div>
+        感度:
+        <input [(ngModel)]="speechThreshold" type="range" min="0" max="{{100}}" style="width: 8em;">
+      </div>
+
+    </details>
+  </div>
+  <div *ngFor="let peer of otherPeers">
+    <div class="users">
+
+      <div class="user-name">
+        <span *ngIf="!usePlayerColor">{{peer.name}}</span>
+        <span *ngIf="usePlayerColor"><b [style.color]="findPeerColor(peer.peerId)">{{peer.name}}</b></span>
+      </div>
+      <ng-container *ngIf="speechPeerImages(peer).length === 1">
+        <div class="imagebox" [ngClass]="{ 'speeching': isSpeeching(peer) }">
+          <img
+            class="image"
+            [src]="speechPeerImages(peer)[0] | safe: 'resourceUrl'"
+          />
+        </div>
+      </ng-container>
+      <ng-container *ngIf="speechPeerImages(peer).length === 2">
+        <div class="imagebox" [ngClass]="{ 'speeching': isSpeeching(peer) }">
+          <img
+          *ngFor="let img of speechPeerImages(peer); let i=index;"
+            class="image speech speech{{i}}"
+            [src]="img | safe: 'resourceUrl'"
+          />
+
+        </div>
+      </ng-container>
+
+      <div class="speech-name">
+        {{findSpeechName(peer)}}
+      </div>
+      <div class="speeching-info">
+        <ng-container *ngIf="isSpeeching(peer)">
+          <span style="font-weight: bold">{{ findSpeechName(peer)}}</span>
+          <span> が発言中...</span>
+        </ng-container>
+      </div>
+
+    </div>
+
+  </div>
+</div>

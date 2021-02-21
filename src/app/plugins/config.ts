@@ -11,7 +11,7 @@ const useCardOnTopMove = location.search.includes('ontopcardmove=true')
 const useHandStorage = location.search.includes('hand_storage=true')
 const useDicebot = location.search.includes('use_dicebot=')
 const useRotateOff = location.search.includes('use_lotate_off=true')
-
+const useSpeechStatus = location.search.includes('use_user_status=true')
 // lily
 const useLilyCutin = location.search.includes('lily_cutin=true')
 const useLilyStand = location.search.includes('lily_stand=true')
@@ -71,6 +71,7 @@ export default {
   useCardOnlySelfHide,
   useCardGMView,
   useRotateOff,
+  useSpeechStatus,
   // lily
   useLilyCutin,
   useLilyDiceTable,

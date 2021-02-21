@@ -16,8 +16,12 @@ export class PeerCursor extends GameObject {
   @SyncVar() name: string = '';
   @SyncVar() imageIdentifier: string = '';
 
+
   chatColorCode: string[]  = ["#000000","#FF0000","#0099FF"]; // lily
-  isCardGMView: boolean = false; // with-plus
+  // start plus
+  isCardGMView: boolean = false;
+  @SyncVar() speechIdentifier: string = '';
+  // end plus
 
   // start with fly
   @SyncVar() color: string = PeerCursor.CHAT_DEFAULT_COLOR;

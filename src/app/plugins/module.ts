@@ -17,6 +17,7 @@ import { OpenUrlComponent } from './with-fly/open-url/component/open-url/open-ur
 import { WithFlyContextMenuComponent } from './with-fly/context-menu-height/component/context-menu/context-menu.component'
 import { GameStandDataElementComponent } from './lily/chat-stand/component/game-stand-data-element/game-stand-data-element.component'
 import { ChatTachieImageComponent } from './lily/chat-stand/component/chat-tachie-img/chat-tachie-img.component'
+import { UserStatusComponent } from './plus/user-status/component/chat-input/user-status.component'
 
 const components = [
   HelpKeyboardComponent,
@@ -37,6 +38,7 @@ const components = [
   WithFlyContextMenuComponent,
   GameStandDataElementComponent,
   ChatTachieImageComponent,
+  UserStatusComponent,
 ]
 const imports = []
 const services = [HandStorageService]

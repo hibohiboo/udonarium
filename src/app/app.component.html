@@ -68,6 +68,12 @@
           <div>保存</div>
         </a>
       </li>
+      <li *ngIf="useSpeechStatus" (click)="open('UserStatusComponent')">
+        <a routerLink="/" routerLinkActive="active">
+          <div><i class="material-icons">support_agent</i></div>
+          <div>発言状態</div>
+        </a>
+      </li>
       <li *ngIf="isSaveing" style="pointer-events: none;">
         <a>
           <div><i class="material-icons vibration-amine">sd_storage</i></div>

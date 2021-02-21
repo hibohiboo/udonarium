@@ -42,6 +42,7 @@ import { appComponentConstructorHook } from './plugins';
 import factory from './plugins/factory';
 import config from 'src/app/plugins/config';
 import * as pluginConstants from 'src/app/plugins/constants';
+import { UserStatusComponent } from './plugins/plus/user-status/component/chat-input/user-status.component';
 
 @Component({
   selector: 'app-root',
@@ -56,7 +57,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private openPanelCount: number = 0;
   isSaveing: boolean = false;
   progresPercent: number = 0;
-
+  get useSpeechStatus(){return config.useSpeechStatus}
   // start with fly
   get useDiceAllOpen() {return config.useWithFlyDiceAllOpen }
   get useResetPoint() { return config.useWithFlyResetPoint }
@@ -64,6 +65,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     let height = 470;
     if (config.useWithFlyDiceAllOpen) height += 60
     if (config.useWithFlyResetPoint) height += 70
+    if (config.useSpeechStatus) height += 70
     return height
   }
   // end with fly
@@ -195,6 +197,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       this.panelService.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
       this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
+      if(config.useSpeechStatus) this.panelService.open(UserStatusComponent,{ width: 300, height: window.innerHeight - 20, left: window.innerWidth - 320, top:0})
     }, 0);
   }
 
@@ -232,6 +235,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         break;
       case 'GameObjectInventoryComponent':
         component = GameObjectInventoryComponent;
+        break;
+      case 'UserStatusComponent':
+        component = UserStatusComponent;
         break;
     }
     if (component) {

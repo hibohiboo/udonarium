@@ -5,6 +5,7 @@ import { Network } from "@udonarium/core/system";
 import { DataElement } from "@udonarium/data-element";
 import { GameCharacter } from "@udonarium/game-character";
 import { ImageTag } from "../../lily/file/class/image-tag";
+import config from 'src/app/plugins/config';
 
 export default {
   chatInputChatMessageFactoryHook(that) {
@@ -57,7 +58,7 @@ export default {
     testCharacter.imageDataElement.appendChild(d2);
 
     const d3 = DataElement.create('imageIdentifier', '', { type: 'image' });
-    d3.currentValue = d3.name = 'あ';
+    d3.currentValue = d3.name = '発言中';
     d3.value = ImageStorage.instance.add('./assets/images/gon/gon4.png').identifier;
     testCharacter.imageDataElement.appendChild(d3);
 
@@ -72,6 +73,28 @@ export default {
     ImageTag.create(testFile.identifier).tag = '立ち絵';
 
     testCharacter.setLocation(Network.peerId)
+
+    if (config.useSpeechStatus){
+      const testCharacter2 = new GameCharacter('poni');
+      const fileContext2 = ImageFile.createEmpty('poni_image').toContext();
+      fileContext2.url = './assets/images/poni/bust.png';
+      const testFile2 = ImageStorage.instance.add(fileContext2);
+      testCharacter2.location.x = 10 * 50;
+      testCharacter2.location.y = 5 * 50;
+      testCharacter2.initialize();
+      testCharacter2.createTestGameDataElement('ポニテ', 1, testFile2.identifier);
+      const d2_0 = testCharacter2.imageDataElement.getFirstElementByName('imageIdentifier');
+
+      const d2_1 = DataElement.create('imageIdentifier', '', { type: 'image' });
+      d2_1.currentValue = d2_1.name = '発言中';
+      d2_1.value = ImageStorage.instance.add('./assets/images/poni/face_a.png').identifier;
+      testCharacter2.imageDataElement.appendChild(d2_1);
+
+      const d2_2 = DataElement.create('imageIdentifier', '', { type: 'image' });
+      d2_2.currentValue = d2_2.name = '発言中';
+      d2_2.value = ImageStorage.instance.add('./assets/images/poni/face_n.png').identifier;
+      testCharacter2.imageDataElement.appendChild(d2_2);
+    }
 
 
     fileContext = ImageFile.createEmpty('testCharacter_1_image').toContext();
