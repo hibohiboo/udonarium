@@ -41,11 +41,6 @@ export class Card extends TabletopObject {
   get isVisible(): boolean {
     if(this.isCardGMView && PeerCursor.myCursor.isCardGMView) return true
     if(config.useCardOnlySelfHide){
-      console.log('isHand', this.isHand)
-      console.log('isSelfHide', this.isSelfHide)
-      console.log('isOtherSelfHide', this.isOtherSelfHide)
-      console.log('isFront', this.isFront)
-
       return this.isHand && !this.isSelfHide || this.isOtherSelfHide || this.isFront;
     }
     return this.isHand || this.isFront;
