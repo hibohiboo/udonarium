@@ -283,7 +283,8 @@ export const gameCharacterOnContextMenuHook = (
 // バフ
 export const tabletopServiceMakeDefaultTabletopObjectsHook = () => {
   if (config.hideSample) return true // サンプルを初期表示させない
-  if (config.useLilyPlusStandChatChange) return lilyPlus.stand.tabletopServiceMakeDefaultTabletopObjectsHook()
+  if (config.useLilyPlusStandChatChange)
+    return lilyPlus.stand.tabletopServiceMakeDefaultTabletopObjectsHook()
   if (config.useLilyBuff)
     return lily.buff.tabletopServiceMakeDefaultTabletopObjectsHook()
 
