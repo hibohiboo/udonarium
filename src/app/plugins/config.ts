@@ -14,7 +14,7 @@ const useRotateOff = location.search.includes('use_lotate_off=true')
 const useSpeechStatus = location.search.includes('use_user_status=true')
 // lily
 const useLilyCutin = location.search.includes('lily_cutin=true')
-const useLilyStand = location.search.includes('lily_stand=true')
+const useLilyStand = useSpeechStatus || location.search.includes('lily_stand=true')
 const useLilyDiceTable = location.search.includes('lily_dacetable=true')
 const useLilyFile = location.search.includes('lily_file=true')
 const useLilyBuff = location.search.includes('lily_buff=true')

@@ -7,8 +7,16 @@
   /*width: calc(100% - 30px);*/
   width: 100%;
 }
+.users-wrapper{
+  display: flex;
+  margin: 0 auto;
+  width: 80%;
+  flex-wrap: wrap;
+}
 .users {
   width: 150px;
+}
+.users.self{
   margin: 0 auto;
 }
 .users summary {

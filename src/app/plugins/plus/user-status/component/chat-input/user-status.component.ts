@@ -27,7 +27,7 @@ import factory from 'src/app/plugins/factory';
 })
 export class UserStatusComponent implements OnInit, OnDestroy {
   @Input() onlyCharacters: boolean = false;
-
+  @Input() chatTabidentifier: string = '';
   @Input('sendFrom') _sendFrom: string = this.myPeer ? this.myPeer.identifier : '';
   @Output() sendFromChange = new EventEmitter<string>();
   get sendFrom(): string { return this._sendFrom };
@@ -64,7 +64,7 @@ export class UserStatusComponent implements OnInit, OnDestroy {
     return this._gameCharacters;
   }
 
-  private speechingEventInterval: NodeJS.Timer = null;
+
 
   speechingPeers: Map<string, ResettableTimeout> = new Map();
   speechingPeerNames: string[] = [];
@@ -76,7 +76,7 @@ export class UserStatusComponent implements OnInit, OnDestroy {
   set volume(val){ this._volume = val}
   get diceBotInfos() { return DiceBot.diceBotInfos }
   get myPeer(): PeerCursor { return PeerCursor.myCursor; }
-  get otherPeers(): PeerCursor[] { return ObjectStore.instance.getObjects(PeerCursor); }
+  get otherPeers(): PeerCursor[] { return ObjectStore.instance.getObjects(PeerCursor).filter(peer=>peer.peerId !== this.myPeer.peerId); }
 
   constructor(
     private ngZone: NgZone,
@@ -88,7 +88,8 @@ export class UserStatusComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-      Promise.resolve().then(() => this.modalService.title = this.panelService.title =
+    // this.chatTabidentifier = this.panelService.chatTab.identifier;
+    Promise.resolve().then(() => this.modalService.title = this.panelService.title =
       '発言状態')
 
     EventSystem.register(this)
@@ -131,24 +132,7 @@ export class UserStatusComponent implements OnInit, OnDestroy {
     });
   }
 
-  // onInput() {
-  //   if (this.speechingEventInterval === null && this.previousspeechingLength <= this.text.length) {
-  //     let sendTo: string = null;
-  //     if (this.isDirect) {
-  //       let object = ObjectStore.instance.get(this.sendTo);
-  //       if (object instanceof PeerCursor) {
-  //         let peer = PeerContext.parse(object.peerId);
-  //         if (peer) sendTo = peer.peerId;
-  //       }
-  //     }
-  //     EventSystem.call('speeching_A_MESSAGE', this.chatTabidentifier, sendTo);
-  //     this.speechingEventInterval = setTimeout(() => {
-  //       this.speechingEventInterval = null;
-  //     }, 200);
-  //   }
-  //   this.previousspeechingLength = this.text.length;
-  //   this.calcFitHeight();
-  // }
+
   private _isSpeechConnect = false;
   get isSpeechConnect(){return this._isSpeechConnect}
   set isSpeechConnect(b){this._isSpeechConnect = b}
@@ -199,7 +183,7 @@ export class UserStatusComponent implements OnInit, OnDestroy {
     await initAudio((vol: number)=>{
       this.volume = vol;
       if(vol>this.speechThreshold){
-        EventSystem.call('SPEECHING_A_MESSAGE', null, this.myPeer.peerId)
+        EventSystem.call('SPEECHING_A_MESSAGE', "")
       }
     });
   }
@@ -232,7 +216,7 @@ export class UserStatusComponent implements OnInit, OnDestroy {
   }
   findSpeechName(peer: PeerCursor){
     const character = this.gameCharacters.find(g=>g.identifier === peer.speechIdentifier)
-    if(!character) return '未選択'
+    if(!character) return ''
     return character.name;
   }
   isSpeeching(peer: PeerCursor){

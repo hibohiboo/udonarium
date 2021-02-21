@@ -1,14 +1,25 @@
 <div>
 
-  <div class="users">
+  <div class="users self">
     <div class="user-name">{{ myPeer?.name }}</div>
-    <div class=" imagebox">
-      <img
-        *ngIf="0 < imageFile.url.length"
-        class="image"
-        [src]="imageFile.url | safe: 'resourceUrl'"
-      />
-    </div>
+    <ng-container *ngIf="speechPeerImages(myPeer).length === 1">
+      <div class="imagebox" [ngClass]="{ 'speeching': isSpeeching(myPeer) }">
+        <img
+          class="image"
+          [src]="speechPeerImages(myPeer)[0] | safe: 'resourceUrl'"
+        />
+      </div>
+    </ng-container>
+    <ng-container *ngIf="speechPeerImages(myPeer).length === 2">
+      <div class="imagebox" [ngClass]="{ 'speeching': isSpeeching(myPeer) }">
+        <img
+        *ngFor="let img of speechPeerImages(myPeer); let i=index;"
+          class="image speech speech{{i}}"
+          [src]="img | safe: 'resourceUrl'"
+        />
+
+      </div>
+    </ng-container>
     <div>
       <select style="width: 12em" [(ngModel)]="sendFrom">
         <option *ngIf="!onlyCharacters" value="{{ myPeer?.identifier }}">
@@ -24,13 +35,8 @@
     </div>
     <div class="speeching-info">
       <ng-container *ngIf="0 < speechingPeerNames.length">
-        <span
-          *ngFor="let peerName of speechingPeerNames; index as i"
-          style="font-weight: bold"
-          >{{ peerName
-          }}<span *ngIf="speechingPeerNames.length !== i + 1">, </span></span
-        >
-        <span> が発言中...</span>
+
+        <span> 発言中...</span>
       </ng-container>
     </div>
     <details open="true">
@@ -54,7 +60,9 @@
 
     </details>
   </div>
-  <div *ngFor="let peer of otherPeers">
+
+
+  <div *ngFor="let peer of otherPeers" class="users-wrapper">
     <div class="users">
 
       <div class="user-name">
@@ -85,12 +93,40 @@
       </div>
       <div class="speeching-info">
         <ng-container *ngIf="isSpeeching(peer)">
-          <span style="font-weight: bold">{{ findSpeechName(peer)}}</span>
-          <span> が発言中...</span>
+          <span> 発言中...</span>
         </ng-container>
       </div>
 
     </div>
 
+
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </div>

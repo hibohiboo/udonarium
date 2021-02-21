@@ -44,7 +44,7 @@ export default {
     // d0.currentValue = 'ふつう';
     // d0.name を入れると、画像が表示されなくなる。
 
-    const d1 = DataElement.create('imageIdentifier', '', { type: 'image' });
+    const d1 = DataElement.create('imageIdentifier', '', { type: 'image' }, '画像1' + testCharacter.identifier);
     d1.currentValue = d1.name = 'はっ';
     const img1 = ImageStorage.instance.add('./assets/images/gon/gon2.png');
     d1.value = img1.identifier;
@@ -52,17 +52,17 @@ export default {
 
 
 
-    const d2 = DataElement.create('imageIdentifier', '', { type: 'image' });
+    const d2 = DataElement.create('imageIdentifier', '', { type: 'image' }, '画像2' + testCharacter.identifier);
     d2.currentValue = d2.name = 'おこ';
     d2.value = ImageStorage.instance.add('./assets/images/gon/gon3.png').identifier;
     testCharacter.imageDataElement.appendChild(d2);
 
-    const d3 = DataElement.create('imageIdentifier', '', { type: 'image' });
+    const d3 = DataElement.create('imageIdentifier', '', { type: 'image' }, '画像3' + testCharacter.identifier);
     d3.currentValue = d3.name = '発言中';
     d3.value = ImageStorage.instance.add('./assets/images/gon/gon4.png').identifier;
     testCharacter.imageDataElement.appendChild(d3);
 
-    const d4 = DataElement.create('imageIdentifier', '', { type: 'image' });
+    const d4 = DataElement.create('imageIdentifier', '', { type: 'image' }, '画像4' + testCharacter.identifier);
     d4.currentValue = d4.name = 'ん';
     d4.value = ImageStorage.instance.add('./assets/images/gon/gon1.png').identifier;
     testCharacter.imageDataElement.appendChild(d4);
@@ -85,12 +85,12 @@ export default {
       testCharacter2.createTestGameDataElement('ポニテ', 1, testFile2.identifier);
       const d2_0 = testCharacter2.imageDataElement.getFirstElementByName('imageIdentifier');
 
-      const d2_1 = DataElement.create('imageIdentifier', '', { type: 'image' });
+      const d2_1 = DataElement.create('imageIdentifier', '', { type: 'image' }, '画像1' + testCharacter2.identifier);
       d2_1.currentValue = d2_1.name = '発言中';
       d2_1.value = ImageStorage.instance.add('./assets/images/poni/face_a.png').identifier;
       testCharacter2.imageDataElement.appendChild(d2_1);
 
-      const d2_2 = DataElement.create('imageIdentifier', '', { type: 'image' });
+      const d2_2 = DataElement.create('imageIdentifier', '', { type: 'image' }, '画像2' + testCharacter2.identifier);
       d2_2.currentValue = d2_2.name = '発言中';
       d2_2.value = ImageStorage.instance.add('./assets/images/poni/face_n.png').identifier;
       testCharacter2.imageDataElement.appendChild(d2_2);
