@@ -1,60 +1,38 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  HostBinding,
-  HostListener,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  ViewChild
-} from "@angular/core";
+import { AfterViewInit, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild, HostBinding } from '@angular/core';
 
-import { Card } from "@udonarium/card";
-import { RooperCard } from "@udonarium/rooper-card";
-import { CardStack } from "@udonarium/card-stack";
-import { ImageFile } from "@udonarium/core/file-storage/image-file";
-import { ImageStorage } from "@udonarium/core/file-storage/image-storage";
-import { GameObject } from "@udonarium/core/synchronize-object/game-object";
-import { EventSystem } from "@udonarium/core/system";
-import { DiceSymbol } from "@udonarium/dice-symbol";
-import { GameCharacter } from "@udonarium/game-character";
-import { FilterType, GameTable, GridType } from "@udonarium/game-table";
-import { GameTableMask } from "@udonarium/game-table-mask";
-import { PeerCursor } from "@udonarium/peer-cursor";
-import { TableSelecter } from "@udonarium/table-selecter";
-import { Terrain } from "@udonarium/terrain";
-import { TextNote } from "@udonarium/text-note";
-import { Cutin } from "@udonarium/cutin";
-import { CutinView} from "@udonarium/cutin-view";
+import { Card } from '@udonarium/card';
+import { CardStack } from '@udonarium/card-stack';
+import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { GameObject } from '@udonarium/core/synchronize-object/game-object';
+import { EventSystem } from '@udonarium/core/system';
+import { DiceSymbol } from '@udonarium/dice-symbol';
+import { GameCharacter } from '@udonarium/game-character';
+import { FilterType, GameTable, GridType } from '@udonarium/game-table';
+import { GameTableMask } from '@udonarium/game-table-mask';
+import { PeerCursor } from '@udonarium/peer-cursor';
+import { TableSelecter } from '@udonarium/table-selecter';
+import { Terrain } from '@udonarium/terrain';
+import { TextNote } from '@udonarium/text-note';
 
-import { GameTableSettingComponent } from "component/game-table-setting/game-table-setting.component";
-import { HelpKeyboardComponent } from "component/help-keyboard/help-keyboard.component";
-import { InputHandler } from "directive/input-handler";
-import {
-  ContextMenuAction,
-  ContextMenuSeparator,
-  ContextMenuService
-} from "service/context-menu.service";
-import { ModalService } from "service/modal.service";
-import { PointerDeviceService } from "service/pointer-device.service";
-import { TabletopService } from "service/tabletop.service";
-import { Device } from '@udonarium/device/device';
+import { GameTableSettingComponent } from 'component/game-table-setting/game-table-setting.component';
+import { ContextMenuAction, ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
+import { CoordinateService } from 'service/coordinate.service';
+import { ImageService } from 'service/image.service';
+import { ModalService } from 'service/modal.service';
+import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { GridLineRender } from './grid-line-render';
-import { TableTouchGesture, TableTouchGestureEvent } from './table-touch-gesture';
-import { CoordinateService } from "service/coordinate.service";
-import { ImageService } from "service/image.service";
+import { TableMouseGesture } from './table-mouse-gesture';
+import { TableTouchGesture } from './table-touch-gesture';
+import { Cutin } from "@udonarium/cutin";
+import { CutinView} from "@udonarium/cutin-view";
+import { HelpKeyboardComponent } from "component/help-keyboard/help-keyboard.component";
+import { TabletopService } from "service/tabletop.service";
+import { Device } from '@udonarium/device/device';
+import { RooperCard } from '@udonarium/rooper-card';
 
 const viewPotisonZDefault = -600;
 const viewPotisonXDefault = 200;
-
-enum Keyboard {
-  ArrowLeft = 'ArrowLeft',
-  ArrowUp = 'ArrowUp',
-  ArrowRight = 'ArrowRight',
-  ArrowDown = 'ArrowDown',
-}
 
 @Component({
   selector: 'game-table',
@@ -80,15 +58,11 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   get tableImage(): ImageFile {
-    let file: ImageFile = ImageStorage.instance.get(this.currentTable.imageIdentifier);
-    return this.imageService.getSkeletonOr(file);
+    return this.imageService.getSkeletonOr(this.currentTable.imageIdentifier);
   }
 
   get backgroundImage(): ImageFile {
-    let file: ImageFile = ImageStorage.instance.get(
-      this.currentTable.backgroundImageIdentifier
-    );
-    return file ? file : ImageFile.Empty;
+    return this.imageService.getEmptyOr(this.currentTable.backgroundImageIdentifier);
   }
 
   get backgroundFilterType(): FilterType {
@@ -97,12 +71,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private isTransformMode: boolean = false;
 
-  private currentPositionX: number = 0;
-  private currentPositionY: number = 0;
-
-  get isPointerDragging(): boolean {
-    return this.pointerDeviceService.isDragging;
-  }
+  get isPointerDragging(): boolean { return this.pointerDeviceService.isDragging; }
 
   private viewPotisonX: number = viewPotisonXDefault;
   private viewPotisonY: number = 0;
@@ -112,9 +81,8 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   private viewRotateY: number = 0;
   private viewRotateZ: number = 0; // 初期の回転を調整
 
-  private buttonCode: number = 0;
-  private input: InputHandler = null;
-  private gesture: TableTouchGesture = null;
+  private mouseGesture: TableMouseGesture = null;
+  private touchGesture: TableTouchGesture = null;
 
   get characters(): GameCharacter[] {
     return this.tabletopService.characters;
@@ -153,7 +121,6 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private ngZone: NgZone,
     private contextMenuService: ContextMenuService,
-    private elementRef: ElementRef,
     private pointerDeviceService: PointerDeviceService,
     private coordinateService: CoordinateService,
     private imageService: ImageService,
@@ -219,12 +186,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     this.ngZone.runOutsideAngular(() => {
-      this.input = new InputHandler(this.elementRef.nativeElement, { capture: true });
       this.initializeTableTouchGesture();
+      this.initializeTableMouseGesture();
     });
-    this.input.onStart = this.onInputStart.bind(this);
-    this.input.onMove = this.onInputMove.bind(this);
-    this.input.onEnd = this.onInputEnd.bind(this);
     this.cancelInput();
 
     this.setGameTableGrid(
@@ -240,20 +204,27 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     EventSystem.unregister(this);
-    this.input.destroy();
-    this.gesture.destroy();
+    this.mouseGesture.destroy();
+    this.touchGesture.destroy();
   }
 
   initializeTableTouchGesture() {
-    this.gesture = new TableTouchGesture(this.rootElementRef.nativeElement, this.ngZone);
-    this.gesture.onstart = this.onTableTouchStart.bind(this);
-    this.gesture.onend = this.onTableTouchEnd.bind(this);
-    this.gesture.ongesture = this.onTableTouchGesture.bind(this);
-    this.gesture.ontransform = this.onTableTouchTransform.bind(this);
+    this.touchGesture = new TableTouchGesture(this.rootElementRef.nativeElement, this.ngZone);
+    this.touchGesture.onstart = this.onTableTouchStart.bind(this);
+    this.touchGesture.onend = this.onTableTouchEnd.bind(this);
+    this.touchGesture.ongesture = this.onTableTouchGesture.bind(this);
+    this.touchGesture.ontransform = this.onTableTouchTransform.bind(this);
+  }
+
+  initializeTableMouseGesture() {
+    this.mouseGesture = new TableMouseGesture(this.rootElementRef.nativeElement);
+    this.mouseGesture.onstart = this.onTableMouseStart.bind(this);
+    this.mouseGesture.onend = this.onTableMouseEnd.bind(this);
+    this.mouseGesture.ontransform = this.onTableMouseTransform.bind(this);
   }
 
   onTableTouchStart() {
-    this.input.cancel();
+    this.mouseGesture.cancel();
   }
 
   onTableTouchEnd() {
@@ -265,7 +236,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onTableTouchTransform(transformX: number, transformY: number, transformZ: number, rotateX: number, rotateY: number, rotateZ: number, event: string, srcEvent: TouchEvent | MouseEvent | PointerEvent) {
-    if (event === TableTouchGestureEvent.PAN && (!this.isTransformMode || this.input.isGrabbing)) return;
+    if (!this.isTransformMode || document.body !== document.activeElement) return;
 
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu && this.contextMenuService.isShow) {
       this.ngZone.run(() => this.contextMenuService.close());
@@ -284,15 +255,8 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.setTransform(transformX, transformY, transformZ, rotateX, rotateY, rotateZ);
   }
 
-  onInputStart(e: any) {
-    this.currentPositionX = this.input.pointer.x;
-    this.currentPositionY = this.input.pointer.y;
-
-    if (
-      e.target.contains(this.gameObjects.nativeElement) ||
-      e.button === 1 ||
-      e.button === 2
-    ) {
+  onTableMouseStart(e: any) {
+    if (e.target.contains(this.gameObjects.nativeElement) || e.button === 1 || e.button === 2) {
       this.isTransformMode = true;
     } else {
       this.isTransformMode = false;
@@ -300,105 +264,40 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
       this.gridCanvas.nativeElement.style.opacity = 1.0 + "";
     }
 
-    this.buttonCode = e.button;
-
     if (!document.activeElement.contains(e.target)) {
       this.removeSelectionRanges();
       this.removeFocus();
     }
   }
 
-  onInputEnd(e: any) {
+  onTableMouseEnd(e: any) {
     this.cancelInput();
   }
 
-  onInputMove(e: any) {
-    if (!this.isTransformMode) return;
+  onTableMouseTransform(transformX: number, transformY: number, transformZ: number, rotateX: number, rotateY: number, rotateZ: number, event: string, srcEvent: TouchEvent | MouseEvent | PointerEvent) {
+    if (!this.isTransformMode || document.body !== document.activeElement) return;
 
-    let x = this.input.pointer.x;
-    let y = this.input.pointer.y;
-    let deltaX = x - this.currentPositionX;
-    let deltaY = y - this.currentPositionY;
-
-    let transformX = 0;
-    let transformY = 0;
-    let transformZ = 0;
-
-    let rotateX = 0;
-    let rotateY = 0;
-    let rotateZ = 0;
-
-    if (this.buttonCode === 2) {
-      rotateZ = -deltaX / 5;
-      rotateX = -deltaY / 5;
-    } else {
-      let scale = (1000 + Math.abs(this.viewPotisonZ)) / 1000;
-      transformX = deltaX * scale;
-      transformY = deltaY * scale;
+    if (!this.pointerDeviceService.isAllowedToOpenContextMenu && this.contextMenuService.isShow) {
+      this.ngZone.run(() => this.contextMenuService.close());
     }
 
-    if (
-      !this.pointerDeviceService.isAllowedToOpenContextMenu &&
-      this.contextMenuService.isShow
-    ) {
-      this.ngZone.run(() => {
-        this.contextMenuService.close();
-      });
-    }
+    if (srcEvent.cancelable) srcEvent.preventDefault();
 
-    this.currentPositionX = x;
-    this.currentPositionY = y;
+    //
+    let scale = (1000 + Math.abs(this.viewPotisonZ)) / 1000;
+    transformX *= scale;
+    transformY *= scale;
 
-    if (e.cancelable) e.preventDefault();
     this.setTransform(transformX, transformY, transformZ, rotateX, rotateY, rotateZ);
   }
 
   cancelInput() {
-    this.input.cancel();
+    this.mouseGesture.cancel();
     this.isTransformMode = true;
     this.pointerDeviceService.isDragging = false;
     let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
     this.gridCanvas.nativeElement.style.opacity = opacity + "";
   }
-
-  @HostListener("wheel", ["$event"])
-  onWheel(e: WheelEvent) {
-    if (!this.isTransformMode) return;
-
-    let pixelDeltaY = 0;
-    switch (e.deltaMode) {
-      case WheelEvent.DOM_DELTA_LINE:
-        pixelDeltaY = e.deltaY * 16;
-        break;
-      case WheelEvent.DOM_DELTA_PAGE:
-        pixelDeltaY = e.deltaY * window.innerHeight;
-        break;
-      default:
-        pixelDeltaY = e.deltaY;
-        break;
-    }
-
-    let transformX = 0;
-    let transformY = 0;
-    let transformZ = 0;
-
-    let rotateX = 0;
-    let rotateY = 0;
-    let rotateZ = 0;
-
-    transformZ = pixelDeltaY * -1.5;
-    if (300 ** 2 < transformZ ** 2) transformZ = Math.min(Math.max(transformZ, -300), 300);
-
-    this.setTransform(
-      transformX,
-      transformY,
-      transformZ,
-      rotateX,
-      rotateY,
-      rotateZ
-    );
-  }
-
   @HostListener("document:keydown", ["$event"])
   onKeydown(e: KeyboardEvent) {
     if (!this.isTransformMode || document.body !== document.activeElement) return;
@@ -411,56 +310,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
       this.resetTransform();
       return;
     }
-
-    let transformX = 0;
-    let transformY = 0;
-    let transformZ = 0;
-
-    let rotateX = 0;
-    let rotateY = 0;
-    let rotateZ = 0;
-
-    let key = this.getKeyName(e);
-    switch (key) {
-      case Keyboard.ArrowLeft:
-        if (e.shiftKey) {
-          rotateZ = -2;
-        } else {
-          transformX = 10;
-        }
-        break;
-      case Keyboard.ArrowUp:
-        if (e.shiftKey) {
-          rotateX = -2;
-        } else if (e.ctrlKey) {
-          transformZ = 150;
-        } else {
-          transformY = 10;
-        }
-        break;
-      case Keyboard.ArrowRight:
-        if (e.shiftKey) {
-          rotateZ = 2;
-        } else {
-          transformX = -10;
-        }
-        break;
-      case Keyboard.ArrowDown:
-        if (e.shiftKey) {
-          rotateX = 2;
-        } else if (e.ctrlKey) {
-          transformZ = -150;
-        } else {
-          transformY = -10;
-        }
-        break;
-    }
-    let isArrowKey = Keyboard[key] != null;
-    if (isArrowKey) e.preventDefault();
-    this.setTransform(transformX, transformY, transformZ, rotateX, rotateY, rotateZ);
   }
 
-  @HostListener("contextmenu", ["$event"])
+  @HostListener('contextmenu', ['$event'])
   onContextMenu(e: any) {
     if (!document.activeElement.contains(this.gameObjects.nativeElement))
       return;
@@ -485,17 +337,6 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
       menuActions,
       this.currentTable.name
     );
-  }
-
-  private getKeyName(keyboard: KeyboardEvent): string {
-    if (keyboard.key) return keyboard.key;
-    switch (keyboard.keyCode) {
-      case 37: return Keyboard.ArrowLeft;
-      case 38: return Keyboard.ArrowUp;
-      case 39: return Keyboard.ArrowRight;
-      case 40: return Keyboard.ArrowDown;
-      default: return '';
-    }
   }
 
   private setTransform(transformX: number, transformY: number, transformZ: number, rotateX: number, rotateY: number, rotateZ: number) {
