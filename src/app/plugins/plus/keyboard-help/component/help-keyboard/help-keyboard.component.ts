@@ -18,12 +18,7 @@ export class HelpKeyboardComponent implements OnInit, OnDestroy {
   get config(){return config}
   get constants(){return constants}
   ngOnInit() {
-    Promise.resolve().then(() => this.changeTitle())
-  }
-
-  private changeTitle() {
-    this.modalService.title = this.panelService.title =
-      'キーボードショートカット'
+    Promise.resolve().then(() => this.modalService.title = this.panelService.title = 'キーボードショートカット');
   }
 
   ngOnDestroy() {
@@ -32,6 +27,7 @@ export class HelpKeyboardComponent implements OnInit, OnDestroy {
 
   @HostListener('document:keydown', ['$event'])
   onKeydown(e: KeyboardEvent) {
+    console.log('keyboard ', 'test')
     if (document.body !== document.activeElement) return
 
     if (e.key === 'Escape') {

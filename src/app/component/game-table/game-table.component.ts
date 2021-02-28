@@ -28,13 +28,6 @@ import { gameBoardKeydownHook, gameTableComponentInitHook, onContextMenuHook, up
 import pluginConfig from '../../plugins/config';
 import { HandStorageService } from 'src/app/plugins/plus/hand-storage/service/hand-storage.service';
 import config from 'src/app/plugins/config';
-
-enum Keyboard {
-  ArrowLeft = 'ArrowLeft',
-  ArrowUp = 'ArrowUp',
-  ArrowRight = 'ArrowRight',
-  ArrowDown = 'ArrowDown',
-}
 import { TableMouseGesture } from './table-mouse-gesture';
 import { TableTouchGesture } from './table-touch-gesture';
 
@@ -235,6 +228,16 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
     this.gridCanvas.nativeElement.style.opacity = opacity + '';
   }
+
+  // plus start
+  @HostListener('document:keydown', ['$event'])
+  onKeydown(e: KeyboardEvent) {
+    if (!this.isTransformMode || document.body !== document.activeElement) return;
+    if(gameBoardKeydownHook(this, e)){
+      return
+    }
+  }
+  // plus end
 
   @HostListener('contextmenu', ['$event'])
   async onContextMenu(e: any) {
