@@ -175,4 +175,9 @@ export const rooperCharacterList: {
   {name:'軍人', card_num:'25', default_position: '病院' },
   {name:'黒猫', card_num:'26', default_position: '神社' },
   {name:'女の子', card_num:'27', default_position: '学校' },
+  {name:'コピーキャット', card_num:'28', default_position: '都市' },
+  {name:'教祖', card_num:'29', default_position: '神社' },
+  {name:'ご神木', card_num:'30', default_position: '神社' },
+  {name:'妹', card_num:'31', default_position: '神社' },
+
 ]
