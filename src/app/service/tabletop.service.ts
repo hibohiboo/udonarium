@@ -155,21 +155,6 @@ export class TabletopService {
         } else {
           this.refreshCache(garbage.aliasName);
         }
-      })
-      .on('XML_LOADED', event => {
-        let xmlElement: Element = event.data.xmlElement;
-        // todo:立体地形の上にドロップした時の挙動
-        let gameObject = ObjectSerializer.instance.parseXml(xmlElement);
-        if (gameObject instanceof TabletopObject) {
-          let pointer = this.coordinateService.calcTabletopLocalCoordinate();
-          gameObject.location.x = pointer.x - 25;
-          gameObject.location.y = pointer.y - 25;
-          gameObject.posZ = pointer.z;
-          this.placeToTabletop(gameObject);
-          SoundEffect.play(PresetSound.piecePut);
-        } else if (gameObject instanceof ChatTab) {
-          ChatTabList.instance.addChatTab(gameObject);
-        }
       });
 
       // rooperのカードが二重に登録するのを防止する対症療法 2020.10.05
