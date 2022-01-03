@@ -179,5 +179,8 @@ export const rooperCharacterList: {
   {name:'教祖', card_num:'29', default_position: '神社' },
   {name:'ご神木', card_num:'30', default_position: '神社' },
   {name:'妹', card_num:'31', default_position: '神社' },
-
+  {name:'アルバイト', card_num:'32', default_position: '都市' },
+  {name:'アルバイト？', card_num:'33', default_position: '都市' },
+  {name:'従者', card_num:'34', default_position: '学校' },
+  {name:'上位存在', card_num:'35', default_position: '神社' },
 ]

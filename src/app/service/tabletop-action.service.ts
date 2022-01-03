@@ -46,6 +46,7 @@ export class TabletopActionService {
       action: null,
       subActions: this.createRooperHandsMenu(position)
     });
+
     subMenus.push({
       name: "拡張カード追加",
       action: null,
@@ -55,6 +56,11 @@ export class TabletopActionService {
       name: "トークン追加",
       action: null,
       subActions: this.createRooperTokenMenu(position)
+    });
+    subMenus.push({
+      name: "手札追加(レイ)",
+      action: null,
+      subActions: this.createRooperHandsMenuRei(position)
     });
     return subMenus;
   }
@@ -85,6 +91,38 @@ export class TabletopActionService {
       name: '主人公C手札',
       action: ()=>{
         this.createRooperProtagonistHands(position, '主人公C手札','a_heroC_cards', 'hand_c');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
+  }
+  private createRooperHandsMenuRei(position):ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    subMenus.push({
+      name: '脚本家手札',
+      action: ()=>{
+        this.createRooperScripterHandsRei(position, '脚本家手札','a_writer_cards', 'hand_s');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公A手札',
+      action: ()=>{
+        this.createRooperProtagonistHandsRei(position, '主人公A手札','a_heroA_cards', 'hand_a');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公B手札',
+      action: ()=>{
+        this.createRooperProtagonistHandsRei(position, '主人公B手札','a_heroB_cards', 'hand_b');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公C手札',
+      action: ()=>{
+        this.createRooperProtagonistHandsRei(position, '主人公C手札','a_heroC_cards', 'hand_c');
         SoundEffect.play(PresetSound.cardPut);
       }
     });
@@ -134,6 +172,13 @@ export class TabletopActionService {
       name: '大物カウンター',
       action: ()=>{
         createCard(position, '大物カウンター','turf');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '従者カウンター',
+      action: ()=>{
+        createCard(position, '従者カウンター','loyalty');
         SoundEffect.play(PresetSound.cardPut);
       }
     });
@@ -199,6 +244,16 @@ export class TabletopActionService {
     ['不安+1', '不安+1', '不安-1', '不安禁止', '友好禁止', '暗躍+1',
    '暗躍+2', '移動↑↓', '移動←→', '移動斜め']);
   }
+  private createRooperScripterHandsRei(
+    position: PointerCoordinate,
+    title: string,
+    prefix:string,
+    identifier: string,
+  ): CardStack {
+    return this.createRooperHands(position, title,prefix, identifier,
+    ['不安+1', '不安+1', '不安-1', '不安禁止', '友好禁止', '暗躍+1',
+   '暗躍+2', '移動↑↓', '移動←→', '移動斜め','友好+1','絶望+1']);
+  }
   private createRooperProtagonistHands(
     position: PointerCoordinate,
     title: string,
@@ -208,6 +263,16 @@ export class TabletopActionService {
     return this.createRooperHands(position, title,prefix, identifier,
       ['不安+1', '不安-1', '友好+1', '友好+2', '暗躍禁止',
       '移動↑↓', '移動←→', '移動禁止']);
+  }
+  private createRooperProtagonistHandsRei(
+    position: PointerCoordinate,
+    title: string,
+    prefix:string,
+    identifier: string,
+  ): CardStack {
+    return this.createRooperHands(position, title,prefix, identifier,
+      ['不安+1', '不安-1', '友好+1', '友好+2', '暗躍禁止',
+      '移動↑↓', '移動←→', '移動禁止','不安+2','希望+1']);
   }
   private createRooperHands(
     position: PointerCoordinate,
