@@ -9,6 +9,13 @@
     </div>
     <img *ngIf="isHand && frontImage" class="card-image thumbnail-transform is-translucent" [src]="frontImage.url | safe: 'resourceUrl'">
     <div class="counters">
+        <div class="token">
+          <img *ngFor="let num of deadToken" src="assets/images/tragedy_commons_5th/tokens/token_01.png">
+          <img *ngFor="let num of friendly" src="assets/images/tragedy_commons_5th/tokens/token_02.png">
+          <img *ngFor="let num of unfriendly" src="assets/images/tragedy_commons_5th/tokens/token_03.png">
+          <img *ngFor="let num of hope" src="assets/images/tragedy_commons_5th/tokens/chip_11.png">
+          <img *ngFor="let num of despair" src="assets/images/tragedy_commons_5th/tokens/chip_12.png">
+        </div>
         <div class="goodwill">
             <img *ngFor="let num of goodwill3" src="assets/images/tragedy_commons_5th/tokens/chip_04.png">
             <img *ngFor="let num of goodwill" src="assets/images/tragedy_commons_5th/tokens/chip_01.png">

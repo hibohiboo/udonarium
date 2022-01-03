@@ -5,6 +5,9 @@
       <button (click)="addRooperCard()">
           <i class="material-icons">person_add</i>
       </button>
+      <label>
+        <input type="checkbox" [(ngModel)]="isRei"/> レイで追加されたトークンを使用する
+      </label>
 
   </div>
   <div style="padding-bottom: 5px;">
@@ -25,7 +28,12 @@
         <th>友好</th>
         <th>不安</th>
         <th>暗躍</th>
+        <th *ngIf="isRei">希望</th>
+        <th *ngIf="isRei">絶望</th>
         <th>死亡</th>
+        <th *ngIf="isRei">死亡済</th>
+        <th *ngIf="isRei">交友</th>
+        <th *ngIf="isRei">交友(拒否)</th>
       </tr>
       <ng-container *ngFor="let card of rooperCards">
         <tr>
@@ -46,8 +54,27 @@
             <div>{{card.intrigue}}</div>
             <i class="material-icons" (click)="card.increaseIntrigueCounter()">add_circle</i>
           </td>
+          <td *ngIf="isRei">
+            <i class="material-icons" (click)="card.decreaseHopeCounter()">remove_circle</i>
+            <div>{{card.hope}}</div>
+            <i class="material-icons" (click)="card.increaseHopeCounter()">add_circle</i>
+          </td>
+          <td *ngIf="isRei">
+            <i class="material-icons" (click)="card.decreaseDespairCounter()">remove_circle</i>
+            <div>{{card.despair}}</div>
+            <i class="material-icons" (click)="card.increaseDespairCounter()">add_circle</i>
+          </td>
           <td>
             <input type="checkbox" [(ngModel)]="card.isDead"/>
+          </td>
+          <td *ngIf="isRei">
+            <input type="checkbox" [(ngModel)]="card.isDeadToken"/>
+          </td>
+          <td *ngIf="isRei">
+            <input type="checkbox" [(ngModel)]="card.isFriendly"/>
+          </td>
+          <td *ngIf="isRei">
+            <input type="checkbox" [(ngModel)]="card.isUnfriendly"/>
           </td>
         </tr>
       </ng-container>

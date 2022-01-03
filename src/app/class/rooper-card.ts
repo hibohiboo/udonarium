@@ -49,6 +49,11 @@ export class RooperCard extends Card {
     let intrigueElement: DataElement = DataElement.create('暗躍', 0, { 'type': 'numberResource', 'currentValue': '0' }, 'Intrigue_' + this.identifier);
     let positionElement: DataElement = DataElement.create('位置', position, {  }, 'Position_' + this.identifier);
     let defaultPositionElement: DataElement = DataElement.create('初期位置', position, {  }, 'DefaultPosition_' + this.identifier);
+    let hopeElement: DataElement = DataElement.create('希望', 0, { 'type': 'numberResource', 'currentValue': '0' }, 'Hope_' + this.identifier);
+    let despairElement: DataElement = DataElement.create('絶望', 0, { 'type': 'numberResource', 'currentValue': '0' }, 'Despair_' + this.identifier);
+    let deadTokenElement: DataElement = DataElement.create('死亡済', 0, { 'type': 'numberResource', 'currentValue': '0' }, 'DeadToken_' + this.identifier);
+    let friendlyElement: DataElement = DataElement.create('交友済', 0, { 'type': 'numberResource', 'currentValue': '0' }, 'Friendly_' + this.identifier);
+    let unfriendlyElement: DataElement = DataElement.create('交友済(拒否)', 0, { 'type': 'numberResource', 'currentValue': '0' }, 'Unfriendly_' + this.identifier);
 
     this.commonDataElement.appendChild(nameElement);
     this.commonDataElement.appendChild(sizeElement);
@@ -58,6 +63,12 @@ export class RooperCard extends Card {
     this.commonDataElement.appendChild(intrigueElement);
     this.commonDataElement.appendChild(positionElement);
     this.commonDataElement.appendChild(defaultPositionElement);
+
+    this.commonDataElement.appendChild(hopeElement);
+    this.commonDataElement.appendChild(despairElement);
+    this.commonDataElement.appendChild(deadTokenElement);
+    this.commonDataElement.appendChild(friendlyElement);
+    this.commonDataElement.appendChild(unfriendlyElement);
   }
 
   // パラメータ追加
@@ -141,6 +152,78 @@ export class RooperCard extends Card {
     return this.defaultPositionElement.value as Board;
   }
 
+  // 以下、レイで追加されたパラメータ
+  get hopeElement (){
+    return this.commonDataElement.getFirstElementByName('希望');
+  }
+  get hope (): number {
+    return parseInt(this.hopeElement.currentValue as string);
+  }
+  set hope (value: number) {
+    this.hopeElement.currentValue = value;
+  }
+  increaseHopeCounter(){
+    this.hopeElement.currentValue = this.hope + 1;
+  }
+  decreaseHopeCounter(){
+    this.hopeElement.currentValue = this.hope - 1;
+  }
+
+  get despairElement (){
+    return this.commonDataElement.getFirstElementByName('絶望');
+  }
+  get despair (): number {
+    return parseInt(this.despairElement.currentValue as string);
+  }
+  set despair (value: number) {
+    this.despairElement.currentValue = value;
+  }
+  increaseDespairCounter(){
+    this.despairElement.currentValue = this.despair + 1;
+  }
+  decreaseDespairCounter(){
+    this.despairElement.currentValue = this.despair - 1;
+  }
+
+  get deadTokenElement (){
+    return this.commonDataElement.getFirstElementByName('死亡済');
+  }
+  get isDeadToken():boolean {
+    return this.deadTokenElement.currentValue !== '0';
+  }
+  set isDeadToken(value:boolean) {
+    if(!value){
+      this.deadTokenElement.currentValue = '0';
+      return;
+    }
+    this.deadTokenElement.currentValue = '1';
+  }
+  get friendlyElement (){
+    return this.commonDataElement.getFirstElementByName('交友済');
+  }
+  get isFriendly():boolean {
+    return this.friendlyElement.currentValue !== '0';
+  }
+  set isFriendly(value:boolean) {
+    if(!value){
+      this.friendlyElement.currentValue = '0';
+      return;
+    }
+    this.friendlyElement.currentValue = '1';
+  }
+  get unfriendlyElement (){
+    return this.commonDataElement.getFirstElementByName('交友済(拒否)');
+  }
+  get isUnfriendly():boolean {
+    return this.unfriendlyElement.currentValue !== '0';
+  }
+  set isUnfriendly(value:boolean) {
+    if(!value){
+      this.unfriendlyElement.currentValue = '0';
+      return;
+    }
+    this.unfriendlyElement.currentValue = '1';
+  }
 }
 
 export const rooperCharacterList: {

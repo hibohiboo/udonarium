@@ -14,7 +14,18 @@ import { TabletopActionService } from 'service/tabletop-action.service';
   styleUrls: ['./rooper-game-sheet.component.css'],
 })
 export class RooperGameSheetComponent implements OnInit, OnDestroy {
+  private _isRei: boolean = false;
   get rooperCards() {return this.tabletopService.rooperCards; };
+  set isRei(v:boolean){
+    this._isRei = v;
+    const bias = 300;
+    if(this._isRei){
+      this.panelService.width += bias;
+    }else{
+      this.panelService.width -= bias;
+    }
+  };
+  get isRei(){return this._isRei}
   constructor(
     private panelService: PanelService,
     private modalService: ModalService,
@@ -59,6 +70,8 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
       card.goodwill = 0;
       card.paranoia = 0;
       card.intrigue = 0;
+      card.hope = 0;
+      card.despair = 0;
     })
   }
   reviveAll(){

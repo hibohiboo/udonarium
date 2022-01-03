@@ -190,12 +190,12 @@
   top: 15px;
   width: 80px;
 }
-.goodwill,.paranoia, .intrigue {
+.goodwill,.paranoia, .intrigue, .token {
   position: relative;
   display: flex;
   flex-wrap: wrap;
 }
-.goodwill img, .paranoia img, .intrigue img {
+.goodwill img, .paranoia img, .intrigue img,.token img {
   width: 32px;
   height: 32px;
 }

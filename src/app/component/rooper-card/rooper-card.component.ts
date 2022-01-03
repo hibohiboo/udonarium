@@ -441,4 +441,25 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
     if(this.card.intrigue <= 0 ) { return []; }
     return Array(this.card.intrigue % 3);
   }
+
+  get hope() {
+    if(this.card.hope <= 0 ) { return []; }
+    return Array(this.card.hope);
+  }
+  get despair() {
+    if(this.card.despair <= 0 ) { return []; }
+    return Array(this.card.despair);
+  }
+  get friendly() {
+    if(!this.card.isFriendly) { return []; }
+    return Array(1);
+  }
+  get unfriendly() {
+    if(!this.card.isUnfriendly) { return []; }
+    return Array(1);
+  }
+  get deadToken() {
+    if(!this.card.isDeadToken) { return []; }
+    return Array(1);
+  }
 }
