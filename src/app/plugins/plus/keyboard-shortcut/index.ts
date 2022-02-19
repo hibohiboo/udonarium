@@ -2,7 +2,7 @@ import { PresetSound, SoundEffect } from '@udonarium/sound-effect'
 import * as constants from 'src/app/plugins/constants'
 import { showRemoteController } from '../../lily/controller'
 import config from 'src/app/plugins/config'
-import { Network } from '@udonarium/core/system'
+import { EventSystem, Network } from '@udonarium/core/system'
 
 const menuKey = 'm'
 
@@ -17,7 +17,7 @@ export default {
     }
     return false
   },
-  cardOnKeydownHook(card: { onContextMenu: any }, e: KeyboardEvent) {
+  cardOnKeydownHook(card: { onContextMenu: any, rotate: number, card: any, gridSize: number, owner: string }, e: KeyboardEvent) {
     e.stopPropagation()
     e.preventDefault()
 
@@ -25,6 +25,61 @@ export default {
       card.onContextMenu(e)
       return true
     }
+    if (e.key === 't') {
+      card.rotate = 90
+      return true
+    }
+    if (e.key === 'u') {
+      card.rotate = 0
+      return true
+    }
+    if (e.key === 'c') {
+      const cloneObject = card.card.clone();
+      cloneObject.location.x += card.gridSize;
+      cloneObject.location.y += card.gridSize;
+      cloneObject.toTopmost();
+      SoundEffect.play(PresetSound.cardPut);
+    }
+    if (e.key === 's') {
+      SoundEffect.play(PresetSound.cardDraw);
+      card.card.faceDown();
+      card.owner = Network.peerContext.userId;
+    }
+    return false
+  },
+  cardStackOnKeydownHook(that: { onContextMenu: any, rotate: number, card: any, cardStack: any }, e: KeyboardEvent) {
+    e.stopPropagation()
+    e.preventDefault()
+
+    if (e.key === menuKey) {
+      that.onContextMenu(e)
+      return true
+    }
+    if (e.key === 't') {
+      that.rotate = 90
+      return true
+    }
+    if (e.key === 'u') {
+      that.rotate = 0
+      return true
+    }
+    if (e.key === 'r') {
+      that.cardStack.faceDownAll();
+      SoundEffect.play(PresetSound.cardDraw);
+      return true
+    }
+    if (e.key === 'U') {
+      that.cardStack.uprightAll();
+      SoundEffect.play(PresetSound.cardDraw);
+      return true
+    }
+    if (e.key === 'S') {
+      that.cardStack.shuffle();
+      SoundEffect.play(PresetSound.cardShuffle);
+      EventSystem.call('SHUFFLE_CARD_STACK', { identifier: that.cardStack.identifier });
+      return true
+    }
+
     return false
   },
   // thatはterraincomponent

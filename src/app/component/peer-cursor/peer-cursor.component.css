@@ -24,6 +24,7 @@
   background-color: rgba(240, 218, 189, 0.9);
   transform-origin: 100% 100%;
   transform: translateX(-100%) translateY(-100%)  rotateX(-90deg) rotateZ(45deg);
+  will-change: transform;
 }
 
 .icon {

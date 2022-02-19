@@ -52,7 +52,7 @@ const useCardGMView = location.search.includes('use_card_gm_view=true')
 
 
 export default {
-  useKeyboardHelp,
+  useKeyboardHelp: useKeyboardShortcut || useKeyboardHelp,
   useCardTap,
   get use2dMode() {
     return use2dMode

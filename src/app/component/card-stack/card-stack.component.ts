@@ -29,7 +29,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { cardOnKeydownHook, cardPointerHook, cardStackComponentOnContextMenuHook } from 'src/app/plugins';
+import { cardStackOnKeydownHook, cardPointerHook, cardStackComponentOnContextMenuHook } from 'src/app/plugins';
 import config from 'src/app/plugins/config';
 
 
@@ -348,7 +348,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @HostListener("keydown", ["$event"])
   onKeydown(e: KeyboardEvent) {
-    if(cardOnKeydownHook(this, e)) return;
+    if(cardStackOnKeydownHook(this, e)) return;
   }
 
   private drawCard(): Card {

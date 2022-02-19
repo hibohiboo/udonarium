@@ -1,13 +1,34 @@
 
 <div>
   <h3>キーボードショートカット</h3>
-  <section *ngIf="config.useCardTap">
+  <section *ngIf="config.useCardTap || config.useKeyboardShortcut">
     <h4>カード</h4>
     <dl class="help-list">
+      <dt>カードの上で[u]</dt>
+      <dd>カードを正位置にする</dd>
       <dt>カードの上で[t]</dt>
       <dd>カードを横にする</dd>
-      <dt>カードの上で[u]</dt>
-      <dd>カードを縦にする</dd>
+      <dt>カードの上で[c]</dt>
+      <dd>カードのコピー</dd>
+      <dt>カードの上で[s]</dt>
+      <dd>自分だけ見る</dd>
+      <dt>カードの上で[m]</dt>
+      <dd>メニューを開く</dd>
+    </dl>
+    <h4>山札</h4>
+    <dl class="help-list">
+      <dt>山札の上で[u]</dt>
+      <dd>山札を縦にする</dd>
+      <dt>山札の上で[t]</dt>
+      <dd>山札を横にする</dd>
+      <dt>山札の上で[r]</dt>
+      <dd>山札を全て裏にする</dd>
+      <dt>山札の上で[shift]+[u]</dt>
+      <dd>山札を全て正位置にする</dd>
+      <dt>山札の上で[shift]+[s]</dt>
+      <dd>山札をシャッフルする</dd>
+      <dt>山札の上で[m]</dt>
+      <dd>メニューを開く</dd>
     </dl>
   </section>
 

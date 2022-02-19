@@ -38,7 +38,7 @@ export async function getDeckMenu(
   const spreadsheetId = utility.getQueryValue('decksheet')
   if (!spreadsheetId) return
   const book = await getBook(spreadsheetId)
-  if (!book) return
+  if (!book || !book.title) return
   const subMenus: ContextMenuAction[] = book.sheets.map((name) => ({
     name,
     action: async () => {
@@ -48,6 +48,7 @@ export async function getDeckMenu(
       SoundEffect.play(PresetSound.cardPut)
     },
   }))
+
   return {
     name: `${book.title}の山札を作成`,
     action: null,

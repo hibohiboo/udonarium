@@ -53,19 +53,32 @@ export const cardPointerHook = (card: { rotate: number }, e: PointerEvent) => {
   }
   return cardTap.cardPointerHook(card, e)
 }
+// ショートカットキー
 export const cardOnKeydownHook = (
-  card: { rotate: number; onContextMenu: any },
+  card: any,
   e: KeyboardEvent,
 ) => {
   let ret = false
-  if (config.useCardTap) {
-    ret = cardTap.cardOnKeydownHook(card, e)
-  }
-  if (!ret && config.useKeyboardShortcut) {
+  if (config.useKeyboardShortcut) {
     ret = keyboardShortcut.cardOnKeydownHook(card, e)
+  }
+  if (!ret && config.useCardTap) {
+    ret = cardTap.cardOnKeydownHook(card, e)
   }
   return ret
 }
+export const cardStackOnKeydownHook = (
+  that: any,
+  e: KeyboardEvent,
+) => {
+  let ret = false
+
+  if (!ret && config.useKeyboardShortcut) {
+    ret = keyboardShortcut.cardStackOnKeydownHook(that, e)
+  }
+  return ret
+}
+
 
 // キーボードショートカット
 export const terrainOnKeydownHook = (that, e) => {
@@ -139,7 +152,8 @@ export const onContextMenuHook = async (
   // カードデッキ追加
   if (config.useDeckSpreadSheet) {
     try {
-      menuActions.push(await getDeckMenu(position))
+      const menu = await getDeckMenu(position)
+      if (menu) menuActions.push(menu)
     } catch (e) {
       console.error(e)
     }
