@@ -3,7 +3,6 @@ import { Card } from '@udonarium/card';
 import { CardStack } from '@udonarium/card-stack';
 import { ImageContext, ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
-import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem } from '@udonarium/core/system';
 import { Cutin } from '@udonarium/cutin';
 import { Device } from '@udonarium/device/device';
@@ -485,14 +484,6 @@ export class TabletopActionService {
   }
 
   makeDefaultTable() {
-
-
-
-
-
-    let tableSelecter = new TableSelecter('tableSelecter');
-    tableSelecter.initialize();
-
     let gameTable = new GameTable('gameTable');
     let testBgFile: ImageFile = null;
     let bgFileContext = ImageFile.createEmpty('testTableBackgroundImage_image').toContext();
@@ -506,7 +497,7 @@ export class TabletopActionService {
     gameTable.height = 20;
     gameTable.initialize();
 
-    tableSelecter.viewTableIdentifier = gameTable.identifier;
+    TableSelecter.instance.viewTableIdentifier = gameTable.identifier;
   }
 
   makeDefaultTabletopObjects() {
@@ -724,7 +715,6 @@ export class TabletopActionService {
   }
 
   private getViewTable(): GameTable {
-    let tableSelecter = ObjectStore.instance.get<TableSelecter>('tableSelecter');
-    return tableSelecter ? tableSelecter.viewTable : null;
+    return TableSelecter.instance.viewTable;
   }
 }

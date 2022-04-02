@@ -37,9 +37,7 @@ let first = true; // rooper-card が継承しているからか、2回initが走
 @Injectable()
 export class TabletopService {
   private _emptyTable: GameTable = new GameTable('');
-  dragAreaElement: HTMLElement = document.body;
-
-  get tableSelecter(): TableSelecter { return ObjectStore.instance.get<TableSelecter>('tableSelecter'); }
+  get tableSelecter(): TableSelecter { return TableSelecter.instance; }
   get currentTable(): GameTable {
     let table = this.tableSelecter.viewTable;
     return table ? table : this._emptyTable;
