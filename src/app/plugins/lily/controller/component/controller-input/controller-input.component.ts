@@ -28,16 +28,16 @@ import { ChatColorSettingComponent } from '../../../chat-color/component/chat-co
   styleUrls: ['./controller-input.component.css']
 })
 export class ControllerInputComponent implements OnInit, OnDestroy {
-  get useLilyMessageColor(){return config.useLilyMessageColor }
-  get useBuff(){ return config.useLilyBuff }
-  get useStand(){ return config.useLilyStand }
+  get useLilyMessageColor() { return config.useLilyMessageColor }
+  get useBuff() { return config.useLilyBuff }
+  get useStand() { return config.useLilyStand }
 
   @ViewChild('textArea', { static: true }) textAreaElementRef?: ElementRef;
 
-  @Input() onlyCharacters: boolean = false;
-  @Input() chatTabidentifier: string = '';
+  @Input() onlyCharacters = false;
+  @Input() chatTabidentifier = '';
 
-  @Input('gameType') _gameType: string = '';
+  @Input('gameType') _gameType = '';
   @Output() gameTypeChange = new EventEmitter<string>();
   get gameType(): string { return this._gameType };
   set gameType(gameType: string) { this._gameType = gameType; this.gameTypeChange.emit(gameType); }
@@ -47,30 +47,30 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
   get sendFrom(): string { return this._sendFrom };
   set sendFrom(sendFrom: string) { this._sendFrom = sendFrom; this.sendFromChange.emit(sendFrom); }
 
-  @Input('sendTo') _sendTo: string = '';
+  @Input('sendTo') _sendTo = '';
   @Output() sendToChange = new EventEmitter<string>();
   get sendTo(): string { return this._sendTo };
   set sendTo(sendTo: string) { this._sendTo = sendTo; this.sendToChange.emit(sendTo); }
 
-  @Input('text') _text: string = '';
+  @Input('text') _text = '';
   @Output() textChange = new EventEmitter<string>();
   get text(): string { return this._text };
   set text(text: string) { this._text = text; this.textChange.emit(text); }
 
-//  @Input('tachieNum') _tachieNum: number = 0;
+  //  @Input('tachieNum') _tachieNum: number = 0;
 
-  @Output() chat = new EventEmitter<{ text: string, gameType: string, sendFrom: string, sendTo: string ,tachieNum: number ,messColor: string}>();
+  @Output() chat = new EventEmitter<{ text: string, gameType: string, sendFrom: string, sendTo: string, tachieNum: number, messColor: string }>();
 
   get tachieNum(): number {
-    let object = ObjectStore.instance.get(this.sendFrom);
+    const object = ObjectStore.instance.get(this.sendFrom);
     if (object instanceof GameCharacter) {
       return object.selectedTachieNum;
     }
     return 0;
   }
 
-  set tachieNum(num:  number){
-    let object = ObjectStore.instance.get(this.sendFrom);
+  set tachieNum(num: number) {
+    const object = ObjectStore.instance.get(this.sendFrom);
     if (object instanceof GameCharacter) {
       object.selectedTachieNum = num;
     }
@@ -78,111 +78,111 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
   @Output() hideChkEvent = new EventEmitter<boolean>();
 
   get isDirect(): boolean { return this.sendTo != null && this.sendTo.length ? true : false }
-  gameHelp: string = '';
+  gameHelp = '';
 
   colorSelectNo_ = 0;
 
-  get colorSelectNo(){
+  get colorSelectNo() {
     return this.colorSelectNo_;
   }
 
-  set colorSelectNo( num : number ){
-    if( num < 0){
+  set colorSelectNo(num: number) {
+    if (num < 0) {
       this.colorSelectNo_ = 0;
-    }else if( num > 2){
+    } else if (num > 2) {
       this.colorSelectNo_ = 2;
-    }else{
-      this.colorSelectNo_ = num ;
+    } else {
+      this.colorSelectNo_ = num;
     }
   }
 
-  setColorNum( num : number ){
-    this.colorSelectNo = num ;
+  setColorNum(num: number) {
+    this.colorSelectNo = num;
   }
 
-  get colorSelectorBoxBorder_0(){
-    if( 0 == this.colorSelectNo ) return '3px';
+  get colorSelectorBoxBorder_0() {
+    if (0 == this.colorSelectNo) return '3px';
     return '1px';
   }
 
-  get colorSelectorBoxBorder_1(){
-    if( 1 == this.colorSelectNo ) return '3px';
+  get colorSelectorBoxBorder_1() {
+    if (1 == this.colorSelectNo) return '3px';
     return '1px';
   }
 
-  get colorSelectorBoxBorder_2(){
-    if( 2 == this.colorSelectNo ) return '3px';
+  get colorSelectorBoxBorder_2() {
+    if (2 == this.colorSelectNo) return '3px';
     return '1px';
   }
 
-  get colorSelectorRadius_0(){
-    if( 0 == this.colorSelectNo ) return '9px';
+  get colorSelectorRadius_0() {
+    if (0 == this.colorSelectNo) return '9px';
     return '0px';
   }
 
-  get colorSelectorRadius_1(){
-    if( 1 == this.colorSelectNo ) return '9px';
+  get colorSelectorRadius_1() {
+    if (1 == this.colorSelectNo) return '9px';
     return '0px';
   }
 
-  get colorSelectorRadius_2(){
-    if( 2 == this.colorSelectNo ) return '9px';
+  get colorSelectorRadius_2() {
+    if (2 == this.colorSelectNo) return '9px';
     return '0px';
   }
 
-  charactorChatColor(num){
-    let object = ObjectStore.instance.get(this.sendFrom);
+  charactorChatColor(num) {
+    const object = ObjectStore.instance.get(this.sendFrom);
     if (object instanceof GameCharacter) {
       return object.chatColorCode[num];
-    }else{
+    } else {
       return '#000000';
     }
   }
 
-  get selectChatColor(){
-    console.log( 'selectChatColor :' + this.charactorChatColor(this.colorSelectNo) );
+  get selectChatColor() {
+    console.log('selectChatColor :' + this.charactorChatColor(this.colorSelectNo));
     return this.charactorChatColor(this.colorSelectNo);
   }
 
-  get charactorChatColor_0(){
+  get charactorChatColor_0() {
     return this.charactorChatColor(0);
   }
 
-  get charactorChatColor_1(){
+  get charactorChatColor_1() {
     return this.charactorChatColor(1);
   }
 
-  get charactorChatColor_2(){
+  get charactorChatColor_2() {
     return this.charactorChatColor(2);
   }
 
-  shoeColorSetting(){
-    let object = ObjectStore.instance.get(this.sendFrom);
+  shoeColorSetting() {
+    const object = ObjectStore.instance.get(this.sendFrom);
     if (object instanceof GameCharacter) {
 
-      let coordinate = this.pointerDeviceService.pointers[0];
+      const coordinate = this.pointerDeviceService.pointers[0];
       let title = '色設定';
       if (object.name.length) title += ' - ' + object.name;
-      let option: PanelOption = { title: title, left: coordinate.x + 50, top: coordinate.y - 150, width: 300, height: 120 };
-      let component = this.panelService.open<ChatColorSettingComponent>(ChatColorSettingComponent, option);
+      const option: PanelOption = { title: title, left: coordinate.x + 50, top: coordinate.y - 150, width: 300, height: 120 };
+      const component = this.panelService.open<ChatColorSettingComponent>(ChatColorSettingComponent, option);
       component.tabletopObject = object;
     }
   }
 
-  get selectCharacterTachie(){
-    let object = ObjectStore.instance.get(this.sendFrom);
+  get selectCharacterTachie() {
+    const object = ObjectStore.instance.get(this.sendFrom);
     if (object instanceof GameCharacter) {
-      if( object.imageDataElement.children.length  > this.tachieNum){
-        return  object.imageDataElement.children[this.tachieNum];
+      if (object.imageDataElement.children.length > this.tachieNum) {
+        return object.imageDataElement.children[this.tachieNum];
       }
     }
     return null;
   }
 
-  get selectCharacterTachieNum(){
-    let object = ObjectStore.instance.get(this.sendFrom);
+  get selectCharacterTachieNum() {
+    const object = ObjectStore.instance.get(this.sendFrom);
     if (object instanceof GameCharacter) {
-      return  object.imageDataElement.children.length;
+      return object.imageDataElement.children.length;
     } else if (object instanceof PeerCursor) {
       return 0;
     }
@@ -190,11 +190,11 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
   }
 
   get imageFile(): ImageFile {
-    if( this.selectCharacterTachie ){
-      let image:ImageFile = ImageStorage.instance.get(<string>this.selectCharacterTachie.value);
+    if (this.selectCharacterTachie) {
+      const image: ImageFile = ImageStorage.instance.get(<string>this.selectCharacterTachie.value);
       return image ? image : ImageFile.Empty;
     }
-    let object = ObjectStore.instance.get(this.sendFrom);
+    const object = ObjectStore.instance.get(this.sendFrom);
     let image: ImageFile = null;
     if (object instanceof GameCharacter) {
       image = object.imageFile;
@@ -204,7 +204,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
     return image ? image : ImageFile.Empty;
   }
 
-  private shouldUpdateCharacterList: boolean = true;
+  private shouldUpdateCharacterList = true;
   private _gameCharacters: GameCharacter[] = [];
   get gameCharacters(): GameCharacter[] {
     if (this.shouldUpdateCharacterList) {
@@ -217,7 +217,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
   }
 
   private writingEventInterval: NodeJS.Timer = null;
-  private previousWritingLength: number = 0;
+  private previousWritingLength = 0;
   writingPeers: Map<string, ResettableTimeout> = new Map();
   writingPeerNames: string[] = [];
 
@@ -237,9 +237,9 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
     EventSystem.register(this)
       .on('MESSAGE_ADDED', event => {
         if (event.data.tabIdentifier !== this.chatTabidentifier) return;
-        let message = ObjectStore.instance.get<ChatMessage>(event.data.messageIdentifier);
-        let peerCursor = ObjectStore.instance.getObjects<PeerCursor>(PeerCursor).find(obj => obj.userId === message.from);
-        let sendFrom = peerCursor ? peerCursor.peerId : '?';
+        const message = ObjectStore.instance.get<ChatMessage>(event.data.messageIdentifier);
+        const peerCursor = ObjectStore.instance.getObjects<PeerCursor>(PeerCursor).find(obj => obj.userId === message.from);
+        const sendFrom = peerCursor ? peerCursor.peerId : '?';
         if (this.writingPeers.has(sendFrom)) {
           this.writingPeers.get(sendFrom).stop();
           this.writingPeers.delete(sendFrom);
@@ -250,7 +250,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
         if (event.data.aliasName !== GameCharacter.aliasName) return;
         this.shouldUpdateCharacterList = true;
         if (event.data.identifier !== this.sendFrom) return;
-        let gameCharacter = ObjectStore.instance.get<GameCharacter>(event.data.identifier);
+        const gameCharacter = ObjectStore.instance.get<GameCharacter>(event.data.identifier);
         if (gameCharacter && !this.allowsChat(gameCharacter)) {
           if (0 < this.gameCharacters.length && this.onlyCharacters) {
             this.sendFrom = this.gameCharacters[0].identifier;
@@ -260,7 +260,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
         }
       })
       .on('DISCONNECT_PEER', event => {
-        let object = ObjectStore.instance.get(this.sendTo);
+        const object = ObjectStore.instance.get(this.sendTo);
         if (object instanceof PeerCursor && object.peerId === event.data.peerId) {
           this.sendTo = '';
         }
@@ -287,7 +287,7 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
 
   private updateWritingPeerNames() {
     this.writingPeerNames = Array.from(this.writingPeers.keys()).map(peerId => {
-      let peer = PeerCursor.findByPeerId(peerId);
+      const peer = PeerCursor.findByPeerId(peerId);
       return peer ? peer.name : '';
     });
   }
@@ -296,9 +296,9 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
     if (this.writingEventInterval === null && this.previousWritingLength <= this.text.length) {
       let sendTo: string = null;
       if (this.isDirect) {
-        let object = ObjectStore.instance.get(this.sendTo);
+        const object = ObjectStore.instance.get(this.sendTo);
         if (object instanceof PeerCursor) {
-          let peer = PeerContext.parse(object.peerId);
+          const peer = PeerContext.parse(object.peerId);
           if (peer) sendTo = peer.userId;
         }
       }
@@ -318,19 +318,21 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
     if (event && event.keyCode !== 13) return;
 
     if (!this.sendFrom.length) this.sendFrom = this.myPeer.identifier;
-    this.chat.emit({ text: this.text, gameType: this.gameType, sendFrom: this.sendFrom
-    , sendTo: this.sendTo ,tachieNum :this.tachieNum , messColor : this.selectChatColor });
+    this.chat.emit({
+      text: this.text, gameType: this.gameType, sendFrom: this.sendFrom
+      , sendTo: this.sendTo, tachieNum: this.tachieNum, messColor: this.selectChatColor
+    });
 
     this.text = '';
     this.previousWritingLength = this.text.length;
-    let textArea: HTMLTextAreaElement = this.textAreaElementRef?.nativeElement;
+    const textArea: HTMLTextAreaElement = this.textAreaElementRef?.nativeElement;
     if (!textArea) return
     textArea.value = '';
     this.calcFitHeight();
   }
 
   calcFitHeight() {
-    let textArea: HTMLTextAreaElement = this.textAreaElementRef?.nativeElement;
+    const textArea: HTMLTextAreaElement = this.textAreaElementRef?.nativeElement;
     if (!textArea) return
     textArea.style.height = '';
     if (textArea.scrollHeight >= textArea.offsetHeight) {
@@ -349,17 +351,17 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
     DiceBot.getHelpMessage(this.gameType).then(help => {
       this.gameHelp = help;
 
-      let gameName: string = 'ダイスボット';
-      for (let diceBotInfo of DiceBot.diceBotInfos) {
-        if (diceBotInfo.script === this.gameType) {
-          gameName = 'ダイスボット<' + diceBotInfo.game + '＞'
+      let gameName = 'ダイスボット';
+      for (const diceBotInfo of DiceBot.diceBotInfos) {
+        if (diceBotInfo.id === this.gameType) {
+          gameName = 'ダイスボット<' + diceBotInfo.name + '＞'
         }
       }
       gameName += 'の説明';
 
-      let coordinate = this.pointerDeviceService.pointers[0];
-      let option: PanelOption = { left: coordinate.x, top: coordinate.y, width: 600, height: 500 };
-      let textView = this.panelService.open(TextViewComponent, option);
+      const coordinate = this.pointerDeviceService.pointers[0];
+      const option: PanelOption = { left: coordinate.x, top: coordinate.y, width: 600, height: 500 };
+      const textView = this.panelService.open(TextViewComponent, option);
       textView.title = gameName;
       textView.text =
         '【ダイスボット】チャットにダイス用の文字を入力するとダイスロールが可能\n'
@@ -386,8 +388,8 @@ export class ControllerInputComponent implements OnInit, OnDestroy {
 
   buffHideIsChk = false;
   //親コンポーネントにもCHKBOX情報を渡す、作りが悪いがチャット入力部流用のためひとまずこのまま
-  buffHideChkChange( chk ){
-    console.log('buffHideChkChange:' + chk );
+  buffHideChkChange(chk) {
+    console.log('buffHideChkChange:' + chk);
     this.hideChkEvent.emit(chk);
     this.buffHideIsChk = chk;
   }

@@ -124,13 +124,13 @@ export class SaveDataService {
     let text: string = chatTab.logHtml();
 
     let blob = new Blob( [text], {type: "text/plain;charset=utf-8"});
-    saveAs(blob, fileName + ".html");
+    global.saveAs(blob, fileName + ".html");
   }
   saveHtmlChatLogAll( fileName: string ){
     let text: string = ChatTabList.instance.logHtml();
 
     let blob = new Blob( [text], {type: "text/plain;charset=utf-8"});
-    saveAs(blob, fileName + ".html");
+    global.saveAs(blob, fileName + ".html");
   }
   // lily end
 }
