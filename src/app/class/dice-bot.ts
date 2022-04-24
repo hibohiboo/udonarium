@@ -29,7 +29,6 @@ export class DiceBot extends GameObject {
   onStoreAdded() {
     super.onStoreAdded();
     const listener = EventSystem.register(this)
-    listener
       .on('SEND_MESSAGE', async event => {
         let chatMessage = ObjectStore.instance.get<ChatMessage>(event.data.messageIdentifier);
         if (!chatMessage || !chatMessage.isSendFromSelf || chatMessage.isSystem) return;
