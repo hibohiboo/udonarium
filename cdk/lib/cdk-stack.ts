@@ -4,7 +4,8 @@ import * as iam from 'aws-cdk-lib/aws-iam'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
-import { basePath } from '../../bathPath'
+
+const basePath = 'cartagraph-udonarium'
 
 interface Props extends core.StackProps {
   bucketName: string
@@ -41,7 +42,7 @@ export class AWSCarTaGraphLoopCityTRPGClientStack extends core.Stack {
       },
     )
     // 指定したディレクトリをデプロイ
-    this.deployS3(bucket, distribution, '../client/build', props.bucketName)
+    this.deployS3(bucket, distribution, '../dist', props.bucketName)
 
     // 確認用にCloudFrontのURLに整形して出力
     new core.CfnOutput(this, `${props.distributionId}-top-url`, {
