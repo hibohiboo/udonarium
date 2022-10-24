@@ -1,8 +1,8 @@
-import * as lzbase62 from 'lzbase62/lzbase62.min.js';
-import * as CryptoJS from 'crypto-js/core.js';
-import * as SHA256 from 'crypto-js/sha256.js';
+import * as lzbase62 from 'lzbase62';
+import * as SHA256 from 'crypto-js/sha256';
 
 import { base } from '../util/base-x';
+import { MutablePeerSessionState, PeerSessionGrade, PeerSessionState } from './peer-session-state';
 
 const Base62 = base('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
 const roomIdPattern = /^(\w{6})(\w{3})(\w*)-(\w*)/i;
@@ -18,6 +18,7 @@ export interface IPeerContext {
   readonly isOpen: boolean;
   readonly isRoom: boolean;
   readonly hasPassword: boolean;
+  readonly session: PeerSessionState;
 }
 
 export class PeerContext implements IPeerContext {
@@ -29,6 +30,7 @@ export class PeerContext implements IPeerContext {
   digestUserId: string = '';
   digestPassword: string = '';
   isOpen: boolean = false;
+  session: MutablePeerSessionState = { grade: PeerSessionGrade.UNSPECIFIED, ping: 0, health: 0, speed: 0, description: '' };
 
   get isRoom(): boolean { return 0 < this.roomId.length; }
   get hasPassword(): boolean { return 0 < this.password.length + this.digestPassword.length; }
