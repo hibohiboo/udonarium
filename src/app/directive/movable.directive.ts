@@ -101,7 +101,7 @@ export class MovableDirective implements AfterViewInit, OnDestroy {
     this.input.onContextMenu = this.onContextMenu.bind(this);
 
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', -1000, event => {
+      .on('UPDATE_GAME_OBJECT', event => {
         if ((event.isSendFromSelf && this.input.isGrabbing) || event.data.identifier !== this.tabletopObject.identifier || !this.shouldTransition(this.tabletopObject)) return;
         this.batchService.add(() => {
           if (this.input.isGrabbing) {
@@ -318,7 +318,7 @@ export class MovableDirective implements AfterViewInit, OnDestroy {
   }
 
   private updateTransformCss() {
-    let css = this.transformCssOffset + ' translateX(' + this.posX + 'px) translateY(' + this.posY + 'px) translateZ(' + this.posZ + 'px)';
+    let css = `${this.transformCssOffset} translate3d(${this.posX.toFixed(4)}px, ${this.posY.toFixed(4)}px, ${this.posZ.toFixed(4)}px)`;
     this.nativeElement.style.transform = css;
   }
 

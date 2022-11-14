@@ -36,6 +36,7 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   networkService = Network
   gameRoomService = ObjectStore.instance;
   help: string = '';
+  isPasswordVisible = false;
 
   // start with fly
   @ViewChild('idInput') idInput: ElementRef;
@@ -116,6 +117,10 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
 
   showLobby() {
     this.modalService.open(LobbyComponent, { width: 700, height: 400, left: 0, top: 400 });
+  }
+
+  togglePasswordVisibility() {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
   findUserId(peerId: string) {

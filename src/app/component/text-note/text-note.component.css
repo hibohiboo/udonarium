@@ -1,3 +1,7 @@
+:host {
+  display: block;
+}
+
 .is-grab {
   cursor: -moz-grab;
   cursor: -webkit-grab;
@@ -53,8 +57,17 @@
   bottom: 0;
   left: 0;
   right: 0;
+  backface-visibility: hidden;
+}
+
+.is-front {
   transform-origin: 50% 100%;
   transform: rotateX(-90deg);
+}
+
+.is-back {
+  transform-origin: 50% 100%;
+  transform: rotateX(-90deg) rotateY(180deg);
 }
 
 .is-bg-texture {
