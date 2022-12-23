@@ -7,6 +7,7 @@ import { BadgeComponent } from 'component/badge/badge.component';
 import { CardStackListComponent } from 'component/card-stack-list/card-stack-list.component';
 import { CardStackComponent } from 'component/card-stack/card-stack.component';
 import { CardComponent } from 'component/card/card.component';
+import { RooperCardComponent } from 'component/rooper-card/rooper-card.component';
 import { ChatInputComponent } from 'component/chat-input/chat-input.component';
 import { ChatMessageComponent } from 'component/chat-message/chat-message.component';
 import { ChatPaletteComponent } from 'component/chat-palette/chat-palette.component';
@@ -37,12 +38,18 @@ import { RoomSettingComponent } from 'component/room-setting/room-setting.compon
 import { TerrainComponent } from 'component/terrain/terrain.component';
 import { TextNoteComponent } from 'component/text-note/text-note.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
+import { CutinViewComponent } from 'component/cutin-view/cutin-view.component';
+import { CutinListComponent} from 'component/cutin-list/cutin-list.component';
 import { UIPanelComponent } from 'component/ui-panel/ui-panel.component';
+import { HelpKeyboardComponent } from 'component/help-keyboard/help-keyboard.component';
+import { RooperGameSheetComponent } from 'component/rooper-game-sheet/rooper-game-sheet.component';
+
 import { DraggableDirective } from 'directive/draggable.directive';
 import { MovableDirective } from 'directive/movable.directive';
 import { ResizableDirective } from 'directive/resizable.directive';
 import { RotableDirective } from 'directive/rotable.directive';
 import { TooltipDirective } from 'directive/tooltip.directive';
+import { AutofocusDirective } from 'directive/autofocus.directive';
 import { SafePipe } from 'pipe/safe.pipe';
 
 import { AppConfigService } from 'service/app-config.service';
@@ -101,6 +108,12 @@ import { AppComponent } from './app.component';
     DraggableDirective,
     ResizableDirective,
     ChatInputComponent,
+    RooperCardComponent,
+    CutinViewComponent,
+    CutinListComponent,
+    HelpKeyboardComponent,
+    RooperGameSheetComponent,
+    AutofocusDirective,
   ],
   imports: [
     BrowserModule,

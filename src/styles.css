@@ -1,4 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
+.is2d .upright-transform[class] {
+  transform: rotateX(0) translateY(0);
+}
+.is2d .peer-cursor[class] {
+  transform: translateX(-100%) translateY(-100%) rotate(45deg);
+}
 button {
   background-color: #eee;
   color: #444;

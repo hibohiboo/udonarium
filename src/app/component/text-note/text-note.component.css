@@ -62,7 +62,7 @@
 
 .is-front {
   transform-origin: 50% 100%;
-  transform: rotateX(-90deg);
+  /* transform: rotateX(-90deg); */
 }
 
 .is-back {

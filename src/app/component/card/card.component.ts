@@ -5,6 +5,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  HostBinding,
   Input,
   NgZone,
   OnDestroy,
@@ -27,6 +28,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
+
 
 @Component({
   selector: 'card',
@@ -72,16 +74,19 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private input: InputHandler = null;
 
+  @HostBinding('tabIndex') tabIndex:string;//tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
   constructor(
     private ngZone: NgZone,
-    private contextMenuService: ContextMenuService,
+    protected contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
     private tabletopService: TabletopService,
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    this.tabIndex="0";//TabIndexを付与。これをしないとフォーカスできないのでコンポーネントに対するキーイベントを取得できない。
+   }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -263,7 +268,32 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ngZone.run(() => this.dispatchCardDropEvent());
   }
 
-  private createStack() {
+  @HostListener("pointerenter", ["$event"])
+  onPointerenter(e: KeyboardEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+    this.elementRef.nativeElement.focus();
+  }
+
+  @HostListener("keydown", ["$event"])
+  onKeydown(e: KeyboardEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    // ポインタ（マウスカーソル）がカードの上にあるとき、その画像をターゲットとしている。
+    // カードの画像のエレメントと比較することで、現在のポインタがあるカードのみを対象にできる。
+    // if (this.pointerDeviceService.targetElement !== this.elementRef.nativeElement.querySelector('img')) return;
+    if (e.key === 't') {
+      this.card.rotate = 90;
+      return;
+    }
+    if (e.key === 'u') {
+      this.rotate = 0;
+      return;
+    }
+  }
+
+  protected createStack() {
     let cardStack = CardStack.create('山札');
     cardStack.location.x = this.card.location.x;
     cardStack.location.y = this.card.location.y;
@@ -312,7 +342,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     return value < min ? min : value;
   }
 
-  private showDetail(gameObject: Card) {
+  protected showDetail(gameObject: Card) {
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: gameObject.identifier, className: gameObject.aliasName });
     let coordinate = this.pointerDeviceService.pointers[0];
     let title = 'カード設定';

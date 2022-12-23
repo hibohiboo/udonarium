@@ -1,4 +1,5 @@
 import { Card } from './card';
+import { RooperCard } from './rooper-card';
 import { CardStack } from './card-stack';
 import { SyncObject } from './core/synchronize-object/decorator';
 import { GameObject } from './core/synchronize-object/game-object';
@@ -27,6 +28,7 @@ export class Room extends GameObject implements InnerXml {
     objects = objects.concat(ObjectStore.instance.getObjects(TextNote));
     objects = objects.concat(ObjectStore.instance.getObjects(CardStack));
     objects = objects.concat(ObjectStore.instance.getObjects(Card).filter((obj) => { return obj.parent === null }));
+    objects = objects.concat(ObjectStore.instance.getObjects(RooperCard).filter((obj) => { return obj.parent === null }));
     objects = objects.concat(ObjectStore.instance.getObjects(DiceSymbol));
     for (let object of objects) {
       xml += object.toXml();
@@ -43,6 +45,7 @@ export class Room extends GameObject implements InnerXml {
     objects = objects.concat(ObjectStore.instance.getObjects(TextNote));
     objects = objects.concat(ObjectStore.instance.getObjects(CardStack));
     objects = objects.concat(ObjectStore.instance.getObjects(Card));
+    objects = objects.concat(ObjectStore.instance.getObjects(RooperCard));
     objects = objects.concat(ObjectStore.instance.getObjects(DiceSymbol));
     for (let object of objects) {
       object.destroy();

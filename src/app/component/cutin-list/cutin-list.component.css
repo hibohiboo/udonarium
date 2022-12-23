@@ -1,0 +1,38 @@
+.help-list {
+  border-bottom:1px dotted #888;
+}
+.title {
+  display: flex;
+}
+.title button {
+  display: block;
+  height: 40px;
+  width: 40px;
+  margin-left: 10px;
+}
+h2 {
+  font-size: 1.2rem;
+  display: block;
+  height: 40px;
+  margin:0;
+  padding-top:10px;
+}
+table {
+  font-size:12px; border: 0; border-spacing: 0; width: 100%;
+}
+table th {
+  padding: 0 1em;
+}
+table tr td {
+  text-align: center;
+  padding: 0 0.5em;
+}
+table tr td div {
+  display: inline-block;
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+}
+td img {
+  max-width: 100px;
+}

@@ -6,6 +6,10 @@
     <button (click)="openModal('front')">表面の画像を変更</button>
     <button (click)="openModal('back')">裏面の画像を変更</button>
   </ng-container>
+  <ng-container *ngSwitchCase="'rooper-card'">
+    <button (click)="openModal('front')">表面の画像を変更</button>
+    <button (click)="openModal('back')">裏面の画像を変更</button>
+  </ng-container>
   <ng-container *ngSwitchCase="'card-stack'">
   </ng-container>
   <ng-container *ngSwitchCase="'terrain'">

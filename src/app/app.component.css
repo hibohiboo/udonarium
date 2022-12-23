@@ -12,8 +12,12 @@ nav ul {
   padding: 5px;
   background-color: rgba(30, 30, 30, 0.8);
   */
+  display: flex;
+  flex-wrap:wrap;
 }
-
+.for-rooper-pc nav ul {
+  display: block;
+}
 nav ul > li {
   text-align: center;
   padding: 5px;

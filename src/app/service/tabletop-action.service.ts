@@ -4,10 +4,13 @@ import { CardStack } from '@udonarium/card-stack';
 import { ImageContext, ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
 import { EventSystem } from '@udonarium/core/system';
+import { Cutin } from '@udonarium/cutin';
+import { Device } from '@udonarium/device/device';
 import { DiceSymbol, DiceType } from '@udonarium/dice-symbol';
 import { GameCharacter } from '@udonarium/game-character';
 import { GameTable } from '@udonarium/game-table';
 import { GameTableMask } from '@udonarium/game-table-mask';
+import { Board, RooperCard, rooperCharacterList } from '@udonarium/rooper-card';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { TableSelecter } from '@udonarium/table-selecter';
 import { Terrain } from '@udonarium/terrain';
@@ -22,6 +25,366 @@ import { PointerCoordinate } from './pointer-device.service';
 export class TabletopActionService {
 
   constructor() { }
+  private getCreateRooperMenu(position: PointerCoordinate): ContextMenuAction {
+    return {
+      name: "惨劇RoopeR",
+      action: null,
+      subActions: this.getCreateRooperSubMenu(position)
+    };
+  }
+  private getCreateRooperSubMenu(position: PointerCoordinate) : ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+
+    subMenus.push({
+      name: "キャラクター追加",
+      action: null,
+      subActions: this.getCreateRooperSubSubMenu(position)
+    });
+    subMenus.push({
+      name: "手札追加",
+      action: null,
+      subActions: this.createRooperHandsMenu(position)
+    });
+
+    subMenus.push({
+      name: "拡張カード追加",
+      action: null,
+      subActions: this.createRooperExtraMenu(position)
+    });
+    subMenus.push({
+      name: "トークン追加",
+      action: null,
+      subActions: this.createRooperTokenMenu(position)
+    });
+    subMenus.push({
+      name: "手札追加(レイ)",
+      action: null,
+      subActions: this.createRooperHandsMenuRei(position)
+    });
+    return subMenus;
+  }
+  private createRooperHandsMenu(position):ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    subMenus.push({
+      name: '脚本家手札',
+      action: ()=>{
+        this.createRooperScripterHands(position, '脚本家手札','a_writer_cards', 'hand_s');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公A手札',
+      action: ()=>{
+        this.createRooperProtagonistHands(position, '主人公A手札','a_heroA_cards', 'hand_a');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公B手札',
+      action: ()=>{
+        this.createRooperProtagonistHands(position, '主人公B手札','a_heroB_cards', 'hand_b');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公C手札',
+      action: ()=>{
+        this.createRooperProtagonistHands(position, '主人公C手札','a_heroC_cards', 'hand_c');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
+  }
+  private createRooperHandsMenuRei(position):ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    subMenus.push({
+      name: '脚本家手札',
+      action: ()=>{
+        this.createRooperScripterHandsRei(position, '脚本家手札','a_writer_cards', 'hand_s');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公A手札',
+      action: ()=>{
+        this.createRooperProtagonistHandsRei(position, '主人公A手札','a_heroA_cards', 'hand_a');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公B手札',
+      action: ()=>{
+        this.createRooperProtagonistHandsRei(position, '主人公B手札','a_heroB_cards', 'hand_b');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '主人公C手札',
+      action: ()=>{
+        this.createRooperProtagonistHandsRei(position, '主人公C手札','a_heroC_cards', 'hand_c');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
+  }
+  private createRooperTokenMenu(position):ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_tokens = `${prefix_path_rooper}/tokens`;
+
+    const createCard = (position, title, path)=>{
+      const back = `${prefix_path_tokens}/${path}.png`;
+      if (!ImageStorage.instance.get(back)) {
+        ImageStorage.instance.add(back);
+      }
+      const front = `${prefix_path_tokens}/${path}.png`;
+      if (!ImageStorage.instance.get(front)) {
+        ImageStorage.instance.add(front);
+      }
+      const card = Card.create(title, front, back, 1);
+      card.location.x = position.x - 25;
+      card.location.y = position.y - 25;
+    }
+
+    subMenus.push({
+      name: '暗躍カウンター',
+      action: ()=>{
+        createCard(position, '暗躍カウンター','chip_03');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '事件カウンター',
+      action: ()=>{
+        createCard(position, '事件カウンター','chip_08');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '刑事カウンター',
+      action: ()=>{
+        createCard(position, '刑事カウンター','guard');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '大物カウンター',
+      action: ()=>{
+        createCard(position, '大物カウンター','turf');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: '従者カウンター',
+      action: ()=>{
+        createCard(position, '従者カウンター','loyalty');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
+  }
+
+  private createRooperExtraMenu(position:PointerCoordinate) :ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_extra = `${prefix_path_rooper}/extra`;
+    const back = `${prefix_path_extra}/extra_back.png`;
+    if (!ImageStorage.instance.get(back)) {
+      ImageStorage.instance.add(back);
+    }
+    const createCard = (position, title,id)=>{
+      const front = `${prefix_path_extra}/${id}.png`;
+      if (!ImageStorage.instance.get(front)) {
+        ImageStorage.instance.add(front);
+      }
+      const card = Card.create(title, front, back);
+      card.location.x = position.x - 25;
+      card.location.y = position.y - 25;
+    }
+
+    subMenus.push({
+      name: 'ExtraA',
+      action: ()=>{
+        createCard(position, 'ExtraA','extra_a');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: 'ExtraB',
+      action: ()=>{
+        createCard(position, 'ExtraB','extra_b');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: 'ExtraC',
+      action: ()=>{
+        createCard(position, 'ExtraC','extra_c');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    subMenus.push({
+      name: 'ExtraD',
+      action: ()=>{
+        createCard(position, 'ExtraD','extra_d');
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    return subMenus;
+  }
+
+  private createRooperScripterHands(
+    position: PointerCoordinate,
+    title: string,
+    prefix:string,
+    identifier: string,
+  ): CardStack {
+    return this.createRooperHands(position, title,prefix, identifier,
+    ['不安+1', '不安+1', '不安-1', '不安禁止', '友好禁止', '暗躍+1',
+   '暗躍+2', '移動↑↓', '移動←→', '移動斜め']);
+  }
+  private createRooperScripterHandsRei(
+    position: PointerCoordinate,
+    title: string,
+    prefix:string,
+    identifier: string,
+  ): CardStack {
+    return this.createRooperHands(position, title,prefix, identifier,
+    ['不安+1', '不安+1', '不安-1', '不安禁止', '友好禁止', '暗躍+1',
+   '暗躍+2', '移動↑↓', '移動←→', '移動斜め','友好+1','絶望+1']);
+  }
+  private createRooperProtagonistHands(
+    position: PointerCoordinate,
+    title: string,
+    prefix:string,
+    identifier: string,
+  ): CardStack {
+    return this.createRooperHands(position, title,prefix, identifier,
+      ['不安+1', '不安-1', '友好+1', '友好+2', '暗躍禁止',
+      '移動↑↓', '移動←→', '移動禁止']);
+  }
+  private createRooperProtagonistHandsRei(
+    position: PointerCoordinate,
+    title: string,
+    prefix:string,
+    identifier: string,
+  ): CardStack {
+    return this.createRooperHands(position, title,prefix, identifier,
+      ['不安+1', '不安-1', '友好+1', '友好+2', '暗躍禁止',
+      '移動↑↓', '移動←→', '移動禁止','不安+2','希望+1']);
+  }
+  private createRooperHands(
+    position: PointerCoordinate,
+    title: string,
+    prefix:string,
+    identifier: string,
+    items: string[]
+  ): CardStack {
+    const cardStack = CardStack.create(title, identifier);
+    cardStack.location.x = position.x - 25;
+    cardStack.location.y = position.y - 25;
+    cardStack.posZ = position.z;
+
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_action_cards = `${prefix_path_rooper}/action_cards`;
+
+    const back = `${prefix_path_action_cards}/${prefix}_0b.png`;
+    if (!ImageStorage.instance.get(back)) {
+      ImageStorage.instance.add(back);
+    }
+
+    items.forEach((name, index) => {
+      const id = ('0' + (index - -1)).slice(-2);
+      const url =  `${prefix_path_action_cards}/${prefix}_${id}.png`;
+      if (!ImageStorage.instance.get(url)) {
+        ImageStorage.instance.add(url);
+      }
+      const card = Card.create(name, url, back, undefined, `${identifier}-${index}`);
+      cardStack.putOnBottom(card);
+    });
+    return cardStack;
+  }
+
+  getCreateRooperSubSubMenu(position: PointerCoordinate) : ContextMenuAction[] {
+    const subMenus: ContextMenuAction[] = [];
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
+    const action = (name:string, card_num:string, default_position: Board)=>{
+      const card_back = `${prefix_path_characters}/character_${card_num}_0.png`;
+      if (!ImageStorage.instance.get(card_back)) {
+        ImageStorage.instance.add(card_back);
+      }
+      const card_front = `${prefix_path_characters}/character_${card_num}_1.png`;
+      if (!ImageStorage.instance.get(card_front)) {
+        ImageStorage.instance.add(card_front);
+      }
+      const testCard = RooperCard.create(name, card_front, card_back, undefined, undefined, default_position);
+      testCard.location.x= position.x - 25;
+      testCard.location.y = position.y - 25;
+
+      SoundEffect.play(PresetSound.cardPut);
+    };
+    if(Device.isMobile()){
+
+      const character1 = rooperCharacterList.filter(character=>Number(character.card_num)<10);
+      const character2 = rooperCharacterList.filter(character=>10 <= Number(character.card_num) && Number(character.card_num) < 23);
+      const character3 = rooperCharacterList.filter(character=>23 <= Number(character.card_num));
+
+      subMenus.push({
+        name: "キャラクター追加1",
+        action: null,
+        subActions: (()=>{const menues: ContextMenuAction[] = [];character1.forEach(({name,card_num,default_position})=>{menues.push({name,action: () => {action(name, card_num,default_position);}});}); return menues})()
+      });
+      subMenus.push({
+        name: "キャラクター追加2",
+        action: null,
+        subActions: (()=>{const menues: ContextMenuAction[] = [];character2.forEach(({name,card_num,default_position})=>{menues.push({name,action: () => {action(name, card_num,default_position);}});}); return menues})()
+      });
+      subMenus.push({
+        name: "キャラクター追加3",
+        action: null,
+        subActions: (()=>{const menues: ContextMenuAction[] = [];character3.forEach(({name,card_num,default_position})=>{menues.push({name,action: () => {action(name, card_num,default_position);}});}); return menues})()
+      });
+      return subMenus;
+    }
+    const characters = rooperCharacterList;
+
+    subMenus.push({
+      name: "キャラクター一覧",
+      action: () => {
+        const cardStack = CardStack.create("キャラクター一覧");
+        cardStack.location.x = position.x - 25;
+        cardStack.location.y = position.y - 25;
+        cardStack.posZ = position.z;
+        characters.forEach(({name,card_num,default_position})=>{
+          const card_back = `${prefix_path_characters}/character_${card_num}_0.png`;
+          if (!ImageStorage.instance.get(card_back)) {
+            ImageStorage.instance.add(card_back);
+          }
+          const card_front = `${prefix_path_characters}/character_${card_num}_1.png`;
+          if (!ImageStorage.instance.get(card_front)) {
+            ImageStorage.instance.add(card_front);
+          }
+          const testCard = RooperCard.create(name, card_front, card_back, 3, undefined, default_position);
+          cardStack.putOnBottom(testCard);
+        });
+
+        SoundEffect.play(PresetSound.cardPut);
+      }
+    });
+    characters.forEach(({name,card_num, default_position})=>{
+      subMenus.push({
+        name,
+        action: () => {
+          action(name, card_num, default_position);
+        }
+      });
+    });
+
+    return subMenus;
+  }
+
+
 
   createGameCharacter(position: PointerCoordinate): GameCharacter {
     let character = GameCharacter.create('新しいキャラクター', 1, '');
@@ -124,12 +487,14 @@ export class TabletopActionService {
     let gameTable = new GameTable('gameTable');
     let testBgFile: ImageFile = null;
     let bgFileContext = ImageFile.createEmpty('testTableBackgroundImage_image').toContext();
-    bgFileContext.url = './assets/images/BG10a_80.jpg';
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_board = `${prefix_path_rooper}/board`;
+    bgFileContext.url = `${prefix_path_board}/board.png`;
     testBgFile = ImageStorage.instance.add(bgFileContext);
-    gameTable.name = '最初のテーブル';
+    gameTable.name = "最初のテーブル";
     gameTable.imageIdentifier = testBgFile.identifier;
-    gameTable.width = 20;
-    gameTable.height = 15;
+    gameTable.width = 32;
+    gameTable.height = 20;
     gameTable.initialize();
 
     TableSelecter.instance.viewTableIdentifier = gameTable.identifier;
@@ -140,60 +505,137 @@ export class TabletopActionService {
     let testFile: ImageFile = null;
     let fileContext: ImageContext = null;
 
-    testCharacter = new GameCharacter('testCharacter_1');
-    fileContext = ImageFile.createEmpty('testCharacter_1_image').toContext();
-    fileContext.url = './assets/images/mon_052.gif';
-    testFile = ImageStorage.instance.add(fileContext);
-    testCharacter.location.x = 5 * 50;
-    testCharacter.location.y = 9 * 50;
-    testCharacter.initialize();
-    testCharacter.createTestGameDataElement('モンスターA', 1, testFile.identifier);
+    // キャラクター追加
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
 
-    testCharacter = new GameCharacter('testCharacter_2');
-    testCharacter.location.x = 8 * 50;
-    testCharacter.location.y = 8 * 50;
-    testCharacter.initialize();
-    testCharacter.createTestGameDataElement('モンスターB', 1, testFile.identifier);
+    const tick = 50;
+    const board_left_edge_x = 5.5 * tick;
+    const board_top_y = 0;
+    const bord_chip_margin = 2.5 * tick;
+    const card_width = 3.5 * tick;
+    const board_right_edge_x = board_left_edge_x + 13.5 * tick;
+    const board_under_y = 10 * tick;
+    [
+      // {name:'巫女', card_num:'04', x: (board_right_edge_x), y:(board_top_y + bord_chip_margin)},
+    ].forEach(({name,card_num,x,y})=>{
+      const card_back = `${prefix_path_characters}/character_${card_num}_0.png`;
+      if (!ImageStorage.instance.get(card_back)) {
+        ImageStorage.instance.add(card_back);
+      }
+      const card_front = `${prefix_path_characters}/character_${card_num}_1.png`;
+      if (!ImageStorage.instance.get(card_front)) {
+        ImageStorage.instance.add(card_front);
+      }
+      const testCard = RooperCard.create(name, card_front, card_back, 3, `sample_rooper_card_${card_num}`, '神社');
+      testCard.location.x = x;
+      testCard.location.y = y;
+    });
 
-    testCharacter = new GameCharacter('testCharacter_3');
-    fileContext = ImageFile.createEmpty('testCharacter_3_image').toContext();
-    fileContext.url = './assets/images/mon_128.gif';
-    testFile = ImageStorage.instance.add(fileContext);
-    testCharacter.location.x = 4 * 50;
-    testCharacter.location.y = 2 * 50;
-    testCharacter.initialize();
-    testCharacter.createTestGameDataElement('モンスターC', 3, testFile.identifier);
+    // 手札初期表示
+    this.createRooperScripterHands({x:800,y:300, z: 0}, '脚本家手札','a_writer_cards', 'sample_hand_s').faceDownAll();
+    this.createRooperProtagonistHands({x:600,y:500, z: 0}, '主人公A手札','a_heroA_cards', 'sample_hand_a').faceDownAll();
+    this.createRooperProtagonistHands({x:800,y:500, z: 0}, '主人公B手札','a_heroB_cards', 'sample_hand_b').faceDownAll();
+    this.createRooperProtagonistHands({x:1000,y:500, z: 0}, '主人公C手札','a_heroC_cards', 'sample_hand_c').faceDownAll();
+    // リーダーカート表示
+    const createExtra = (position, title, path, size=2)=>{
+      const img = `${prefix_path_rooper}/extra/${path}.png`;
+      if (!ImageStorage.instance.get(img)) {
+        ImageStorage.instance.add(img);
+      }
+      const card = Card.create(title, img, img, size, `sample_${path}`);
+      card.location.x = position.x;
+      card.location.y = position.y;
+    }
+    createExtra({x:600, y:600, z: 0}, 'リーダーカード', 'leader');
+    createExtra({x:400, y:-150, z: 0}, 'ExtraA', 'extra_a');
+    createExtra({x:410, y:-150, z: 0}, 'ExtraB', 'extra_b');
+    createExtra({x:420, y:-150, z: 0}, 'ExtraC', 'extra_c');
+    createExtra({x:430, y:-150, z: 0}, 'ExtraD', 'extra_d');
 
-    testCharacter = new GameCharacter('testCharacter_4');
-    fileContext = ImageFile.createEmpty('testCharacter_4_image').toContext();
-    fileContext.url = './assets/images/mon_150.gif';
-    testFile = ImageStorage.instance.add(fileContext);
-    testCharacter.location.x = 6 * 50;
-    testCharacter.location.y = 11 * 50;
-    testCharacter.initialize();
-    testCharacter.createTestGameDataElement('キャラクターA', 1, testFile.identifier);
+    // カウンター初期表示
 
-    testCharacter = new GameCharacter('testCharacter_5');
-    fileContext = ImageFile.createEmpty('testCharacter_5_image').toContext();
-    fileContext.url = './assets/images/mon_211.gif';
-    testFile = ImageStorage.instance.add(fileContext);
-    testCharacter.location.x = 12 * 50;
-    testCharacter.location.y = 12 * 50;
-    testCharacter.initialize();
-    testCharacter.createTestGameDataElement('キャラクターB', 1, testFile.identifier);
+    const prefix_path_tokens = `${prefix_path_rooper}/tokens`;
+    const createToken = (position, title, path)=>{
+      const back = `${prefix_path_tokens}/${path}.png`;
+      if (!ImageStorage.instance.get(back)) {
+        ImageStorage.instance.add(back);
+      }
+      const front = `${prefix_path_tokens}/${path}.png`;
+      if (!ImageStorage.instance.get(front)) {
+        ImageStorage.instance.add(front);
+      }
+      const card = Card.create(title, front, back, 1, `sample_${path}_${position.x}_${position.y}`);
+      card.location.x = position.x - 25;
+      card.location.y = position.y - 25;
+    }
+    createToken({x:30,y:280, z: 0}, '現在日数', 'chip_07');
+    createToken({x:100,y:280, z: 0}, '事件カウンター', 'chip_08');
+    createToken({x:100,y:340, z: 0}, '事件カウンター', 'chip_08');
+    createToken({x:100,y:400, z: 0}, '事件カウンター', 'chip_08');
+    createToken({x:100,y:470, z: 0}, '事件カウンター', 'chip_08');
+    createToken({x:165,y:470, z: 0}, 'ループカウンター', 'chip_09');
+    createToken({x:230,y:280, z: 0}, 'Exカウンター', 'chip_10');
+    createExtra({x:10, y:550, z: 0}, '日記', 'diary', 1);
+    createExtra({x:125, y:750, z: 0}, '時計', 'clock', 1);
+    createExtra({x:175, y:750, z: 0}, 'app', 'icon', 1);
+    createToken({x:300,y:-50, z: 0}, '暗躍カウンター', 'chip_03');
+    createToken({x:310,y:-50, z: 0}, '暗躍カウンター', 'chip_03');
+    createToken({x:320,y:-50, z: 0}, '暗躍カウンター', 'chip_03');
+    createToken({x:330,y:-50, z: 0}, '暗躍カウンター', 'chip_03');
+    createToken({x:340,y:-50, z: 0}, '暗躍カウンター', 'chip_03');
+    createToken({x:350,y:-50, z: 0}, '暗躍カウンター', 'chip_06');
+    createToken({x:360,y:-50, z: 0}, '暗躍カウンター', 'chip_06');
+    createToken({x:370,y:-50, z: 0}, '暗躍カウンター', 'chip_06');
+    createToken({x:280,y:-50, z: 0}, '大物トークン', 'turf');
+    createToken({x:290,y:-50, z: 0}, '刑事トークン', 'guard');
+    let textNote = TextNote.create(
+      "公開シート",
+      `ループ回数: 4回 / 1ループ日数: 5日
+相談: 不可
+[事件予定]
+1日目: 不安拡大
+2日目: 殺人事件
+3日目: 自殺
+4日目: 行方不明
+5日目:
+`,
+      5,
+      6,
+      3,
+      'sample_open_sheet'
+    );
+    textNote.location.x = 100;
+    textNote.location.y = 150;
+    textNote.posZ = 0;
 
-    testCharacter = new GameCharacter('testCharacter_6');
-    fileContext = ImageFile.createEmpty('testCharacter_6_image').toContext();
-    fileContext.url = './assets/images/mon_135.gif';
-    testFile = ImageStorage.instance.add(fileContext);
-    testCharacter.location.x = 5 * 50;
-    testCharacter.location.y = 13 * 50;
-    testCharacter.initialize();
-    testCharacter.createTestGameDataElement('キャラクターC', 1, testFile.identifier);
+    const prefix_path_turns = `${prefix_path_rooper}/turn`;
+    [
+      {title:'ターン開始'},
+      {title:'脚本家行動'},
+      {title:'主人公行動 A'},
+      {title:'主人公行動 B'},
+      {title:'主人公行動 C'},
+      {title:'行動解決'},
+      {title:'脚本家能力'},
+      {title:'主人公能力'},
+      {title:'事件'},
+      {title:'リーダー交代'},
+      {title:'ターン終了'},
+    ].forEach(({title,}, index)=>{
+      const card_num:number = index + 1;
+      const card_front = `${prefix_path_turns}/turn_${card_num}.png`;
+      if (!ImageStorage.instance.get(card_front)) {
+        ImageStorage.instance.add(card_front);
+      }
+      Cutin.create(title, card_front, '', 433, 270, 0, `sampleCutin_${card_front}`);
+    });
+
   }
 
   makeDefaultContextMenuActions(position: PointerCoordinate): ContextMenuAction[] {
     return [
+      this.getCreateRooperMenu(position),
       this.getCreateCharacterMenu(position),
       this.getCreateTableMaskMenu(position),
       this.getCreateTerrainMenu(position),

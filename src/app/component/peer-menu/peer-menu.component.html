@@ -1,10 +1,18 @@
 <div *ngIf="myPeer">
-  <button (click)="changeIcon()">アイコンを変更する</button>
-  <div *ngIf="myPeer.image" class="image cover" [style.background-image]="'url(' + myPeer.image.url + ')' | safe: 'style' "
-    (click)="changeIcon()">
-    <!--<img *ngIf="myPeer.image" [src]="myPeer.image.url | safe: 'resourceUrl'" />-->
+  <span>あなたのニックネーム：  <input [(ngModel)]="myPeer.name"  placeholder="ニックネーム" appAutofocus list="input-name-list"/></span>
+  <datalist id="input-name-list">
+      <option value="脚本家"></option>
+      <option value="主人公A"></option>
+      <option value="主人公B"></option>
+      <option value="主人公C"></option>
+    </datalist>
+  <div class="icon-wrapper">
+    <button (click)="changeIcon()">アイコンを変更する</button>
+    <div *ngIf="myPeer.image" class="image cover" [style.background-image]="'url(' + myPeer.image.url + ')' | safe: 'style' "
+      (click)="changeIcon()">
+      <!--<img *ngIf="myPeer.image" [src]="myPeer.image.url | safe: 'resourceUrl'" />-->
+    </div>
   </div>
-  <span>あなたのニックネーム：  <input [(ngModel)]="myPeer.name"  placeholder="ニックネーム" /></span>
 </div>
 <div>
   <span>あなたのID：<span *ngIf="networkService.isOpen" style="font-weight: bold;">{{networkService.peerContext.userId}}</span>

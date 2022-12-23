@@ -31,6 +31,8 @@ import { JukeboxComponent } from 'component/jukebox/jukebox.component';
 import { ModalComponent } from 'component/modal/modal.component';
 import { PeerMenuComponent } from 'component/peer-menu/peer-menu.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
+import { RooperGameSheetComponent } from 'component/rooper-game-sheet/rooper-game-sheet.component';
+import { CutinListComponent } from 'component/cutin-list/cutin-list.component';
 import { UIPanelComponent } from 'component/ui-panel/ui-panel.component';
 import { AppConfig, AppConfigService } from 'service/app-config.service';
 import { ChatMessageService } from 'service/chat-message.service';
@@ -39,6 +41,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
+import { Device } from '@udonarium/device/device';
 
 @Component({
   selector: 'app-root',
@@ -53,6 +56,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private openPanelCount: number = 0;
   isSaveing: boolean = false;
   progresPercent: number = 0;
+
+  get isMobile(): boolean { return Device.isMobile(); }
 
   constructor(
     private modalService: ModalService,
@@ -117,6 +122,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PresetSound.lock = AudioStorage.instance.add('./assets/sounds/tm2/tm2_switch001.wav').identifier;
     PresetSound.unlock = AudioStorage.instance.add('./assets/sounds/tm2/tm2_switch001.wav').identifier;
     PresetSound.sweep = AudioStorage.instance.add('./assets/sounds/tm2/tm2_swing003.wav').identifier;
+    PresetSound.bell = AudioStorage.instance.add('./assets/sounds/on-jin/bell.mp3').identifier;
 
     AudioStorage.instance.get(PresetSound.dicePick).isHidden = true;
     AudioStorage.instance.get(PresetSound.dicePut).isHidden = true;
@@ -135,7 +141,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     AudioStorage.instance.get(PresetSound.sweep).isHidden = true;
 
     PeerCursor.createMyCursor();
-    PeerCursor.myCursor.name = 'プレイヤー';
+    PeerCursor.myCursor.name = '';
     PeerCursor.myCursor.imageIdentifier = noneIconImage.identifier;
 
     EventSystem.register(this)
@@ -186,8 +192,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     PanelService.defaultParentViewContainerRef = ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
-      this.panelService.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
-      this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
+      if(Device.isMobile()) {
+        this.panelService.open(PeerMenuComponent, { width: 300, height: 250, left: 0, top: 90 });
+        return;
+      }
+      this.panelService.open(ChatWindowComponent, { width: 640, height: 400, left: 0, top: 600 });
+      this.panelService.open(PeerMenuComponent, { width: 200, height: 450, left: 100, top: 0 });
+      this.panelService.open(CutinListComponent, { width: 300, height: 450, left: 100, top: 350 });
+      this.panelService.open(RooperGameSheetComponent, { width: 500, height: 450, left: 300, top: 0 });
     }, 0);
   }
 
@@ -225,6 +237,12 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         break;
       case 'GameObjectInventoryComponent':
         component = GameObjectInventoryComponent;
+        break;
+      case 'RooperGameSheetComponent':
+        component = RooperGameSheetComponent;
+        break;
+      case 'CutinListComponent':
+        component = CutinListComponent;
         break;
     }
     if (component) {
@@ -282,6 +300,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.ngZone.run(() => { });
       }, 100);
     }
+  }
+
+  resetPointOfView() {
+     EventSystem.trigger('RESET_POINT_OF_VIEW', null);
   }
 }
 

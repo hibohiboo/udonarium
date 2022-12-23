@@ -9,9 +9,12 @@ services:
       - ../tsconfig.app.json:/app/tsconfig.app.json
       - ../tsconfig.spec.json:/app/tsconfig.spec.json
       - ../tslint.json:/app/tslint.json
+      - ../browserslist:/app/browserslist # 対応するブラウザの設定
       - ../src:/app/src
       - ../dest:/app/dest
     ports:
-      - 80:80
+      # - 80:80
       - 4200:4200
-    command: [npm, run, start, --, "--host", "0.0.0.0", --poll, "1000", --ssl]
+    command: [npm, run, start, --, "--host", "0.0.0.0", "--watch", "--poll=2000"]
+
+

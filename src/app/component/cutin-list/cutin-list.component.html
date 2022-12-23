@@ -1,0 +1,25 @@
+
+<div>
+  <div class="title">
+      <h2>カットイン</h2>
+      <!-- <button (click)="addRooperCard()">
+          <i class="material-icons">person_add</i>
+      </button> -->
+  </div>
+  <table>
+      <tr>
+        <th>名前</th>
+        <th>画像</th>
+        <th></th>
+      </tr>
+      <ng-container *ngFor="let cutin of cutins">
+        <tr>
+          <td>{{cutin.title}}</td>
+          <td><img [src]="cutin.imageFile.url | safe: 'resourceUrl'"></td>
+          <td>
+            <button (click)="open(cutin)">表示</button>
+          </td>
+        </tr>
+      </ng-container>
+    </table>
+</div>

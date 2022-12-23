@@ -1,0 +1,82 @@
+
+<div>
+  <div class="title">
+      <h2>キャラクター</h2>
+      <button (click)="addRooperCard()">
+          <i class="material-icons">person_add</i>
+      </button>
+      <label>
+        <input type="checkbox" [(ngModel)]="isRei"/> レイで追加されたトークンを使用する
+      </label>
+
+  </div>
+  <div style="padding-bottom: 5px;">
+    <button (click)="resetCounter()">
+    カウンターリセット
+    </button>
+    <button (click)="resetLocation()">
+      初期位置に配置
+    </button>
+    <button (click)="reviveAll()">
+      一括蘇生
+    </button>
+  </div>
+  <table style="font-size:12px; border: 0; border-spacing: 0; width: 100%;">
+      <tr>
+        <th>名前</th>
+        <!-- <th>位置</th> -->
+        <th>友好</th>
+        <th>不安</th>
+        <th>暗躍</th>
+        <th *ngIf="isRei">希望</th>
+        <th *ngIf="isRei">絶望</th>
+        <th>死亡</th>
+        <th *ngIf="isRei">死亡済</th>
+        <th *ngIf="isRei">交友</th>
+        <th *ngIf="isRei">交友(拒否)</th>
+      </tr>
+      <ng-container *ngFor="let card of rooperCards">
+        <tr>
+          <td>{{card.name}}</td>
+          <!-- <td>{{card.position}}</td> -->
+          <td>
+            <i class="material-icons" (click)="card.decreaseGoodwillCounter()">remove_circle</i>
+            <div>{{card.goodwill}}</div>
+            <i class="material-icons" (click)="card.increaseGoodwillCounter()">add_circle</i>
+          </td>
+          <td>
+            <i class="material-icons" (click)="card.decreaseParanoiaCounter()">remove_circle</i>
+            <div>{{card.paranoia}}</div>
+            <i class="material-icons" (click)="card.increaseParanoiaCounter()">add_circle</i>
+          </td>
+          <td>
+            <i class="material-icons" (click)="card.decreaseIntrigueCounter()">remove_circle</i>
+            <div>{{card.intrigue}}</div>
+            <i class="material-icons" (click)="card.increaseIntrigueCounter()">add_circle</i>
+          </td>
+          <td *ngIf="isRei">
+            <i class="material-icons" (click)="card.decreaseHopeCounter()">remove_circle</i>
+            <div>{{card.hope}}</div>
+            <i class="material-icons" (click)="card.increaseHopeCounter()">add_circle</i>
+          </td>
+          <td *ngIf="isRei">
+            <i class="material-icons" (click)="card.decreaseDespairCounter()">remove_circle</i>
+            <div>{{card.despair}}</div>
+            <i class="material-icons" (click)="card.increaseDespairCounter()">add_circle</i>
+          </td>
+          <td>
+            <input type="checkbox" [(ngModel)]="card.isDead"/>
+          </td>
+          <td *ngIf="isRei">
+            <input type="checkbox" [(ngModel)]="card.isDeadToken"/>
+          </td>
+          <td *ngIf="isRei">
+            <input type="checkbox" [(ngModel)]="card.isFriendly"/>
+          </td>
+          <td *ngIf="isRei">
+            <input type="checkbox" [(ngModel)]="card.isUnfriendly"/>
+          </td>
+        </tr>
+      </ng-container>
+    </table>
+</div>
