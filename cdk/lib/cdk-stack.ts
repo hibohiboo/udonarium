@@ -43,7 +43,7 @@ export class AWSCarTaGraphLoopCityTRPGClientStack extends core.Stack {
       },
     )
     // 指定したディレクトリをデプロイ
-    this.deployS3(bucket, distribution, '../dist', props.bucketName)
+    this.deployS3(bucket, distribution, '../dist/udonarium', props.bucketName)
 
     // 確認用にCloudFrontのURLに整形して出力
     new core.CfnOutput(this, `${props.distributionId}-top-url`, {
