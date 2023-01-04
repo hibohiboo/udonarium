@@ -6,5 +6,12 @@ import { Component, OnInit } from "@angular/core";
 
 })
 export class AppComponent implements OnInit {
+  public settings = [
+    { label: '2Dモード', param: '2d', checked: false }
+  ]
   ngOnInit() { }
+  get settingLink() {
+    return './?' + this.settings.filter(s => s.checked).map(s => s.param).join('&')
+  }
+
 }

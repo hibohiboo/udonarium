@@ -1,1 +1,22 @@
-<div>test</div>
+<div>
+  <table>
+    <thead>
+      <th></th>
+      <th>項目</th>
+    </thead>
+    <tr *ngFor="let setting of settings">
+      <td>
+        <input
+          [id]="setting.param + '-form'"
+          [value]="setting.checked"
+          (change)="setting.checked = !setting.checked"
+          type="checkbox"
+        />
+      </td>
+      <td>
+        <label [for]="setting.param + '-form'">{{ setting.label }}</label>
+      </td>
+    </tr>
+  </table>
+  <a [href]="settingLink">設定を反映して移動</a>
+</div>
