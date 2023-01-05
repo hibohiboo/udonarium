@@ -266,11 +266,11 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.viewPotisonY += transformY;
     this.viewPotisonZ += transformZ;
 
-    if(offRotate){
+    if (offRotate) {
       this.viewRotateX -= rotateX;
       this.viewRotateY -= rotateY;
       this.viewRotateZ -= rotateZ;
-    }else if (this.is2d) {
+    } else if (this.is2d) {
       this.viewRotateX -= rotateX;
     }
 
