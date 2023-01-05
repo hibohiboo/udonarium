@@ -23,6 +23,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { TabletopService } from 'service/tabletop.service';
 import { is2d } from 'src/plugins/mode2d/extends/components/game-table/game-table.components';
+import { offRotate } from 'src/plugins/rotate-off/extends/components/game-table/game-table.components';
 
 import { GridLineRender } from './grid-line-render';
 import { TableMouseGesture } from './table-mouse-gesture';
@@ -265,7 +266,11 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.viewPotisonY += transformY;
     this.viewPotisonZ += transformZ;
 
-    if (this.is2d) {
+    if(offRotate){
+      this.viewRotateX -= rotateX;
+      this.viewRotateY -= rotateY;
+      this.viewRotateZ -= rotateZ;
+    }else if (this.is2d) {
       this.viewRotateX -= rotateX;
     }
 

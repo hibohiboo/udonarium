@@ -7,7 +7,8 @@ import { Component, OnInit } from "@angular/core";
 })
 export class AppComponent implements OnInit {
   public settings = [
-    { label: '2Dモード', param: '2d', checked: false }
+      { label: '2Dモード', param: '2d', checked: false }
+    , { label: 'ボード回転オフ', param: 'rotate-off', checked: false }
   ]
   ngOnInit() { }
   get settingLink() {
