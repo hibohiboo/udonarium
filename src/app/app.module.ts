@@ -55,6 +55,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 
 import { AppComponent } from './app.component';
+import pluginModules from '../plugins/extends/modules'
 
 @NgModule({
   declarations: [
@@ -101,6 +102,7 @@ import { AppComponent } from './app.component';
     DraggableDirective,
     ResizableDirective,
     ChatInputComponent,
+    ...pluginModules.components
   ],
   imports: [
     BrowserModule,
@@ -117,7 +119,8 @@ import { AppComponent } from './app.component';
     PanelService,
     PointerDeviceService,
     TabletopService,
+    ...pluginModules.services
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [...pluginModules.bootstarp]
 })
 export class AppModule { }
