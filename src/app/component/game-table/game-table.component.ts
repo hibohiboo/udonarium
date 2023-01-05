@@ -22,6 +22,7 @@ import { ModalService } from 'service/modal.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { TabletopService } from 'service/tabletop.service';
+import { is2d } from 'src/plugins/mode2d/extends/components/game-table/game-table.components';
 
 import { GridLineRender } from './grid-line-render';
 import { TableMouseGesture } from './table-mouse-gesture';
@@ -33,7 +34,7 @@ import { TableTouchGesture } from './table-touch-gesture';
   styleUrls: ['./game-table.component.css'],
 })
 export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
-  @HostBinding('class.is2d') is2d: boolean = true
+  @HostBinding('class.is2d') get is2d(){ return is2d; }; // plus
   @ViewChild('root', { static: true }) rootElementRef: ElementRef<HTMLElement>;
   @ViewChild('gameTable', { static: true }) gameTable: ElementRef<HTMLElement>;
   @ViewChild('gameObjects', { static: true }) gameObjects: ElementRef<HTMLElement>;
@@ -63,9 +64,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   private viewPotisonY: number = 0;
   private viewPotisonZ: number = 0;
 
-  private viewRotateX: number = 50;
+  private viewRotateX: number = is2d ? 0 : 50;
   private viewRotateY: number = 0;
-  private viewRotateZ: number = 10;
+  private viewRotateZ: number = is2d ? 0 : 10;
 
   private mouseGesture: TableMouseGesture = null;
   private touchGesture: TableTouchGesture = null;
