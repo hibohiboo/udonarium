@@ -2,7 +2,7 @@ import { animate, keyframes, style, transition, trigger } from '@angular/animati
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { PanelServiceExtnedPlus } from '../../service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { initHorizon } from 'src/plugins/extend-menu/extends/app/component/ui-panel/ui-panel.component';
+import { initHorizon, initMin } from 'src/plugins/extend-menu/extends/app/component/ui-panel/ui-panel.component';
 
 @Component({
   selector: 'ui-panel-extend-plus',
@@ -87,6 +87,9 @@ export class UIPanelComponentExtendPlus implements OnInit {
   ngAfterViewInit() {
     if(initHorizon){
        setTimeout(()=>this.toggleRotate(), 0);
+    }
+    if(initMin){
+      setTimeout(()=>this.toggleMinimize(), 0);
     }
   }
 
