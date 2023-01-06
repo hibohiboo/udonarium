@@ -11,6 +11,13 @@ export class AppComponent implements OnInit {
     , { label: 'ボード回転オフ', param: 'rotate-off', checked: false }
     , { label: 'メニュー最小化', param: 'mini-menu', checked: false }
     , { label: 'メニュー横並び', param: 'horizon-menu', checked: false }
+    , { label: 'メニューから削除: テーブル設定', param: 'hide-menu-table', checked: false }
+    , { label: 'メニューから削除: 画像', param: 'hide-menu-image', checked: false }
+    , { label: 'メニューから削除: 音楽', param: 'hide-menu-music', checked: false }
+    , { label: 'メニューから削除: インベントリ', param: 'hide-menu-inventory', checked: false }
+    , { label: 'メニューから削除: ZIP読込', param: 'hide-menu-zip', checked: false }
+    , { label: 'メニューから削除: 保存', param: 'hide-menu-save', checked: false }
+
   ]
   public plSettings = [
     ...this.settings

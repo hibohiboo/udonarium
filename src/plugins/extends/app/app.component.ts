@@ -39,7 +39,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
-import { horizonMenu, minimizableMenu } from 'src/plugins/extend-menu/extends/app/app.component';
+import { hideMenu, horizonMenu, menuCount, minimizableMenu } from 'src/plugins/extend-menu/extends/app/app.component';
 
 @Component({
   selector: 'app-root',
@@ -55,6 +55,13 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   isSaveing: boolean = false;
   progresPercent: number = 0;
   get isMinimizable() { return minimizableMenu; }
+  get menuHight() { return (menuCount-2) * 55 + 150; }
+  get hideTable() { return hideMenu.table; }
+  get hideImage() { return hideMenu.image; }
+  get hideMusic() { return hideMenu.music; }
+  get hideInventory() { return hideMenu.inventory; }
+  get hideZip() { return hideMenu.zipUpload; }
+  get hideSave() { return hideMenu.save; }
 
   constructor(
     private modalService: ModalService,

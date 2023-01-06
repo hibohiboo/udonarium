@@ -5,4 +5,10 @@ export const pluginConfig = {
   , isOffRotate: params.get('rotate-off') != null
   , isMinimizableMenu: params.get('mini-menu') != null
   , isHorizonMenu: params.get('horizon-menu') != null
+  , isHideMenuTable: params.get('hide-menu-table') != null
+  , isHideMenuImage: params.get('hide-menu-image') != null
+  , isHideMenuMusic: params.get('hide-menu-music') != null
+  , isHideMenuInventory: params.get('hide-menu-inventory') != null
+  , isHideMenuZipUpload: params.get('hide-menu-zip') != null
+  , isHideMenuSave: params.get('hide-menu-save') != null
 } as const;
