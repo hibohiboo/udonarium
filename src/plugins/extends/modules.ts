@@ -1,5 +1,3 @@
-import { AppComponent } from "src/app/app.component"
-import { useExtendComponents } from "../config"
 import { AppComponentExtendPlus } from "./app/app.component"
 import { UIPanelComponentExtendPlus } from "./app/component/ui-panel/ui-panel.component"
 import { ResizableDirectiveExtendPlus } from "./app/directive/resizable.directive"
@@ -12,6 +10,6 @@ const components = [
 ]
 const imports = []
 const services = [PanelServiceExtnedPlus]
-const bootstarp = [AppComponentExtendPlus]
+const bootstarp = [AppComponentExtendPlus] // 本家の AppComponent は不使用
 
 export default { components, services, bootstarp }

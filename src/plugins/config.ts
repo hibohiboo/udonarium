@@ -4,6 +4,5 @@ export const pluginConfig = {
   , is2d: params.get('2d') != null
   , isOffRotate: params.get('rotate-off') != null
   , isMinimizableMenu: params.get('mini-menu') != null
+  , isHorizonMenu: params.get('horizon-menu') != null
 } as const;
-
-export const useExtendComponents = pluginConfig.isMinimizableMenu

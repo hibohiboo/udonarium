@@ -39,6 +39,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
+import { horizonMenu, minimizableMenu } from 'src/plugins/extend-menu/extends/app/app.component';
 
 @Component({
   selector: 'app-root',
@@ -53,6 +54,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   private openPanelCount: number = 0;
   isSaveing: boolean = false;
   progresPercent: number = 0;
+  get isMinimizable() { return minimizableMenu; }
 
   constructor(
     private modalService: ModalService,
@@ -186,6 +188,11 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     PanelService.defaultParentViewContainerRef =  ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
+      if(horizonMenu){
+        this.panelSerive.open(PeerMenuComponent, { width: 500, height: 400, top: 100 });
+        this.panelSerive.open(ChatWindowComponent, { width: 700, height: 450, top: 500 });
+        return;
+      }
       this.panelSerive.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
       this.panelSerive.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
     }, 0);
@@ -283,6 +290,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       }, 100);
     }
   }
+  get useHorizonMenu(){ return horizonMenu; }
 
   isHorizontal = false;
   rotateChange(isHorizontal) {
