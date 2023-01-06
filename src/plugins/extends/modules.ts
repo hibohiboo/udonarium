@@ -12,10 +12,6 @@ const components = [
 ]
 const imports = []
 const services = [PanelServiceExtnedPlus]
-const bootstarp = [false ? AppComponentExtendPlus : AppComponent]
-// 以下のように条件分岐で使用コンポーネントを変えようとすると、FormsModuleなどインポートが必要なディレクティブが使えなくなる
-// if (config.useKeyboardHelp) { components.push(HelpKeyboardComponent) }
-// if (config.useLilyCutin) {
-//   components.push(CutInListComponent)
-//  }
+const bootstarp = [AppComponentExtendPlus]
+
 export default { components, services, bootstarp }

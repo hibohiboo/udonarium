@@ -62,7 +62,7 @@ export class UIPanelComponentExtendPlus implements OnInit {
   private preHeight: number = 100;
 
   // 今はメニューだけなのでとりあえず
-  private horizontalWidth: number = 1032;
+  private horizontalWidth: number = 670;
   private horizontalHeight: number = 100;
   private verticalWidth: number = 0;
   private verticalHeight: number = 0;

@@ -43,7 +43,7 @@ import { SaveDataService } from 'service/save-data.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['../../../app/app.component.css']
+  styleUrls: ['./app.component.css']
 })
 export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
 
