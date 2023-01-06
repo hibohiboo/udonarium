@@ -63,10 +63,11 @@ export class UIPanelComponentExtendPlus implements OnInit {
   private preHeight: number = 100;
 
   // 今はメニューだけなのでとりあえず
-  private horizontalWidth: number = 670;
+  private _horizontalWidth: number = 0;
   private horizontalHeight: number = 100;
   private verticalWidth: number = 0;
   private verticalHeight: number = 0;
+  @Input() set horizontalWidth(width:number) { this._horizontalWidth = width; }
 
   isMinimized: boolean = false;
   isFullScreen: boolean = false;
@@ -103,7 +104,7 @@ export class UIPanelComponentExtendPlus implements OnInit {
       const saveWidth = panel.offsetWidth;
       const saveHeight = panel.offsetHeight;
       if (this.isHorizontal) {
-        this.horizontalWidth = saveWidth;
+        this._horizontalWidth = saveWidth;
         this.horizontalHeight = saveHeight;
       } else {
         this.verticalWidth = saveWidth;
@@ -139,7 +140,7 @@ export class UIPanelComponentExtendPlus implements OnInit {
       const saveWidth = panel.offsetWidth;
       const saveHeight = panel.offsetHeight;
       if (this.isHorizontal) {
-        this.horizontalWidth = saveWidth;
+        this._horizontalWidth = saveWidth;
         this.horizontalHeight = saveHeight;
       } else {
         this.verticalWidth = saveWidth;
@@ -200,12 +201,12 @@ export class UIPanelComponentExtendPlus implements OnInit {
       panel.style.width = (this.verticalWidth < 100 ? 100 : this.verticalWidth) + 'px';
       panel.style.height = (this.verticalHeight < 100 ? 100 : this.verticalHeight) + 'px';
       if (!this.isMinimized && !this.isFullScreen) {
-        this.horizontalWidth = saveWidth;
+        this._horizontalWidth = saveWidth;
         this.horizontalHeight = saveHeight;
       }
     } else {
       this.isHorizontal = true;
-      panel.style.width = (this.horizontalWidth < 100 ? 100 : this.horizontalWidth) + 'px';
+      panel.style.width = (this._horizontalWidth < 100 ? 100 : this._horizontalWidth) + 'px';
       panel.style.height = (this.horizontalHeight < 100 ? 100 : this.horizontalHeight) + 'px';
       if (!this.isMinimized && !this.isFullScreen) {
         this.verticalWidth = saveWidth;

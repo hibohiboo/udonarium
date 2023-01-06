@@ -56,6 +56,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   progresPercent: number = 0;
   get isMinimizable() { return minimizableMenu; }
   get menuHight() { return (menuCount-2) * 55 + 150; }
+  get menuHorizontalWidth() { return (menuCount-2) * 70 + 250; }
   get hideTable() { return hideMenu.table; }
   get hideImage() { return hideMenu.image; }
   get hideMusic() { return hideMenu.music; }
