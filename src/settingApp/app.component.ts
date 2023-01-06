@@ -12,9 +12,17 @@ export class AppComponent implements OnInit {
     , { label: 'メニュー最小化', param: 'mini-menu', checked: false }
     , { label: 'メニュー横並び', param: 'horizon-menu', checked: false }
   ]
+  public plSettings = [
+    ...this.settings
+]
   ngOnInit() { }
   get settingLink() {
     return './?' + this.settings.filter(s => s.checked).map(s => s.param).join('&')
   }
+
+  get plSettingLink() {
+    return './?' + this.plSettings.filter(s => s.checked).map(s => s.param).join('&')
+  }
+
 
 }
