@@ -19,6 +19,8 @@ export class AppComponent implements OnInit {
     , { label: 'メニューから削除: インベントリ', param: 'hide-menu-inventory', checked: false }
     , { label: 'メニューから削除: ZIP読込', param: 'hide-menu-zip', checked: false }
     , { label: 'メニューから削除: 保存', param: 'hide-menu-save', checked: false }
+    , { label: '初期表示に接続情報を表示しない', param: 'hide-first-peer', checked: false }
+    , { label: '初期表示にチャットウィンドウを表示しない', param: 'hide-first-chat', checked: false }
     , { label: 'ヘルプ表示', param: 'help', checked: false }
   ]
   public plSettings = [
@@ -54,6 +56,8 @@ export class AppComponent implements OnInit {
       , 'メニューから削除: インベントリ'
       , 'メニューから削除: ZIP読込'
       , 'メニューから削除: 保存'
+      , '初期表示に接続情報を表示しない',
+      , '初期表示にチャットウィンドウを表示しない'
     ].includes(s.label)}))
    }
 }

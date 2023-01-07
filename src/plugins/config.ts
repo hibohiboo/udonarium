@@ -14,4 +14,7 @@ export const pluginConfig = {
   , isOffObjectRotate: params.get('object-rotate-off') != null
   , isOffObjectRotateIndividually:  params.get('object-rotate-off-individually') != null
   , isUseHelp:  params.get('help') != null
+  , isHideFirstPeer: params.get('hide-first-peer') != null
+  , isHideFirstChat: params.get('hide-first-chat') != null
+
 } as const;

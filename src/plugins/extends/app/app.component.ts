@@ -39,6 +39,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
+import { pluginConfig } from 'src/plugins/config';
 import { hideMenu, horizonMenu, menuCount, minimizableMenu } from 'src/plugins/extend-menu/extends/app/app.component';
 import { openHelp, openHelpEvent, useHelp } from 'src/plugins/keyboard-help/app/app.component';
 import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
@@ -203,12 +204,12 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
     PanelService.defaultParentViewContainerRef =  ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
       if(horizonMenu){
-        this.panelSerive.open(PeerMenuComponent, { width: 500, height: 400, top: 100 });
-        this.panelSerive.open(ChatWindowComponent, { width: 700, height: 450, top: 500 });
+        if(!pluginConfig.isHideFirstPeer) this.panelSerive.open(PeerMenuComponent, { width: 500, height: 400, top: 100 });
+        if(!pluginConfig.isHideFirstChat) this.panelSerive.open(ChatWindowComponent, { width: 700, height: 450, top: 500 });
         return;
       }
-      this.panelSerive.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
-      this.panelSerive.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
+      if(!pluginConfig.isHideFirstPeer) this.panelSerive.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
+      if(!pluginConfig.isHideFirstChat) this.panelSerive.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
     }, 0);
   }
 
