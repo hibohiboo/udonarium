@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
     , { label: 'メニューから削除: インベントリ', param: 'hide-menu-inventory', checked: false }
     , { label: 'メニューから削除: ZIP読込', param: 'hide-menu-zip', checked: false }
     , { label: 'メニューから削除: 保存', param: 'hide-menu-save', checked: false }
-
+    , { label: 'ヘルプ表示', param: 'help', checked: false }
   ]
   public plSettings = [
     ...this.settings

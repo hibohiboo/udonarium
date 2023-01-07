@@ -1,3 +1,4 @@
+import { HelpKeyboardComponent } from "../keyboard-help/component/help-keyboard/help-keyboard.component"
 import { AppComponentExtendPlus } from "./app/app.component"
 import { UIPanelComponentExtendPlus } from "./app/component/ui-panel/ui-panel.component"
 import { ResizableDirectiveExtendPlus } from "./app/directive/resizable.directive"
@@ -7,6 +8,7 @@ const components = [
     UIPanelComponentExtendPlus
   , ResizableDirectiveExtendPlus
   , AppComponentExtendPlus
+  , HelpKeyboardComponent
 ]
 const imports = []
 const services = [PanelServiceExtnedPlus]

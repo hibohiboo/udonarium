@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostBinding, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, HostBinding, HostListener, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 
 import { ChatTabList } from '@udonarium/chat-tab-list';
 import { AudioPlayer } from '@udonarium/core/file-storage/audio-player';
@@ -40,6 +40,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { hideMenu, horizonMenu, menuCount, minimizableMenu } from 'src/plugins/extend-menu/extends/app/app.component';
+import { openHelp } from 'src/plugins/keyboard-help/app/app.component';
 import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
 import { offObjectRotate } from 'src/plugins/object-rotate-off/extends/app/app.component';
 
@@ -308,6 +309,11 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   isHorizontal = false;
   rotateChange(isHorizontal) {
     this.isHorizontal = isHorizontal;
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onKeydown(e: KeyboardEvent) {
+    openHelp(this.modalService, e);
   }
 }
 
