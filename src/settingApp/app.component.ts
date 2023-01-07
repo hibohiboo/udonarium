@@ -10,6 +10,7 @@ export class AppComponent implements OnInit {
       { label: '2Dモード', param: '2d', checked: false }
     , { label: 'ボード回転オフ', param: 'rotate-off', checked: false }
     , { label: 'オブジェクト回転オフ', param: 'object-rotate-off', checked: false }
+    , { label: 'オブジェクト回転オフ(個別設定可能)', param: 'object-rotate-off-individually', checked: false }
     , { label: 'メニュー最小化', param: 'mini-menu', checked: false }
     , { label: 'メニュー横並び', param: 'horizon-menu', checked: false }
     , { label: 'メニューから削除: テーブル設定', param: 'hide-menu-table', checked: false }
@@ -22,7 +23,7 @@ export class AppComponent implements OnInit {
   ]
   public plSettings = [
     ...this.settings
-]
+  ]
   ngOnInit() { }
   get settingLink() {
     return './?' + this.settings.filter(s => s.checked).map(s => s.param).join('&')
@@ -32,5 +33,14 @@ export class AppComponent implements OnInit {
     return './?' + this.plSettings.filter(s => s.checked).map(s => s.param).join('&')
   }
 
+   changeSetting(setting) {
+    setting.checked = !setting.checked;
+
+    if(setting.label === 'オブジェクト回転オフ(個別設定可能)' && setting.checked){
+      this.settings.find(s=>s.label === 'オブジェクト回転オフ').checked = false;
+    } else if (setting.label === 'オブジェクト回転オフ' && setting.checked) {
+      this.settings.find(s=>s.label === 'オブジェクト回転オフ(個別設定可能)').checked = false;
+    }
+   }
 
 }

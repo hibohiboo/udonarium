@@ -10,8 +10,8 @@
         <td>
           <input
             [id]="setting.param + '-form'"
-            [value]="setting.checked"
-            (change)="setting.checked = !setting.checked"
+            [checked]="setting.checked"
+            (change)="changeSetting(setting)"
             type="checkbox"
           />
         </td>
