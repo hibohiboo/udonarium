@@ -42,5 +42,18 @@ export class AppComponent implements OnInit {
       this.settings.find(s=>s.label === 'オブジェクト回転オフ(個別設定可能)').checked = false;
     }
    }
-
+   useAllInOne(){
+    this.settings = this.settings.map(s=>({...s,checked:['2Dモード','オブジェクト回転オフ(個別設定可能)','メニュー最小化','メニュー横並び','ヘルプ表示'].includes(s.label)}))
+   }
+   useMinimum(){
+    this.settings = this.settings.map(s=>({...s,checked:[
+        '2Dモード','ボード回転オフ','メニュー最小化','オブジェクト回転オフ'
+      , 'メニューから削除: テーブル設定'
+      , 'メニューから削除: 画像'
+      , 'メニューから削除: 音楽'
+      , 'メニューから削除: インベントリ'
+      , 'メニューから削除: ZIP読込'
+      , 'メニューから削除: 保存'
+    ].includes(s.label)}))
+   }
 }
