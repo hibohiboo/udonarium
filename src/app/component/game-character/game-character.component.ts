@@ -4,6 +4,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  HostBinding,
   HostListener,
   Input,
   OnDestroy,
@@ -22,6 +23,7 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/game-character/game-character.component';
 
 @Component({
   selector: 'game-character',
@@ -56,6 +58,8 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   set rotate(rotate: number) { this.gameCharacter.rotate = rotate; }
   get roll(): number { return this.gameCharacter.roll; }
   set roll(roll: number) { this.gameCharacter.roll = roll; }
+  private isRotateOffIndividually = false;
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
 
   gridSize: number = 50;
 
@@ -147,6 +151,7 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
           SoundEffect.play(PresetSound.piecePut);
         }
       },
+      ...rotateOffContextMenu(this)
     ], this.name);
   }
 

@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
   HostListener,
   Input,
   NgZone,
@@ -27,6 +28,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { is2d } from 'src/plugins/mode2d/extends/components/terrain/terrain.component';
+import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/terrain/terrain.component';
 
 @Component({
   selector: 'terrain',
@@ -129,6 +131,10 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  private isRotateOffIndividually = false;
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+
+
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
     e.stopPropagation();
@@ -185,7 +191,8 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
       ContextMenuSeparator,
-      { name: 'オブジェクト作成', action: null, subActions: this.tabletopActionService.makeDefaultContextMenuActions(objectPosition) }
+      { name: 'オブジェクト作成', action: null, subActions: this.tabletopActionService.makeDefaultContextMenuActions(objectPosition) },
+      ...rotateOffContextMenu(this)
     ], this.name);
   }
 

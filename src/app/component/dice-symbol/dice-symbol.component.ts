@@ -5,6 +5,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
   HostListener,
   Input,
   NgZone,
@@ -26,6 +27,7 @@ import { ContextMenuAction, ContextMenuSeparator, ContextMenuService } from 'ser
 import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
 
 @Component({
   selector: 'dice-symbol',
@@ -206,6 +208,9 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  private isRotateOffIndividually = false;
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
     e.stopPropagation();
@@ -272,6 +277,7 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
         SoundEffect.play(PresetSound.sweep);
       }
     });
+    actions = [...actions, ...rotateOffIndividuallyContextMenu(this)]
     this.contextMenuService.open(position, actions, this.name);
   }
 

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostListener, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, HostListener, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
@@ -11,6 +11,7 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/text-note/text-note.component';
 
 @Component({
   selector: 'text-note',
@@ -120,6 +121,9 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
     e.preventDefault();
   }
 
+  private isRotateOffIndividually = false;
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
     this.removeMouseEventListeners();
@@ -147,6 +151,7 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
           SoundEffect.play(PresetSound.sweep);
         }
       },
+      ...rotateOffContextMenu(this)
     ], this.title);
   }
 

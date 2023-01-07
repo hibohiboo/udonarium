@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
   HostListener,
   Input,
   NgZone,
@@ -27,6 +28,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
+import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
 
 @Component({
   selector: 'card',
@@ -191,6 +193,9 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.startIconHiddenTimer();
   }
 
+  private isRotateOffIndividually = false;
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
     e.stopPropagation();
@@ -250,6 +255,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
           SoundEffect.play(PresetSound.sweep);
         }
       },
+      ...rotateOffIndividuallyContextMenu(this)
     ], this.isVisible ? this.name : 'カード');
   }
 
