@@ -35,7 +35,6 @@ import { TableTouchGesture } from './table-touch-gesture';
   styleUrls: ['./game-table.component.css'],
 })
 export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
-  @HostBinding('class.is2d') get is2d(){ return is2d; }; // plus
   @ViewChild('root', { static: true }) rootElementRef: ElementRef<HTMLElement>;
   @ViewChild('gameTable', { static: true }) gameTable: ElementRef<HTMLElement>;
   @ViewChild('gameObjects', { static: true }) gameObjects: ElementRef<HTMLElement>;
@@ -270,7 +269,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
       this.viewRotateX -= rotateX;
       this.viewRotateY -= rotateY;
       this.viewRotateZ -= rotateZ;
-    } else if (this.is2d) {
+    } else if (is2d) {
       this.viewRotateX -= rotateX;
     }
 

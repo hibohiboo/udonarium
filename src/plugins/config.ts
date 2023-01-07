@@ -11,4 +11,5 @@ export const pluginConfig = {
   , isHideMenuInventory: params.get('hide-menu-inventory') != null
   , isHideMenuZipUpload: params.get('hide-menu-zip') != null
   , isHideMenuSave: params.get('hide-menu-save') != null
+  , isOffObjectRotate: true// params.get('object-rotate-off') != null
 } as const;
