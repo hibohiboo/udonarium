@@ -56,6 +56,12 @@
           <div>保存</div>
         </a>
       </li>
+      <li *ngIf="useHelp" (click)="openHelp()">
+        <a routerLink="/" routerLinkActive="active">
+          <div><i class="material-icons">help</i></div>
+          <div>ヘルプ</div>
+        </a>
+      </li>
       <li *ngIf="isSaveing" style="pointer-events: none;">
         <a>
           <div><i class="material-icons vibration-amine">sd_storage</i></div>

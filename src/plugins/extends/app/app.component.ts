@@ -40,7 +40,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { hideMenu, horizonMenu, menuCount, minimizableMenu } from 'src/plugins/extend-menu/extends/app/app.component';
-import { openHelp } from 'src/plugins/keyboard-help/app/app.component';
+import { openHelp, openHelpEvent, useHelp } from 'src/plugins/keyboard-help/app/app.component';
 import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
 import { offObjectRotate } from 'src/plugins/object-rotate-off/extends/app/app.component';
 
@@ -61,8 +61,8 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   isSaveing: boolean = false;
   progresPercent: number = 0;
   get isMinimizable() { return minimizableMenu; }
-  get menuHight() { return (menuCount-2) * 55 + 150; }
-  get menuHorizontalWidth() { return (menuCount-2) * 70 + 250; }
+  get menuHight() { return (menuCount-2) * 55 + 150 + (useHelp ? 50 : 0); }
+  get menuHorizontalWidth() { return (menuCount-2) * 70 + 250 + (useHelp ? 60 : 0); }
   get hideTable() { return hideMenu.table; }
   get hideImage() { return hideMenu.image; }
   get hideMusic() { return hideMenu.music; }
@@ -313,7 +313,11 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
 
   @HostListener('document:keydown', ['$event'])
   onKeydown(e: KeyboardEvent) {
-    openHelp(this.modalService, e);
+    openHelpEvent(this.modalService, e);
+  }
+  get useHelp(){ return useHelp; }
+  openHelp() {
+    openHelp(this.modalService)
   }
 }
 
