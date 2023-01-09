@@ -27,6 +27,10 @@ export class AppComponent implements OnInit {
       this.settings.find(s=>s.label === 'オブジェクト回転オフ').checked = false;
     } else if (setting.label === 'オブジェクト回転オフ' && setting.checked) {
       this.settings.find(s=>s.label === 'オブジェクト回転オフ(個別設定可能)').checked = false;
+    } else if (setting.label === '手札置き場（ついたて）' && setting.checked) {
+      this.settings.find(s=>s.label === '手札置き場').checked = true;
+    } else if (setting.label === '手札置き場' && !setting.checked) {
+      this.settings.find(s=>s.label === '手札置き場（ついたて）').checked = false;
     }
    }
    useAllInOne(){
