@@ -16,5 +16,5 @@ export const pluginConfig = {
   , isUseHelp:  params.get('help') != null
   , isHideFirstPeer: params.get('hide-first-peer') != null
   , isHideFirstChat: params.get('hide-first-chat') != null
-
+  , addBlankCardAddContextMenu: params.get('add-blank-card-menu') != null
 } as const;

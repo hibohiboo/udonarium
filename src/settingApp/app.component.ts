@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
     , { label: '初期表示に接続情報を表示しない', param: 'hide-first-peer', checked: false }
     , { label: '初期表示にチャットウィンドウを表示しない', param: 'hide-first-chat', checked: false }
     , { label: 'ヘルプ表示', param: 'help', checked: false }
+    , { label:'右クリックメニューでブランクカードを作成', param: 'add-blank-card-menu', checked:false }
   ]
   public plSettings = [
     ...this.settings
