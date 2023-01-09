@@ -19,6 +19,7 @@ export const pluginConfig = {
   , addBlankCardAddContextMenu: params.get('add-blank-card-menu') != null
   , isTextNoteSelectableUprightFlat: params.get('text-note-upright-flat') != null
   , isMoveStackedCard: params.get('move-stacked-card') != null
+  , isUseHandStorage: params.get('hand-storage') != null
 } as const;
 
 export const settings = [
@@ -40,11 +41,17 @@ export const settings = [
 , { label: '右クリックメニューでブランクカードを作成', param: 'add-blank-card-menu', checked:false }
 , { label: '共有メモの直立と並行の切り替え', param: 'text-note-upright-flat', checked:false }
 , { label: '重ねカード移動機能', param: 'move-stacked-card', checked:false }
+, { label: '手札置き場', param: 'hand-storage', checked:false }
 ]
 
 export const labelsAllInOne = [
-    '2Dモード','オブジェクト回転オフ(個別設定可能)','メニュー最小化','メニュー横並び','ヘルプ表示'
+    '2Dモード'
+    ,'オブジェクト回転オフ(個別設定可能)'
+    ,'メニュー最小化'
+    ,'メニュー横並び'
+    ,'ヘルプ表示'
     ,'右クリックメニューでブランクカードを作成'
     ,'共有メモの直立と並行の切り替え'
     ,'重ねカード移動機能'
+    ,'手札置き場'
   ]
