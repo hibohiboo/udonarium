@@ -12,6 +12,7 @@ import { ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/text-note/text-note.component';
+import { getIsUpright, setIsUpright, uprightContextMenu } from 'src/plugins/text-note-upright-flat/extend/component/text-note.component';
 
 @Component({
   selector: 'text-note',
@@ -124,6 +125,10 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
   private isRotateOffIndividually = false;
   @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
 
+  get isUpright(): boolean { return getIsUpright(this); }
+  set isUpright(isUpright: boolean) { setIsUpright(this, isUpright); }
+  @HostBinding('class.text-note-flat') get isFlat(): boolean { return !this.isUpright; }
+
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
     this.removeMouseEventListeners();
@@ -150,8 +155,9 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
           this.textNote.destroy();
           SoundEffect.play(PresetSound.sweep);
         }
-      },
-      ...rotateOffContextMenu(this)
+      }
+      , ...rotateOffContextMenu(this)
+      , ...uprightContextMenu(this)
     ], this.title);
   }
 

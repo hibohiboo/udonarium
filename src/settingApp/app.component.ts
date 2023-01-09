@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { settings } from "src/plugins/config";
 
 @Component({
   selector: 'app-root',
@@ -6,24 +7,7 @@ import { Component, OnInit } from "@angular/core";
 
 })
 export class AppComponent implements OnInit {
-  public settings = [
-      { label: '2Dモード', param: '2d', checked: false }
-    , { label: 'ボード回転オフ', param: 'rotate-off', checked: false }
-    , { label: 'オブジェクト回転オフ', param: 'object-rotate-off', checked: false }
-    , { label: 'オブジェクト回転オフ(個別設定可能)', param: 'object-rotate-off-individually', checked: false }
-    , { label: 'メニュー最小化', param: 'mini-menu', checked: false }
-    , { label: 'メニュー横並び', param: 'horizon-menu', checked: false }
-    , { label: 'メニューから削除: テーブル設定', param: 'hide-menu-table', checked: false }
-    , { label: 'メニューから削除: 画像', param: 'hide-menu-image', checked: false }
-    , { label: 'メニューから削除: 音楽', param: 'hide-menu-music', checked: false }
-    , { label: 'メニューから削除: インベントリ', param: 'hide-menu-inventory', checked: false }
-    , { label: 'メニューから削除: ZIP読込', param: 'hide-menu-zip', checked: false }
-    , { label: 'メニューから削除: 保存', param: 'hide-menu-save', checked: false }
-    , { label: '初期表示に接続情報を表示しない', param: 'hide-first-peer', checked: false }
-    , { label: '初期表示にチャットウィンドウを表示しない', param: 'hide-first-chat', checked: false }
-    , { label: 'ヘルプ表示', param: 'help', checked: false }
-    , { label:'右クリックメニューでブランクカードを作成', param: 'add-blank-card-menu', checked:false }
-  ]
+  public settings = settings
   public plSettings = [
     ...this.settings
   ]
