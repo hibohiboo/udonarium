@@ -1,6 +1,7 @@
 @import './plugins/mode2d/2d.css';
 @import './plugins/object-rotate-off/object-rotate-off.css';
 @import './plugins/text-note-upright-flat/text-note-upright-flat.css';
+@import './plugins/virtual-screen/virtual-screen.css';
 
 /* You can add global styles to this file, and also import other style files */
 button {
