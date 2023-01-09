@@ -1,5 +1,5 @@
 <div id="app-table-layer" style="position: absolute; width: 100%; height: 100%; overflow: hidden;">
-  <game-table></game-table>
+  <game-table-extend-plus></game-table-extend-plus>
 </div>
 <ui-panel-extend-plus (rotateEvent)="rotateChange($event)" [top]="0" [left]="0" [width]="100" [height]="menuHight" [title]="'メニュー'" [isAbleFullScreenButton]="false" [isAbleCloseButton]="false" [isAbleRotateButton]="useHorizonMenu" [isAbleMinimizeButton]="isMinimizable"  [horizontalWidth]="menuHorizontalWidth">
   <nav [ngClass]="{'horizontal': isHorizontal}">
