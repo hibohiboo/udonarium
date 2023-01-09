@@ -28,6 +28,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
+import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
 
 @Component({
@@ -188,6 +189,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onInputStart(e: MouseEvent | TouchEvent) {
+    startMoveStackedCard(this); // 上に乗っているカードを判定するため toTopmostよりも先に実行。
     this.startDoubleClickTimer(e);
     this.card.toTopmost();
     this.startIconHiddenTimer();
@@ -303,6 +305,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     for (let i = 0; i < children.length; i++) {
       children[i].dispatchEvent(event);
     }
+    endMoveStackedCard(this)
   }
 
   private startIconHiddenTimer() {
