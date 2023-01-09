@@ -20,6 +20,7 @@ export const pluginConfig = {
   , isTextNoteSelectableUprightFlat: params.get('text-note-upright-flat') != null
   , isMoveStackedCard: params.get('move-stacked-card') != null
   , isUseHandStorage: params.get('hand-storage') != null
+  , isUseVirtualScreen: params.get('virtual-screen') != null
 } as const;
 
 export const settings = [
@@ -42,6 +43,7 @@ export const settings = [
 , { label: '共有メモの直立と並行の切り替え', param: 'text-note-upright-flat', checked:false }
 , { label: '重ねカード移動機能', param: 'move-stacked-card', checked:false }
 , { label: '手札置き場', param: 'hand-storage', checked:false }
+, { label: '手札置き場（ついたて）', param: 'virtual-screen', checked:false }
 ]
 
 export const labelsAllInOne = [
@@ -54,4 +56,5 @@ export const labelsAllInOne = [
     ,'共有メモの直立と並行の切り替え'
     ,'重ねカード移動機能'
     ,'手札置き場'
+    ,'手札置き場（ついたて）'
   ]
