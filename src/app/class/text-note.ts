@@ -9,7 +9,6 @@ export class TextNote extends TabletopObject {
   @SyncVar() rotate: number = 0;
   @SyncVar() zindex: number = 0;
   @SyncVar() password: string = '';
-  declare isUpright: boolean;
 
   constructor(identifier?: string) {
     super(identifier);
