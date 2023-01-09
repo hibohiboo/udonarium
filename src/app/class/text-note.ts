@@ -1,3 +1,4 @@
+import { addSyncIsUpright } from 'src/plugins/text-note-upright-flat/extend/class/text-note';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { DataElement } from './data-element';
 import { TabletopObject } from './tabletop-object';
@@ -8,7 +9,12 @@ export class TextNote extends TabletopObject {
   @SyncVar() rotate: number = 0;
   @SyncVar() zindex: number = 0;
   @SyncVar() password: string = '';
-  @SyncVar() isUpright: boolean = true;
+  declare isUpright: boolean;
+
+  constructor(identifier?: string) {
+    super(identifier);
+    addSyncIsUpright(this)
+  }
 
   get width(): number { return this.getCommonValue('width', 1); }
   get height(): number { return this.getCommonValue('height', 1); }
