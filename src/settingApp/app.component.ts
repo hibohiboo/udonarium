@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { settings } from "src/plugins/config";
+import { labelsAllInOne, settings } from "src/plugins/config";
 
 @Component({
   selector: 'app-root',
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
     }
    }
    useAllInOne(){
-    this.settings = this.settings.map(s=>({...s,checked:['2Dモード','オブジェクト回転オフ(個別設定可能)','メニュー最小化','メニュー横並び','ヘルプ表示'].includes(s.label)}))
+    this.settings = this.settings.map(s=>({...s,checked: labelsAllInOne.includes(s.label)}))
    }
    useMinimum(){
     this.settings = this.settings.map(s=>({...s,checked:[

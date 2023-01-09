@@ -36,6 +36,12 @@ export const settings = [
 , { label: '初期表示に接続情報を表示しない', param: 'hide-first-peer', checked: false }
 , { label: '初期表示にチャットウィンドウを表示しない', param: 'hide-first-chat', checked: false }
 , { label: 'ヘルプ表示', param: 'help', checked: false }
-, { label:'右クリックメニューでブランクカードを作成', param: 'add-blank-card-menu', checked:false }
-, { label:'共有メモの直立と並行の切り替え', param: 'text-note-upright-flat', checked:false }
+, { label: '右クリックメニューでブランクカードを作成', param: 'add-blank-card-menu', checked:false }
+, { label: '共有メモの直立と並行の切り替え', param: 'text-note-upright-flat', checked:false }
 ]
+
+export const labelsAllInOne = [
+    '2Dモード','オブジェクト回転オフ(個別設定可能)','メニュー最小化','メニュー横並び','ヘルプ表示'
+    ,'右クリックメニューでブランクカードを作成'
+    ,'共有メモの直立と並行の切り替え'
+  ]
