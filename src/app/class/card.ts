@@ -1,3 +1,4 @@
+import { addSyncHideVirtualScreen } from 'src/plugins/virtual-screen/extend/class/addSyncHideVirtualScreen';
 import { ImageFile } from './core/file-storage/image-file';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { Network } from './core/system';
@@ -17,6 +18,10 @@ export class Card extends TabletopObject {
   @SyncVar() rotate: number = 0;
   @SyncVar() owner: string = '';
   @SyncVar() zindex: number = 0;
+  constructor(identifier?: string) {
+    super(identifier);
+    addSyncHideVirtualScreen(this);
+  }
 
   get isVisibleOnTable(): boolean { return this.location.name === 'table' && (!this.parentIsAssigned || this.parentIsDestroyed); }
 

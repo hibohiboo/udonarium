@@ -30,6 +30,8 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+import { hideVirtualScreenCard, initVirtualScreenCard } from 'src/plugins/virtual-screen/extend/component/card/card.component';
+import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
   selector: 'card',
@@ -74,6 +76,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   private doubleClickPoint = { x: 0, y: 0 };
 
   private input: InputHandler = null;
+  @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenCard(this); };
 
   constructor(
     private ngZone: NgZone,
@@ -84,7 +87,9 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     private tabletopService: TabletopService,
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    initVirtualScreenCard(this)
+   }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -258,6 +263,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
       ...rotateOffIndividuallyContextMenu(this)
+      , ...virtualScreenContextMenu(this)
     ], this.isVisible ? this.name : 'カード');
   }
 

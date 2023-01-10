@@ -30,6 +30,8 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+import { hideVirtualScreenCardStack, initVirtualScreenCardStack } from 'src/plugins/virtual-screen/extend/component/card-stack/card-stack.component';
+import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
   selector: 'card-stack',
@@ -88,6 +90,8 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private input: InputHandler = null;
 
+  @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenCardStack(this); };
+
   constructor(
     private ngZone: NgZone,
     private contextMenuService: ContextMenuService,
@@ -96,7 +100,9 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    initVirtualScreenCardStack(this)
+  }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -322,6 +328,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       },
       ...rotateOffIndividuallyContextMenu(this)
+      , ...virtualScreenContextMenu(this)
     ], this.name);
   }
 

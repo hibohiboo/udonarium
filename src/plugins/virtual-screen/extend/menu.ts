@@ -1,4 +1,3 @@
-import { PeerCursor } from "@udonarium/peer-cursor";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { ContextMenuSeparator } from "service/context-menu.service";
 import { pluginConfig } from "src/plugins/config";
@@ -11,12 +10,11 @@ export const virtualScreenContextMenu = (that:any) => pluginConfig.isUseVirtualS
 
 
 const getMenu = (that:any) => {
-  if(!that.isHideVirtualScreen) {
+  if(!that.isHideVirtualScreen()) {
     return {
       name: 'ついたてに隠す', action: () => {
         that.addVirtualScreen(that);
         SoundEffect.play(PresetSound.piecePut);
-
       }
     }
   }

@@ -24,7 +24,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/game-character/game-character.component';
-import { hideVirtualScreen } from 'src/plugins/virtual-screen/extend/component/game-character/game-character.component';
+import { hideVirtualScreenCharacter, initVirtualScreenCharacter } from 'src/plugins/virtual-screen/extend/component/game-character/game-character.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
@@ -62,7 +62,7 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   set roll(roll: number) { this.gameCharacter.roll = roll; }
   private isRotateOffIndividually = false;
   @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
-  @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreen(this); };
+  @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenCharacter(this); };
 
   gridSize: number = 50;
 
@@ -74,7 +74,9 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    initVirtualScreenCharacter(this)
+   }
 
   ngOnInit() {
     EventSystem.register(this)
