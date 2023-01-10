@@ -6,7 +6,6 @@ export const hideVirtualScreen = (that) => {
   if(!pluginConfig.isUseVirtualScreen) return false;
 
   if (!that.addVirtualScreen) {
-    console.log('addVirtualScreen')
     // @ts-ignore
     GameCharacterComponent.prototype.addVirtualScreen = (that: any) => {
       that.gameCharacter.isHideVirtualScreen = true;

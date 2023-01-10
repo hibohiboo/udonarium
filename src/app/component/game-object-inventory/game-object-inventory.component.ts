@@ -15,6 +15,7 @@ import { ContextMenuAction, ContextMenuService, ContextMenuSeparator } from 'ser
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { filterVirtualScreen, virtualScreenTableTopObjectContextMenu } from 'src/plugins/virtual-screen/extend/component/game-object-inventory/game-object-inventory.component';
 
 @Component({
   selector: 'game-object-inventory',
@@ -108,7 +109,7 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
   }
 
   getGameObjects(inventoryType: string): TabletopObject[] {
-    return this.getInventory(inventoryType).tabletopObjects;
+    return filterVirtualScreen(this.getInventory(inventoryType).tabletopObjects);
   }
 
   getInventoryTags(gameObject: GameCharacter): DataElement[] {
@@ -164,7 +165,7 @@ export class GameObjectInventoryComponent implements OnInit, AfterViewInit, OnDe
         SoundEffect.play(PresetSound.piecePut);
       }
     });
-
+    actions = [...actions, ...virtualScreenTableTopObjectContextMenu(gameObject)]
     this.contextMenuService.open(position, actions, gameObject.name);
   }
 
