@@ -13,6 +13,8 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/text-note/text-note.component';
 import { getIsUpright, setIsUpright, uprightContextMenu } from 'src/plugins/text-note-upright-flat/extend/component/text-note.component';
+import { hideVirtualScreenTextNote, initVirtualScreenTextNote } from 'src/plugins/virtual-screen/extend/component/text-note/text-note.component';
+import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
   selector: 'text-note',
@@ -47,13 +49,17 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
   movableOption: MovableOption = {};
   rotableOption: RotableOption = {};
 
+  @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenTextNote(this); };
+
   constructor(
     private ngZone: NgZone,
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    initVirtualScreenTextNote(this);
+   }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -158,6 +164,7 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       , ...rotateOffContextMenu(this)
       , ...uprightContextMenu(this)
+      , ...virtualScreenContextMenu(this)
     ], this.title);
   }
 

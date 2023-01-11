@@ -1,4 +1,3 @@
-import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { ContextMenuSeparator } from "service/context-menu.service";
 import { pluginConfig } from "src/plugins/config";
 
