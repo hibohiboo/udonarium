@@ -2,31 +2,40 @@ import { PeerCursor } from "@udonarium/peer-cursor"
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect"
 import { ContextMenuSeparator } from "service/context-menu.service"
 import { pluginConfig } from "src/plugins/config"
+import { addVirtualScreen, deleteVirtualScreen } from "src/plugins/virtual-screen/domain/virtualScreen"
 
 export const virtualScreenHandStorageContextMenu = (that:any) => pluginConfig.isUseVirtualScreen ? [
-
-  getMenu(that),
+  virtualScrrenToggleMenu(that),
   ContextMenuSeparator,
 ] : []
 
 
-const getMenu = (that:any) => {
-if(!that.isVirtualScreen) {
-  return {
-    name: '☐ ついたてモード', action: () => {
-      that.isVirtualScreen = true;
-      that.virtualScreenUserName = PeerCursor.myCursor.name;
-      SoundEffect.play(PresetSound.piecePut);
+const virtualScrrenToggleMenu = (that:any) => {
+  if(!that.handStorage.isVirtualScreen) {
+    return {
+      name: '☐ ついたてモード', action: () => {
+        that.handStorage.isVirtualScreen = true;
+        that.handStorage.virtualScreenUserName = PeerCursor.myCursor.name;
+        SoundEffect.play(PresetSound.piecePut);
+        const topOfObjects = that.calcTopOfObjects();
+        for (const topOfObject of topOfObjects) {
+          addVirtualScreen(topOfObject.obj);
+        }
+      }
     }
   }
-}
-return {
-  name: '☑ ついたてモード', action: () => {
-    that.isVirtualScreen = false;
-    that.virtualScreenUserName = '';
-    SoundEffect.play(PresetSound.piecePut);
+  return {
+    name: '☑ ついたてモード', action: () => {
+      that.handStorage.isVirtualScreen = false;
+      that.handStorage.virtualScreenUserName = '';
+      SoundEffect.play(PresetSound.piecePut);
+
+      const topOfObjects = that.calcTopOfObjects();
+      for (const topOfObject of topOfObjects) {
+        deleteVirtualScreen(topOfObject.obj);
+      }
+    }
   }
-}
 }
 export const virtualScreenName = (that)=>{
   if(!pluginConfig.isUseVirtualScreen) return null;

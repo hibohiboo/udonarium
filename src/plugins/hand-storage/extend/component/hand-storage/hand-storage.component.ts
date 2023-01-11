@@ -152,29 +152,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
       EventSystem.trigger('DRAG_LOCKED_OBJECT', {})
     }
     this.handStorage.index = 0
-    const x = this.handStorage.location.x
-    const y = this.handStorage.location.y
-    const w = this.width * this.gridSize
-    const h = this.height * this.gridSize
-    const objects = [
-      ...this.tabletopService.cards,
-      ...this.tabletopService.cardStacks,
-      ...this.tabletopService.characters,
-      ...this.tabletopService.terrains,
-      ...this.tabletopService.diceSymbols,
-    ]
-    for (const obj of objects) {
-      const distanceX = obj.location.x - x
-      const distanceY = obj.location.y - y
-      if (
-        -this.gridSize < distanceX &&
-        -this.gridSize < distanceY &&
-        distanceX < w &&
-        distanceY < h
-      ) {
-        this.topOfObjects.push({ obj: obj, distanceX, distanceY })
-      }
-    }
+    this.calcTopOfObjects();
   }
 
   @HostListener('contextmenu', ['$event'])
@@ -189,7 +167,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.contextMenuService.open(
       menuPosition,
       [
-        ...virtualScreenHandStorageContextMenu(this.handStorage),
+        ...virtualScreenHandStorageContextMenu(this),
         this.isLock
           ? {
               name: '固定解除',
@@ -239,6 +217,35 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
       topOfObject.obj.update()
     }
     this.topOfObjects = []
+  }
+
+  private calcTopOfObjects() {
+    const x = this.handStorage.location.x
+    const y = this.handStorage.location.y
+    const w = this.width * this.gridSize
+    const h = this.height * this.gridSize
+    const objects = [
+      ...this.tabletopService.cards,
+      ...this.tabletopService.cardStacks,
+      ...this.tabletopService.characters,
+      ...this.tabletopService.terrains,
+      ...this.tabletopService.diceSymbols,
+    ]
+    const topOfObjects = [];
+    for (const obj of objects) {
+      const distanceX = obj.location.x - x
+      const distanceY = obj.location.y - y
+      if (
+        -this.gridSize < distanceX &&
+        -this.gridSize < distanceY &&
+        distanceX < w &&
+        distanceY < h
+      ) {
+        topOfObjects.push({ obj: obj, distanceX, distanceY })
+      }
+    }
+    this.topOfObjects = topOfObjects;
+    return topOfObjects;
   }
 
   private adjustMinBounds(value: number, min = 0): number {
