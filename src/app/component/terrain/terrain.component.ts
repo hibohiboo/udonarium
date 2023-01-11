@@ -29,6 +29,8 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { is2d } from 'src/plugins/mode2d/extends/components/terrain/terrain.component';
 import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/terrain/terrain.component';
+import { hideVirtualScreenTerrain, initVirtualScreenTerrain } from 'src/plugins/virtual-screen/extend/component/terrain/terrain.component';
+import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
   selector: 'terrain',
@@ -67,7 +69,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
   rotableOption: RotableOption = {};
 
   private input: InputHandler = null;
-
+  @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenTerrain(this); };
   constructor(
     private ngZone: NgZone,
     private imageService: ImageService,
@@ -78,7 +80,11 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
     private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService,
     private coordinateService: CoordinateService,
-  ) { }
+  ) {
+    initVirtualScreenTerrain(this);
+   }
+
+
 
   ngOnInit() {
     EventSystem.register(this)
@@ -193,6 +199,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
       ContextMenuSeparator,
       { name: 'オブジェクト作成', action: null, subActions: this.tabletopActionService.makeDefaultContextMenuActions(objectPosition) },
       ...rotateOffContextMenu(this)
+      , ...virtualScreenContextMenu(this)
     ], this.name);
   }
 
