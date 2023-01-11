@@ -1,3 +1,4 @@
+import { addSyncHideVirtualScreen } from 'src/plugins/virtual-screen/extend/class/addSyncHideVirtualScreen';
 import { ImageFile } from './core/file-storage/image-file';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { Network } from './core/system';
@@ -21,6 +22,11 @@ export class DiceSymbol extends TabletopObject {
   @SyncVar() face: string = '0';
   @SyncVar() owner: string = '';
   @SyncVar() rotate: number = 0;
+
+  constructor(identifier?: string) {
+    super(identifier);
+    addSyncHideVirtualScreen(this);
+  }
 
   get name(): string { return this.getCommonValue('name', ''); }
   set name(name: string) { this.setCommonValue('name', name); }

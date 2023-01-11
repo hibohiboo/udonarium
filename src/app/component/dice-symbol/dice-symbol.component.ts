@@ -28,6 +28,8 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+import { hideVirtualScreenDiceSymbol, initVirtualScreenDiceSymbol } from 'src/plugins/virtual-screen/extend/component/dice-symbol/dice-symbol.component';
+import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
   selector: 'dice-symbol',
@@ -102,6 +104,8 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private input: InputHandler = null;
 
+  @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenDiceSymbol(this); };
+
   constructor(
     private ngZone: NgZone,
     private panelService: PanelService,
@@ -109,7 +113,9 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
     private imageService: ImageService,
-    private pointerDeviceService: PointerDeviceService) { }
+    private pointerDeviceService: PointerDeviceService) {
+      initVirtualScreenDiceSymbol(this);
+    }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -277,7 +283,11 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
         SoundEffect.play(PresetSound.sweep);
       }
     });
-    actions = [...actions, ...rotateOffIndividuallyContextMenu(this)]
+    actions = [
+        ...actions
+      , ...rotateOffIndividuallyContextMenu(this)
+      , ...virtualScreenContextMenu(this)
+    ]
     this.contextMenuService.open(position, actions, this.name);
   }
 
