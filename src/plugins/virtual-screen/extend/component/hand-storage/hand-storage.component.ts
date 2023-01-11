@@ -49,3 +49,9 @@ export const virtualScreenName = (that)=>{
   if(!that.isVirtualScreen) return null;
   return `${that.virtualScreenUserName}のついたて`
 }
+
+export const onCardDropVirtualStorage = (that, obj)=>{
+  if(!pluginConfig.isUseVirtualScreen) return;
+  if(!that.handStorage.isVirtualScreen) return;
+  addVirtualScreen(obj);
+}
