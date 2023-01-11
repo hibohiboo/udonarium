@@ -34,6 +34,7 @@ import { PeerCursor } from '@udonarium/peer-cursor'
 import { pluginConfig } from 'src/plugins/config'
 import { Card } from '@udonarium/card'
 import { CardStack } from '@udonarium/card-stack'
+import { isMyHandStorageOnly } from 'src/plugins/hand-storage-self-only'
 
 interface TopOfObject {
   obj: TabletopObject
@@ -67,6 +68,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.handStorage.imageFile
   }
   get isLock(): boolean {
+    if (isMyHandStorageOnly(this.handStorage)) return true;
     return this.handStorage.isLock
   }
   set isLock(isLock: boolean) {
@@ -163,7 +165,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     e.preventDefault()
 
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
-    if (pluginConfig.isUseHandStorageMenuSelfOnly && this.handStorage.owner !== PeerCursor.myCursor.userId) return;
+    if (isMyHandStorageOnly(this.handStorage)) return;
     const menuPosition = this.pointerDeviceService.pointers[0]
     const objectPosition = this.coordinateService.calcTabletopLocalCoordinate()
     this.contextMenuService.open(
