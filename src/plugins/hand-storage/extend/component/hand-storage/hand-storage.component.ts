@@ -30,6 +30,8 @@ import { TabletopObject } from '@udonarium/tabletop-object'
 import { CoordinateService } from 'service/coordinate.service'
 import { TabletopActionService } from 'service/tabletop-action.service'
 import { virtualScreenHandStorageContextMenu, virtualScreenName } from 'src/plugins/virtual-screen/extend/component/hand-storage/hand-storage.component'
+import { PeerCursor } from '@udonarium/peer-cursor'
+import { pluginConfig } from 'src/plugins/config'
 
 interface TopOfObject {
   obj: TabletopObject
@@ -180,7 +182,8 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     e.stopPropagation()
     e.preventDefault()
 
-    if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return
+    if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
+    if (pluginConfig.isUseHandStorageMenuSelfOnly && this.handStorage.owner !== PeerCursor.myCursor.userId) return;
     const menuPosition = this.pointerDeviceService.pointers[0]
     const objectPosition = this.coordinateService.calcTabletopLocalCoordinate()
     this.contextMenuService.open(

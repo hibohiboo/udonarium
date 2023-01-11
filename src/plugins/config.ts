@@ -21,6 +21,7 @@ export const pluginConfig = {
   , isMoveStackedCard: params.get('move-stacked-card') != null
   , isUseHandStorage: params.get('hand-storage') != null
   , isUseVirtualScreen: params.get('virtual-screen') != null
+  , isUseHandStorageMenuSelfOnly: params.get('hand-storage-context-menu-self-only')!= null
 } as const;
 
 export const settings = [
@@ -44,6 +45,7 @@ export const settings = [
 , { label: '重ねカード移動機能', param: 'move-stacked-card', checked:false }
 , { label: '手札置き場', param: 'hand-storage', checked:false }
 , { label: '手札置き場（ついたて）', param: 'virtual-screen', checked:false }
+, { label: '手札置き場のメニューを自分だけ開けるようにする', param: 'hand-storage-context-menu-self-only', checked:false }
 ]
 
 export const labelsAllInOne = [
@@ -57,4 +59,5 @@ export const labelsAllInOne = [
     ,'重ねカード移動機能'
     ,'手札置き場'
     ,'手札置き場（ついたて）'
+    ,'手札置き場のメニューを自分だけ開けるようにする'
   ]
