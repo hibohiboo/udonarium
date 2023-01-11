@@ -6,11 +6,16 @@ import { Network } from '@udonarium/core/system'
 import { DataElement } from '@udonarium/data-element'
 import { PeerCursor } from '@udonarium/peer-cursor'
 import { TabletopObject } from '@udonarium/tabletop-object'
+import { addSyncHideVirtualScreenHandStorage } from 'src/plugins/virtual-screen/extend/class/hand-storage'
 
 @SyncObject('hand-storage')
 export class HandStorage extends TabletopObject {
   @SyncVar() isLock = false
   @SyncVar() owner = ''
+  constructor(identifier?: string) {
+    super(identifier);
+    addSyncHideVirtualScreenHandStorage(this);
+  }
 
   get name(): string {
     return this.getCommonValue('name', '')

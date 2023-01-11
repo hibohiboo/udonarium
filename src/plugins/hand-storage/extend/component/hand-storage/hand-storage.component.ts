@@ -29,6 +29,7 @@ import { HandStorage } from '../../class/hand-storage'
 import { TabletopObject } from '@udonarium/tabletop-object'
 import { CoordinateService } from 'service/coordinate.service'
 import { TabletopActionService } from 'service/tabletop-action.service'
+import { virtualScreenHandStorageContextMenu, virtualScreenName } from 'src/plugins/virtual-screen/extend/component/hand-storage/hand-storage.component'
 
 interface TopOfObject {
   obj: TabletopObject
@@ -73,6 +74,12 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   get ownerColor(): string {
     return this.handStorage.ownerColor
+  }
+
+  get titleLabel(): string {
+    const vname = virtualScreenName(this.handStorage);
+    if(vname) return vname;
+    return `${this.ownerName}の手札置き場`
   }
 
   gridSize = 50
@@ -229,6 +236,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
             objectPosition,
           ),
         },
+        ...virtualScreenHandStorageContextMenu(this.handStorage)
       ],
       this.name,
     )

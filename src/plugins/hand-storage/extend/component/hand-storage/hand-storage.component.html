@@ -3,7 +3,7 @@
   appMovable [movable.option]="movableOption" [movable.disable]="isLock" (movable.ondragstart)="onMove()" (movable.ondragend)="onMoved()">
 
   <div *ngIf="ownerName.length > 0" class="name-tag is-nowrap has-length-limit is-black-background" [ngStyle]="{'background-color': ownerColor, 'transform': 'translateY(-75%) translateX(-50%) translateX(' + width * gridSize / 2 +'px)'}">
-    <span [ngStyle]="{'color': ownerColor, filter: 'invert(100%) grayscale(100%) contrast(100)'}"><b>{{ownerName}}の手札置き場</b></span>
+    <span [ngStyle]="{'color': ownerColor, filter: 'invert(100%) grayscale(100%) contrast(100)'}"><b>{{titleLabel}}</b></span>
   </div>
   <div *ngIf="imageFile.url.length < 1; then blackMask; else imageMask"></div>
   <ng-template #blackMask>
