@@ -1,6 +1,7 @@
 import { PeerCursor } from "@udonarium/peer-cursor"
 import { CardStackComponent } from "component/card-stack/card-stack.component";
 import { pluginConfig } from "src/plugins/config";
+import { addVirtualScreen, deleteVirtualScreen } from "src/plugins/virtual-screen/domain/virtualScreen";
 
 export const hideVirtualScreenCardStack = (that) => {
   if(!pluginConfig.isUseVirtualScreen) return false;
@@ -14,15 +15,13 @@ export const initVirtualScreenCardStack = (that)=> {
   if (!that.addVirtualScreen) {
     // @ts-ignore
     CardStackComponent.prototype.addVirtualScreen = function() {
-      this.cardStack.isHideVirtualScreen = true;
-      this.cardStack.hideVirtualScreenUserName = PeerCursor.myCursor.name;
+      addVirtualScreen(this.cardStack)
     }
   }
   if (!that.deleteVirtualScreen) {
     // @ts-ignore
     CardStackComponent.prototype.deleteVirtualScreen = function() {
-      this.cardStack.isHideVirtualScreen = false;
-      this.cardStack.hideVirtualScreenUserName = '';
+    deleteVirtualScreen(this.cardStack);
     }
   }
 

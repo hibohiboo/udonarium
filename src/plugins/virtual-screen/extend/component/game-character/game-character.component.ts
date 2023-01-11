@@ -1,6 +1,7 @@
 import { PeerCursor } from "@udonarium/peer-cursor"
 import { GameCharacterComponent } from "component/game-character/game-character.component";
 import { pluginConfig } from "src/plugins/config";
+import { addVirtualScreen, deleteVirtualScreen } from "src/plugins/virtual-screen/domain/virtualScreen";
 
 export const hideVirtualScreenCharacter = (that) => {
   if(!pluginConfig.isUseVirtualScreen) return false;
@@ -14,16 +15,14 @@ export const initVirtualScreenCharacter = (that)=> {
   if (!that.addVirtualScreen) {
     // @ts-ignore
     GameCharacterComponent.prototype.addVirtualScreen = function() {
-      this.gameCharacter.isHideVirtualScreen = true;
-      this.gameCharacter.hideVirtualScreenUserName = PeerCursor.myCursor.name;
+      addVirtualScreen(this.gameCharacter)
     }
   }
   if (!that.deleteVirtualScreen) {
     // @ts-ignore
     GameCharacterComponent.prototype.deleteVirtualScreen = function() {
-      this.gameCharacter.isHideVirtualScreen = false;
-      this.gameCharacter.hideVirtualScreenUserName = '';
-    }
+      deleteVirtualScreen(this.gameCharacter)
+     }
   }
 
   if (!that.isHideVirtualScreen) {

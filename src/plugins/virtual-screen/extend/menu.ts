@@ -14,14 +14,12 @@ const getMenu = (that:any) => {
     return {
       name: 'ついたてに隠す', action: () => {
         that.addVirtualScreen(that);
-        SoundEffect.play(PresetSound.piecePut);
       }
     }
   }
   return {
     name: 'ついたてから出す', action: () => {
       that.deleteVirtualScreen(that);
-      SoundEffect.play(PresetSound.piecePut);
     }
   }
 }

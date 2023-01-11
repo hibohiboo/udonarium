@@ -3,6 +3,7 @@ import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { GameCharacterComponent } from "component/game-character/game-character.component";
 import { ContextMenuSeparator } from "service/context-menu.service";
 import { pluginConfig } from "src/plugins/config";
+import { addVirtualScreen, deleteVirtualScreen } from "src/plugins/virtual-screen/domain/virtualScreen";
 
 interface HiddenTabletopObject {
   isHideVirtualScreen: boolean;
@@ -30,18 +31,13 @@ const getMenu = (that:any) => {
 if(!that.isHideVirtualScreen) {
   return {
     name: 'ついたてに隠す', action: () => {
-      that.isHideVirtualScreen = true;
-      that.hideVirtualScreenUserName = PeerCursor.myCursor.name;
-      SoundEffect.play(PresetSound.piecePut);
-
+      addVirtualScreen(that)
     }
   }
 }
 return {
   name: 'ついたてから出す', action: () => {
-    that.isHideVirtualScreen = false;
-    that.hideVirtualScreenUserName = '';
-    SoundEffect.play(PresetSound.piecePut);
+    deleteVirtualScreen(that);
   }
 }
 }
