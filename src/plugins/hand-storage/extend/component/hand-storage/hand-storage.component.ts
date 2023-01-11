@@ -29,7 +29,7 @@ import { HandStorage } from '../../class/hand-storage'
 import { TabletopObject } from '@udonarium/tabletop-object'
 import { CoordinateService } from 'service/coordinate.service'
 import { TabletopActionService } from 'service/tabletop-action.service'
-import { hideVirtualStorage, onCardDropVirtualStorage, virtualScreenHandStorageContextMenu, virtualScreenName } from 'src/plugins/virtual-screen/extend/component/hand-storage/hand-storage.component'
+import { hideVirtualStorage, onObjectDropVirtualStorage, virtualScreenHandStorageContextMenu, virtualScreenName } from 'src/plugins/virtual-screen/extend/component/hand-storage/hand-storage.component'
 import { PeerCursor } from '@udonarium/peer-cursor'
 import { pluginConfig } from 'src/plugins/config'
 import { Card } from '@udonarium/card'
@@ -247,10 +247,20 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     const { x, y, w, h } = this.getHandStorageArea();
     const { distanceX, distanceY } = this.getDistance(x,y,obj);
     if (this.isTopOfHandStorage(x, y, w, h, distanceX, distanceY)) {
-      onCardDropVirtualStorage(this, obj);
+      onObjectDropVirtualStorage(this, obj);
     }
   }
-
+  @HostListener('objectdrop', ['$event'])
+  onObjectDrop(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    const obj = e.detail
+    const { x, y, w, h } = this.getHandStorageArea();
+    const { distanceX, distanceY } = this.getDistance(x,y,obj);
+    if (this.isTopOfHandStorage(x, y, w, h, distanceX, distanceY)) {
+      onObjectDropVirtualStorage(this, obj);
+    }
+  }
   private calcTopOfObjects() {
     const {x,y,w,h} = this.getHandStorageArea();
     const objects = [

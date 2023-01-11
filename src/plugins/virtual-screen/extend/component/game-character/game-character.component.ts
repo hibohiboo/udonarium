@@ -1,7 +1,7 @@
 import { PeerCursor } from "@udonarium/peer-cursor"
 import { GameCharacterComponent } from "component/game-character/game-character.component";
 import { pluginConfig } from "src/plugins/config";
-import { addVirtualScreen, deleteVirtualScreen } from "src/plugins/virtual-screen/domain/virtualScreen";
+import { addVirtualScreen, deleteVirtualScreen, dispatchTabletopObjectDropEvent } from "src/plugins/virtual-screen/domain/virtualScreen";
 
 export const hideVirtualScreenCharacter = (that) => {
   if(!pluginConfig.isUseVirtualScreen) return false;
@@ -31,4 +31,11 @@ export const initVirtualScreenCharacter = (that)=> {
       return this.gameCharacter.isHideVirtualScreen;
     }
   }
+}
+export const onMovedVirtualScreenGameCharacter = (that) =>{
+  if(!pluginConfig.isUseVirtualScreen) return;
+  if(that.gameCharacter.isHideVirtualScreen) {
+    that.deleteVirtualScreen();
+  }
+  that.ngZone.run(() => dispatchTabletopObjectDropEvent(that, 'gameCharacter'));
 }

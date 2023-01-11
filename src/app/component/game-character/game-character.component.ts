@@ -4,9 +4,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostBinding,
   HostListener,
   Input,
+  NgZone,
   OnDestroy,
   OnInit,
 } from '@angular/core';
@@ -24,7 +26,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/game-character/game-character.component';
-import { hideVirtualScreenCharacter, initVirtualScreenCharacter } from 'src/plugins/virtual-screen/extend/component/game-character/game-character.component';
+import { hideVirtualScreenCharacter, initVirtualScreenCharacter, onMovedVirtualScreenGameCharacter } from 'src/plugins/virtual-screen/extend/component/game-character/game-character.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
@@ -70,10 +72,12 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   rotableOption: RotableOption = {};
 
   constructor(
+    private ngZone: NgZone, // virtual screen で使用
+    private elementRef: ElementRef<HTMLElement>, // virtual screen で使用
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
-    private pointerDeviceService: PointerDeviceService
+    private pointerDeviceService: PointerDeviceService,
   ) {
     initVirtualScreenCharacter(this)
    }
@@ -166,6 +170,7 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onMoved() {
+    onMovedVirtualScreenGameCharacter(this);
     SoundEffect.play(PresetSound.piecePut);
   }
 
