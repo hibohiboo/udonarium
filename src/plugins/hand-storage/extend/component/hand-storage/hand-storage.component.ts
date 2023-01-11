@@ -241,25 +241,11 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     if ((e.detail instanceof Card === false && e.detail instanceof CardStack === false)) {
       return;
     }
-    e.stopPropagation();
-    e.preventDefault();
-    const obj = e.detail
-    const { x, y, w, h } = this.getHandStorageArea();
-    const { distanceX, distanceY } = this.getDistance(x,y,obj);
-    if (this.isTopOfHandStorage(x, y, w, h, distanceX, distanceY)) {
-      onObjectDropVirtualStorage(this, obj);
-    }
+    onObjectDropVirtualStorage(this, e);
   }
   @HostListener('objectdrop', ['$event'])
   onObjectDrop(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    const obj = e.detail
-    const { x, y, w, h } = this.getHandStorageArea();
-    const { distanceX, distanceY } = this.getDistance(x,y,obj);
-    if (this.isTopOfHandStorage(x, y, w, h, distanceX, distanceY)) {
-      onObjectDropVirtualStorage(this, obj);
-    }
+    onObjectDropVirtualStorage(this, e);
   }
   private calcTopOfObjects() {
     const {x,y,w,h} = this.getHandStorageArea();

@@ -50,8 +50,15 @@ export const virtualScreenName = (that)=>{
   return `${that.virtualScreenUserName}のついたて`
 }
 
-export const onObjectDropVirtualStorage = (that, obj)=>{
+export const onObjectDropVirtualStorage = (that, e)=>{
+  e.stopPropagation();
+  e.preventDefault();
   if(!pluginConfig.isUseVirtualScreen) return;
   if(!that.handStorage.isVirtualScreen) return;
-  addVirtualScreen(obj);
+  const obj = e.detail
+  const { x, y, w, h } = that.getHandStorageArea();
+  const { distanceX, distanceY } = that.getDistance(x,y,obj);
+  if (that.isTopOfHandStorage(x, y, w, h, distanceX, distanceY)) {
+    addVirtualScreen(obj);
+  }
 }
