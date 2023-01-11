@@ -1,11 +1,12 @@
 import { ContextMenuSeparator } from "service/context-menu.service";
 import { pluginConfig } from "src/plugins/config";
 
-
-export const virtualScreenContextMenu = (that:any) => pluginConfig.isUseVirtualScreen ? [
-    ContextMenuSeparator,
-    getMenu(that)
-  ] : []
+// いったん、メニューに追加はなしで手札置き場を通してのみ、ついたて機能を有効化する。
+export const virtualScreenContextMenu = (that:any) => [];
+// pluginConfig.isUseVirtualScreen ? [
+//     ContextMenuSeparator,
+//     getMenu(that)
+//   ] : []
 
 
 const getMenu = (that:any) => {

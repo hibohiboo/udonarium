@@ -29,7 +29,7 @@ import { HandStorage } from '../../class/hand-storage'
 import { TabletopObject } from '@udonarium/tabletop-object'
 import { CoordinateService } from 'service/coordinate.service'
 import { TabletopActionService } from 'service/tabletop-action.service'
-import { virtualScreenHandStorageContextMenu, virtualScreenName } from 'src/plugins/virtual-screen/extend/component/hand-storage/hand-storage.component'
+import { hideVirtualStorage, virtualScreenHandStorageContextMenu, virtualScreenName } from 'src/plugins/virtual-screen/extend/component/hand-storage/hand-storage.component'
 import { PeerCursor } from '@udonarium/peer-cursor'
 import { pluginConfig } from 'src/plugins/config'
 
@@ -197,7 +197,19 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
             SoundEffect.play(PresetSound.sweep)
           },
         },
-
+        {
+          name: 'コピーを作る',
+          action: () => {
+            const cloneObject = this.handStorage.clone()
+            console.log('コピー', cloneObject)
+            cloneObject.location.x += this.gridSize
+            cloneObject.location.y += this.gridSize
+            cloneObject.isLock = false
+            if (this.handStorage.parent)
+              this.handStorage.parent.appendChild(cloneObject)
+            SoundEffect.play(PresetSound.cardPut)
+          },
+        }
       ],
       this.name,
     )
@@ -216,6 +228,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
         this.handStorage.location.y + topOfObject.distanceY
       topOfObject.obj.update()
     }
+    hideVirtualStorage(this, this.topOfObjects);
     this.topOfObjects = []
   }
 

@@ -18,9 +18,7 @@ const virtualScrrenToggleMenu = (that:any) => {
         that.handStorage.virtualScreenUserName = PeerCursor.myCursor.name;
         SoundEffect.play(PresetSound.piecePut);
         const topOfObjects = that.calcTopOfObjects();
-        for (const topOfObject of topOfObjects) {
-          addVirtualScreen(topOfObject.obj);
-        }
+        hideVirtualStorage(that, topOfObjects);
       }
     }
   }
@@ -35,6 +33,15 @@ const virtualScrrenToggleMenu = (that:any) => {
         deleteVirtualScreen(topOfObject.obj);
       }
     }
+  }
+}
+
+export const hideVirtualStorage = (that:any, topOfObjects: any) =>{
+  if(!pluginConfig.isUseVirtualScreen) return;
+  if(!that.handStorage.isVirtualScreen) return;
+
+  for (const topOfObject of topOfObjects) {
+    addVirtualScreen(topOfObject.obj);
   }
 }
 export const virtualScreenName = (that)=>{
