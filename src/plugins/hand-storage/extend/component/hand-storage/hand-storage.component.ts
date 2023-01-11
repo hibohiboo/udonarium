@@ -243,15 +243,16 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     e.stopPropagation();
     e.preventDefault();
-
-    onCardDropVirtualStorage(this, e.detail);
+    const obj = e.detail
+    const { x, y, w, h } = this.getHandStorageArea();
+    const { distanceX, distanceY } = this.getDistance(x,y,obj);
+    if (this.isTopOfHandStorage(x, y, w, h, distanceX, distanceY)) {
+      onCardDropVirtualStorage(this, obj);
+    }
   }
 
   private calcTopOfObjects() {
-    const x = this.handStorage.location.x
-    const y = this.handStorage.location.y
-    const w = this.width * this.gridSize
-    const h = this.height * this.gridSize
+    const {x,y,w,h} = this.getHandStorageArea();
     const objects = [
       ...this.tabletopService.cards,
       ...this.tabletopService.cardStacks,
@@ -261,19 +262,31 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     ]
     const topOfObjects = [];
     for (const obj of objects) {
-      const distanceX = obj.location.x - x
-      const distanceY = obj.location.y - y
-      if (
-        -this.gridSize < distanceX &&
-        -this.gridSize < distanceY &&
-        distanceX < w &&
-        distanceY < h
-      ) {
+      const { distanceX, distanceY } = this.getDistance(x,y,obj);
+      if (this.isTopOfHandStorage(x, y, w, h, distanceX, distanceY)) {
         topOfObjects.push({ obj: obj, distanceX, distanceY })
       }
     }
     this.topOfObjects = topOfObjects;
     return topOfObjects;
+  }
+
+  private isTopOfHandStorage (x, y, w, h, distanceX, distanceY) {
+    return -this.gridSize < distanceX && -this.gridSize < distanceY &&
+                distanceX < w         && distanceY < h
+  }
+  private getHandStorageArea (){
+    const x = this.handStorage.location.x
+    const y = this.handStorage.location.y
+    const w = this.width * this.gridSize
+    const h = this.height * this.gridSize
+    return {x, y ,w, h};
+  }
+
+  private getDistance(x,y,obj) {
+    const distanceX = obj.location.x - x;
+    const distanceY = obj.location.y - y;
+    return { distanceX, distanceY }
   }
 
   private adjustMinBounds(value: number, min = 0): number {

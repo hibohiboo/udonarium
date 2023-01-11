@@ -30,7 +30,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
-import { hideVirtualScreenCardStack, initVirtualScreenCardStack } from 'src/plugins/virtual-screen/extend/component/card-stack/card-stack.component';
+import { hideVirtualScreenCardStack, initVirtualScreenCardStack, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card-stack/card-stack.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
@@ -338,6 +338,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onMoved() {
     SoundEffect.play(PresetSound.cardPut);
+    onMovedVirtualScreen(this)
     this.ngZone.run(() => this.dispatchCardDropEvent());
   }
 

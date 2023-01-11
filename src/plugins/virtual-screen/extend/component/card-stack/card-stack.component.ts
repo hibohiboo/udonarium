@@ -32,3 +32,8 @@ export const initVirtualScreenCardStack = (that)=> {
     }
   }
 }
+export const onMovedVirtualScreen = (that) => {
+  if(!pluginConfig.isUseVirtualScreen) return;
+  if(!that.cardStack.isHideVirtualScreen) return;
+  that.deleteVirtualScreen();
+}

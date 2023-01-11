@@ -30,7 +30,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
-import { hideVirtualScreenCard, initVirtualScreenCard } from 'src/plugins/virtual-screen/extend/component/card/card.component';
+import { hideVirtualScreenCard, initVirtualScreenCard, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card/card.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
@@ -274,6 +274,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onMoved() {
     SoundEffect.play(PresetSound.cardPut);
+    onMovedVirtualScreen(this)
     this.ngZone.run(() => this.dispatchCardDropEvent());
   }
 
