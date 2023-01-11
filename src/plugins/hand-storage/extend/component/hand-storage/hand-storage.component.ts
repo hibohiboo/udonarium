@@ -189,6 +189,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.contextMenuService.open(
       menuPosition,
       [
+        ...virtualScreenHandStorageContextMenu(this.handStorage),
         this.isLock
           ? {
               name: '固定解除',
@@ -218,28 +219,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
             SoundEffect.play(PresetSound.sweep)
           },
         },
-        {
-          name: 'コピーを作る',
-          action: () => {
-            const cloneObject = this.handStorage.clone()
-            console.log('コピー', cloneObject)
-            cloneObject.location.x += this.gridSize
-            cloneObject.location.y += this.gridSize
-            cloneObject.isLock = false
-            if (this.handStorage.parent)
-              this.handStorage.parent.appendChild(cloneObject)
-            SoundEffect.play(PresetSound.cardPut)
-          },
-        },
-        ContextMenuSeparator,
-        {
-          name: 'オブジェクト作成',
-          action: null,
-          subActions: this.tabletopActionService.makeDefaultContextMenuActions(
-            objectPosition,
-          ),
-        },
-        ...virtualScreenHandStorageContextMenu(this.handStorage)
+
       ],
       this.name,
     )

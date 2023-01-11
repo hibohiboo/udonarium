@@ -4,8 +4,9 @@ import { ContextMenuSeparator } from "service/context-menu.service"
 import { pluginConfig } from "src/plugins/config"
 
 export const virtualScreenHandStorageContextMenu = (that:any) => pluginConfig.isUseVirtualScreen ? [
+
+  getMenu(that),
   ContextMenuSeparator,
-  getMenu(that)
 ] : []
 
 
