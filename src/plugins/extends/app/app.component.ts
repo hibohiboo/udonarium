@@ -44,6 +44,7 @@ import { hideMenu, horizonMenu, menuCount, minimizableMenu } from 'src/plugins/e
 import { openHelp, openHelpEvent, useHelp } from 'src/plugins/keyboard-help/app/app.component';
 import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
 import { offObjectRotate } from 'src/plugins/object-rotate-off/extends/app/app.component';
+import { resetPointOfView } from 'src/plugins/reset-point-of-view/extend/app.component';
 import { toggleMute, useMute, useMuteOff } from 'src/plugins/toggle-sound-effect/extend/class/sound-effect';
 
 @Component({
@@ -79,7 +80,8 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
     private chatMessageService: ChatMessageService,
     private appConfigService: AppConfigService,
     private saveDataService: SaveDataService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private contextMenuService: ContextMenuService, // reset point of view
   ) {
 
     this.ngZone.runOutsideAngular(() => {
@@ -325,6 +327,10 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   get useMuteOff(){ return useMuteOff(); }
   toggleMute() {
     toggleMute();
+  }
+  get useResetPointOfView() { return pluginConfig.isUseResetPointOfView; }
+  resetPointOfView() {
+    resetPointOfView(this);
   }
 }
 

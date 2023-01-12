@@ -30,6 +30,7 @@ import { TableMouseGesture } from 'src/app/component/game-table/table-mouse-gest
 import { TableTouchGesture } from 'src/app/component/game-table/table-touch-gesture';
 import { HandStorageService } from 'src/plugins/hand-storage/extend/service/hand-storage.service';
 import { HandStorage } from 'src/plugins/hand-storage/extend/class/hand-storage';
+import { resetViewHandler } from 'src/plugins/reset-point-of-view/extend/component/game-table/game-table.component';
 
 @Component({
   selector: 'game-table-extend-plus',
@@ -108,7 +109,11 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
         this.pointerDeviceService.isDragging = false;
         let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
         this.gridCanvas.nativeElement.style.opacity = opacity + '';
-      });
+      })
+      .on('RESET_POINT_OF_VIEW', event => {
+        resetViewHandler(this, event)
+      })
+      ;
     this.tabletopActionService.makeDefaultTable();
     this.tabletopActionService.makeDefaultTabletopObjects();
   }
