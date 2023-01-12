@@ -64,8 +64,8 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   isSaveing: boolean = false;
   progresPercent: number = 0;
   get isMinimizable() { return minimizableMenu; }
-  get menuHight() { return (menuCount-2) * 55 + 150 + (useHelp ? 50 : 0) + (pluginConfig.isToggleSoundEffect ? 50 : 0); }
-  get menuHorizontalWidth() { return (menuCount-2) * 70 + 250 + (useHelp ? 60 : 0) + (pluginConfig.isToggleSoundEffect ? 60 : 0); }
+  get menuHight() { return (menuCount-2) * 55 + 150 + (useHelp ? 50 : 0) + (pluginConfig.isToggleSoundEffect ? 50 : 0) + (pluginConfig.isUseResetPointOfView ? 70 : 0); }
+  get menuHorizontalWidth() { return (menuCount-2) * 70 + 250 + (useHelp ? 60 : 0) + (pluginConfig.isToggleSoundEffect ? 60 : 0)+ (pluginConfig.isUseResetPointOfView ? 70 : 0); }
   get hideTable() { return hideMenu.table; }
   get hideImage() { return hideMenu.image; }
   get hideMusic() { return hideMenu.music; }
