@@ -56,7 +56,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
 
   @ViewChild('modalLayer', { read: ViewContainerRef, static: true }) modalLayerViewContainerRef: ViewContainerRef;
 
-  @HostBinding('class.is2d') get is2d(){ return is2d; };
+  @HostBinding('class.is2d') get is2d(){ return is2d(); };
   @HostBinding('class.object-rotate-off') get objectRotateOff(){ return offObjectRotate; };
   private immediateUpdateTimer: NodeJS.Timer = null;
   private lazyUpdateTimer: NodeJS.Timer = null;

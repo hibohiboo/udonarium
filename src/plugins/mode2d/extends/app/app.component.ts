@@ -1,3 +1,1 @@
-import { pluginConfig } from "src/plugins/config";
-
-export const is2d = pluginConfig.is2d
+export { is2d } from '../../index'

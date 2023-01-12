@@ -42,7 +42,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() terrain: Terrain = null;
   @Input() is3D: boolean = false;
 
-  get is2d() { return is2d; }
+  get is2d() { return is2d(); }
   get name(): string { return this.terrain.name; }
   get mode(): TerrainViewState { return this.terrain.mode; }
   set mode(mode: TerrainViewState) { this.terrain.mode = mode; }

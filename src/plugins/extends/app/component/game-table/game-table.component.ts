@@ -67,9 +67,9 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
   private viewPotisonY: number = 0;
   private viewPotisonZ: number = 0;
 
-  private viewRotateX: number = is2d ? 0 : 50;
+  private viewRotateX: number = is2d() ? 0 : 50;
   private viewRotateY: number = 0;
-  private viewRotateZ: number = is2d ? 0 : 10;
+  private viewRotateZ: number = is2d() ? 0 : 10;
 
   private mouseGesture: TableMouseGesture = null;
   private touchGesture: TableTouchGesture = null;
@@ -278,7 +278,7 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
       this.viewRotateX -= rotateX;
       this.viewRotateY -= rotateY;
       this.viewRotateZ -= rotateZ;
-    } else if (is2d) {
+    } else if (is2d()) {
       this.viewRotateX -= rotateX;
     }
 
