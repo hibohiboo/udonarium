@@ -53,8 +53,8 @@ export const settings = [
 ]
 
 export const labelsAllInOne = [
-    '2Dモード'
-    ,'オブジェクト回転オフ(個別設定可能)'
+
+     'オブジェクト回転オフ(個別設定可能)'
     ,'メニュー最小化'
     ,'メニュー横並び'
     ,'ヘルプ表示'
