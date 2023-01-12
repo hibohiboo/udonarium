@@ -44,6 +44,7 @@ import { hideMenu, horizonMenu, menuCount, minimizableMenu } from 'src/plugins/e
 import { openHelp, openHelpEvent, useHelp } from 'src/plugins/keyboard-help/app/app.component';
 import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
 import { offObjectRotate } from 'src/plugins/object-rotate-off/extends/app/app.component';
+import { toggleMute, useMute, useMuteOff } from 'src/plugins/toggle-sound-effect/extend/class/sound-effect';
 
 @Component({
   selector: 'app-root',
@@ -62,8 +63,8 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   isSaveing: boolean = false;
   progresPercent: number = 0;
   get isMinimizable() { return minimizableMenu; }
-  get menuHight() { return (menuCount-2) * 55 + 150 + (useHelp ? 50 : 0); }
-  get menuHorizontalWidth() { return (menuCount-2) * 70 + 250 + (useHelp ? 60 : 0); }
+  get menuHight() { return (menuCount-2) * 55 + 150 + (useHelp ? 50 : 0) + (pluginConfig.isToggleSoundEffect ? 50 : 0); }
+  get menuHorizontalWidth() { return (menuCount-2) * 70 + 250 + (useHelp ? 60 : 0) + (pluginConfig.isToggleSoundEffect ? 60 : 0); }
   get hideTable() { return hideMenu.table; }
   get hideImage() { return hideMenu.image; }
   get hideMusic() { return hideMenu.music; }
@@ -319,6 +320,11 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   get useHelp(){ return useHelp; }
   openHelp() {
     openHelp(this.modalService)
+  }
+  get useMute(){ return useMute(); }
+  get useMuteOff(){ return useMuteOff(); }
+  toggleMute() {
+    toggleMute();
   }
 }
 

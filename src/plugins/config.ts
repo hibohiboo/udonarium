@@ -22,6 +22,7 @@ export const pluginConfig = {
   , isUseHandStorage: params.get('hand-storage') != null
   , isUseVirtualScreen: params.get('virtual-screen') != null
   , isUseHandStorageSelfOnly: params.get('hand-storage-self-only')!= null
+  , isToggleSoundEffect: params.get('toggle-sound-effect') != null
 } as const;
 
 export const settings = [
@@ -46,6 +47,7 @@ export const settings = [
 , { label: '手札置き場', param: 'hand-storage', checked:false }
 , { label: '手札置き場（ついたて）', param: 'virtual-screen', checked:false }
 , { label: '手札置き場を自分のものだけ触れるようにする', param: 'hand-storage-self-only', checked:false }
+, { label: '操作音オンオフ', param: 'toggle-sound-effect', checked:false }
 ]
 
 export const labelsAllInOne = [
@@ -60,4 +62,5 @@ export const labelsAllInOne = [
     ,'手札置き場'
     ,'手札置き場（ついたて）'
     ,'手札置き場を自分のものだけ触れるようにする'
+    ,'操作音オンオフ'
   ]

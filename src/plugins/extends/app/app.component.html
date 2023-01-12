@@ -56,6 +56,18 @@
           <div>保存</div>
         </a>
       </li>
+      <li *ngIf="useMuteOff" (click)="toggleMute()">
+        <a routerLink="/" routerLinkActive="active">
+          <div><i class="material-icons">music_off</i></div>
+          <div>効果音</div>
+        </a>
+      </li>
+      <li *ngIf="useMute" (click)="toggleMute()">
+        <a routerLink="/" routerLinkActive="active">
+          <div><i class="material-icons">music_note</i></div>
+          <div>効果音</div>
+        </a>
+      </li>
       <li *ngIf="useHelp" (click)="openHelp()">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons">help</i></div>

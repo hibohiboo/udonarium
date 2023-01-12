@@ -1,3 +1,4 @@
+import { isSoundEffectMute } from 'src/plugins/toggle-sound-effect/extend/class/sound-effect';
 import { ChatMessage, ChatMessageContext } from './chat-message';
 import { AudioFile } from './core/file-storage/audio-file';
 import { AudioPlayer } from './core/file-storage/audio-player';
@@ -70,6 +71,7 @@ export class SoundEffect extends GameObject {
   }
 
   private static _play(identifier: string) {
+    if(isSoundEffectMute()) return;
     EventSystem.call('SOUND_EFFECT', identifier);
   }
 }
