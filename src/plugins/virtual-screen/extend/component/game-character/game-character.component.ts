@@ -34,8 +34,9 @@ export const initVirtualScreenCharacter = (that)=> {
 }
 export const onMovedVirtualScreenGameCharacter = (that) =>{
   if(!pluginConfig.isUseVirtualScreen) return;
-  if(that.gameCharacter.isHideVirtualScreen) {
+  const prop = 'gameCharacter';
+  if(that[prop].isHideVirtualScreen) {
     that.deleteVirtualScreen();
   }
-  that.ngZone.run(() => dispatchTabletopObjectDropEvent(that, 'gameCharacter'));
+  that.ngZone.run(() => dispatchTabletopObjectDropEvent(that, prop));
 }

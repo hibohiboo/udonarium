@@ -1,7 +1,7 @@
 import { PeerCursor } from "@udonarium/peer-cursor"
 import { DiceSymbolComponent } from "component/dice-symbol/dice-symbol.component";
 import { pluginConfig } from "src/plugins/config";
-import { addVirtualScreen, deleteVirtualScreen } from "src/plugins/virtual-screen/domain/virtualScreen";
+import { addVirtualScreen, deleteVirtualScreen, dispatchTabletopObjectDropEvent } from "src/plugins/virtual-screen/domain/virtualScreen";
 
 export const hideVirtualScreenDiceSymbol = (that) => {
   if(!pluginConfig.isUseVirtualScreen) return false;
@@ -32,4 +32,12 @@ export const initVirtualScreenDiceSymbol = (that)=> {
       return this.diceSymbol.isHideVirtualScreen;
     }
   }
+}
+export const onMovedVirtualScreenDiceSymbol = (that) =>{
+  if(!pluginConfig.isUseVirtualScreen) return;
+  const prop = 'diceSymbol';
+  if(that[prop].isHideVirtualScreen) {
+    that.deleteVirtualScreen();
+  }
+  that.ngZone.run(() => dispatchTabletopObjectDropEvent(that, prop));
 }

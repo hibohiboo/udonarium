@@ -13,7 +13,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/text-note/text-note.component';
 import { getIsUpright, setIsUpright, uprightContextMenu } from 'src/plugins/text-note-upright-flat/extend/component/text-note.component';
-import { hideVirtualScreenTextNote, initVirtualScreenTextNote } from 'src/plugins/virtual-screen/extend/component/text-note/text-note.component';
+import { hideVirtualScreenTextNote, initVirtualScreenTextNote, onMovedVirtualScreenTextNote } from 'src/plugins/virtual-screen/extend/component/text-note/text-note.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
@@ -53,6 +53,7 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private ngZone: NgZone,
+    private elementRef: ElementRef<HTMLElement>, // virtual screen で使用
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
@@ -173,6 +174,7 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onMoved() {
+    onMovedVirtualScreenTextNote(this);
     SoundEffect.play(PresetSound.cardPut);
   }
 

@@ -1,7 +1,7 @@
 import { PeerCursor } from "@udonarium/peer-cursor"
 import { TerrainComponent } from "component/terrain/terrain.component";
 import { pluginConfig } from "src/plugins/config";
-import { addVirtualScreen, deleteVirtualScreen } from "src/plugins/virtual-screen/domain/virtualScreen";
+import { addVirtualScreen, deleteVirtualScreen, dispatchTabletopObjectDropEvent } from "src/plugins/virtual-screen/domain/virtualScreen";
 
 export const hideVirtualScreenTerrain = (that) => {
   if(!pluginConfig.isUseVirtualScreen) return false;
@@ -32,4 +32,12 @@ export const initVirtualScreenTerrain = (that)=> {
       return this.terrain.isHideVirtualScreen;
     }
   }
+}
+export const onMovedVirtualScreenTerrain = (that) =>{
+  if(!pluginConfig.isUseVirtualScreen) return;
+  const prop = 'terrain';
+  if(that[prop].isHideVirtualScreen) {
+    that.deleteVirtualScreen();
+  }
+  that.ngZone.run(() => dispatchTabletopObjectDropEvent(that, prop));
 }

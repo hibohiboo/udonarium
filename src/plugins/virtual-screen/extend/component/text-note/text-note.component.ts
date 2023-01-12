@@ -1,7 +1,7 @@
 import { PeerCursor } from "@udonarium/peer-cursor"
 import { TextNoteComponent } from "component/text-note/text-note.component";
 import { pluginConfig } from "src/plugins/config";
-import { addVirtualScreen, deleteVirtualScreen } from "src/plugins/virtual-screen/domain/virtualScreen";
+import { addVirtualScreen, deleteVirtualScreen, dispatchTabletopObjectDropEvent } from "src/plugins/virtual-screen/domain/virtualScreen";
 
 export const hideVirtualScreenTextNote = (that) => {
   if(!pluginConfig.isUseVirtualScreen) return false;
@@ -32,4 +32,12 @@ export const initVirtualScreenTextNote = (that)=> {
       return this.textNote.isHideVirtualScreen;
     }
   }
+}
+export const onMovedVirtualScreenTextNote = (that) =>{
+  if(!pluginConfig.isUseVirtualScreen) return;
+  const prop = 'textNote';
+  if(that[prop].isHideVirtualScreen) {
+    that.deleteVirtualScreen();
+  }
+  that.ngZone.run(() => dispatchTabletopObjectDropEvent(that, prop));
 }
