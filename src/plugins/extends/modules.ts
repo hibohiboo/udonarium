@@ -4,8 +4,10 @@ import { HelpKeyboardComponent } from "../keyboard-help/component/help-keyboard/
 import { AppComponentExtendPlus } from "./app/app.component"
 import { GameCharacterSheetComponentExtendPlus } from "./app/component/game-character-sheet/game-character-sheet.component"
 import { GameTableComponentExtendPlus } from "./app/component/game-table/game-table.component"
+import { OverviewPanelComponentExtendPlus } from "./app/component/overview-panel/overview-panel.component"
 import { UIPanelComponentExtendPlus } from "./app/component/ui-panel/ui-panel.component"
 import { ResizableDirectiveExtendPlus } from "./app/directive/resizable.directive"
+import { TooltipDirectiveExtendPlus } from "./app/directive/tooltip.directive"
 import { PanelServiceExtnedPlus } from "./app/service/panel.service"
 
 const components = [
@@ -16,6 +18,8 @@ const components = [
   , HandStorageComponent
   , GameTableComponentExtendPlus // 本家の GameTableComponent は不使用
   , GameCharacterSheetComponentExtendPlus
+  , OverviewPanelComponentExtendPlus
+  , TooltipDirectiveExtendPlus
 ]
 const imports = []
 const services = [PanelServiceExtnedPlus, HandStorageService]
