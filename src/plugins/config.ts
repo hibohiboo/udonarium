@@ -24,6 +24,7 @@ export const pluginConfig = {
   , isUseHandStorageSelfOnly: params.get('hand-storage-self-only')!= null
   , isToggleSoundEffect: params.get('toggle-sound-effect') != null
   , isUseResetPointOfView: params.get('reset-point-of-view') != null
+  , isCardWritable: params.get('add-card-text-writable') != null
 } as const;
 
 export const settings = [
@@ -43,6 +44,7 @@ export const settings = [
 , { label: '初期表示にチャットウィンドウを表示しない', param: 'hide-first-chat', checked: false }
 , { label: 'ヘルプ表示', param: 'help', checked: false }
 , { label: '右クリックメニューでブランクカードを作成', param: 'add-blank-card-menu', checked:false }
+, { label: 'カードに文字入力可能にする', param: 'add-card-text-writable', checked:false }
 , { label: '共有メモの直立と並行の切り替え', param: 'text-note-upright-flat', checked:false }
 , { label: '重ねカード移動機能', param: 'move-stacked-card', checked:false }
 , { label: '手札置き場', param: 'hand-storage', checked:false }
@@ -66,4 +68,5 @@ export const labelsAllInOne = [
     ,'手札置き場を自分のものだけ触れるようにする'
     ,'操作音オンオフ'
     ,'視点リセット'
+    ,'カードに文字入力可能にする'
   ]

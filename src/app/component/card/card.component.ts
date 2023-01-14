@@ -28,6 +28,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
+import { initCardComponentForWritableText, isCardWritable } from 'src/plugins/add-card-text-writable/extend/component/card/card.component';
 import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
 import { hideVirtualScreenCard, initVirtualScreenCard, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card/card.component';
@@ -88,8 +89,10 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService
   ) {
-    initVirtualScreenCard(this)
+    initVirtualScreenCard(this);
+    initCardComponentForWritableText(this);
    }
+   get isCardWritable() { return isCardWritable; }
 
   ngOnInit() {
     EventSystem.register(this)
