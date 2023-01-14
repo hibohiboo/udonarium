@@ -2,6 +2,7 @@ import { HandStorageComponent } from "../hand-storage/extend/component/hand-stor
 import { HandStorageService } from "../hand-storage/extend/service/hand-storage.service"
 import { HelpKeyboardComponent } from "../keyboard-help/component/help-keyboard/help-keyboard.component"
 import { AppComponentExtendPlus } from "./app/app.component"
+import { GameCharacterSheetComponentExtendPlus } from "./app/component/game-character-sheet/game-character-sheet.component"
 import { GameTableComponentExtendPlus } from "./app/component/game-table/game-table.component"
 import { UIPanelComponentExtendPlus } from "./app/component/ui-panel/ui-panel.component"
 import { ResizableDirectiveExtendPlus } from "./app/directive/resizable.directive"
@@ -14,6 +15,7 @@ const components = [
   , HelpKeyboardComponent
   , HandStorageComponent
   , GameTableComponentExtendPlus // 本家の GameTableComponent は不使用
+  , GameCharacterSheetComponentExtendPlus
 ]
 const imports = []
 const services = [PanelServiceExtnedPlus, HandStorageService]

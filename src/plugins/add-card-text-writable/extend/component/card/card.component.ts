@@ -2,9 +2,6 @@ import { pluginConfig } from "src/plugins/config";
 import { StringUtilPlus } from "src/plugins/util/string-util-plus";
 
 export const initCardComponentForWritableText = (that:any) => {
-  Object.defineProperty(that, 'isCardWritable', {
-    get():boolean { return pluginConfig.isCardWritable; }
-  });
   if(!pluginConfig.isCardWritable) return;
   Object.defineProperty(that, 'text', {
     get():string { return this.card.text; },

@@ -29,6 +29,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 import { initCardComponentForWritableText, isCardWritable } from 'src/plugins/add-card-text-writable/extend/component/card/card.component';
+import { GameCharacterSheetComponentExtendPlus } from 'src/plugins/extends/app/component/game-character-sheet/game-character-sheet.component';
 import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
 import { hideVirtualScreenCard, initVirtualScreenCard, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card/card.component';
@@ -337,6 +338,11 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     let title = 'カード設定';
     if (gameObject.name.length) title += ' - ' + gameObject.name;
     let option: PanelOption = { title: title, left: coordinate.x - 300, top: coordinate.y - 300, width: 600, height: 600 };
+    if(this.isCardWritable) {
+      let component = this.panelService.open<GameCharacterSheetComponentExtendPlus>(GameCharacterSheetComponentExtendPlus, option);
+      component.tabletopObject = gameObject;
+      return;
+    }
     let component = this.panelService.open<GameCharacterSheetComponent>(GameCharacterSheetComponent, option);
     component.tabletopObject = gameObject;
   }
