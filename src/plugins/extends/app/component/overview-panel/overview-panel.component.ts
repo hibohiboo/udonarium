@@ -16,6 +16,7 @@ import { DataElement } from '@udonarium/data-element';
 import { TabletopObject } from '@udonarium/tabletop-object';
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { initOverviwPanelComponentForWritableText } from 'src/plugins/add-card-text-writable/extend/component/overview-panel/overview-panel.component';
 
 @Component({
   selector: 'overview-panel-extend-plus',
@@ -64,7 +65,9 @@ export class OverviewPanelComponentExtendPlus implements AfterViewInit, OnDestro
     private inventoryService: GameObjectInventoryService,
     private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    initOverviwPanelComponentForWritableText(this);
+  }
 
   ngAfterViewInit() {
     this.initPanelPosition();

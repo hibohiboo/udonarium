@@ -31,7 +31,14 @@
   <div class="component-content is-small-size"
     [ngClass]="{ 'is-pointer-events-auto': !this.isPointerDragging, 'pointer-events-none': this.isPointerDragging }">
     <div *ngIf="hasImage" style="position: relative;">
+      <div *ngIf="(card.aliasName == 'card' && (card.isFront || card.isHand || card.isGMMode)) || (card.aliasName == 'card-stack' && card.topCard.isFront)"
+          class="text" style="z-index: 5; top: 8px"
+          [style.width.px]="imageAreaRect.width" [style.height.px]="imageAreaRect.height" [style.left.px]="imageAreaRect.left"
+          [ngStyle]="{transform: 'scale(' + imageAreaRect.scale + ')'}">
+      <div [style.font-size.px]="cardFontSize" [style.color]="cardColor" [style.text-shadow]="cardTextShadowCss" [innerHTML]="cardText | safe: 'html'"></div>
+    </div>
       <img class="card-image" [src]="imageUrl | safe: 'resourceUrl'" />
+
       <button class="zoom-button" (click)="chanageImageView(true)">
         <i class="material-icons">zoom_in</i>
       </button>
