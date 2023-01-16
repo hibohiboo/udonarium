@@ -13,7 +13,6 @@ overview-panel-extend-plus .main-image {
 overview-panel-extend-plus .text {
   transform-origin: left top;
 
-
   position: absolute;
   display: flex;
   align-items: center;

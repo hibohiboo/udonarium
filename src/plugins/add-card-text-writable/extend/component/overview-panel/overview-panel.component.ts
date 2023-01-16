@@ -1,5 +1,6 @@
 import { Card } from "@udonarium/card";
 import { CardStack } from "@udonarium/card-stack";
+import { calcAreaRect } from "src/plugins/add-card-text-writable/card-text-writable";
 import { pluginConfig } from "src/plugins/config";
 import { StringUtilPlus } from "src/plugins/util/string-util-plus";
 
@@ -48,11 +49,16 @@ export const initOverviwPanelComponentForWritableText = (that:any) => {
   });
   Object.defineProperty(that, 'imageAreaRect', {
     get() {
-      return {
-        scale: 2.5,
-        width: 100,
-        height: 150
-      }
+      const naturalHeight = this.naturalHeight;
+      const naturalWidth = this.naturalWidth;
+      return calcAreaRect({
+        naturalHeight,
+        naturalWidth,
+        areaWidth: 250,
+        areaHeight: 330,
+        tabletopObject: this.tabletopObject,
+        offset: 8
+      })
      }
   });
   Object.defineProperty(that, 'naturalWidth', {
@@ -70,59 +76,20 @@ export const initOverviwPanelComponentForWritableText = (that:any) => {
       if(naturalHeight === 0 || naturalWidth === 0 ) return;
       const areaWidth = document.documentElement.clientWidth;
       const areaHeight = document.documentElement.offsetHeight;
-      const gridSize = 50;
       const offset = 16;
-      const viewWidth = areaWidth - offset * 2;
-      const viewHeight = areaHeight - offset * 2;
-
-      const { width, height, left, top } = calcHeightWidth({
+      return calcAreaRect({
         naturalHeight,
         naturalWidth,
-        viewWidth,
-        viewHeight,
+        areaWidth,
+        areaHeight,
+        tabletopObject: this.tabletopObject,
         offset
       })
-
-      const rect = {
-        scale: 1,
-        width,
-        height,
-        left,
-        top
-      }
-      let card = null;
-      if (this.tabletopObject instanceof CardStack) {
-        card = this.tabletopObject.topCard;
-      } else if (this.tabletopObject instanceof Card) {
-        card = this.tabletopObject;
-      }
-      if (card) {
-        rect.scale = rect.width / (card.size * gridSize);
-        rect.width = card.size * gridSize;
-        rect.height = rect.width * this.naturalHeight / this.naturalWidth;
-      }
-      return rect;
-     }
+    }
   });
 }
 
-const calcHeightWidth = (args: Record<string,number>)=>{
-  const { naturalHeight, naturalWidth, viewWidth, viewHeight, offset } = args;
-  if (( naturalHeight * viewWidth / naturalWidth) > viewHeight) {
-    const  width = naturalWidth * viewHeight / naturalHeight;
-    return { width
-          , height : viewHeight
-          , left : offset + (viewWidth - width) / 2
-         };
-  }
-  const height = naturalHeight * viewWidth / naturalWidth;
-  return {
-      width: viewWidth
-    , height
-    , top : offset + (viewHeight - height) / 2
-  }
 
-}
 
 export const isCardWritable = pluginConfig.isCardWritable;
 
