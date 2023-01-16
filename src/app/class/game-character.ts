@@ -1,3 +1,4 @@
+import { createEmptyNewCharacter } from 'src/plugins/empty-new-character/extend/class/game-character';
 import { addSyncHideVirtualScreen } from 'src/plugins/virtual-screen/extend/class/addSyncHideVirtualScreen';
 import { ChatPalette } from './chat-palette';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
@@ -27,6 +28,9 @@ export class GameCharacter extends TabletopObject {
     let gameCharacter: GameCharacter = new GameCharacter();
     gameCharacter.createDataElements();
     gameCharacter.initialize();
+    if (createEmptyNewCharacter(gameCharacter,name, size, imageIdentifier)) {
+      return gameCharacter;
+    }
     gameCharacter.createTestGameDataElement(name, size, imageIdentifier);
 
     return gameCharacter;

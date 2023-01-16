@@ -29,6 +29,7 @@ export const pluginConfig = {
   , isTapCard: params.get('tap-card') != null
   , isHidePredestal: params.get('hide-pedestal') != null
   , isEmptyDisplayItems: params.get('empty-display-items') != null
+  , isEmptyNewCharacter: params.get('empty-new-character') != null
 } as const;
 
 export const settings = [
@@ -60,6 +61,7 @@ export const settings = [
 , { label: '視点リセット', param: 'reset-point-of-view', checked:false }
 , { label: 'キャラクターコマの台座を非表示', param: 'hide-pedestal', checked:false }
 , { label: '表示項目の初期値を空にする（デフォルト：HP MP 敏捷度 生命力 精神力）', param: 'empty-display-items', checked:false }
+, { label: '新しいキャラクターを作成時にステータスを空で作成する', param: 'empty-new-character', checked:false }
 ]
 
 export const labelsAllInOne = [
@@ -91,4 +93,5 @@ export const lablsMinimum = [
 , '初期表示に接続情報を表示しない',
 , '初期表示にチャットウィンドウを表示しない'
 , '表示項目の初期値を空にする（デフォルト：HP MP 敏捷度 生命力 精神力）'
+, '新しいキャラクターを作成時にステータスを空で作成する'
 ]
