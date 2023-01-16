@@ -41,6 +41,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { pluginConfig } from 'src/plugins/config';
 import { hideMenu, horizonMenu, menuCount, minimizableMenu } from 'src/plugins/extend-menu/extends/app/app.component';
+import { hidePredestal } from 'src/plugins/hide-pedestal/extends/app/app.component';
 import { openHelp, openHelpEvent, useHelp } from 'src/plugins/keyboard-help/app/app.component';
 import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
 import { offObjectRotate } from 'src/plugins/object-rotate-off/extends/app/app.component';
@@ -58,6 +59,9 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
 
   @HostBinding('class.is2d') get is2d(){ return is2d(); };
   @HostBinding('class.object-rotate-off') get objectRotateOff(){ return offObjectRotate; };
+  @HostBinding('class.hide-pedestal') get pedestalOff(){ return hidePredestal; };
+
+  hidePredestal
   private immediateUpdateTimer: NodeJS.Timer = null;
   private lazyUpdateTimer: NodeJS.Timer = null;
   private openPanelCount: number = 0;

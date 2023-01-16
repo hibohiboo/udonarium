@@ -27,6 +27,7 @@ export const pluginConfig = {
   , isCardWritable: params.get('add-card-text-writable') != null
   , isDrawNCards: params.get('add-draw-n-cards') != null
   , isTapCard: params.get('tap-card') != null
+  , isHidePredestal: params.get('hide-pedestal') != null
 } as const;
 
 export const settings = [
@@ -56,6 +57,7 @@ export const settings = [
 , { label: '手札置き場を自分のものだけ触れるようにする', param: 'hand-storage-self-only', checked:false }
 , { label: '操作音オンオフ', param: 'toggle-sound-effect', checked:false }
 , { label: '視点リセット', param: 'reset-point-of-view', checked:false }
+, { label: 'キャラクターコマの台座を非表示', param: 'hide-pedestal', checked:false }
 ]
 
 export const labelsAllInOne = [
