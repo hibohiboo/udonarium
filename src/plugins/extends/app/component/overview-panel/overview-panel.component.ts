@@ -16,7 +16,7 @@ import { DataElement } from '@udonarium/data-element';
 import { TabletopObject } from '@udonarium/tabletop-object';
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { initOverviwPanelComponentForWritableText } from 'src/plugins/add-card-text-writable/extend/component/overview-panel/overview-panel.component';
+import { initOverviwPanelComponentForWritableText, onCardImageLoadCardWritable } from 'src/plugins/add-card-text-writable/extend/component/overview-panel/overview-panel.component';
 
 @Component({
   selector: 'overview-panel-extend-plus',
@@ -42,6 +42,7 @@ import { initOverviwPanelComponentForWritableText } from 'src/plugins/add-card-t
 })
 export class OverviewPanelComponentExtendPlus implements AfterViewInit, OnDestroy {
   @ViewChild('draggablePanel', { static: true }) draggablePanel: ElementRef<HTMLElement>;
+  @ViewChild('cardImage', { static: false }) cardImageElement: ElementRef;
   @Input() tabletopObject: TabletopObject = null;
 
   @Input() left: number = 0;
@@ -155,7 +156,9 @@ export class OverviewPanelComponentExtendPlus implements AfterViewInit, OnDestro
   chanageImageView(isOpen: boolean) {
     this.isOpenImageView = isOpen;
   }
-
+  onCardImageLoad() {
+    onCardImageLoadCardWritable(this);
+  }
   private getInventoryTags(gameObject: TabletopObject): DataElement[] {
     return this.inventoryService.tableInventory.dataElementMap.get(gameObject.identifier);
   }

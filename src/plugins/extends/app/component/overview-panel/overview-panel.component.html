@@ -37,7 +37,7 @@
           [ngStyle]="{transform: 'scale(' + imageAreaRect.scale + ')'}">
       <div [style.font-size.px]="cardFontSize" [style.color]="cardColor" [style.text-shadow]="cardTextShadowCss" [innerHTML]="cardText | safe: 'html'"></div>
     </div>
-      <img class="card-image" [src]="imageUrl | safe: 'resourceUrl'" />
+      <img class="card-image" [src]="imageUrl | safe: 'resourceUrl'" (load)="onCardImageLoad()"  #cardImage  />
 
       <button class="zoom-button" (click)="chanageImageView(true)">
         <i class="material-icons">zoom_in</i>
@@ -200,6 +200,13 @@
 
 <ng-template #imageView>
   <div class="image-view-background is-fill" (click)="chanageImageView(false)" [@fadeInOut]="'in'">
+    <div *ngIf="(tabletopObject.aliasName == 'card' && (tabletopObject.isFront || tabletopObject.isHand || tabletopObject.isGMMode)) || (tabletopObject.aliasName == 'card-stack' && tabletopObject.topCard.isFront)"
+           class="text" style="z-index: 5"
+           [style.width.px]="fullImageAreaRect.width" [style.height.px]="fullImageAreaRect.height"
+           [style.left.px]="fullImageAreaRect.left" [style.top.px]="fullImageAreaRect.top"
+           [ngStyle]="{transform: 'scale(' + fullImageAreaRect.scale + ')'}">
+      <div [style.font-size.px]="cardFontSize" [style.color]="cardColor" [style.text-shadow]="cardTextShadowCss" [innerHTML]="cardText | safe: 'html'"></div>
+    </div>
     <div class="close-button is-pointer-events-none"><i class="material-icons">close</i></div>
     <img class="contain-image" [src]="imageUrl | safe: 'resourceUrl'" />
   </div>
