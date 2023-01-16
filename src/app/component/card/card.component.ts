@@ -32,6 +32,7 @@ import { initCardComponentForWritableText, isCardWritable } from 'src/plugins/ad
 import { GameCharacterSheetComponentExtendPlus } from 'src/plugins/extends/app/component/game-character-sheet/game-character-sheet.component';
 import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+import { tapCardContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
 import { hideVirtualScreenCard, initVirtualScreenCard, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card/card.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
@@ -242,6 +243,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.owner = Network.peerContext.userId;
           }
         }),
+        ...tapCardContextMenu(this),
       ContextMenuSeparator,
       {
         name: '重なったカードで山札を作る', action: () => {

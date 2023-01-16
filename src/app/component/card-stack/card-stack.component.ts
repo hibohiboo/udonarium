@@ -32,6 +32,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { initCardStackComponentForWritableText, isCardWritable, showStackListWritableText } from 'src/plugins/add-card-text-writable/extend/component/card-stack/card-stack.component';
 import { drawNCardsContextMenu } from 'src/plugins/add-draw-n-cards/extend/component/card-stack/card-stack.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+import { tapCardStackContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
 import { hideVirtualScreenCardStack, initVirtualScreenCardStack, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card-stack/card-stack.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
@@ -285,6 +286,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
           SoundEffect.play(PresetSound.cardDraw);
         }
       },
+      ...tapCardStackContextMenu(this),
       ContextMenuSeparator,
       {
         name: 'シャッフル', action: () => {

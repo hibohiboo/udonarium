@@ -26,6 +26,7 @@ export const pluginConfig = {
   , isUseResetPointOfView: params.get('reset-point-of-view') != null
   , isCardWritable: params.get('add-card-text-writable') != null
   , isDrawNCards: params.get('add-draw-n-cards') != null
+  , isTapCard: params.get('tap-card') != null
 } as const;
 
 export const settings = [
@@ -47,7 +48,8 @@ export const settings = [
 , { label: '共有メモの直立と並行の切り替え', param: 'text-note-upright-flat', checked:false }
 , { label: '右クリックメニューでブランクカードを作成', param: 'add-blank-card-menu', checked:false }
 , { label: 'カードに文字入力可能にする', param: 'add-card-text-writable', checked:false }
-, { label: 'カードをn枚引く', param: 'add-draw-n-cards', checked:false }
+, { label: '「カードをn枚引く」を山札のコンテキストメニューに追加', param: 'add-draw-n-cards', checked:false }
+, { label: '「カードを横にする」をカードのコンテキストメニューに追加', param: 'tap-card', checked:false }
 , { label: '重ねカード移動機能', param: 'move-stacked-card', checked:false }
 , { label: '手札置き場', param: 'hand-storage', checked:false }
 , { label: '手札置き場（ついたて）', param: 'virtual-screen', checked:false }
@@ -71,5 +73,6 @@ export const labelsAllInOne = [
     ,'操作音オンオフ'
     ,'視点リセット'
     ,'カードに文字入力可能にする'
-    ,'カードをn枚引く'
+    ,'「カードをn枚引く」を山札のコンテキストメニューに追加'
+    ,'「カードを横にする」をカードのコンテキストメニューに追加'
   ]
