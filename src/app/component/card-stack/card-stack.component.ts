@@ -29,7 +29,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { initCardStackComponentForWritableText, isCardWritable } from 'src/plugins/add-card-text-writable/extend/component/card-stack/card-stack.component';
+import { initCardStackComponentForWritableText, isCardWritable, showStackListWritableText } from 'src/plugins/add-card-text-writable/extend/component/card-stack/card-stack.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
 import { hideVirtualScreenCardStack, initVirtualScreenCardStack, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card-stack/card-stack.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
@@ -444,6 +444,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     let option: PanelOption = { left: coordinate.x - 200, top: coordinate.y - 300, width: 400, height: 600 };
 
     this.cardStack.owner = Network.peerContext.userId;
+    if (showStackListWritableText(this, option, gameObject)) return;
     let component = this.panelService.open<CardStackListComponent>(CardStackListComponent, option);
     component.cardStack = gameObject;
   }

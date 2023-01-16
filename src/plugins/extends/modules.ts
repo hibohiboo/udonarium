@@ -1,3 +1,5 @@
+import { CardListImageComponent } from "../add-card-text-writable/extend/component/card-list-image/card-list-image.component"
+import { CardStackListComponentExtendPlus } from "../add-card-text-writable/extend/component/card-stack-list/card-stack-list.component"
 import { HandStorageComponent } from "../hand-storage/extend/component/hand-storage/hand-storage.component"
 import { HandStorageService } from "../hand-storage/extend/service/hand-storage.service"
 import { HelpKeyboardComponent } from "../keyboard-help/component/help-keyboard/help-keyboard.component"
@@ -20,6 +22,8 @@ const components = [
   , GameCharacterSheetComponentExtendPlus
   , OverviewPanelComponentExtendPlus
   , TooltipDirectiveExtendPlus
+  , CardListImageComponent
+  , CardStackListComponentExtendPlus
 ]
 const imports = []
 const services = [PanelServiceExtnedPlus, HandStorageService]
