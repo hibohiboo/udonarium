@@ -16,7 +16,7 @@ import { DataElement } from '@udonarium/data-element';
 import { TabletopObject } from '@udonarium/tabletop-object';
 import { GameObjectInventoryService } from 'service/game-object-inventory.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { initOverviwPanelComponentForWritableText, onCardImageLoadCardWritable } from 'src/plugins/add-card-text-writable/extend/component/overview-panel/overview-panel.component';
+import { initOverviwPanelComponentForWritableText, isCardWritable, onCardImageLoadCardWritable } from 'src/plugins/add-card-text-writable/extend/component/overview-panel/overview-panel.component';
 
 @Component({
   selector: 'overview-panel-extend-plus',
@@ -69,6 +69,7 @@ export class OverviewPanelComponentExtendPlus implements AfterViewInit, OnDestro
   ) {
     initOverviwPanelComponentForWritableText(this);
   }
+  get isCardWritable() { return isCardWritable; }
 
   ngAfterViewInit() {
     this.initPanelPosition();
