@@ -127,8 +127,9 @@ const calcHeightWidth = (args: Record<string,number>)=>{
 export const isCardWritable = pluginConfig.isCardWritable;
 
 export const onCardImageLoadCardWritable = (that: any) => {
+  if(!pluginConfig.isCardWritable) return;
   if (!that.cardImageElement) return;
-  console.log(that.cardImageElement.nativeElement);
+
   that.naturalWidth = that.cardImageElement.nativeElement.naturalWidth;
   that.naturalHeight = that.cardImageElement.nativeElement.naturalHeight;
 }
