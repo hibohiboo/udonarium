@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { labelsAllInOne, settings } from "src/plugins/config";
+import { labelsAllInOne, lablsMinimum, settings } from "src/plugins/config";
 
 @Component({
   selector: 'app-root',
@@ -44,16 +44,6 @@ export class AppComponent implements OnInit {
     this.settings = this.settings.map(s=>({...s,checked: labelsAllInOne.includes(s.label)}))
    }
    useMinimum(){
-    this.settings = this.settings.map(s=>({...s,checked:[
-        '2Dモード','ボード回転オフ','メニュー最小化','オブジェクト回転オフ'
-      , 'メニューから削除: テーブル設定'
-      , 'メニューから削除: 画像'
-      , 'メニューから削除: 音楽'
-      , 'メニューから削除: インベントリ'
-      , 'メニューから削除: ZIP読込'
-      , 'メニューから削除: 保存'
-      , '初期表示に接続情報を表示しない',
-      , '初期表示にチャットウィンドウを表示しない'
-    ].includes(s.label)}))
+    this.settings = this.settings.map(s=>({...s,checked: lablsMinimum.includes(s.label)}))
    }
 }

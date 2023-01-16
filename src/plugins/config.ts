@@ -28,6 +28,7 @@ export const pluginConfig = {
   , isDrawNCards: params.get('add-draw-n-cards') != null
   , isTapCard: params.get('tap-card') != null
   , isHidePredestal: params.get('hide-pedestal') != null
+  , isEmptyDisplayItems: params.get('empty-display-items') != null
 } as const;
 
 export const settings = [
@@ -58,10 +59,10 @@ export const settings = [
 , { label: '操作音オンオフ', param: 'toggle-sound-effect', checked:false }
 , { label: '視点リセット', param: 'reset-point-of-view', checked:false }
 , { label: 'キャラクターコマの台座を非表示', param: 'hide-pedestal', checked:false }
+, { label: '表示項目の初期値を空にする（デフォルト：HP MP 敏捷度 生命力 精神力）', param: 'empty-display-items', checked:false }
 ]
 
 export const labelsAllInOne = [
-
      'オブジェクト回転オフ(個別設定可能)'
     ,'メニュー最小化'
     ,'メニュー横並び'
@@ -78,3 +79,16 @@ export const labelsAllInOne = [
     ,'「カードをn枚引く」を山札のコンテキストメニューに追加'
     ,'「カードを横にする」をカードのコンテキストメニューに追加'
   ]
+
+export const lablsMinimum = [
+  '2Dモード','ボード回転オフ','メニュー最小化','オブジェクト回転オフ'
+, 'メニューから削除: テーブル設定'
+, 'メニューから削除: 画像'
+, 'メニューから削除: 音楽'
+, 'メニューから削除: インベントリ'
+, 'メニューから削除: ZIP読込'
+, 'メニューから削除: 保存'
+, '初期表示に接続情報を表示しない',
+, '初期表示にチャットウィンドウを表示しない'
+, '表示項目の初期値を空にする（デフォルト：HP MP 敏捷度 生命力 精神力）'
+]

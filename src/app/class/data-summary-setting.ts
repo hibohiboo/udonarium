@@ -1,3 +1,4 @@
+import { initEmptyDisplayItems } from 'src/plugins/empty-display-items/extend/class/data-summary-setting';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { GameObject } from './core/synchronize-object/game-object';
 import { InnerXml } from './core/synchronize-object/object-serializer';
@@ -22,7 +23,10 @@ export class DataSummarySetting extends GameObject implements InnerXml {
   @SyncVar() sortTag: string = 'name';
   @SyncVar() sortOrder: SortOrder = SortOrder.ASC;
   @SyncVar() dataTag: string = 'HP MP 敏捷度 生命力 精神力';
-
+  constructor(identifier?: string) {
+    super(identifier);
+    initEmptyDisplayItems(this);
+  }
   private _dataTag: string;
   private _dataTags: string[];
   get dataTags(): string[] {
