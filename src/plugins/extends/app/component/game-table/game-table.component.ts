@@ -31,6 +31,7 @@ import { TableTouchGesture } from 'src/app/component/game-table/table-touch-gest
 import { HandStorageService } from 'src/plugins/hand-storage/extend/service/hand-storage.service';
 import { HandStorage } from 'src/plugins/hand-storage/extend/class/hand-storage';
 import { resetViewHandler } from 'src/plugins/reset-point-of-view/extend/component/game-table/game-table.component';
+import { pluginConfig } from 'src/plugins/config';
 
 @Component({
   selector: 'game-table-extend-plus',
@@ -115,6 +116,7 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
       })
       ;
     this.tabletopActionService.makeDefaultTable();
+    if(pluginConfig.isEmptyDefaultTabletopObjects) return;
     this.tabletopActionService.makeDefaultTabletopObjects();
   }
 
