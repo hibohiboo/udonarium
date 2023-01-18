@@ -27,6 +27,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
+import { initKeyboardShortcutTerrain, onKeyDownKeyboardShortcutTerrain } from 'src/plugins/keyboard-shortcut/extend/component/terrain/terrain.component';
 import { is2d } from 'src/plugins/mode2d/extends/components/terrain/terrain.component';
 import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/terrain/terrain.component';
 import { hideVirtualScreenTerrain, initVirtualScreenTerrain, onMovedVirtualScreenTerrain } from 'src/plugins/virtual-screen/extend/component/terrain/terrain.component';
@@ -82,8 +83,14 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
     private coordinateService: CoordinateService,
   ) {
     initVirtualScreenTerrain(this);
+    initKeyboardShortcutTerrain(this);
    }
 
+   @HostBinding('tabIndex') tabIndex:string; //tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
+   @HostListener("keydown", ["$event"])
+   onKeydown(e: KeyboardEvent) {
+     onKeyDownKeyboardShortcutTerrain(this,e);
+   }
 
 
   ngOnInit() {
