@@ -32,38 +32,36 @@
     </dl>
   </section>
 
-  <section *ngIf="false">
+  <section *ngIf="config.isUseKeyboardShortcut">
     <h4>地形</h4>
     <p>※対象の地形をクリックしてからキーボードを押してください。</p>
     <dl class="help-list">
-      <dt>[{{constants.terrainCopyKey}}]</dt>
+      <dt>[c]</dt>
       <dd>地形をコピー</dd>
-      <dt>[{{constants.terrainDeleteKey}}]</dt>
+      <dt>[d]</dt>
       <dd>地形を削除</dd>
-      <dt>[{{constants.terrainEditKey}}]</dt>
+      <dt>[q]</dt>
       <dd>地形設定を編集</dd>
-      <dt>[{{constants.terrainFixKey}}]</dt>
+      <dt>[f]</dt>
       <dd>地形を固定/固定解除</dd>
     </dl>
   </section>
 
-  <section *ngIf="false">
+  <section *ngIf="config.isUseKeyboardShortcut">
     <h4>キャラクター</h4>
     <p>※対象のキャラクターをクリックしてからキーボードを押してください。</p>
     <dl class="help-list">
-      <dt>[{{constants.characterCopyKey}}]</dt>
+      <dt>[c]</dt>
       <dd>キャラクターをコピー</dd>
-      <dt>[{{constants.characterDeleteKey}}]</dt>
+      <dt>[d]</dt>
       <dd>キャラクターを墓場へ移動</dd>
-      <dt>[{{constants.characterEditKey}}]</dt>
+      <dt>[q]</dt>
       <dd>キャラクターの詳細を表示</dd>
-      <dt>[{{constants.characterChatPalletKey}}]</dt>
+      <dt>[v]</dt>
       <dd>キャラクターのチャットパレットを表示</dd>
-      <dt *ngIf="config.useLilyRemocon">[{{constants.characterRemoconKey}}]</dt>
-      <dd *ngIf="config.useLilyRemocon">キャラクターのリモコンを表示</dd>
-      <dt>[shift]+[{{constants.characterMoveInventoryCommonKey.toLowerCase()}}]</dt>
+      <dt>[shift]+[n]</dt>
       <dd>キャラクターを共有インベントリに移動</dd>
-      <dt>[shift]+[{{constants.characterMoveInventoryIndividualKey.toLowerCase()}}]</dt>
+      <dt>[shift]+[n]</dt>
       <dd>キャラクターを個人インベントリに移動</dd>
     </dl>
   </section>
