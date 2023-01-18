@@ -1,13 +1,13 @@
 
 <div>
   <h3>キーボードショートカット</h3>
-  <section *ngIf="false">
+  <section *ngIf="config.isUseKeyboardShortcut">
     <h4>カード</h4>
     <dl class="help-list">
-      <dt>カードの上で[u]</dt>
-      <dd>カードを正位置にする</dd>
-      <dt>カードの上で[t]</dt>
-      <dd>カードを横にする</dd>
+      <dt *ngIf="config.isTapCard">カードの上で[u]</dt>
+      <dd *ngIf="config.isTapCard">カードを縦にする</dd>
+      <dt *ngIf="config.isTapCard">カードの上で[t]</dt>
+      <dd *ngIf="config.isTapCard">カードを横にする</dd>
       <dt>カードの上で[c]</dt>
       <dd>カードのコピー</dd>
       <dt>カードの上で[s]</dt>
@@ -17,10 +17,10 @@
     </dl>
     <h4>山札</h4>
     <dl class="help-list">
-      <dt>山札の上で[u]</dt>
-      <dd>山札を縦にする</dd>
-      <dt>山札の上で[t]</dt>
-      <dd>山札を横にする</dd>
+      <dt *ngIf="config.isTapCard">山札の上で[u]</dt>
+      <dd *ngIf="config.isTapCard">山札を縦にする</dd>
+      <dt *ngIf="config.isTapCard">山札の上で[t]</dt>
+      <dd *ngIf="config.isTapCard">山札を横にする</dd>
       <dt>山札の上で[r]</dt>
       <dd>山札を全て裏にする</dd>
       <dt>山札の上で[shift]+[u]</dt>

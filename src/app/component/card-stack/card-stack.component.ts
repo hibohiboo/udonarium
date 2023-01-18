@@ -31,6 +31,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { initCardStackComponentForWritableText, isCardWritable, showStackListWritableText } from 'src/plugins/add-card-text-writable/extend/component/card-stack/card-stack.component';
 import { drawNCardsContextMenu } from 'src/plugins/add-draw-n-cards/extend/component/card-stack/card-stack.component';
+import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
 import { tapCardStackContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
 import { hideVirtualScreenCardStack, initVirtualScreenCardStack, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card-stack/card-stack.component';
@@ -108,6 +109,11 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     initCardStackComponentForWritableText(this);
   }
   get isCardWritable() { return isCardWritable; }
+  @HostBinding('tabIndex') tabIndex:string; //tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
+  @HostListener("keydown", ["$event"])
+  onKeydown(e: KeyboardEvent) {
+    onKeyDownKeyboardShortcutCardStack(this,e);
+  }
 
   ngOnInit() {
     EventSystem.register(this)
