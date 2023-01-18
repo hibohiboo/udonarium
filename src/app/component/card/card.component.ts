@@ -30,6 +30,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 import { initCardComponentForWritableText, isCardWritable } from 'src/plugins/add-card-text-writable/extend/component/card/card.component';
 import { GameCharacterSheetComponentExtendPlus } from 'src/plugins/extends/app/component/game-character-sheet/game-character-sheet.component';
+import { initKeyboardShortcutCard, onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
 import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
 import { tapCardContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
@@ -93,8 +94,15 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {
     initVirtualScreenCard(this);
     initCardComponentForWritableText(this);
+    initKeyboardShortcutCard(this);
    }
-   get isCardWritable() { return isCardWritable; }
+  get isCardWritable() { return isCardWritable; }
+
+  @HostBinding('tabIndex') tabIndex:string; //tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
+  @HostListener("keydown", ["$event"])
+  onKeydown(e: KeyboardEvent) {
+    onKeyDownKeyboardShortcutCard(this,e);
+  }
 
   ngOnInit() {
     EventSystem.register(this)

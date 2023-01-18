@@ -30,6 +30,7 @@ export const pluginConfig = {
   , isHidePredestal: params.get('hide-pedestal') != null
   , isEmptyDisplayItems: params.get('empty-display-items') != null
   , isEmptyNewCharacter: params.get('empty-new-character') != null
+  , isUseKeyboardShortcut: params.get('keyboard-shortcut') != null
 } as const;
 
 export const settings = [
@@ -48,6 +49,7 @@ export const settings = [
 , { label: '初期表示に接続情報を表示しない', param: 'hide-first-peer', checked: false }
 , { label: '初期表示にチャットウィンドウを表示しない', param: 'hide-first-chat', checked: false }
 , { label: 'ヘルプ表示', param: 'help', checked: false }
+, { label: 'キーボードショートカットを追加', param: 'keyboard-shortcut', checked:false }
 , { label: '共有メモの直立と並行の切り替え', param: 'text-note-upright-flat', checked:false }
 , { label: '右クリックメニューでブランクカードを作成', param: 'add-blank-card-menu', checked:false }
 , { label: 'カードに文字入力可能にする', param: 'add-card-text-writable', checked:false }
@@ -62,6 +64,8 @@ export const settings = [
 , { label: 'キャラクターコマの台座を非表示', param: 'hide-pedestal', checked:false }
 , { label: '表示項目の初期値を空にする（デフォルト：HP MP 敏捷度 生命力 精神力）', param: 'empty-display-items', checked:false }
 , { label: '新しいキャラクターを作成時にステータスを空で作成する', param: 'empty-new-character', checked:false }
+
+
 ]
 
 export const labelsAllInOne = [
@@ -80,6 +84,7 @@ export const labelsAllInOne = [
     ,'カードに文字入力可能にする'
     ,'「カードをn枚引く」を山札のコンテキストメニューに追加'
     ,'「カードを横にする」をカードのコンテキストメニューに追加'
+    ,'キーボードショートカットを追加'
   ]
 
 export const lablsMinimum = [
