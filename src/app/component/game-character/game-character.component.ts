@@ -25,6 +25,7 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { initKeyboardShortcutGameCharacter, onKeyDownKeyboardShortcutGameCharacter } from 'src/plugins/keyboard-shortcut/extend/component/game-character/game-character.component';
 import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/game-character/game-character.component';
 import { hideVirtualScreenCharacter, initVirtualScreenCharacter, onMovedVirtualScreenGameCharacter } from 'src/plugins/virtual-screen/extend/component/game-character/game-character.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
@@ -79,7 +80,14 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
     private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService,
   ) {
-    initVirtualScreenCharacter(this)
+    initVirtualScreenCharacter(this);
+    initKeyboardShortcutGameCharacter(this);
+   }
+
+   @HostBinding('tabIndex') tabIndex:string; //tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
+   @HostListener("keydown", ["$event"])
+   onKeydown(e: KeyboardEvent) {
+     onKeyDownKeyboardShortcutGameCharacter(this,e);
    }
 
   ngOnInit() {
