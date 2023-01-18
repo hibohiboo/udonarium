@@ -39,8 +39,22 @@ export const onKeyDownKeyboardShortcutCardStack = (that, e: KeyboardEvent) => {
       SoundEffect.play(PresetSound.cardShuffle);
       EventSystem.call('SHUFFLE_CARD_STACK', { identifier: that.cardStack.identifier });
       return true
+    } else if (e.key === 'q') {
+      that.showDetail(that.cardStack)
+      return true
+    } else if (e.key === 'd') {
+      that.cardStack.destroy()
+      SoundEffect.play(PresetSound.sweep)
+      return true
+    } else if (e.key === 'c') {
+      let cloneObject = that.cardStack.clone();
+      cloneObject.location.x += that.gridSize;
+      cloneObject.location.y += that.gridSize;
+      cloneObject.owner = '';
+      cloneObject.toTopmost();
+      SoundEffect.play(PresetSound.cardPut);
+      return true
     }
-
 };
 
 export const initKeyboardShortcutCard = (that) => {

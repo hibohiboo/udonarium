@@ -31,8 +31,14 @@ export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
       SoundEffect.play(PresetSound.cardDraw);
       that.card.faceDown();
       that.owner = Network.peerContext.userId;
+    } else if (e.key === 'q') {
+      that.showDetail(that.card)
+      return true
+    } else if (e.key === 'd') {
+      that.card.destroy()
+      SoundEffect.play(PresetSound.sweep)
+      return true
     }
-
 };
 
 export const initKeyboardShortcutCard = (that) => {
