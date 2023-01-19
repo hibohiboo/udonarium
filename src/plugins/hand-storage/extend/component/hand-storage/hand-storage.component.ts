@@ -291,7 +291,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private showDetail(gameObject: HandStorage) {
     const coordinate = this.pointerDeviceService.pointers[0]
-    let title = 'マップマスク設定'
+    let title = '手札置き場設定'
     if (gameObject.name.length) title += ' - ' + gameObject.name
     const option: PanelOption = {
       title: title,
