@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
   HostListener,
   Input,
   NgZone,
@@ -34,6 +35,7 @@ import { Card } from '@udonarium/card'
 import { CardStack } from '@udonarium/card-stack'
 import { isMyHandStorageOnly } from 'src/plugins/hand-storage-self-only'
 import { RotableOption } from 'directive/rotable.directive'
+import { getObjectRotateOff, initRotateOffHandStorage, rotateOffContextMenuHandStorage } from 'src/plugins/object-rotate-off/extends/components/hand-storage/hand-storage.component'
 
 interface TopOfObject {
   obj: TabletopObject
@@ -105,7 +107,11 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     private pointerDeviceService: PointerDeviceService,
     private coordinateService: CoordinateService,
     private tabletopActionService: TabletopActionService,
-  ) {}
+  ) {
+    initRotateOffHandStorage(this);
+  }
+
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOff(this); };
 
   ngOnInit() {
     EventSystem.register(this)
@@ -217,7 +223,8 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
               this.handStorage.parent.appendChild(cloneObject)
             SoundEffect.play(PresetSound.cardPut)
           },
-        }
+        },
+        ...rotateOffContextMenuHandStorage(this)
       ],
       this.name,
     )
