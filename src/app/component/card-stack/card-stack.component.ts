@@ -31,6 +31,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { initCardStackComponentForWritableText, isCardWritable, showStackListWritableText } from 'src/plugins/add-card-text-writable/extend/component/card-stack/card-stack.component';
 import { drawNCardsContextMenu } from 'src/plugins/add-draw-n-cards/extend/component/card-stack/card-stack.component';
+import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
 import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
 import { tapCardStackContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
@@ -297,6 +298,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
       {
         name: 'シャッフル', action: () => {
           this.cardStack.shuffle();
+          cardShuffleNormalPosition(this);
           SoundEffect.play(PresetSound.cardShuffle);
           EventSystem.call('SHUFFLE_CARD_STACK', { identifier: this.cardStack.identifier });
         }

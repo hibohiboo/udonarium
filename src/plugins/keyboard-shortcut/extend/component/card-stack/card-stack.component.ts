@@ -1,6 +1,7 @@
 
 import { EventSystem, Network } from "@udonarium/core/system";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
+import { cardShuffleNormalPosition } from "src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component";
 import { pluginConfig } from "src/plugins/config";
 const menuKey = 'm'
 
@@ -36,6 +37,7 @@ export const onKeyDownKeyboardShortcutCardStack = (that, e: KeyboardEvent) => {
     }
     if (e.key === 'S') {
       that.cardStack.shuffle();
+      cardShuffleNormalPosition(that);
       SoundEffect.play(PresetSound.cardShuffle);
       EventSystem.call('SHUFFLE_CARD_STACK', { identifier: that.cardStack.identifier });
       return true

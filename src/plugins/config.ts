@@ -32,6 +32,7 @@ export const pluginConfig = {
   , isEmptyNewCharacter: params.get('empty-new-character') != null
   , isUseKeyboardShortcut: params.get('keyboard-shortcut') != null
   , isEmptyDefaultTabletopObjects: params.get('empty-default-objects') != null
+  , isCardShuffleNormalPosition:params.get('card-shuffle-normal-position') != null
 } as const;
 
 export const settings = [
@@ -57,6 +58,7 @@ export const settings = [
 , { label: '「カードをn枚引く」を山札のコンテキストメニューに追加', param: 'add-draw-n-cards', checked:false }
 , { label: '「カードを横にする」をカードのコンテキストメニューに追加', param: 'tap-card', checked:false }
 , { label: '重ねカード移動機能', param: 'move-stacked-card', checked:false }
+, { label: 'カードを正位置のままシャッフルする', param: 'card-shuffle-normal-position', checked:false }
 , { label: 'ボード', param: 'hand-storage', checked:false }
 , { label: 'ボード（ついたて）', param: 'virtual-screen', checked:false }
 , { label: 'ボードを自分のものだけ触れるようにする', param: 'hand-storage-self-only', checked:false }
@@ -66,6 +68,7 @@ export const settings = [
 , { label: '表示項目の初期値を空にする（デフォルト：HP MP 敏捷度 生命力 精神力）', param: 'empty-display-items', checked:false }
 , { label: 'サンプルのキャラクターコマを非表示', param: 'empty-default-objects', checked:false }
 , { label: '新しいキャラクターを作成時にステータスを空で作成する', param: 'empty-new-character', checked:false }
+
 ]
 
 export const labelsAllInOne = [
@@ -101,4 +104,5 @@ export const lablsMinimum = [
 , '表示項目の初期値を空にする（デフォルト：HP MP 敏捷度 生命力 精神力）'
 , '新しいキャラクターを作成時にステータスを空で作成する'
 , 'サンプルのキャラクターコマを非表示'
+, 'カードを正位置のままシャッフルする'
 ]
