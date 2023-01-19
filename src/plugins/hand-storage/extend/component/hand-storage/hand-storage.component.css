@@ -84,3 +84,88 @@
   color: #CCC;
   background-color: rgba(30, 30, 30, 0.8);
 }
+
+/** 回転 */
+.component-content {
+  backface-visibility: hidden;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+.is-pointer-events-auto {
+  pointer-events: auto;
+}
+
+.rotate-grab {
+  opacity: 0;
+  z-index: -1;
+}
+
+.rotate-grab-icon {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  box-sizing: border-box;
+  border: solid 2px #CCCCCC;
+  cursor: -moz-default;
+  cursor: -webkit-default;
+  cursor: default;
+  z-index: 1;
+  padding: 0;
+  background-color: #CCCCCC;
+  border-radius: 100%;
+  color: #444;
+  font-size: 8px;
+
+  transform-style: preserve-3d;
+  transform: translateZ(0.1px);
+}
+
+.component:hover .rotate-grab, .component:active .rotate-grab {
+  opacity: 1;
+}
+
+.of-left-top {
+  top: -14px;
+  left: -14px;
+  border-radius: 14px 7px 14px 7px;
+}
+
+.of-left-bottom {
+  bottom: -14px;
+  left: -14px;
+  border-radius: 7px 14px 7px 14px;
+}
+
+.of-right-bottom {
+  bottom: -14px;
+  right: -14px;
+  border-radius: 14px 7px 14px 7px;
+}
+
+.of-right-top {
+  top: -14px;
+  right: -14px;
+  border-radius: 7px 14px 7px 14px;
+}
+
+.blinking-animation {
+	-webkit-animation: blink 1.0s linear infinite alternate;
+  -moz-animation: blink 1.0s linear infinite alternate;
+   animation: blink 1.0s linear infinite alternate;
+}
+
+@-webkit-keyframes blink {
+  0% { opacity:0.9; }
+  100% { opacity:0.5; }
+}
+
+@-moz-keyframes blink {
+  0% { opacity:0.9; }
+  100% { opacity:0.5; }
+}
+
+@keyframes blink {
+  0% { opacity:0.9; }
+  100% { opacity:0.5; }
+}

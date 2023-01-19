@@ -12,6 +12,8 @@ import { addSyncHideVirtualScreenHandStorage } from 'src/plugins/virtual-screen/
 export class HandStorage extends TabletopObject {
   @SyncVar() isLock = false
   @SyncVar() owner = ''
+  @SyncVar() rotate: number = 0;
+
   constructor(identifier?: string) {
     super(identifier);
     addSyncHideVirtualScreenHandStorage(this);

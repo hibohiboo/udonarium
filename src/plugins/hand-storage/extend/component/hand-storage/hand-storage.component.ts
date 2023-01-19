@@ -30,11 +30,10 @@ import { TabletopObject } from '@udonarium/tabletop-object'
 import { CoordinateService } from 'service/coordinate.service'
 import { TabletopActionService } from 'service/tabletop-action.service'
 import { hideVirtualStorage, onObjectDropVirtualStorage, virtualScreenHandStorageContextMenu, virtualScreenName } from 'src/plugins/virtual-screen/extend/component/hand-storage/hand-storage.component'
-import { PeerCursor } from '@udonarium/peer-cursor'
-import { pluginConfig } from 'src/plugins/config'
 import { Card } from '@udonarium/card'
 import { CardStack } from '@udonarium/card-stack'
 import { isMyHandStorageOnly } from 'src/plugins/hand-storage-self-only'
+import { RotableOption } from 'directive/rotable.directive'
 
 interface TopOfObject {
   obj: TabletopObject
@@ -51,7 +50,7 @@ interface TopOfObject {
 export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() handStorage: HandStorage = null
   @Input() is3D = false
-
+  rotableOption: RotableOption = {};
   get name(): string {
     return this.handStorage.name
   }
@@ -128,9 +127,13 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
       })
     this.movableOption = {
       tabletopObject: this.handStorage,
-      transformCssOffset: 'translateZ(0.15px)',
-      colideLayers: ['terrain'],
+      transformCssOffset: 'translateZ(0.0px)',
+      colideLayers: ['hand-storage'],
+      layerName: 'hand-storage'
     }
+    this.rotableOption = {
+      tabletopObject: this.handStorage
+    };
   }
 
   ngAfterViewInit() {
