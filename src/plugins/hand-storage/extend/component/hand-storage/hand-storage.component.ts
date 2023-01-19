@@ -86,8 +86,8 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
   get titleLabel(): string {
     const vname = virtualScreenName(this.handStorage);
     if(vname) return vname;
-    if(this.ownerName) return `${this.ownerName}の手札置き場`
-    return `手札置き場`
+    if(this.ownerName) return `${this.ownerName}の個人ボード`
+    return `ボード`
   }
 
   gridSize = 50
@@ -199,7 +199,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
             },
         ContextMenuSeparator,
         {
-          name: '手札置き場を編集',
+          name: 'ボードを編集',
           action: () => {
             this.showDetail(this.handStorage)
           },
@@ -322,7 +322,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private showDetail(gameObject: HandStorage) {
     const coordinate = this.pointerDeviceService.pointers[0]
-    let title = '手札置き場設定'
+    let title = 'ボード設定'
     if (gameObject.name.length) title += ' - ' + gameObject.name
     const option: PanelOption = {
       title: title,

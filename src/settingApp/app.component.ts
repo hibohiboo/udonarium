@@ -27,13 +27,13 @@ export class AppComponent implements OnInit {
       this.settings.find(s=>s.label === 'オブジェクト回転オフ').checked = false;
     } else if (setting.label === 'オブジェクト回転オフ' && setting.checked) {
       this.settings.find(s=>s.label === 'オブジェクト回転オフ(個別設定可能)').checked = false;
-    } else if (setting.label === '手札置き場（ついたて）' && setting.checked) {
-      this.settings.find(s=>s.label === '手札置き場').checked = true;
-    } else if (setting.label === '手札置き場' && !setting.checked) {
-      this.settings.find(s=>s.label === '手札置き場（ついたて）').checked = false;
-      this.settings.find(s=>s.label === '手札置き場を自分のものだけ触れるようにする').checked = false;
-    } else if (setting.label === '手札置き場を自分のものだけ触れるようにする' && setting.checked){
-      this.settings.find(s=>s.label === '手札置き場').checked = true;
+    } else if (setting.label === 'ボード（ついたて）' && setting.checked) {
+      this.settings.find(s=>s.label === 'ボード').checked = true;
+    } else if (setting.label === 'ボード' && !setting.checked) {
+      this.settings.find(s=>s.label === 'ボード（ついたて）').checked = false;
+      this.settings.find(s=>s.label === 'ボードを自分のものだけ触れるようにする').checked = false;
+    } else if (setting.label === 'ボードを自分のものだけ触れるようにする' && setting.checked){
+      this.settings.find(s=>s.label === 'ボード').checked = true;
     } else if (setting.label === '視点リセット' && setting.checked) {
       this.settings.find(s=>s.label === '2Dモード').checked = false;
     } else if (setting.label === '2Dモード' && setting.checked) {

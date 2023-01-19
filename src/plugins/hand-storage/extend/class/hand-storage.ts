@@ -41,7 +41,7 @@ export class HandStorage extends TabletopObject {
   }
 
   get ownerColor(): string {
-    // TODO: プレイヤーカラーを実装したら、手札置き場がプレイヤーの色になるように。
+    // TODO: プレイヤーカラーを実装したら、ボードがプレイヤーの色になるように。
     // const object = PeerCursor.findByUserId(this.owner)
     return '#ff0'; // object ? object.color : '#ff0'
   }
@@ -61,7 +61,7 @@ export class HandStorage extends TabletopObject {
     } else {
       object = new HandStorage()
     }
-    object.owner = Network.peerContext.userId
+    // object.owner = Network.peerContext.userId1
 
     object.createDataElements()
 

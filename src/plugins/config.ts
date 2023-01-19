@@ -57,9 +57,9 @@ export const settings = [
 , { label: '「カードをn枚引く」を山札のコンテキストメニューに追加', param: 'add-draw-n-cards', checked:false }
 , { label: '「カードを横にする」をカードのコンテキストメニューに追加', param: 'tap-card', checked:false }
 , { label: '重ねカード移動機能', param: 'move-stacked-card', checked:false }
-, { label: '手札置き場', param: 'hand-storage', checked:false }
-, { label: '手札置き場（ついたて）', param: 'virtual-screen', checked:false }
-, { label: '手札置き場を自分のものだけ触れるようにする', param: 'hand-storage-self-only', checked:false }
+, { label: 'ボード', param: 'hand-storage', checked:false }
+, { label: 'ボード（ついたて）', param: 'virtual-screen', checked:false }
+, { label: 'ボードを自分のものだけ触れるようにする', param: 'hand-storage-self-only', checked:false }
 , { label: '操作音オンオフ', param: 'toggle-sound-effect', checked:false }
 , { label: '視点リセット', param: 'reset-point-of-view', checked:false }
 , { label: 'キャラクターコマの台座を非表示', param: 'hide-pedestal', checked:false }
@@ -76,8 +76,8 @@ export const labelsAllInOne = [
     ,'右クリックメニューでブランクカードを作成'
     ,'共有メモの直立と並行の切り替え'
     ,'重ねカード移動機能'
-    ,'手札置き場'
-    ,'手札置き場（ついたて）'
+    ,'ボード'
+    ,'ボード（ついたて）'
     ,'操作音オンオフ'
     ,'視点リセット'
     ,'カードに文字入力可能にする'

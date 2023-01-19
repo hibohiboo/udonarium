@@ -9,35 +9,55 @@ export const virtualScreenHandStorageContextMenu = (that:any) => pluginConfig.is
   virtualScrrenToggleMenu(that),
   myHandStorageToggleMenu(that),
   ContextMenuSeparator,
-] : [
-  {
-    name: '自分の手札置き場にする',
-    action: () => {
-      that.handStorage.owner = PeerCursor.myCursor.userId;
-      SoundEffect.play(PresetSound.piecePut);
-    },
-  },
-]
+] : [  handStorageToggleMenu(that) ]
 
 const myHandStorageToggleMenu = (that:any) => {
   if(!that.handStorage.isVirtualScreen) {
+    return handStorageToggleMenu(that)
+  }
+  if (!that.handStorage.owner) {
+    return  {
+      name: '自分のついたてにする',
+      action: () => {
+        that.handStorage.isVirtualScreen = true;
+        that.handStorage.virtualScreenUserName = PeerCursor.myCursor.name;
+        that.handStorage.owner = PeerCursor.myCursor.userId;
+        SoundEffect.play(PresetSound.piecePut);
+        const topOfObjects = that.calcTopOfObjects();
+        hideVirtualStorage(that, topOfObjects);
+      },
+    }
+  }
+  return  {
+    name: '共用のボードにしてついたてを外す',
+    action: () => {
+      that.handStorage.isVirtualScreen = false;
+      that.handStorage.virtualScreenUserName = '';
+      that.handStorage.owner = undefined;
+      SoundEffect.play(PresetSound.piecePut);
+      const topOfObjects = that.calcTopOfObjects();
+      for (const topOfObject of topOfObjects) {
+        deleteVirtualScreen(topOfObject.obj);
+      }
+    },
+  }
+}
+
+const handStorageToggleMenu = (that: any)=> {
+
+  if (!that.handStorage.owner) {
     return {
-      name: '自分の手札置き場にする', action: () => {
+      name: '自分の個人ボードにする', action: () => {
         that.handStorage.owner = PeerCursor.myCursor.userId;
         SoundEffect.play(PresetSound.piecePut);
       }
     }
   }
-  return  {
-    name: '自分のついたてにする',
-    action: () => {
-      that.handStorage.isVirtualScreen = true;
-      that.handStorage.virtualScreenUserName = PeerCursor.myCursor.name;
-      that.handStorage.owner = PeerCursor.myCursor.userId;
+  return {
+    name: '共用のボードにする', action: () => {
+      that.handStorage.owner = undefined;
       SoundEffect.play(PresetSound.piecePut);
-      const topOfObjects = that.calcTopOfObjects();
-      hideVirtualStorage(that, topOfObjects);
-    },
+    }
   }
 }
 

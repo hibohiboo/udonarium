@@ -9,7 +9,7 @@ export const getCreateHandStorageMenu = (position: PointerCoordinate): ContextMe
   if (!pluginConfig.isUseHandStorage) return [];
 
   return [{
-    name: '手札置き場を作成',
+    name: 'ボードを作成',
     action: () => {
       createHandStorage(position)
       SoundEffect.play(PresetSound.blockPut)
@@ -17,7 +17,7 @@ export const getCreateHandStorageMenu = (position: PointerCoordinate): ContextMe
   }]
 }
 const createHandStorage = (position) => {
-  const handStorage = HandStorage.create('手札置き場', 5, 5, 100)
+  const handStorage = HandStorage.create('ボード', 5, 5, 100)
   handStorage.location.x = position.x - 25
   handStorage.location.y = position.y - 100
   handStorage.posZ = 0
