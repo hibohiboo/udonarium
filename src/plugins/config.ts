@@ -36,7 +36,7 @@ export const pluginConfig = {
 
 export const settings = [
   { label: '2Dモード', param: '2d', checked: false }
-, { label: 'ボード回転オフ', param: 'rotate-off', checked: false }
+, { label: 'テーブル回転オフ', param: 'rotate-off', checked: false }
 , { label: 'オブジェクト回転オフ', param: 'object-rotate-off', checked: false }
 , { label: 'オブジェクト回転オフ(個別設定可能)', param: 'object-rotate-off-individually', checked: false }
 , { label: 'メニュー最小化', param: 'mini-menu', checked: false }
@@ -87,7 +87,9 @@ export const labelsAllInOne = [
   ]
 
 export const lablsMinimum = [
-  '2Dモード','ボード回転オフ','メニュー最小化','オブジェクト回転オフ'
+  '2Dモード','テーブル回転オフ'
+,'メニュー最小化'
+,'オブジェクト回転オフ'
 , 'メニューから削除: テーブル設定'
 , 'メニューから削除: 画像'
 , 'メニューから削除: 音楽'
