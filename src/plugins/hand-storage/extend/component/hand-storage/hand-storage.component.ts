@@ -215,7 +215,6 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
           name: 'コピーを作る',
           action: () => {
             const cloneObject = this.handStorage.clone()
-            console.log('コピー', cloneObject)
             cloneObject.location.x += this.gridSize
             cloneObject.location.y += this.gridSize
             cloneObject.isLock = false
@@ -242,6 +241,27 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
       topOfObject.obj.location.y =
         this.handStorage.location.y + topOfObject.distanceY
       topOfObject.obj.update()
+    }
+    hideVirtualStorage(this, this.topOfObjects);
+    this.topOfObjects = []
+  }
+
+  onRotate() {
+    SoundEffect.play(PresetSound.cardPick);
+    this.calcTopOfObjects();
+  }
+
+  onRotated() {
+    SoundEffect.play(PresetSound.cardPut)
+    console.log('rotated', this.topOfObjects)
+    for (const topOfObject of this.topOfObjects) {
+      const tmp: any = topOfObject as any;
+      if(tmp.obj.rotate != null){
+        tmp.obj.rotate = this.handStorage.rotate;
+        console.log('tmp', tmp.obj)
+        topOfObject.obj.update()
+      }
+
     }
     hideVirtualStorage(this, this.topOfObjects);
     this.topOfObjects = []
