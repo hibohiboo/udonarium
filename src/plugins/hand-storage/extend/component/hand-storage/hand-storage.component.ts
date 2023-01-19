@@ -85,7 +85,8 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
   get titleLabel(): string {
     const vname = virtualScreenName(this.handStorage);
     if(vname) return vname;
-    return `${this.ownerName}の手札置き場`
+    if(this.ownerName) return `${this.ownerName}の手札置き場`
+    return `手札置き場`
   }
 
   gridSize = 50

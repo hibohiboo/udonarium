@@ -1,3 +1,4 @@
+
 import { PeerCursor } from "@udonarium/peer-cursor"
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect"
 import { ContextMenuSeparator } from "service/context-menu.service"
@@ -6,9 +7,39 @@ import { addVirtualScreen, deleteVirtualScreen } from "src/plugins/virtual-scree
 
 export const virtualScreenHandStorageContextMenu = (that:any) => pluginConfig.isUseVirtualScreen ? [
   virtualScrrenToggleMenu(that),
+  myHandStorageToggleMenu(that),
   ContextMenuSeparator,
-] : []
+] : [
+  {
+    name: '自分の手札置き場にする',
+    action: () => {
+      that.handStorage.owner = PeerCursor.myCursor.userId;
+      SoundEffect.play(PresetSound.piecePut);
+    },
+  },
+]
 
+const myHandStorageToggleMenu = (that:any) => {
+  if(!that.handStorage.isVirtualScreen) {
+    return {
+      name: '自分の手札置き場にする', action: () => {
+        that.handStorage.owner = PeerCursor.myCursor.userId;
+        SoundEffect.play(PresetSound.piecePut);
+      }
+    }
+  }
+  return  {
+    name: '自分のついたてにする',
+    action: () => {
+      that.handStorage.isVirtualScreen = true;
+      that.handStorage.virtualScreenUserName = PeerCursor.myCursor.name;
+      that.handStorage.owner = PeerCursor.myCursor.userId;
+      SoundEffect.play(PresetSound.piecePut);
+      const topOfObjects = that.calcTopOfObjects();
+      hideVirtualStorage(that, topOfObjects);
+    },
+  }
+}
 
 const virtualScrrenToggleMenu = (that:any) => {
   if(!that.handStorage.isVirtualScreen) {
