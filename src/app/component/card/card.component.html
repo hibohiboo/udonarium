@@ -6,7 +6,7 @@
       <div [style.font-size.px]="fontSize + 9" [style.color]="color" [style.text-shadow]="textShadowCss" class="is-3d" [innerHTML]="rubiedText | safe: 'html'"></div>
     </div>
     <img *ngIf="imageFile" class="card-image chrome-smooth-image-trick" [src]="(isFront ? frontImage.url : backImage.url) | safe: 'resourceUrl'">
-    <div *ngIf="!isFront && hasOwner && 0 < ownerName.length" class="name-tag is-nowrap has-length-limit is-black-background" [ngStyle]="{'transform': 'translateY(-75%) translateX(-50%) translateX(' + size * gridSize / 2 +'px)'}">
+    <div *ngIf="hasOwner && 0 < ownerName.length" class="name-tag is-nowrap has-length-limit is-black-background" [ngStyle]="{'transform': 'translateY(-75%) translateX(-50%) translateX(' + size * gridSize / 2 +'px)'}">
       <span>{{ownerName}}</span>
     </div>
     <img *ngIf="isHand && frontImage" class="card-image thumbnail-transform is-translucent chrome-smooth-image-trick" [src]="frontImage.url | safe: 'resourceUrl'">

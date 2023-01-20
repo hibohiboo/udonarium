@@ -35,6 +35,7 @@ export const pluginConfig = {
   , isCardShuffleNormalPosition:params.get('card-shuffle-normal-position') != null
   , isAddReloadButton: params.get('add-reload-button') != null
   , isFirstFetchZipRoom: params.get('first-fetch-zip-room') != null
+  , canReturnHandToIndividualBoard: params.get('return-the-hand') != null
 } as const;
 
 export const settings = [
@@ -61,6 +62,7 @@ export const settings = [
 , { label: '「カードを横にする」をカードのコンテキストメニューに追加', param: 'tap-card', checked:false }
 , { label: '重ねカード移動機能', param: 'move-stacked-card', checked:false }
 , { label: 'カードを正位置のままシャッフルする', param: 'card-shuffle-normal-position', checked:false }
+, { label: '手札を回収する', param: 'return-the-hand', checked:false }
 , { label: 'ボード', param: 'hand-storage', checked:false }
 , { label: 'ボード（ついたて）', param: 'virtual-screen', checked:false }
 , { label: 'ボードを自分のものだけ触れるようにする', param: 'hand-storage-self-only', checked:false }
@@ -91,6 +93,7 @@ export const labelsAllInOne = [
     ,'「カードを横にする」をカードのコンテキストメニューに追加'
     ,'キーボードショートカットを追加'
     ,'退室ボタンを追加'
+    ,'手札を回収する'
   ]
 
 export const lablsMinimum = [

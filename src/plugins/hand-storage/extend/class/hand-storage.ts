@@ -61,7 +61,7 @@ export class HandStorage extends TabletopObject {
     } else {
       object = new HandStorage()
     }
-    // object.owner = Network.peerContext.userId1
+    // object.owner = Network.peerContext.userId
 
     object.createDataElements()
 
