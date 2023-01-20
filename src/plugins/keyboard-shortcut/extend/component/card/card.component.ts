@@ -1,5 +1,6 @@
 
 import { Network } from "@udonarium/core/system";
+import { PeerCursor } from "@udonarium/peer-cursor";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { pluginConfig } from "src/plugins/config";
 const menuKey = 'm'
@@ -38,6 +39,14 @@ export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
       that.card.destroy()
       SoundEffect.play(PresetSound.sweep)
       return true
+    } else if (e.key === 'h') {
+      if(!pluginConfig.canReturnHandToIndividualBoard) return;
+      SoundEffect.play(PresetSound.cardDraw);
+      if (that.card.handOwner) {
+        that.card.handOwner = '';
+        return;
+      }
+      that.card.handOwner = PeerCursor.myCursor.userId;
     }
 };
 

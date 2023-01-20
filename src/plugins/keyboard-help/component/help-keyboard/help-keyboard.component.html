@@ -18,6 +18,8 @@
       <dd>自分だけ見る</dd>
       <dt>カードの上で[m]</dt>
       <dd>メニューを開く</dd>
+      <dt *ngIf="config.canReturnHandToIndividualBoard">カードの上で[h]</dt>
+      <dd *ngIf="config.canReturnHandToIndividualBoard">手札にする / 共用にする</dd>
     </dl>
     <h4>山札</h4>
     <dl class="help-list">
