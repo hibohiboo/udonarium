@@ -38,6 +38,8 @@ export class AppComponent implements OnInit {
       this.settings.find(s=>s.label === '2Dモード').checked = false;
     } else if (setting.label === '2Dモード' && setting.checked) {
       this.settings.find(s=>s.label === '視点リセット').checked = false;
+    } else if (setting.label === 'Zipから部屋情報読込' && setting.checked ) {
+      this.settings.find(s=>s.label === 'サンプルのキャラクターコマを非表示').checked = true;
     }
    }
    useAllInOne(){

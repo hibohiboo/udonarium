@@ -34,6 +34,7 @@ export const pluginConfig = {
   , isEmptyDefaultTabletopObjects: params.get('empty-default-objects') != null
   , isCardShuffleNormalPosition:params.get('card-shuffle-normal-position') != null
   , isAddReloadButton: params.get('add-reload-button') != null
+  , isFirstFetchZipRoom: params.get('first-fetch-zip-room') != null
 } as const;
 
 export const settings = [
@@ -70,7 +71,7 @@ export const settings = [
 , { label: 'サンプルのキャラクターコマを非表示', param: 'empty-default-objects', checked:false }
 , { label: '新しいキャラクターを作成時にステータスを空で作成する', param: 'empty-new-character', checked:false }
 , { label: '退室ボタンを追加', param: 'add-reload-button', checked:false }
-
+// , { label: 'Zipから部屋情報読込', param: 'first-fetch-zip-room', checked: false }
 ]
 
 export const labelsAllInOne = [
