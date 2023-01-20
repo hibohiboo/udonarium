@@ -12,7 +12,7 @@ export const returnHandCardContextMenu = (that) => {
     return [
       ContextMenuSeparator,
       {
-        name: '手札を回収する',
+        name: that.handStorage.owner ? '手札を回収する' : '共用のカードを回収する',
         action: ()=> {
           SoundEffect.play(PresetSound.cardDraw);
           const owner = that.handStorage.owner;

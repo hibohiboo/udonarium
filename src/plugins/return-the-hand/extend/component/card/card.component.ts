@@ -23,7 +23,6 @@ export const handCardContextMenu = (that) => {
     {
       name: '共用のカードにする',
       action: ()=> {
-        console.log('共用のカードにする', that.card);
         that.card.handOwner = '';
         SoundEffect.play(PresetSound.cardDraw);
       }

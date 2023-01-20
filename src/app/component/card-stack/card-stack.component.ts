@@ -34,6 +34,7 @@ import { drawNCardsContextMenu } from 'src/plugins/add-draw-n-cards/extend/compo
 import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
 import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+import { handCardStackContextMenu } from 'src/plugins/return-the-hand/extend/component/card-stack/card-stack.component';
 import { tapCardStackContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
 import { hideVirtualScreenCardStack, initVirtualScreenCardStack, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card-stack/card-stack.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
@@ -293,6 +294,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
           SoundEffect.play(PresetSound.cardDraw);
         }
       },
+      ...handCardStackContextMenu(this),
       ...tapCardStackContextMenu(this),
       ContextMenuSeparator,
       {
