@@ -32,6 +32,7 @@ import { HandStorageService } from 'src/plugins/hand-storage/extend/service/hand
 import { HandStorage } from 'src/plugins/hand-storage/extend/class/hand-storage';
 import { resetViewHandler } from 'src/plugins/reset-point-of-view/extend/component/game-table/game-table.component';
 import { pluginConfig } from 'src/plugins/config';
+import { onContextMenuDeckFromSpreadSheet } from 'src/plugins/deck-from-spreadsheet/extend/component/game-table/game-table.component';
 
 @Component({
   selector: 'game-table-extend-plus',
@@ -232,7 +233,7 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
   }
 
   @HostListener('contextmenu', ['$event'])
-  onContextMenu(e: any) {
+  async onContextMenu(e: any) {
     if (!document.activeElement.contains(this.gameObjects.nativeElement)) return;
     e.preventDefault();
 
@@ -243,12 +244,14 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
     let menuActions: ContextMenuAction[] = [];
 
     Array.prototype.push.apply(menuActions, this.tabletopActionService.makeDefaultContextMenuActions(objectPosition));
+    menuActions = [...menuActions, ...(await onContextMenuDeckFromSpreadSheet(this, objectPosition))]
     menuActions.push(ContextMenuSeparator);
     menuActions.push({
       name: 'テーブル設定', action: () => {
         this.modalService.open(GameTableSettingComponent);
       }
     });
+
     this.contextMenuService.open(menuPosition, menuActions, this.currentTable.name);
   }
 

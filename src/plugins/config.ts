@@ -36,6 +36,7 @@ export const pluginConfig = {
   , isAddReloadButton: params.get('add-reload-button') != null
   , isFirstFetchZipRoom: params.get('first-fetch-zip-room') != null
   , canReturnHandToIndividualBoard: params.get('return-the-hand') != null
+  , isDeckFromSpreadsheet: params.get('deck-from-spreadsheet') != null
 } as const;
 
 export const settings = [
@@ -73,6 +74,7 @@ export const settings = [
 , { label: 'サンプルのキャラクターコマを非表示', param: 'empty-default-objects', checked:false }
 , { label: '新しいキャラクターを作成時にステータスを空で作成する', param: 'empty-new-character', checked:false }
 , { label: '退室ボタンを追加', param: 'add-reload-button', checked:false }
+, { label: 'スプレッドシートからデッキ読込', param: 'deck-from-spreadsheet', checked:false }
 // , { label: 'Zipから部屋情報読込', param: 'first-fetch-zip-room', checked: false }
 ]
 

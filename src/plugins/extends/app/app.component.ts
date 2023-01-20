@@ -40,6 +40,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { pluginConfig } from 'src/plugins/config';
+import { setSpreadSheetAPIKey } from 'src/plugins/deck-from-spreadsheet/extend/app.component';
 import { hideMenu, horizonMenu, menuCount, minimizableMenu } from 'src/plugins/extend-menu/extends/app/app.component';
 import { fetchZipRoom } from 'src/plugins/first-fetch-zip-room/extend/app.component';
 import { hidePredestal } from 'src/plugins/hide-pedestal/extends/app/app.component';
@@ -173,6 +174,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
         console.log('LOAD_CONFIG !!!');
         Network.setApiKey(event.data.webrtc.key);
         Network.open();
+        setSpreadSheetAPIKey(event.data);
       })
       .on<File>('FILE_LOADED', event => {
         this.lazyNgZoneUpdate(false);
