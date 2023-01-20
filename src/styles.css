@@ -3,7 +3,6 @@
 @import './plugins/text-note-upright-flat/text-note-upright-flat.css';
 @import './plugins/virtual-screen/virtual-screen.css';
 @import './plugins/add-card-text-writable/extend/component/card/card.component.css';
-@import './plugins/extends/app/component/game-character-sheet/game-character-sheet.component.css';
 @import './plugins/add-card-text-writable/extend/component/game-character-sheet/game-character-text.component.css';
 @import './plugins/add-card-text-writable/extend/component/overview-panel/overview.component.css';
 @import './plugins/add-card-text-writable/extend/component/card-stack/card-stack.component.css';
