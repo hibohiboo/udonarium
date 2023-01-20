@@ -41,6 +41,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { pluginConfig } from 'src/plugins/config';
 import { hideMenu, horizonMenu, menuCount, minimizableMenu } from 'src/plugins/extend-menu/extends/app/app.component';
+import { fetchZipRoom } from 'src/plugins/first-fetch-zip-room/extend/app.component';
 import { hidePredestal } from 'src/plugins/hide-pedestal/extends/app/app.component';
 import { openHelp, openHelpEvent, useHelp } from 'src/plugins/keyboard-help/app/app.component';
 import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
@@ -217,6 +218,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       if(!pluginConfig.isHideFirstPeer && !pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponent, peerOption);
       if(!pluginConfig.isHideFirstPeer && pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponentExtendPlus, peerOption);
       if(!pluginConfig.isHideFirstChat) this.panelSerive.open(ChatWindowComponent, chatOption);
+      fetchZipRoom();
     }, 0);
   }
 
