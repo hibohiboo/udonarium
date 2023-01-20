@@ -7,6 +7,7 @@ import { AppComponentExtendPlus } from "./app/app.component"
 import { GameCharacterSheetComponentExtendPlus } from "./app/component/game-character-sheet/game-character-sheet.component"
 import { GameTableComponentExtendPlus } from "./app/component/game-table/game-table.component"
 import { OverviewPanelComponentExtendPlus } from "./app/component/overview-panel/overview-panel.component"
+import { PeerMenuComponentExtendPlus } from "./app/component/peer-menu/peer-menu.component"
 import { UIPanelComponentExtendPlus } from "./app/component/ui-panel/ui-panel.component"
 import { ResizableDirectiveExtendPlus } from "./app/directive/resizable.directive"
 import { TooltipDirectiveExtendPlus } from "./app/directive/tooltip.directive"
@@ -24,6 +25,7 @@ const components = [
   , TooltipDirectiveExtendPlus
   , CardListImageComponent
   , CardStackListComponentExtendPlus
+  , PeerMenuComponentExtendPlus
 ]
 const imports = []
 const services = [PanelServiceExtnedPlus, HandStorageService]

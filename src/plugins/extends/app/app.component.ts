@@ -47,6 +47,7 @@ import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
 import { offObjectRotate } from 'src/plugins/object-rotate-off/extends/app/app.component';
 import { resetPointOfView } from 'src/plugins/reset-point-of-view/extend/app.component';
 import { toggleMute, useMute, useMuteOff } from 'src/plugins/toggle-sound-effect/extend/class/sound-effect';
+import { PeerMenuComponentExtendPlus } from './component/peer-menu/peer-menu.component';
 
 @Component({
   selector: 'app-root',
@@ -210,13 +211,12 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     PanelService.defaultParentViewContainerRef =  ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
-      if(horizonMenu){
-        if(!pluginConfig.isHideFirstPeer) this.panelSerive.open(PeerMenuComponent, { width: 500, height: 400, top: 100 });
-        if(!pluginConfig.isHideFirstChat) this.panelSerive.open(ChatWindowComponent, { width: 700, height: 450, top: 500 });
-        return;
-      }
-      if(!pluginConfig.isHideFirstPeer) this.panelSerive.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
-      if(!pluginConfig.isHideFirstChat) this.panelSerive.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
+      const peerOption = horizonMenu ? { width: 500, height: 400, top: 100 } : { width: 500, height: 450, left: 100 }
+      const chatOption = horizonMenu ?  { width: 700, height: 450, top: 500 } : { width: 700, height: 400, left: 100, top: 450 }
+
+      if(!pluginConfig.isHideFirstPeer && !pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponent, peerOption);
+      if(!pluginConfig.isHideFirstPeer && pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponentExtendPlus, peerOption);
+      if(!pluginConfig.isHideFirstChat) this.panelSerive.open(ChatWindowComponent, chatOption);
     }, 0);
   }
 
@@ -229,7 +229,8 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
     let option: PanelOption = { width: 450, height: 600, left: 100 }
     switch (componentName) {
       case 'PeerMenuComponent':
-        component = PeerMenuComponent;
+        if(!pluginConfig.isAddReloadButton) component = PeerMenuComponent;
+        else if(pluginConfig.isAddReloadButton) component = PeerMenuComponentExtendPlus;
         break;
       case 'ChatWindowComponent':
         component = ChatWindowComponent;

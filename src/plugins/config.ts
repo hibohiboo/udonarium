@@ -33,6 +33,7 @@ export const pluginConfig = {
   , isUseKeyboardShortcut: params.get('keyboard-shortcut') != null
   , isEmptyDefaultTabletopObjects: params.get('empty-default-objects') != null
   , isCardShuffleNormalPosition:params.get('card-shuffle-normal-position') != null
+  , isAddReloadButton: params.get('add-reload-button') != null
 } as const;
 
 export const settings = [
@@ -68,6 +69,7 @@ export const settings = [
 , { label: '表示項目の初期値を空にする（デフォルト：HP MP 敏捷度 生命力 精神力）', param: 'empty-display-items', checked:false }
 , { label: 'サンプルのキャラクターコマを非表示', param: 'empty-default-objects', checked:false }
 , { label: '新しいキャラクターを作成時にステータスを空で作成する', param: 'empty-new-character', checked:false }
+, { label: '退室ボタンを追加', param: 'add-reload-button', checked:false }
 
 ]
 
@@ -87,6 +89,7 @@ export const labelsAllInOne = [
     ,'「カードをn枚引く」を山札のコンテキストメニューに追加'
     ,'「カードを横にする」をカードのコンテキストメニューに追加'
     ,'キーボードショートカットを追加'
+    ,'退室ボタンを追加'
   ]
 
 export const lablsMinimum = [
