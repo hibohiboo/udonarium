@@ -36,6 +36,7 @@ import { CardStack } from '@udonarium/card-stack'
 import { isMyHandStorageOnly } from 'src/plugins/hand-storage-self-only'
 import { RotableOption } from 'directive/rotable.directive'
 import { getObjectRotateOff, initRotateOffHandStorage, rotateOffContextMenuHandStorage } from 'src/plugins/object-rotate-off/extends/components/hand-storage/hand-storage.component'
+import { returnHandCardContextMenu } from 'src/plugins/return-the-hand/extend/component/hand-storage/hand-storage.component'
 
 interface TopOfObject {
   obj: TabletopObject
@@ -224,6 +225,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
           },
         },
         ...rotateOffContextMenuHandStorage(this)
+        ,...returnHandCardContextMenu(this)
       ],
       this.name,
     )
