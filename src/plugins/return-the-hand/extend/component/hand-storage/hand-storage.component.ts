@@ -2,10 +2,7 @@ import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { ContextMenuSeparator } from "service/context-menu.service";
 import { pluginConfig } from "src/plugins/config";
 
-export const initReturnTheHandCardHandStorage = (that)=>{
-  if(!pluginConfig.canReturnHandToIndividualBoard) return;
 
-}
 export const returnHandCardContextMenu = (that) => {
   if(!pluginConfig.canReturnHandToIndividualBoard) return [];
 

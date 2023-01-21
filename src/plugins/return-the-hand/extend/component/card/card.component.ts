@@ -30,3 +30,27 @@ export const handCardContextMenu = (that) => {
   ]
 }
 
+export const handCardContextMenuHandStorage = (that) => {
+  if(!pluginConfig.canReturnHandToIndividualBoard) return [];
+
+    return [
+      {
+        name: '全て手札にする',
+        action: ()=> {
+          that._calcTopObjects(that.tabletopService.cards).forEach(({obj:card})=>{
+            card.handOwner = PeerCursor.myCursor.userId;
+          })
+          SoundEffect.play(PresetSound.cardDraw);
+        }
+      }
+    , {
+        name: '全て共用のカードにする',
+        action: ()=> {
+          that._calcTopObjects(that.tabletopService.cards).forEach(({obj:card})=>{
+            card.handOwner = '';
+          })
+          SoundEffect.play(PresetSound.cardDraw);
+        }
+      }
+   ]
+}

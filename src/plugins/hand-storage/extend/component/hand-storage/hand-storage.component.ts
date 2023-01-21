@@ -37,6 +37,9 @@ import { isMyHandStorageOnly } from 'src/plugins/hand-storage-self-only'
 import { RotableOption } from 'directive/rotable.directive'
 import { getObjectRotateOff, initRotateOffHandStorage, rotateOffContextMenuHandStorage } from 'src/plugins/object-rotate-off/extends/components/hand-storage/hand-storage.component'
 import { returnHandCardContextMenu } from 'src/plugins/return-the-hand/extend/component/hand-storage/hand-storage.component'
+import { PeerCursor } from '@udonarium/peer-cursor'
+import { tapCardContextMenuHandStorage } from 'src/plugins/tap-card/extend/component/card/card.component'
+import { handCardContextMenuHandStorage } from 'src/plugins/return-the-hand/extend/component/card/card.component'
 
 interface TopOfObject {
   obj: TabletopObject
@@ -182,8 +185,46 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     this.contextMenuService.open(
       menuPosition,
       [
-        ...virtualScreenHandStorageContextMenu(this),
-        this.isLock
+        ...virtualScreenHandStorageContextMenu(this)
+        , {
+          name: `カードの一括操作`,
+          action: null,
+          subActions: [
+            {
+              name: '全て表にする',
+              action: () => {
+                this._calcTopObjects(this.tabletopService.cards).forEach(({obj:card})=>{
+                  card.faceUp();
+                })
+                SoundEffect.play(PresetSound.cardDraw);
+              },
+            }
+           ,{
+              name: '全て裏にする',
+              action: () => {
+                this._calcTopObjects(this.tabletopService.cards).forEach(({obj:card})=>{
+                  card.faceDown();
+                })
+                SoundEffect.play(PresetSound.cardDraw);
+              },
+            }
+           ,{
+              name: '全て自分だけ見る',
+              action: () => {
+                this._calcTopObjects(this.tabletopService.cards).forEach(({obj:card})=>{
+                  card.faceDown();
+                  card.owner = PeerCursor.myCursor.userId;
+                })
+                SoundEffect.play(PresetSound.cardDraw);
+              },
+            }
+           ,...handCardContextMenuHandStorage(this)
+           ,...tapCardContextMenuHandStorage(this)
+          ],
+        }
+        , ...returnHandCardContextMenu(this)
+        , ContextMenuSeparator
+        ,this.isLock
           ? {
               name: '固定解除',
               action: () => {
@@ -197,9 +238,8 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.isLock = true
                 SoundEffect.play(PresetSound.lock)
               },
-            },
-        ContextMenuSeparator,
-        {
+            }
+        ,{
           name: 'ボードを編集',
           action: () => {
             this.showDetail(this.handStorage)
@@ -223,9 +263,20 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
               this.handStorage.parent.appendChild(cloneObject)
             SoundEffect.play(PresetSound.cardPut)
           },
-        },
-        ...rotateOffContextMenuHandStorage(this)
-        ,...returnHandCardContextMenu(this)
+        }
+        ,...rotateOffContextMenuHandStorage(this)
+        , ContextMenuSeparator
+        ,{
+          name: 'ボード上のオブジェクトを一括削除',
+          action: () => {
+            if(!confirm('ボード上のオブジェクトをすべて削除してよろしいですか？')) return;
+            this.calcTopOfObjects();
+            for (const topOfObject of this.topOfObjects) {
+              topOfObject.obj.destroy();
+            }
+            SoundEffect.play(PresetSound.sweep)
+          },
+        }
       ],
       this.name,
     )
@@ -250,17 +301,15 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onRotate() {
     SoundEffect.play(PresetSound.cardPick);
-    this.calcTopOfObjects();
   }
 
   onRotated() {
     SoundEffect.play(PresetSound.cardPut)
-    console.log('rotated', this.topOfObjects)
+    this.calcTopOfObjects();
     for (const topOfObject of this.topOfObjects) {
       const tmp: any = topOfObject as any;
       if(tmp.obj.rotate != null){
         tmp.obj.rotate = this.handStorage.rotate;
-        console.log('tmp', tmp.obj)
         topOfObject.obj.update()
       }
 
@@ -281,7 +330,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     onObjectDropVirtualStorage(this, e);
   }
   private calcTopOfObjects() {
-    const {x,y,w,h} = this.getHandStorageArea();
+
     const objects = [
       ...this.tabletopService.cards,
       ...this.tabletopService.cardStacks,
@@ -289,6 +338,13 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
       ...this.tabletopService.terrains,
       ...this.tabletopService.diceSymbols,
     ]
+    const topOfObjects = this._calcTopObjects(objects)
+    this.topOfObjects = topOfObjects;
+    return topOfObjects;
+  }
+
+  private _calcTopObjects(objects) {
+    const {x,y,w,h} = this.getHandStorageArea();
     const topOfObjects = [];
     for (const obj of objects) {
       const { distanceX, distanceY } = this.getDistance(x,y,obj);
@@ -296,7 +352,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
         topOfObjects.push({ obj: obj, distanceX, distanceY })
       }
     }
-    this.topOfObjects = topOfObjects;
+
     return topOfObjects;
   }
 
