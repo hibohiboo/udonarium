@@ -40,6 +40,7 @@ import { returnHandCardContextMenu } from 'src/plugins/return-the-hand/extend/co
 import { PeerCursor } from '@udonarium/peer-cursor'
 import { tapCardContextMenuHandStorage } from 'src/plugins/tap-card/extend/component/card/card.component'
 import { handCardContextMenuHandStorage } from 'src/plugins/return-the-hand/extend/component/card/card.component'
+import { initKeyboardShortcutHandStorage, onKeyDownKeyboardShortcutHandStorage } from 'src/plugins/keyboard-shortcut/extend/component/hand-storage/hand-storage.component'
 
 interface TopOfObject {
   obj: TabletopObject
@@ -113,9 +114,17 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     private tabletopActionService: TabletopActionService,
   ) {
     initRotateOffHandStorage(this);
+    initKeyboardShortcutHandStorage(this);
   }
 
   @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOff(this); };
+
+  @HostBinding('tabIndex') tabIndex:string; //tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
+  @HostListener("keydown", ["$event"])
+  onKeydown(e: KeyboardEvent) {
+    onKeyDownKeyboardShortcutHandStorage(this,e);
+  }
+
 
   ngOnInit() {
     EventSystem.register(this)
