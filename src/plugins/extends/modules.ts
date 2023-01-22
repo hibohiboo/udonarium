@@ -1,3 +1,8 @@
+import { CutinListComponent } from "component/cutin-list/cutin-list.component"
+import { CutinViewComponent } from "component/cutin-view/cutin-view.component"
+import { RooperCardComponent } from "component/rooper-card/rooper-card.component"
+import { RooperGameSheetComponent } from "component/rooper-game-sheet/rooper-game-sheet.component"
+import { AutofocusDirective } from "directive/autofocus.directive"
 import { CardListImageComponent } from "../add-card-text-writable/extend/component/card-list-image/card-list-image.component"
 import { CardStackListComponentExtendPlus } from "../add-card-text-writable/extend/component/card-stack-list/card-stack-list.component"
 import { HandStorageComponent } from "../hand-storage/extend/component/hand-storage/hand-storage.component"
@@ -14,6 +19,11 @@ import { TooltipDirectiveExtendPlus } from "./app/directive/tooltip.directive"
 import { PanelServiceExtnedPlus } from "./app/service/panel.service"
 
 const components = [
+  RooperCardComponent,
+  CutinViewComponent,
+  CutinListComponent,
+  RooperGameSheetComponent,
+  AutofocusDirective,
     UIPanelComponentExtendPlus
   , ResizableDirectiveExtendPlus
   , AppComponentExtendPlus
@@ -26,6 +36,7 @@ const components = [
   , CardListImageComponent
   , CardStackListComponentExtendPlus
   , PeerMenuComponentExtendPlus
+
 ]
 const imports = []
 const services = [PanelServiceExtnedPlus, HandStorageService]

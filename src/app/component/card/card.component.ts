@@ -6,7 +6,6 @@ import {
   ElementRef,
   HostBinding,
   HostListener,
-  HostBinding,
   Input,
   NgZone,
   OnDestroy,

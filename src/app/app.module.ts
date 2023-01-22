@@ -109,6 +109,7 @@ import pluginModules from '../plugins/extends/modules'
     DraggableDirective,
     ResizableDirective,
     ChatInputComponent,
+
     ...pluginModules.components
   ],
   imports: [
