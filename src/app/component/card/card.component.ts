@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
   HostListener,
   HostBinding,
   Input,
@@ -28,6 +29,15 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
+import { initCardComponentForWritableText, isCardWritable } from 'src/plugins/add-card-text-writable/extend/component/card/card.component';
+import { GameCharacterSheetComponentExtendPlus } from 'src/plugins/extends/app/component/game-character-sheet/game-character-sheet.component';
+import { initKeyboardShortcutCard, onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
+import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card.component';
+import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+import { handCardContextMenu } from 'src/plugins/return-the-hand/extend/component/card/card.component';
+import { tapCardContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
+import { hideVirtualScreenCard, initVirtualScreenCard, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card/card.component';
+import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 
 @Component({
@@ -73,6 +83,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   private doubleClickPoint = { x: 0, y: 0 };
 
   private input: InputHandler = null;
+  @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenCard(this); };
 
   @HostBinding('tabIndex') tabIndex:string;//tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
   constructor(
@@ -85,8 +96,11 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService
   ) {
-    this.tabIndex="0";//TabIndexを付与。これをしないとフォーカスできないのでコンポーネントに対するキーイベントを取得できない。
+    initVirtualScreenCard(this);
+    initCardComponentForWritableText(this);
+    initKeyboardShortcutCard(this);
    }
+  get isCardWritable() { return isCardWritable; }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -191,10 +205,14 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onInputStart(e: MouseEvent | TouchEvent) {
+    startMoveStackedCard(this); // 上に乗っているカードを判定するため toTopmostよりも先に実行。
     this.startDoubleClickTimer(e);
     this.card.toTopmost();
     this.startIconHiddenTimer();
   }
+
+  private isRotateOffIndividually = false;
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
 
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
@@ -231,6 +249,8 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.owner = Network.peerContext.userId;
           }
         }),
+        ...handCardContextMenu(this),
+        ...tapCardContextMenu(this),
       ContextMenuSeparator,
       {
         name: '重なったカードで山札を作る', action: () => {
@@ -255,6 +275,8 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
           SoundEffect.play(PresetSound.sweep);
         }
       },
+      ...rotateOffIndividuallyContextMenu(this)
+      , ...virtualScreenContextMenu(this)
     ], this.isVisible ? this.name : 'カード');
   }
 
@@ -265,6 +287,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onMoved() {
     SoundEffect.play(PresetSound.cardPut);
+    onMovedVirtualScreen(this)
     this.ngZone.run(() => this.dispatchCardDropEvent());
   }
 
@@ -291,6 +314,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.rotate = 0;
       return;
     }
+    onKeyDownKeyboardShortcutCard(this,e);
   }
 
   protected createStack() {
@@ -327,6 +351,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     for (let i = 0; i < children.length; i++) {
       children[i].dispatchEvent(event);
     }
+    endMoveStackedCard(this)
   }
 
   private startIconHiddenTimer() {
@@ -348,6 +373,11 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     let title = 'カード設定';
     if (gameObject.name.length) title += ' - ' + gameObject.name;
     let option: PanelOption = { title: title, left: coordinate.x - 300, top: coordinate.y - 300, width: 600, height: 600 };
+    if(this.isCardWritable) {
+      let component = this.panelService.open<GameCharacterSheetComponentExtendPlus>(GameCharacterSheetComponentExtendPlus, option);
+      component.tabletopObject = gameObject;
+      return;
+    }
     let component = this.panelService.open<GameCharacterSheetComponent>(GameCharacterSheetComponent, option);
     component.tabletopObject = gameObject;
   }

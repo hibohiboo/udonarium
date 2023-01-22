@@ -4,8 +4,11 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
+  HostBinding,
   HostListener,
   Input,
+  NgZone,
   OnDestroy,
   OnInit,
 } from '@angular/core';
@@ -22,6 +25,10 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { initKeyboardShortcutGameCharacter, onKeyDownKeyboardShortcutGameCharacter } from 'src/plugins/keyboard-shortcut/extend/component/game-character/game-character.component';
+import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/game-character/game-character.component';
+import { hideVirtualScreenCharacter, initVirtualScreenCharacter, onMovedVirtualScreenGameCharacter } from 'src/plugins/virtual-screen/extend/component/game-character/game-character.component';
+import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
   selector: 'game-character',
@@ -56,6 +63,9 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   set rotate(rotate: number) { this.gameCharacter.rotate = rotate; }
   get roll(): number { return this.gameCharacter.roll; }
   set roll(roll: number) { this.gameCharacter.roll = roll; }
+  private isRotateOffIndividually = false;
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+  @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenCharacter(this); };
 
   gridSize: number = 50;
 
@@ -63,11 +73,22 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   rotableOption: RotableOption = {};
 
   constructor(
+    private ngZone: NgZone, // virtual screen で使用
+    private elementRef: ElementRef<HTMLElement>, // virtual screen で使用
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
-    private pointerDeviceService: PointerDeviceService
-  ) { }
+    private pointerDeviceService: PointerDeviceService,
+  ) {
+    initVirtualScreenCharacter(this);
+    initKeyboardShortcutGameCharacter(this);
+   }
+
+   @HostBinding('tabIndex') tabIndex:string; //tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
+   @HostListener("keydown", ["$event"])
+   onKeydown(e: KeyboardEvent) {
+     onKeyDownKeyboardShortcutGameCharacter(this,e);
+   }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -147,6 +168,8 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
           SoundEffect.play(PresetSound.piecePut);
         }
       },
+      ...rotateOffContextMenu(this)
+      , ...virtualScreenContextMenu(this)
     ], this.name);
   }
 
@@ -155,6 +178,7 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onMoved() {
+    onMovedVirtualScreenGameCharacter(this);
     SoundEffect.play(PresetSound.piecePut);
   }
 

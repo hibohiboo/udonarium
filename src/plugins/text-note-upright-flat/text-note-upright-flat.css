@@ -1,0 +1,3 @@
+.text-note-flat .component-content {
+  transform: rotateX(90deg) !important;
+}

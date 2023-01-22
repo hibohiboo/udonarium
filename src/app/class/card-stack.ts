@@ -1,3 +1,4 @@
+import { addSyncHideVirtualScreen } from 'src/plugins/virtual-screen/extend/class/addSyncHideVirtualScreen';
 import { Card } from './card';
 import { ImageFile } from './core/file-storage/image-file';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
@@ -14,6 +15,10 @@ export class CardStack extends TabletopObject {
   @SyncVar() zindex: number = 0;
   @SyncVar() owner: string = '';
   @SyncVar() isShowTotal: boolean = true;
+  constructor(identifier?: string) {
+    super(identifier);
+    addSyncHideVirtualScreen(this);
+  }
 
   get name(): string { return this.getCommonValue('name', ''); }
   get ownerName(): string {

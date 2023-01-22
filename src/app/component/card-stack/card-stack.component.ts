@@ -5,6 +5,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
   HostListener,
   Input,
   NgZone,
@@ -28,6 +29,15 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { initCardStackComponentForWritableText, isCardWritable, showStackListWritableText } from 'src/plugins/add-card-text-writable/extend/component/card-stack/card-stack.component';
+import { drawNCardsContextMenu } from 'src/plugins/add-draw-n-cards/extend/component/card-stack/card-stack.component';
+import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
+import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
+import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+import { handCardStackContextMenu } from 'src/plugins/return-the-hand/extend/component/card-stack/card-stack.component';
+import { tapCardStackContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
+import { hideVirtualScreenCardStack, initVirtualScreenCardStack, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card-stack/card-stack.component';
+import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
   selector: 'card-stack',
@@ -86,6 +96,8 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private input: InputHandler = null;
 
+  @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenCardStack(this); };
+
   constructor(
     private ngZone: NgZone,
     private contextMenuService: ContextMenuService,
@@ -94,7 +106,16 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    initVirtualScreenCardStack(this);
+    initCardStackComponentForWritableText(this);
+  }
+  get isCardWritable() { return isCardWritable; }
+  @HostBinding('tabIndex') tabIndex:string; //tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
+  @HostListener("keydown", ["$event"])
+  onKeydown(e: KeyboardEvent) {
+    onKeyDownKeyboardShortcutCardStack(this,e);
+  }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -222,6 +243,9 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: this.cardStack.identifier, className: 'GameCharacter' });
   }
 
+  private isRotateOffIndividually = false;
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
     e.stopPropagation();
@@ -237,6 +261,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
       },
+      ...drawNCardsContextMenu(this),
       ContextMenuSeparator,
       {
         name: '一番上を表にする', action: () => {
@@ -269,10 +294,13 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
           SoundEffect.play(PresetSound.cardDraw);
         }
       },
+      ...handCardStackContextMenu(this),
+      ...tapCardStackContextMenu(this),
       ContextMenuSeparator,
       {
         name: 'シャッフル', action: () => {
           this.cardStack.shuffle();
+          cardShuffleNormalPosition(this);
           SoundEffect.play(PresetSound.cardShuffle);
           EventSystem.call('SHUFFLE_CARD_STACK', { identifier: this.cardStack.identifier });
         }
@@ -316,6 +344,8 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
           SoundEffect.play(PresetSound.sweep);
         }
       },
+      ...rotateOffIndividuallyContextMenu(this)
+      , ...virtualScreenContextMenu(this)
     ], this.name);
   }
 
@@ -325,6 +355,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onMoved() {
     SoundEffect.play(PresetSound.cardPut);
+    onMovedVirtualScreen(this)
     this.ngZone.run(() => this.dispatchCardDropEvent());
   }
 
@@ -427,6 +458,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     let option: PanelOption = { left: coordinate.x - 200, top: coordinate.y - 300, width: 400, height: 600 };
 
     this.cardStack.owner = Network.peerContext.userId;
+    if (showStackListWritableText(this, option, gameObject)) return;
     let component = this.panelService.open<CardStackListComponent>(CardStackListComponent, option);
     component.cardStack = gameObject;
   }

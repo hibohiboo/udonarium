@@ -1,0 +1,88 @@
+<div>
+  <div style="overflow:auto;max-height:100vh;">
+    <h2>部屋設定</h2>
+    <p>
+      <button (click)="useAllInOne()">機能をすべて有効化</button>
+      <button (click)="useMinimum()">機能を最小限にする</button>
+    </p>
+    <table>
+      <thead>
+        <th></th>
+        <th>項目</th>
+      </thead>
+      <tr *ngFor="let setting of settings">
+        <td>
+          <input
+            [id]="setting.param + '-form'"
+            [checked]="setting.checked"
+            (change)="changeSetting(setting)"
+            type="checkbox"
+          />
+        </td>
+        <td>
+          <label [for]="setting.param + '-form'">{{ setting.label }}</label>
+        </td>
+      </tr>
+    </table>
+    <p>
+      <a [href]="settingLink">設定を反映して移動</a>
+    </p>
+   <section>
+    <h4>ついたてについて</h4>
+    <p>
+      ボードの右クリックメニューから、ついたて機能をオンにできます。ついたて機能をオンにしたとき、ボードの上にあるカードを他プレイヤーから隔します。
+    </p>
+    <p>
+      ついたて は、プレイヤーのニックネームを参照して表示 / 非表示を切り替えます。 同じプレイヤー名で接続していると、ついたての中が見えてしまうのでご注意ください。
+    </p>
+
+   </section>
+   <section>
+    <h4>スプレッドシートからデッキ読込について</h4>
+    <p>
+      <a href="https://docs.google.com/spreadsheets/d/1sOYvbR4SXlw3H3a2tL2A8Q8PJqad0hbRV6QpwSa-wIg/" target="_blank">スプレッドシート</a>にカード情報を記述してデッキを作ることができます。
+    </p>
+    <p>
+       デッキは右クリックのメニューからトランプのように配置できます。
+    </p>
+    <div><img src="https://create-now.vercel.app/images/udon/spread-sheet-deck.png" alt="スプレッドシートデッキ" /></div>
+
+   </section>
+
+  </div>
+
+  <!-- <div>
+    <h2>PL用部屋設定</h2>
+    <table>
+      <thead>
+        <th></th>
+        <th>項目</th>
+      </thead>
+      <tr *ngFor="let setting of plSettings">
+        <td>
+          <input
+            [id]="setting.param + '-form-pl'"
+            [value]="setting.checked"
+            (change)="setting.checked = !setting.checked"
+            type="checkbox"
+          />
+        </td>
+        <td>
+          <label [for]="setting.param + '-form-pl'">{{ setting.label }}</label>
+        </td>
+      </tr>
+    </table>
+    <a [href]="plSettingLink">設定を反映して移動</a>
+  </div> -->
+  <h2>リンク集</h2>
+  <ul>
+    <li><a href="https://udontools.netlify.app/#/deck-editor" target="_blank">ユドナリウム用カードデッキエディター</a></li>
+    <li><a href="https://lostrpg-751c1.firebaseapp.com/cardlist/" target="_blank">CSVからユドナリウム用情報カード作成</a></li>
+    <li><a href="https://cylinder-lily.com/" target="_blank">ユドナリウム リリィ</a></li>
+    <li><a href="https://github.com/NanasuNANA/UdonariumWithFly/" target="_blank">ユドナリウム With Fly</a></li>
+    <li><a href="https://github.com/TK11235/udonarium" target="_blank">ユドナリウム 本家</a></li>
+    <li><a href="https://d3snr6xc5uvnuy.cloudfront.net/friends-shakehand/links?beta" target="_blank">作成物一覧</a></li>
+    <li><a href="https://github.com/hibohiboo/udonarium/tree/aws-cdk-for-boardgame"  target="_blank">github</a></li>
+  </ul>
+
+</div>

@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
   HostListener,
   Input,
   NgZone,
@@ -26,6 +27,11 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
+import { initKeyboardShortcutTerrain, onKeyDownKeyboardShortcutTerrain } from 'src/plugins/keyboard-shortcut/extend/component/terrain/terrain.component';
+import { is2d } from 'src/plugins/mode2d/extends/components/terrain/terrain.component';
+import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/terrain/terrain.component';
+import { hideVirtualScreenTerrain, initVirtualScreenTerrain, onMovedVirtualScreenTerrain } from 'src/plugins/virtual-screen/extend/component/terrain/terrain.component';
+import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
 @Component({
   selector: 'terrain',
@@ -37,6 +43,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() terrain: Terrain = null;
   @Input() is3D: boolean = false;
 
+  get is2d() { return is2d(); }
   get name(): string { return this.terrain.name; }
   get mode(): TerrainViewState { return this.terrain.mode; }
   set mode(mode: TerrainViewState) { this.terrain.mode = mode; }
@@ -63,7 +70,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
   rotableOption: RotableOption = {};
 
   private input: InputHandler = null;
-
+  @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenTerrain(this); };
   constructor(
     private ngZone: NgZone,
     private imageService: ImageService,
@@ -74,7 +81,17 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
     private changeDetector: ChangeDetectorRef,
     private pointerDeviceService: PointerDeviceService,
     private coordinateService: CoordinateService,
-  ) { }
+  ) {
+    initVirtualScreenTerrain(this);
+    initKeyboardShortcutTerrain(this);
+   }
+
+   @HostBinding('tabIndex') tabIndex:string; //tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
+   @HostListener("keydown", ["$event"])
+   onKeydown(e: KeyboardEvent) {
+     onKeyDownKeyboardShortcutTerrain(this,e);
+   }
+
 
   ngOnInit() {
     EventSystem.register(this)
@@ -126,6 +143,10 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
       EventSystem.trigger('DRAG_LOCKED_OBJECT', {});
     }
   }
+
+  private isRotateOffIndividually = false;
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+
 
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
@@ -183,7 +204,9 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
       ContextMenuSeparator,
-      { name: 'オブジェクト作成', action: null, subActions: this.tabletopActionService.makeDefaultContextMenuActions(objectPosition) }
+      { name: 'オブジェクト作成', action: null, subActions: this.tabletopActionService.makeDefaultContextMenuActions(objectPosition) },
+      ...rotateOffContextMenu(this)
+      , ...virtualScreenContextMenu(this)
     ], this.name);
   }
 
@@ -192,6 +215,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onMoved() {
+    onMovedVirtualScreenTerrain(this);
     SoundEffect.play(PresetSound.blockPut);
   }
 

@@ -1,3 +1,5 @@
+import { createEmptyNewCharacter } from 'src/plugins/empty-new-character/extend/class/game-character';
+import { addSyncHideVirtualScreen } from 'src/plugins/virtual-screen/extend/class/addSyncHideVirtualScreen';
 import { ChatPalette } from './chat-palette';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { DataElement } from './data-element';
@@ -7,6 +9,10 @@ import { TabletopObject } from './tabletop-object';
 export class GameCharacter extends TabletopObject {
   @SyncVar() rotate: number = 0;
   @SyncVar() roll: number = 0;
+  constructor(identifier?: string) {
+    super(identifier);
+    addSyncHideVirtualScreen(this);
+  }
 
   get name(): string { return this.getCommonValue('name', ''); }
   get size(): number { return this.getCommonValue('size', 1); }
@@ -22,6 +28,9 @@ export class GameCharacter extends TabletopObject {
     let gameCharacter: GameCharacter = new GameCharacter();
     gameCharacter.createDataElements();
     gameCharacter.initialize();
+    if (createEmptyNewCharacter(gameCharacter,name, size, imageIdentifier)) {
+      return gameCharacter;
+    }
     gameCharacter.createTestGameDataElement(name, size, imageIdentifier);
 
     return gameCharacter;

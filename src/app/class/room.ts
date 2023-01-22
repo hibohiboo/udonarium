@@ -1,3 +1,4 @@
+import { innerXMLHandStorageObject } from 'src/plugins/hand-storage/extend/class/room';
 import { Card } from './card';
 import { RooperCard } from './rooper-card';
 import { CardStack } from './card-stack';
@@ -30,6 +31,7 @@ export class Room extends GameObject implements InnerXml {
     objects = objects.concat(ObjectStore.instance.getObjects(Card).filter((obj) => { return obj.parent === null }));
     objects = objects.concat(ObjectStore.instance.getObjects(RooperCard).filter((obj) => { return obj.parent === null }));
     objects = objects.concat(ObjectStore.instance.getObjects(DiceSymbol));
+    objects = innerXMLHandStorageObject(objects)
     for (let object of objects) {
       xml += object.toXml();
     }

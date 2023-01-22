@@ -7,3 +7,7 @@ node_modules
 .cdk.staging
 cdk.out
 .env
+.env
+cdk.out
+cdk.context.json
+node_modules
