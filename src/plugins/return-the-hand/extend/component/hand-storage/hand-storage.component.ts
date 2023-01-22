@@ -16,7 +16,7 @@ export const returnHandCardContextMenu = (that) => {
           const x = that.handStorage.location.x;
           const y = that.handStorage.location.y;
           that.tabletopService.cards.filter(card => card.handOwner === owner).forEach((card, i) => {
-            card.location.x = x + i * 20;
+            card.location.x = x + i * 55*2;
             card.location.y = y;
             card.update();
           })
