@@ -33,6 +33,9 @@ import { HandStorage } from 'src/plugins/hand-storage/extend/class/hand-storage'
 import { resetViewHandler } from 'src/plugins/reset-point-of-view/extend/component/game-table/game-table.component';
 import { pluginConfig } from 'src/plugins/config';
 import { onContextMenuDeckFromSpreadSheet } from 'src/plugins/deck-from-spreadsheet/extend/component/game-table/game-table.component';
+import { Cutin } from '@udonarium/cutin';
+import { CutinView } from '@udonarium/cutin-view';
+import { RooperCard } from '@udonarium/rooper-card';
 
 @Component({
   selector: 'game-table-extend-plus',
@@ -85,6 +88,15 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
   get diceSymbols(): DiceSymbol[] { return this.tabletopService.diceSymbols; }
   get peerCursors(): PeerCursor[] { return this.tabletopService.peerCursors; }
   get handStorages(): HandStorage[] { return this.handStorageService.handStorages; }
+  get cutins(): Cutin[] {
+    return this.tabletopService.cutins;
+  }
+  get cutinViews(): CutinView[] {
+    return this.tabletopService.cutinViews;
+  }
+  get rooperCards(): RooperCard[] {
+    return this.tabletopService.rooperCards;
+  }
 
   constructor(
     private ngZone: NgZone,

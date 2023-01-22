@@ -88,9 +88,6 @@ export class UIPanelComponentExtendPlus implements OnInit {
     if(initHorizon){
        setTimeout(()=>this.toggleRotate(), 0);
     }
-    if(initMin){
-      setTimeout(()=>this.toggleMinimize(), 0);
-    }
   }
 
   toggleMinimize() {

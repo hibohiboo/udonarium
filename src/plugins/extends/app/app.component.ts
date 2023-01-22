@@ -22,6 +22,7 @@ import { TableSelecter } from '@udonarium/table-selecter';
 
 import { ChatWindowComponent } from 'component/chat-window/chat-window.component';
 import { ContextMenuComponent } from 'component/context-menu/context-menu.component';
+import { CutinListComponent } from 'component/cutin-list/cutin-list.component';
 import { FileStorageComponent } from 'component/file-storage/file-storage.component';
 import { GameCharacterGeneratorComponent } from 'component/game-character-generator/game-character-generator.component';
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
@@ -30,6 +31,7 @@ import { GameTableSettingComponent } from 'component/game-table-setting/game-tab
 import { JukeboxComponent } from 'component/jukebox/jukebox.component';
 import { ModalComponent } from 'component/modal/modal.component';
 import { PeerMenuComponent } from 'component/peer-menu/peer-menu.component';
+import { RooperGameSheetComponent } from 'component/rooper-game-sheet/rooper-game-sheet.component';
 import { TextViewComponent } from 'component/text-view/text-view.component';
 import { UIPanelComponent } from 'component/ui-panel/ui-panel.component';
 import { AppConfig, AppConfigService } from 'service/app-config.service';
@@ -82,7 +84,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
 
   constructor(
     private modalService: ModalService,
-    private panelSerive: PanelService,
+    private panelService: PanelService,
     private pointerDeviceService: PointerDeviceService,
     private chatMessageService: ChatMessageService,
     private appConfigService: AppConfigService,
@@ -144,6 +146,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
     PresetSound.lock = AudioStorage.instance.add('./assets/sounds/tm2/tm2_switch001.wav').identifier;
     PresetSound.unlock = AudioStorage.instance.add('./assets/sounds/tm2/tm2_switch001.wav').identifier;
     PresetSound.sweep = AudioStorage.instance.add('./assets/sounds/tm2/tm2_swing003.wav').identifier;
+    PresetSound.bell = AudioStorage.instance.add('./assets/sounds/on-jin/bell.mp3').identifier;
 
     AudioStorage.instance.get(PresetSound.dicePick).isHidden = true;
     AudioStorage.instance.get(PresetSound.dicePut).isHidden = true;
@@ -217,9 +220,12 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       const peerOption = horizonMenu ? { width: 500, height: 400, top: 100 } : { width: 500, height: 450, left: 100 }
       const chatOption = horizonMenu ?  { width: 700, height: 450, top: 500 } : { width: 700, height: 400, left: 100, top: 450 }
 
-      if(!pluginConfig.isHideFirstPeer && !pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponent, peerOption);
-      if(!pluginConfig.isHideFirstPeer && pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponentExtendPlus, peerOption);
-      if(!pluginConfig.isHideFirstChat) this.panelSerive.open(ChatWindowComponent, chatOption);
+      if(!pluginConfig.isHideFirstPeer && !pluginConfig.isAddReloadButton) this.panelService.open(PeerMenuComponent, peerOption);
+      if(!pluginConfig.isHideFirstPeer && pluginConfig.isAddReloadButton) this.panelService.open(PeerMenuComponentExtendPlus, peerOption);
+      if(!pluginConfig.isHideFirstChat) this.panelService.open(ChatWindowComponent, chatOption);
+      this.panelService.open(CutinListComponent, { width: 300, height: 450, left: 100, top: 350 });
+      this.panelService.open(RooperGameSheetComponent, { width: 500, height: 450, left: 300, top: 0 });
+
       fetchZipRoom();
     }, 0);
   }
@@ -260,12 +266,18 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       case 'GameObjectInventoryComponent':
         component = GameObjectInventoryComponent;
         break;
+      case 'RooperGameSheetComponent':
+          component = RooperGameSheetComponent;
+          break;
+      case 'CutinListComponent':
+          component = CutinListComponent;
+          break;
     }
     if (component) {
       option.top = (this.openPanelCount % 10 + 1) * 20;
       option.left = 100 + (this.openPanelCount % 20 + 1) * 5;
       this.openPanelCount = this.openPanelCount + 1;
-      this.panelSerive.open(component, option);
+      this.panelService.open(component, option);
     }
   }
 

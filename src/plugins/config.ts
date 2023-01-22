@@ -1,9 +1,9 @@
 const params = new URL(document.URL).searchParams;
 export const pluginConfig = {
     isSettingsPage: params.get('settings') != null
-  , is2d: params.get('2d') != null
-  , isOffRotate: params.get('rotate-off') != null
-  , isMinimizableMenu: params.get('mini-menu') != null
+  , is2d: true // params.get('2d') != null
+  , isOffRotate: true //params.get('rotate-off') != null
+  , isMinimizableMenu: true // params.get('mini-menu') != null
   , isHorizonMenu: params.get('horizon-menu') != null
   , isHideMenuTable: params.get('hide-menu-table') != null
   , isHideMenuImage: params.get('hide-menu-image') != null

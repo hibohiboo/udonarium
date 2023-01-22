@@ -4,6 +4,19 @@
 <ui-panel-extend-plus (rotateEvent)="rotateChange($event)" [top]="0" [left]="0" [width]="100" [height]="menuHight" [title]="'メニュー'" [isAbleFullScreenButton]="false" [isAbleCloseButton]="false" [isAbleRotateButton]="useHorizonMenu" [isAbleMinimizeButton]="isMinimizable"  [horizontalWidth]="menuHorizontalWidth">
   <nav [ngClass]="{'horizontal': isHorizontal}">
     <ul>
+      <li (click)="open('RooperGameSheetComponent')">
+            <a routerLink="/" routerLinkActive="active">
+              <div><i class="material-icons">loop</i></div>
+              <div>RoopeR</div>
+            </a>
+        </li>
+        <li (click)="open('CutinListComponent')">
+          <a routerLink="/" routerLinkActive="active">
+            <div><i class="material-icons icon-size">movie_filter</i></div>
+            <div>カットイン</div>
+          </a>
+      </li>
+
       <li (click)="open('PeerMenuComponent')">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">people</i></div>
