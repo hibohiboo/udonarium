@@ -20,7 +20,3 @@
 .is2d text-note .is-back {
   display: none;
 }
-/* ２ｄモードで地形がボードの下に潜り込むバグを修正 **/
-.is2d hand-storage.is-3d {
-  transform-style: flat;
-}
