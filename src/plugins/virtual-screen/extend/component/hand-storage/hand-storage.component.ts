@@ -33,7 +33,7 @@ const myHandStorageToggleMenu = (that:any) => {
     action: () => {
       that.handStorage.isVirtualScreen = false;
       that.handStorage.virtualScreenUserName = '';
-      that.handStorage.owner = undefined;
+      that.handStorage.owner = '';
       SoundEffect.play(PresetSound.piecePut);
       const topOfObjects = that.calcTopOfObjects();
       for (const topOfObject of topOfObjects) {
@@ -55,7 +55,7 @@ const handStorageToggleMenu = (that: any)=> {
   }
   return {
     name: '共用のボードにする', action: () => {
-      that.handStorage.owner = undefined;
+      that.handStorage.owner = '';
       SoundEffect.play(PresetSound.piecePut);
     }
   }

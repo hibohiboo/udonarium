@@ -36,6 +36,7 @@ export class HandStorage extends TabletopObject {
     return Number.isNaN(num) ? 1 : num
   }
   get ownerName(): string {
+    if(!this.owner) return '';
     const object = PeerCursor.findByUserId(this.owner)
     return object ? object.name : ''
   }
