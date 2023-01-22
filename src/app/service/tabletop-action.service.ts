@@ -634,6 +634,30 @@ export class TabletopActionService {
     });
 
   }
+  makeDefaultCutins() {
+    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+    const prefix_path_turns = `${prefix_path_rooper}/turn`;
+    [
+      {title:'ターン開始'},
+      {title:'脚本家行動'},
+      {title:'主人公行動 A'},
+      {title:'主人公行動 B'},
+      {title:'主人公行動 C'},
+      {title:'行動解決'},
+      {title:'脚本家能力'},
+      {title:'主人公能力'},
+      {title:'事件'},
+      {title:'リーダー交代'},
+      {title:'ターン終了'},
+    ].forEach(({title,}, index)=>{
+      const card_num:number = index + 1;
+      const card_front = `${prefix_path_turns}/turn_${card_num}.png`;
+      if (!ImageStorage.instance.get(card_front)) {
+        ImageStorage.instance.add(card_front);
+      }
+      Cutin.create(title, card_front, '', 433, 270, 0, `sampleCutin_${card_front}`);
+    });
+  }
 
   makeDefaultContextMenuActions(position: PointerCoordinate): ContextMenuAction[] {
     return [

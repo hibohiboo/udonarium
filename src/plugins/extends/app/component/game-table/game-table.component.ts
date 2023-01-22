@@ -129,6 +129,7 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
       })
       ;
     this.tabletopActionService.makeDefaultTable();
+    this.tabletopActionService.makeDefaultCutins();
     if(pluginConfig.isEmptyDefaultTabletopObjects) return;
     this.tabletopActionService.makeDefaultTabletopObjects();
   }
