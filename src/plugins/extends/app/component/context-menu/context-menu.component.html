@@ -1,9 +1,16 @@
 <div class="component" [ngClass]="{'submenu-panel': isSubmenu, 'is-max-limit': !isSubmenu, 'pointer-events-none': isPointerDragging}" (mouseleave)="hideSubMenu()" #root>
 
   <ul>
-    <ng-container *ngFor="let action of actions">
-      <ng-container *ngTemplateOutlet="action?.type === 'separator' ? separator : actionMenu; context: { action: action }"></ng-container>
-    </ng-container>
+    <li class="hasHighlight" (click)="doAction(createBlankCard)">カード</li>
+    <li class="hasHighlight" (click)="doAction(createTrumpMenu)">トランプ</li>
+    <li class="hasHighlight" (click)="doAction(createHandStorage)">ボード</li>
+    <li class="hasHighlight" (click)="doAction(createCharacterMenu)">フィギュア</li>
+    <li class="hasHighlight" (click)="createDiceSymbolMenu()">ダイス</li>
+    <li class="hasHighlight" (click)="doAction(createTerrainMenu)">キューブ</li>
+    <li class="hasHighlight" (click)="doAction(createTextNoteMenu)">ノート</li>
+    <li class="hasHighlight" (click)="doAction(createTableMaskMenu)">レイヤー</li>
+    <li class="hasHighlight" (click)="doAction(settingTable)">テーブル</li>
+
   </ul>
 </div>
 <ng-template #actionMenu let-action="action">

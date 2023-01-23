@@ -1,6 +1,20 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Card } from '@udonarium/card';
+import { CardStack } from '@udonarium/card-stack';
+import { ImageFile } from '@udonarium/core/file-storage/image-file';
+import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
+import { EventSystem } from '@udonarium/core/system';
+import { DiceSymbol, DiceType } from '@udonarium/dice-symbol';
+import { GameCharacter } from '@udonarium/game-character';
+import { GameTable } from '@udonarium/game-table';
+import { GameTableMask } from '@udonarium/game-table-mask';
+import { SoundEffect, PresetSound } from '@udonarium/sound-effect';
+import { TableSelecter } from '@udonarium/table-selecter';
+import { Terrain } from '@udonarium/terrain';
+import { TextNote } from '@udonarium/text-note';
 import { ContextMenuAction, ContextMenuService } from 'service/context-menu.service';
-import { PointerDeviceService } from 'service/pointer-device.service';
+import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service';
+import { createDefaultCubeTerrain } from 'src/plugins/default-terrain-cube/extend/service/tabletop-action.service';
 
 @Component({
   selector: 'context-menu-extend-plus',
@@ -151,5 +165,48 @@ export class ContextMenuComponentExtendPlus implements OnInit, OnDestroy, AfterV
 
   close() {
     if (this.contextMenuService) this.contextMenuService.close();
+  }
+
+  // -------------------------------------------------------------------------------------------
+
+  get createHandStorage(): ContextMenuAction {
+    return this.actions.find(action=>action.name === 'ボードを作成')
+  }
+  get createBlankCard(): ContextMenuAction {
+    return this.actions.find(action=>action.name === 'ブランクカードを作成')
+  }
+  get createCharacterMenu(): ContextMenuAction {
+    return this.actions.find(action=>action.name === 'キャラクターを作成')
+  }
+
+  get createTableMaskMenu(): ContextMenuAction {
+    return this.actions.find(action=>action.name === 'マップマスクを作成')
+  }
+
+  get createTerrainMenu(): ContextMenuAction {
+    return this.actions.find(action=>action.name === '地形を作成')
+  }
+
+  get createTextNoteMenu(): ContextMenuAction {
+
+    return this.actions.find(action=>action.name === '共有メモを作成')
+  }
+
+  get createTrumpMenu(): ContextMenuAction {
+    return this.actions.find(action=>action.name === 'トランプの山札を作成')
+  }
+
+  createDiceSymbolMenu() {
+    const diceAction = this.actions.find(action=>action.name === 'ダイスを作成')
+    this.contextMenuService.open(this.pointerDeviceService.pointers[0], diceAction.subActions, 'ダイスを作成');
+
+  }
+
+  get settingTable() {
+    return this.actions.find(action=>action.name === 'テーブル設定')
+  }
+
+  private getViewTable(): GameTable {
+    return TableSelecter.instance.viewTable;
   }
 }
