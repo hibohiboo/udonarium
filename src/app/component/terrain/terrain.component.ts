@@ -29,7 +29,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { initKeyboardShortcutTerrain, onKeyDownKeyboardShortcutTerrain } from 'src/plugins/keyboard-shortcut/extend/component/terrain/terrain.component';
 import { is2d } from 'src/plugins/mode2d/extends/components/terrain/terrain.component';
-import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/terrain/terrain.component';
+import { getObjectRotateOffTerrain, rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/terrain/terrain.component';
 import { hideVirtualScreenTerrain, initVirtualScreenTerrain, onMovedVirtualScreenTerrain } from 'src/plugins/virtual-screen/extend/component/terrain/terrain.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
@@ -144,8 +144,8 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private isRotateOffIndividually = false;
-  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOffTerrain(this); };
 
 
   @HostListener('contextmenu', ['$event'])

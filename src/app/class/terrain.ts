@@ -1,3 +1,4 @@
+import { initRotateOffTerrain } from 'src/plugins/object-rotate-off/extends/class/terrain';
 import { addSyncHideVirtualScreen } from 'src/plugins/virtual-screen/extend/class/addSyncHideVirtualScreen';
 import { ImageFile } from './core/file-storage/image-file';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
@@ -20,6 +21,7 @@ export class Terrain extends TabletopObject {
   constructor(identifier?: string) {
     super(identifier);
     addSyncHideVirtualScreen(this);
+    initRotateOffTerrain(this);
   }
 
   get width(): number { return this.getCommonValue('width', 1); }

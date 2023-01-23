@@ -37,6 +37,7 @@ export const pluginConfig = {
   , isFirstFetchZipRoom: params.get('first-fetch-zip-room') != null
   , canReturnHandToIndividualBoard: params.get('return-the-hand') != null
   , isDeckFromSpreadsheet: params.get('deck-from-spreadsheet') != null
+  , isChangeDefaultTerrain: params.get('default-terrain-cube') != null
 } as const;
 
 export const settings = [
@@ -76,6 +77,7 @@ export const settings = [
 , { label: '退室ボタンを追加', param: 'add-reload-button', checked:false }
 , { label: 'スプレッドシートからデッキ読込', param: 'deck-from-spreadsheet', checked:false }
 // , { label: 'Zipから部屋情報読込', param: 'first-fetch-zip-room', checked: false }
+, { label: 'デフォルトの地形をCubeに変更', param: 'default-terrain-cube', checked:false }
 ]
 
 export const labelsAllInOne = [
@@ -96,6 +98,7 @@ export const labelsAllInOne = [
     ,'キーボードショートカットを追加'
     ,'退室ボタンを追加'
     ,'手札を回収する'
+    ,'デフォルトの地形をCubeに変更'
   ]
 
 export const lablsMinimum = [
