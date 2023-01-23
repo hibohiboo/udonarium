@@ -29,7 +29,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { initKeyboardShortcutTerrain, onKeyDownKeyboardShortcutTerrain } from 'src/plugins/keyboard-shortcut/extend/component/terrain/terrain.component';
 import { is2d } from 'src/plugins/mode2d/extends/components/terrain/terrain.component';
-import { getObjectRotateOffTerrain, rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/terrain/terrain.component';
+import { extendCloneRotateOffTerrain, getObjectRotateOffTerrain, rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/terrain/terrain.component';
 import { hideVirtualScreenTerrain, initVirtualScreenTerrain, onMovedVirtualScreenTerrain } from 'src/plugins/virtual-screen/extend/component/terrain/terrain.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
@@ -193,6 +193,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
           cloneObject.location.x += this.gridSize;
           cloneObject.location.y += this.gridSize;
           cloneObject.isLocked = false;
+          extendCloneRotateOffTerrain(this.terrain, cloneObject);
           if (this.terrain.parent) this.terrain.parent.appendChild(cloneObject);
           SoundEffect.play(PresetSound.blockPut);
         }

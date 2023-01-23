@@ -31,3 +31,9 @@ export const getObjectRotateOffTerrain = (that) => {
   if(!pluginConfig.isOffObjectRotateIndividually) return false;
   return that.terrain.isRotateOffIndividually;
 }
+
+export const extendCloneRotateOffTerrain = (original, clone) => {
+  if(!pluginConfig.isOffObjectRotateIndividually) return clone;
+  clone.isRotateOffIndividually = original.isRotateOffIndividually;
+  return clone;
+}

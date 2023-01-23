@@ -2,6 +2,7 @@
 import { Network } from "@udonarium/core/system";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { pluginConfig } from "src/plugins/config";
+import { extendCloneRotateOffTerrain } from "src/plugins/object-rotate-off/extends/components/terrain/terrain.component";
 const menuKey = 'm'
 
 export const onKeyDownKeyboardShortcutTerrain = (that, e: KeyboardEvent) => {
@@ -15,6 +16,7 @@ export const onKeyDownKeyboardShortcutTerrain = (that, e: KeyboardEvent) => {
       cloneObject.location.x += that.gridSize
       cloneObject.location.y += that.gridSize
       cloneObject.isLocked = false
+      extendCloneRotateOffTerrain(that.terrain, cloneObject);
       if (that.terrain.parent) that.terrain.parent.appendChild(cloneObject)
       SoundEffect.play(PresetSound.blockPut)
       return true
