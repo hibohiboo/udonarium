@@ -49,6 +49,7 @@ import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
 import { offObjectRotate } from 'src/plugins/object-rotate-off/extends/app/app.component';
 import { resetPointOfView } from 'src/plugins/reset-point-of-view/extend/app.component';
 import { toggleMute, useMute, useMuteOff } from 'src/plugins/toggle-sound-effect/extend/class/sound-effect';
+import { ContextMenuComponentExtendPlus } from './component/context-menu/context-menu.component';
 import { PeerMenuComponentExtendPlus } from './component/peer-menu/peer-menu.component';
 
 @Component({

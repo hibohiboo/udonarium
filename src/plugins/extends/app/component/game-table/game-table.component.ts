@@ -33,6 +33,7 @@ import { HandStorage } from 'src/plugins/hand-storage/extend/class/hand-storage'
 import { resetViewHandler } from 'src/plugins/reset-point-of-view/extend/component/game-table/game-table.component';
 import { pluginConfig } from 'src/plugins/config';
 import { onContextMenuDeckFromSpreadSheet } from 'src/plugins/deck-from-spreadsheet/extend/component/game-table/game-table.component';
+import { contextMenuAddIcon } from 'src/plugins/context-menu-add-icon/extend/components/game-table/game-table.component';
 
 @Component({
   selector: 'game-table-extend-plus',
@@ -251,7 +252,7 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
         this.modalService.open(GameTableSettingComponent);
       }
     });
-
+    if(contextMenuAddIcon(this, menuPosition, menuActions)) return;
     this.contextMenuService.open(menuPosition, menuActions, this.currentTable.name);
   }
 

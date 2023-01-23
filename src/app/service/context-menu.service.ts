@@ -1,4 +1,5 @@
 import { ComponentFactoryResolver, ComponentRef, Injectable, ViewContainerRef } from '@angular/core';
+import { openContextMenuWithIcons } from 'src/plugins/context-menu-add-icon/extend/servies/context-menu.service';
 
 interface ContextMenuPoint {
   x: number,
@@ -45,6 +46,9 @@ export class ContextMenuService {
   }
 
   open(position: ContextMenuPoint, actions: ContextMenuAction[], title?: string, parentViewContainerRef?: ViewContainerRef) {
+    const extendOpen = openContextMenuWithIcons(this, position, actions, title, parentViewContainerRef);
+    if(extendOpen) return;
+
     this.close();
     if (!parentViewContainerRef) {
       parentViewContainerRef = ContextMenuService.defaultParentViewContainerRef;

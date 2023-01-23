@@ -4,6 +4,7 @@ import { HandStorageComponent } from "../hand-storage/extend/component/hand-stor
 import { HandStorageService } from "../hand-storage/extend/service/hand-storage.service"
 import { HelpKeyboardComponent } from "../keyboard-help/component/help-keyboard/help-keyboard.component"
 import { AppComponentExtendPlus } from "./app/app.component"
+import { ContextMenuComponentExtendPlus } from "./app/component/context-menu/context-menu.component"
 import { GameCharacterSheetComponentExtendPlus } from "./app/component/game-character-sheet/game-character-sheet.component"
 import { GameTableComponentExtendPlus } from "./app/component/game-table/game-table.component"
 import { OverviewPanelComponentExtendPlus } from "./app/component/overview-panel/overview-panel.component"
@@ -26,6 +27,7 @@ const components = [
   , CardListImageComponent
   , CardStackListComponentExtendPlus
   , PeerMenuComponentExtendPlus
+  , ContextMenuComponentExtendPlus
 ]
 const imports = []
 const services = [PanelServiceExtnedPlus, HandStorageService]
