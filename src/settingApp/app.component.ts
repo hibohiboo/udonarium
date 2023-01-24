@@ -33,6 +33,8 @@ export class AppComponent implements OnInit {
       this.settings.find(s=>s.label === 'ボード（ついたて）').checked = false;
       this.settings.find(s=>s.label === 'ボードを自分のものだけ触れるようにする').checked = false;
       this.settings.find(s=>s.label === '手札を回収する').checked = false;
+      this.settings.find(s=>s.label === '自分のボードにしたときにボード上のカードを手札にする').checked = false;
+
     } else if (setting.label === 'ボードを自分のものだけ触れるようにする' && setting.checked){
       this.settings.find(s=>s.label === 'ボード').checked = true;
     } else if (setting.label === '視点リセット' && setting.checked) {
@@ -46,7 +48,12 @@ export class AppComponent implements OnInit {
     } else if (setting.label === 'コンテキストメニューにアイコンを付ける' && setting.checked ) {
       this.settings.find(s=>s.label === 'ボード').checked = true;
       this.settings.find(s=>s.label === 'デフォルトの地形をCubeに変更').checked = true;
+    } else if (setting.label === '自分のボードにしたときにボード上のカードを手札にする' && setting.checked ) {
+      this.settings.find(s=>s.label === 'ボード').checked = true;
+      this.settings.find(s=>s.label === '手札を回収する').checked = true;
 
+    } else if (setting.label === '手札を回収する' && !setting.checked ) {
+      this.settings.find(s=>s.label === '自分のボードにしたときにボード上のカードを手札にする').checked = false;
     }
 
 
