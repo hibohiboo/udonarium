@@ -39,7 +39,7 @@ export const pluginConfig = {
   , isDeckFromSpreadsheet: params.get('deck-from-spreadsheet') != null
   , isChangeDefaultTerrain: params.get('default-terrain-cube') != null
   , isContextMenuIcon: params.get('context-menu-add-icon') != null
-  , isHandCardSelfHandStorage: params.get('hand-card-self-hand-storage') != null
+  , isHandCardSelfHandStorage: true // params.get('hand-card-self-hand-storage') != null
 } as const;
 
 export const settings = [
