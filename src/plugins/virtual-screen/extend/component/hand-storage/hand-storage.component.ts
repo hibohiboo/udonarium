@@ -25,6 +25,11 @@ const myHandStorageToggleMenu = (that:any) => {
         SoundEffect.play(PresetSound.piecePut);
         const topOfObjects = that.calcTopOfObjects();
         hideVirtualStorage(that, topOfObjects);
+        if(pluginConfig.isHandCardSelfHandStorage) {
+          that._calcTopObjects(that.tabletopService.cards).forEach(({obj:card})=>{
+            card.handOwner = PeerCursor.myCursor.userId;
+          })
+        }
       },
     }
   }
@@ -39,6 +44,11 @@ const myHandStorageToggleMenu = (that:any) => {
       for (const topOfObject of topOfObjects) {
         deleteVirtualScreen(topOfObject.obj);
       }
+      if(pluginConfig.isHandCardSelfHandStorage) {
+        that._calcTopObjects(that.tabletopService.cards).forEach(({obj:card})=>{
+          card.handOwner = '';
+        })
+      }
     },
   }
 }
@@ -49,9 +59,11 @@ const handStorageToggleMenu = (that: any)=> {
     return {
       name: '自分の個人ボードにする', action: () => {
         that.handStorage.owner = PeerCursor.myCursor.userId;
-        that._calcTopObjects(that.tabletopService.cards).forEach(({obj:card})=>{
-          card.handOwner = PeerCursor.myCursor.userId;
-        })
+        if(pluginConfig.isHandCardSelfHandStorage) {
+          that._calcTopObjects(that.tabletopService.cards).forEach(({obj:card})=>{
+            card.handOwner = PeerCursor.myCursor.userId;
+          })
+        }
         SoundEffect.play(PresetSound.piecePut);
       }
     }
@@ -59,9 +71,11 @@ const handStorageToggleMenu = (that: any)=> {
   return {
     name: '共用のボードにする', action: () => {
       that.handStorage.owner = '';
-      that._calcTopObjects(that.tabletopService.cards).forEach(({obj:card})=>{
-        card.handOwner = '';
-      })
+      if(pluginConfig.isHandCardSelfHandStorage) {
+        that._calcTopObjects(that.tabletopService.cards).forEach(({obj:card})=>{
+          card.handOwner = '';
+        })
+      }
       SoundEffect.play(PresetSound.piecePut);
     }
   }
