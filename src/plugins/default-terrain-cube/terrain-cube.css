@@ -1,0 +1,3 @@
+terrain.blink-off .blinking-animation {
+  animation: none !important;
+}

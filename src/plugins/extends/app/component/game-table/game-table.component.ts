@@ -36,6 +36,7 @@ import { onContextMenuDeckFromSpreadSheet } from 'src/plugins/deck-from-spreadsh
 import { Cutin } from '@udonarium/cutin';
 import { CutinView } from '@udonarium/cutin-view';
 import { RooperCard } from '@udonarium/rooper-card';
+import { contextMenuAddIcon } from 'src/plugins/context-menu-add-icon/extend/components/game-table/game-table.component';
 
 @Component({
   selector: 'game-table-extend-plus',
@@ -264,7 +265,7 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
         this.modalService.open(GameTableSettingComponent);
       }
     });
-
+    if(contextMenuAddIcon(this, menuPosition, menuActions)) return;
     this.contextMenuService.open(menuPosition, menuActions, this.currentTable.name);
   }
 

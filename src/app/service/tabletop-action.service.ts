@@ -16,6 +16,7 @@ import { TableSelecter } from '@udonarium/table-selecter';
 import { Terrain } from '@udonarium/terrain';
 import { TextNote } from '@udonarium/text-note';
 import { getCreateBlankCardMenu } from 'src/plugins/add-blank-card/extends/servies/tabletop-action.service';
+import { createDefaultCubeTerrain } from 'src/plugins/default-terrain-cube/extend/service/tabletop-action.service';
 import { getCreateHandStorageMenu } from 'src/plugins/hand-storage/extend/service/tabletop-action.service';
 
 import { ContextMenuAction } from './context-menu.service';
@@ -410,6 +411,8 @@ export class TabletopActionService {
   }
 
   createTerrain(position: PointerCoordinate): Terrain {
+    const extendCubeTerrain = createDefaultCubeTerrain(this, position);
+    if (extendCubeTerrain) return extendCubeTerrain;
     let url: string = './assets/images/tex.jpg';
     let image: ImageFile = ImageStorage.instance.get(url)
     if (!image) image = ImageStorage.instance.add(url);

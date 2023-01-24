@@ -27,9 +27,10 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
+import { blinkOffTerrain } from 'src/plugins/default-terrain-cube/extend/component/terrain/terrain.component';
 import { initKeyboardShortcutTerrain, onKeyDownKeyboardShortcutTerrain } from 'src/plugins/keyboard-shortcut/extend/component/terrain/terrain.component';
 import { is2d } from 'src/plugins/mode2d/extends/components/terrain/terrain.component';
-import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/terrain/terrain.component';
+import { extendCloneRotateOffTerrain, getObjectRotateOffTerrain, rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/terrain/terrain.component';
 import { hideVirtualScreenTerrain, initVirtualScreenTerrain, onMovedVirtualScreenTerrain } from 'src/plugins/virtual-screen/extend/component/terrain/terrain.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
@@ -71,6 +72,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private input: InputHandler = null;
   @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenTerrain(this); };
+  @HostBinding('class.blink-off') get blinkOff(){ return blinkOffTerrain(); };
   constructor(
     private ngZone: NgZone,
     private imageService: ImageService,
@@ -144,8 +146,8 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  private isRotateOffIndividually = false;
-  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOffTerrain(this); };
 
 
   @HostListener('contextmenu', ['$event'])
@@ -193,6 +195,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
           cloneObject.location.x += this.gridSize;
           cloneObject.location.y += this.gridSize;
           cloneObject.isLocked = false;
+          extendCloneRotateOffTerrain(this.terrain, cloneObject);
           if (this.terrain.parent) this.terrain.parent.appendChild(cloneObject);
           SoundEffect.play(PresetSound.blockPut);
         }

@@ -7,6 +7,7 @@
 @import './plugins/add-card-text-writable/extend/component/overview-panel/overview.component.css';
 @import './plugins/add-card-text-writable/extend/component/card-stack/card-stack.component.css';
 @import './plugins/hide-pedestal/hide-pedestal.css';
+@import './plugins/default-terrain-cube/terrain-cube.css';
 
 /* You can add global styles to this file, and also import other style files */
 .is2d .upright-transform[class] {

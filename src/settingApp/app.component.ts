@@ -43,7 +43,13 @@ export class AppComponent implements OnInit {
       this.settings.find(s=>s.label === 'サンプルのキャラクターコマを非表示').checked = true;
     } else if (setting.label === '手札を回収する' && setting.checked ) {
       this.settings.find(s=>s.label === 'ボード').checked = true;
+    } else if (setting.label === 'コンテキストメニューにアイコンを付ける' && setting.checked ) {
+      this.settings.find(s=>s.label === 'ボード').checked = true;
+      this.settings.find(s=>s.label === 'デフォルトの地形をCubeに変更').checked = true;
+
     }
+
+
    }
    useAllInOne(){
     this.settings = this.settings.map(s=>({...s,checked: labelsAllInOne.includes(s.label)}))
