@@ -27,6 +27,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
+import { blinkOffTerrain } from 'src/plugins/default-terrain-cube/extend/component/terrain/terrain.component';
 import { initKeyboardShortcutTerrain, onKeyDownKeyboardShortcutTerrain } from 'src/plugins/keyboard-shortcut/extend/component/terrain/terrain.component';
 import { is2d } from 'src/plugins/mode2d/extends/components/terrain/terrain.component';
 import { extendCloneRotateOffTerrain, getObjectRotateOffTerrain, rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/terrain/terrain.component';
@@ -71,6 +72,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private input: InputHandler = null;
   @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenTerrain(this); };
+  @HostBinding('class.blink-off') get blinkOff(){ return blinkOffTerrain(); };
   constructor(
     private ngZone: NgZone,
     private imageService: ImageService,
