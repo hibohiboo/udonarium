@@ -18,6 +18,8 @@ const DETAIL_COUNT_NAME = 'カウント'
 export class CounterBoardComponent implements OnInit, OnDestroy {
   get size () { return 50; }
   get rightCorner () { return 3; }
+  get lowerRightCorner () { return 5; }
+
   constructor(
     private panelService: PanelService,
     private modalService: ModalService,
@@ -74,10 +76,7 @@ const updatePosition  = (obj, count, that) => {
                  && item.location.x === obj.location.x
                  && item.location.y === obj.location.y
                  && item.posZ > obj.posZ);
-  const nextYCount =  count < rightCorner ? 0 : count - rightCorner;
-  const nextXcount = count - 1 < rightCorner ? count - 1 : rightCorner - 1;  // 0 スタートにするために1を引く
-  const x = (nextXcount) * size;
-  const y = (nextYCount) * size;
+  const {x, y} = calcNextXY(count, that);
 
   // 移動先の一番上のオブジェクトを取得
   const [topObject] = that.tabletopService.terrains
@@ -104,4 +103,27 @@ const updatePosition  = (obj, count, that) => {
 const calcNextHeight = (topObject, size) => {
   const topHeight = topObject.commonDataElement.getFirstElementByName('height').value;
   return Number(topObject.posZ) + Number(topHeight) * size
+}
+
+const calcNextXY = (count, that) => {
+  const size = that.size;
+  const rightCorner = that.rightCorner;
+  const lowerRightCorner = that.lowerRightCorner;
+  const nextYCount =  calcNextY(count, rightCorner, lowerRightCorner);
+  const nextXcount = calcNextX(count, rightCorner, lowerRightCorner);
+  const x = (nextXcount) * size;
+  const y = (nextYCount) * size;
+  return { x, y }
+}
+
+const calcNextX = (count, rightCorner, lowerRightCorner) => {
+  const minus1Count = count - 1;
+  if (minus1Count < rightCorner) return minus1Count;
+  if (count >= lowerRightCorner) return rightCorner - (count - lowerRightCorner) - 1;
+  return rightCorner - 1;
+}
+const calcNextY = (count, rightCorner, lowerRightCorner) => {
+  if (count < rightCorner) return 0;
+  if (count >= lowerRightCorner) return lowerRightCorner - rightCorner;
+  return count - rightCorner
 }
