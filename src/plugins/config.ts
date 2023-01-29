@@ -47,6 +47,7 @@ export const pluginConfig = {
   , isCardBackImageAllChangeMenu: params.get('card-back-image-all-change') != null
   , isMiniMenuFirstOpen: params.get('mini-menu-first-open') != null
   , isEmptyDefaultTable: params.get('empty-default-table') != null
+  , isAddCounterBoard: params.get('add-counter-board') != null
 } as const;
 
 export const settings = [
@@ -76,6 +77,7 @@ export const settings = [
 , { label: '操作音オンオフ', param: 'toggle-sound-effect', checked:false }
 , { label: '視点リセット', param: 'reset-point-of-view', checked:false }
 , { label: '退室ボタンを追加', param: 'add-reload-button', checked:false }
+, { label: 'カウンターボードを追加', param: 'add-counter-board', checked:false }
 , { label: 'デフォルトの地形をCubeに変更', param: 'default-terrain-cube', checked:false }
 , { label: 'コンテキストメニューをアイコンに変更', param: 'context-menu-add-icon', checked:false }
 
@@ -123,6 +125,9 @@ export const labelsAllInOne = [
     ,'コンテキストメニューをアイコンに変更'
     ,'自分のボードにしたときにボード上のカードを手札にする'
     ,'カード裏画像の一括変更'
+    ,'カウンターボードを追加'
+    ,'サンプルのキャラクターコマを非表示'
+    ,'初期テーブル設定をおこなわない'
   ]
 
 export const lablsMinimum = [

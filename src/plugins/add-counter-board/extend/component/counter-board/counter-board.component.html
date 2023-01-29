@@ -1,0 +1,27 @@
+
+<div>
+  <div class="title">
+      <h2>カウンター</h2>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>名前</th>
+        <th>カウント</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let obj of objects">
+        <tr>
+          <td>{{obj.name}}</td>
+          <td>
+            <i class="material-icons button" (click)="obj.decreaseCount()">remove_circle</i>
+            <div>{{obj.count}}</div>
+            <i class="material-icons button" (click)="obj.increaseCount()">add_circle</i>
+          </td>
+      </ng-container>
+    </tbody>
+
+  </table>
+</div>
