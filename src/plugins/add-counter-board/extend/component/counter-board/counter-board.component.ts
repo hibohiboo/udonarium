@@ -17,8 +17,10 @@ const DETAIL_COUNT_NAME = 'カウント'
 })
 export class CounterBoardComponent implements OnInit, OnDestroy {
   get size () { return 50; }
-  get rightCorner () { return 3; }
-  get lowerRightCorner () { return 5; }
+  get rightCorner () { return 2; }
+  get lowerRightCorner () { return 4; }
+  get lowerLeftCorner () { return this.lowerRightCorner + this.rightCorner; }
+  get maxCount () { return 8; }
 
   constructor(
     private panelService: PanelService,
@@ -68,7 +70,6 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
 
 const updatePosition  = (obj, count, that) => {
   const size = that.size;
-  const rightCorner = that.rightCorner;
 
   // 上に積まれているオブジェクトを取得
   const currentPositionObjects = that.tabletopService.terrains
@@ -109,21 +110,24 @@ const calcNextXY = (count, that) => {
   const size = that.size;
   const rightCorner = that.rightCorner;
   const lowerRightCorner = that.lowerRightCorner;
-  const nextYCount =  calcNextY(count, rightCorner, lowerRightCorner);
-  const nextXcount = calcNextX(count, rightCorner, lowerRightCorner);
+  const lowerLeftCorner = that.lowerLeftCorner;
+  const remainder = count % that.maxCount;
+  const nextYCount =  calcNextY(remainder, rightCorner, lowerRightCorner, lowerLeftCorner);
+  const nextXcount = calcNextX(remainder, rightCorner, lowerRightCorner, lowerLeftCorner);
   const x = (nextXcount) * size;
   const y = (nextYCount) * size;
   return { x, y }
 }
 
-const calcNextX = (count, rightCorner, lowerRightCorner) => {
-  const minus1Count = count - 1;
-  if (minus1Count < rightCorner) return minus1Count;
-  if (count >= lowerRightCorner) return rightCorner - (count - lowerRightCorner) - 1;
-  return rightCorner - 1;
+const calcNextX = (count, rightCorner, lowerRightCorner, lowerLeftCorner) => {
+  if (count < rightCorner) return count;
+  if (count >= lowerLeftCorner) return 0;
+  if (count >= lowerRightCorner) return rightCorner - (count - lowerRightCorner);
+  return rightCorner;
 }
-const calcNextY = (count, rightCorner, lowerRightCorner) => {
-  if (count < rightCorner) return 0;
-  if (count >= lowerRightCorner) return lowerRightCorner - rightCorner;
+const calcNextY = (count, rightCorner, lowerRightCorner, lowerLeftCorner) => {
+  if (count <= rightCorner) return 0;
+  if (count >= lowerLeftCorner) return lowerRightCorner - rightCorner - (count - lowerLeftCorner);
+  if (count > lowerRightCorner) return lowerRightCorner - rightCorner;
   return count - rightCorner
 }
