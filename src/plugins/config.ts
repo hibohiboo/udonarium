@@ -41,6 +41,7 @@ export const pluginConfig = {
   , isContextMenuIcon: params.get('context-menu-add-icon') != null
   , isHandCardSelfHandStorage: params.get('hand-card-self-hand-storage') != null
   , isCardBackImageAllChangeMenu: params.get('card-back-image-all-change') != null
+  , isMiniMenuFirstOpen: params.get('mini-menu-first-open') != null
 } as const;
 
 export const settings = [
@@ -50,6 +51,7 @@ export const settings = [
 , { label: 'オブジェクト回転オフ(個別設定可能)', param: 'object-rotate-off-individually', checked: false }
 , { label: 'メニュー最小化', param: 'mini-menu', checked: false }
 , { label: 'メニュー横並び', param: 'horizon-menu', checked: false }
+, { label: 'メニュー最小化有効化時に最初は開いておく', param: 'mini-menu-first-open', checked: false }
 , { label: 'メニューから削除: テーブル設定', param: 'hide-menu-table', checked: false }
 , { label: 'メニューから削除: 画像', param: 'hide-menu-image', checked: false }
 , { label: 'メニューから削除: 音楽', param: 'hide-menu-music', checked: false }
@@ -89,6 +91,7 @@ export const settings = [
 export const labelsAllInOne = [
      'オブジェクト回転オフ(個別設定可能)'
     ,'メニュー最小化'
+    ,'メニュー最小化有効化時に最初は開いておく'
     ,'メニュー横並び'
     ,'ヘルプ表示'
     ,'右クリックメニューでブランクカードを作成'
