@@ -32,7 +32,7 @@ import { initCardComponentForWritableText, isCardWritable } from 'src/plugins/ad
 import { GameCharacterSheetComponentExtendPlus } from 'src/plugins/extends/app/component/game-character-sheet/game-character-sheet.component';
 import { initKeyboardShortcutCard, onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
 import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card.component';
-import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+import { extendCloneRotateOffCard, getObjectRotateOffCard, rotateOffContextMenuCard } from 'src/plugins/object-rotate-off/extends/components/card/card.component';
 import { handCardContextMenu } from 'src/plugins/return-the-hand/extend/component/card/card.component';
 import { tapCardContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
 import { hideVirtualScreenCard, initVirtualScreenCard, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card/card.component';
@@ -214,8 +214,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.startIconHiddenTimer();
   }
 
-  private isRotateOffIndividually = false;
-  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOffCard(this); };
 
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
@@ -268,6 +267,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
           let cloneObject = this.card.clone();
           cloneObject.location.x += this.gridSize;
           cloneObject.location.y += this.gridSize;
+          extendCloneRotateOffCard(this.card, cloneObject);
           cloneObject.toTopmost();
           SoundEffect.play(PresetSound.cardPut);
         }
@@ -278,7 +278,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
           SoundEffect.play(PresetSound.sweep);
         }
       },
-      ...rotateOffIndividuallyContextMenu(this)
+      ...rotateOffContextMenuCard(this)
       , ...virtualScreenContextMenu(this)
     ], this.isVisible ? this.name : 'カード');
   }

@@ -1,11 +1,11 @@
 import { extendCreateForWritableText, initCardClassForWritableText } from 'src/plugins/add-card-text-writable/extend/class/card';
+import { initRotateOffCard } from 'src/plugins/object-rotate-off/extends/class/card';
 import { hasOwnerExtend, initReturnTheHandCard, ownerNameExtend } from 'src/plugins/return-the-hand/extend/class/card';
 import { addSyncHideVirtualScreen } from 'src/plugins/virtual-screen/extend/class/addSyncHideVirtualScreen';
 import { ImageFile } from './core/file-storage/image-file';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { Network } from './core/system';
 import { DataElement } from './data-element';
-import { PeerCursor } from './peer-cursor';
 import { TabletopObject } from './tabletop-object';
 import { moveToTopmost } from './tabletop-object-util';
 
@@ -25,6 +25,7 @@ export class Card extends TabletopObject {
     addSyncHideVirtualScreen(this);
     initCardClassForWritableText(this);
     initReturnTheHandCard(this);
+    initRotateOffCard(this);
   }
 
   get isVisibleOnTable(): boolean { return this.location.name === 'table' && (!this.parentIsAssigned || this.parentIsDestroyed); }

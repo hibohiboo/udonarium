@@ -3,6 +3,7 @@ import { Network } from "@udonarium/core/system";
 import { PeerCursor } from "@udonarium/peer-cursor";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { pluginConfig } from "src/plugins/config";
+import { extendCloneRotateOffCard } from "src/plugins/object-rotate-off/extends/components/card/card.component";
 const menuKey = 'm'
 
 export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
@@ -25,6 +26,7 @@ export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
       const cloneObject =that.card.clone();
       cloneObject.location.x +=that.gridSize;
       cloneObject.location.y +=that.gridSize;
+      extendCloneRotateOffCard(that.card, cloneObject)
       cloneObject.toTopmost();
       SoundEffect.play(PresetSound.cardPut);
       return true
