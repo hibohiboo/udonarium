@@ -108,7 +108,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService,
-    private modalService: ModalService // card-back-image-all-change で使用
+    private modalService: ModalService, // card-back-image-all-change で使用
   ) {
     initVirtualScreenCardStack(this);
     initCardStackComponentForWritableText(this);

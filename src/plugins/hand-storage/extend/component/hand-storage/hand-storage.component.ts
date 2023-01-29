@@ -41,6 +41,8 @@ import { PeerCursor } from '@udonarium/peer-cursor'
 import { tapCardContextMenuHandStorage } from 'src/plugins/tap-card/extend/component/card/card.component'
 import { handCardContextMenuHandStorage } from 'src/plugins/return-the-hand/extend/component/card/card.component'
 import { initKeyboardShortcutHandStorage, onKeyDownKeyboardShortcutHandStorage } from 'src/plugins/keyboard-shortcut/extend/component/hand-storage/hand-storage.component'
+import { cardBackImageAllChangeContextMenuHandStorage } from 'src/plugins/card-back-image-all-change/extend/component/hand-storage/hand-storage.component'
+import { ModalService } from 'service/modal.service'
 
 interface TopOfObject {
   obj: TabletopObject
@@ -112,6 +114,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     private pointerDeviceService: PointerDeviceService,
     private coordinateService: CoordinateService,
     private tabletopActionService: TabletopActionService,
+    private modalService: ModalService, // card-back-image-all-change で使用
   ) {
     initRotateOffHandStorage(this);
     initKeyboardShortcutHandStorage(this);
@@ -229,6 +232,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
             }
            ,...handCardContextMenuHandStorage(this)
            ,...tapCardContextMenuHandStorage(this)
+           ,...cardBackImageAllChangeContextMenuHandStorage(this)
           ],
         }
         , ...returnHandCardContextMenu(this)
