@@ -12,13 +12,13 @@
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let obj of objects">
+      <ng-container *ngFor="let item of objects">
         <tr>
-          <td>{{obj.name}}</td>
+          <td>{{item.name}}</td>
           <td>
-            <i class="material-icons button" (click)="obj.decreaseCount()">remove_circle</i>
-            <div>{{obj.count}}</div>
-            <i class="material-icons button" (click)="obj.increaseCount()">add_circle</i>
+            <i class="material-icons button" (click)="decreaseCount(item.obj)">remove_circle</i>
+            <div>{{item.count}}</div>
+            <i class="material-icons button" (click)="increaseCount(item.obj)">add_circle</i>
           </td>
       </ng-container>
     </tbody>
