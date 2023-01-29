@@ -40,6 +40,7 @@ export const pluginConfig = {
   , isChangeDefaultTerrain: params.get('default-terrain-cube') != null
   , isContextMenuIcon: params.get('context-menu-add-icon') != null
   , isHandCardSelfHandStorage: params.get('hand-card-self-hand-storage') != null
+  , isCardBackImageAllChangeMenu: params.get('card-back-image-all-change') != null
 } as const;
 
 export const settings = [
@@ -82,6 +83,7 @@ export const settings = [
 // , { label: 'Zipから部屋情報読込', param: 'first-fetch-zip-room', checked: false }
 , { label: 'デフォルトの地形をCubeに変更', param: 'default-terrain-cube', checked:false }
 , { label: 'コンテキストメニューにアイコンを付ける', param: 'context-menu-add-icon', checked:false }
+, { label: 'カード裏画像の一括変更', param: 'card-back-image-all-change', checked:false }
 ]
 
 export const labelsAllInOne = [
@@ -105,6 +107,7 @@ export const labelsAllInOne = [
     ,'デフォルトの地形をCubeに変更'
     ,'コンテキストメニューにアイコンを付ける'
     ,'自分のボードにしたときにボード上のカードを手札にする'
+    ,'カード裏画像の一括変更'
   ]
 
 export const lablsMinimum = [

@@ -2,7 +2,7 @@ import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { ContextMenuSeparator } from "service/context-menu.service";
 import { pluginConfig } from "src/plugins/config";
 
-// TODO: ダイス、カード、デッキはcomponentsフォルダに作成せず、直接 import している。 どちらかに統一したい。
+// TODO: ダイス、デッキはcomponentsフォルダに作成せず、直接 import している。 どちらかに統一したい。
 
 export const rotateOffIndividuallyContextMenu = (that:any) => pluginConfig.isOffObjectRotateIndividually ? [
     ContextMenuSeparator,
