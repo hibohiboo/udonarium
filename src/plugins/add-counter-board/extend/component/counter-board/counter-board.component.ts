@@ -8,6 +8,8 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { CoordinateService } from 'service/coordinate.service';
 
+const DETAIL_COUNT_NAME = 'カウント'
+
 @Component({
   selector: 'counter-board',
   templateUrl: './counter-board.component.html',
@@ -15,6 +17,7 @@ import { CoordinateService } from 'service/coordinate.service';
 })
 export class CounterBoardComponent implements OnInit, OnDestroy {
   get size () { return 50; }
+  get rightCorner () { return 3; }
   constructor(
     private panelService: PanelService,
     private modalService: ModalService,
@@ -32,9 +35,8 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
   }
   get objects() {
-    const size = this.size;
     return this.tabletopService.terrains.map(obj=> {
-     const countElement = obj.detailDataElement.getFirstElementByName('カウント');
+     const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
      const count = Number(countElement.value);
      return {
               name: obj.name
@@ -45,33 +47,37 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   }
 
   increaseCount(obj) {
-    const countElement = obj.detailDataElement.getFirstElementByName('カウント');
+    const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
     const count = Number(countElement.value);
     const newValue = count + 1;
     countElement.value = `${newValue}`;
-    updatePosition(obj, newValue, this.size, this);
+    updatePosition(obj, newValue, this);
   }
 
   decreaseCount(obj) {
-    const countElement = obj.detailDataElement.getFirstElementByName('カウント');
+    const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
     const count = Number(countElement.value);
     const newValue = count - 1;
     countElement.value = `${newValue}`;
-    updatePosition(obj, newValue, this.size, this);
+    updatePosition(obj, newValue, this);
   }
 
 }
 
-const updatePosition  = (obj, count, size, that) => {
+const updatePosition  = (obj, count, that) => {
+  const size = that.size;
+  const rightCorner = that.rightCorner;
+
   // 上に積まれているオブジェクトを取得
   const currentPositionObjects = that.tabletopService.terrains
     .filter(item => item.detailDataElement.getFirstElementByName('周囲カウンター')
                  && item.location.x === obj.location.x
                  && item.location.y === obj.location.y
                  && item.posZ > obj.posZ);
-
-  const x = (count - 1) * size; // 0 スタートにするために1を引く
-  const y = obj.location.y;
+  const nextYCount =  count < rightCorner ? 0 : count - rightCorner;
+  const nextXcount = count - 1 < rightCorner ? count - 1 : rightCorner - 1;  // 0 スタートにするために1を引く
+  const x = (nextXcount) * size;
+  const y = (nextYCount) * size;
 
   // 移動先の一番上のオブジェクトを取得
   const [topObject] = that.tabletopService.terrains
@@ -81,9 +87,12 @@ const updatePosition  = (obj, count, size, that) => {
   ).sort((a,b)=> b.posZ - a.posZ);
 
   obj.location.x = x;
+  obj.location.y = y;
 
   obj.posZ = topObject == null ? 0 : calcNextHeight(topObject, size);
   obj.update();
+
+  // 上に積まれていたオブジェクトを下げる
   const objHeight = obj.commonDataElement.getFirstElementByName('height').value;
   const height = size * Number(objHeight)
   currentPositionObjects.forEach(item=>{

@@ -223,6 +223,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       if(!pluginConfig.isHideFirstPeer && !pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponent, peerOption);
       if(!pluginConfig.isHideFirstPeer && pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponentExtendPlus, peerOption);
       if(!pluginConfig.isHideFirstChat) this.panelSerive.open(ChatWindowComponent, chatOption);
+      if(pluginConfig.isAddCounterBoard) this.panelSerive.open(CounterBoardComponent, { width: 500, height: 450, left: 300,top: 100 });
       fetchZipRoom();
     }, 0);
   }
