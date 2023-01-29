@@ -117,8 +117,9 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
         resetViewHandler(this, event)
       })
       ;
+    if(!pluginConfig.isEmptyDefaultTable)
     this.tabletopActionService.makeDefaultTable();
-    if(pluginConfig.isEmptyDefaultTabletopObjects) return;
+    if(!pluginConfig.isEmptyDefaultTabletopObjects)
     this.tabletopActionService.makeDefaultTabletopObjects();
   }
 

@@ -45,18 +45,18 @@ export class AppComponent implements OnInit {
       this.settings.find(s=>s.label === 'サンプルのキャラクターコマを非表示').checked = true;
     } else if (setting.label === '手札を回収する' && setting.checked ) {
       this.settings.find(s=>s.label === 'ボード').checked = true;
-    } else if (setting.label === 'コンテキストメニューにアイコンを付ける' && setting.checked ) {
+    } else if (setting.label === 'コンテキストメニューをアイコンに変更' && setting.checked ) {
       this.settings.find(s=>s.label === 'ボード').checked = true;
       this.settings.find(s=>s.label === 'デフォルトの地形をCubeに変更').checked = true;
+      this.settings.find(s=>s.label === 'スプレッドシートからデッキ読込').checked = false;
+    } else if (setting.label === 'スプレッドシートからデッキ読込' && setting.checked ) {
+      this.settings.find(s=>s.label === 'コンテキストメニューをアイコンに変更').checked = false;
     } else if (setting.label === '自分のボードにしたときにボード上のカードを手札にする' && setting.checked ) {
       this.settings.find(s=>s.label === 'ボード').checked = true;
       this.settings.find(s=>s.label === '手札を回収する').checked = true;
-
     } else if (setting.label === '手札を回収する' && !setting.checked ) {
       this.settings.find(s=>s.label === '自分のボードにしたときにボード上のカードを手札にする').checked = false;
     }
-
-
    }
    useAllInOne(){
     this.settings = this.settings.map(s=>({...s,checked: labelsAllInOne.includes(s.label)}))
