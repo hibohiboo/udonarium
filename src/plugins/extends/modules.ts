@@ -1,5 +1,6 @@
 import { CardListImageComponent } from "../add-card-text-writable/extend/component/card-list-image/card-list-image.component"
 import { CardStackListComponentExtendPlus } from "../add-card-text-writable/extend/component/card-stack-list/card-stack-list.component"
+import { CounterBoardWindowComponent } from "../add-counter-board/extend/component/counter-board-window/counter-board-window.component"
 import { CounterBoardComponent } from "../add-counter-board/extend/component/counter-board/counter-board.component"
 import { HandStorageComponent } from "../hand-storage/extend/component/hand-storage/hand-storage.component"
 import { HandStorageService } from "../hand-storage/extend/service/hand-storage.service"
@@ -30,6 +31,7 @@ const components = [
   , PeerMenuComponentExtendPlus
   , ContextMenuComponentExtendPlus
   , CounterBoardComponent
+  , CounterBoardWindowComponent
 ]
 const imports = []
 const services = [PanelServiceExtnedPlus, HandStorageService]

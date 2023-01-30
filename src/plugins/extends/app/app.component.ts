@@ -40,7 +40,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
 import { useCounterBoard } from 'src/plugins/add-counter-board/extend/app.component';
-import { CounterBoardComponent } from 'src/plugins/add-counter-board/extend/component/counter-board/counter-board.component';
+import { CounterBoardWindowComponent } from 'src/plugins/add-counter-board/extend/component/counter-board-window/counter-board-window.component';
 import { pluginConfig } from 'src/plugins/config';
 import { setSpreadSheetAPIKey } from 'src/plugins/deck-from-spreadsheet/extend/app.component';
 import { hideMenu, horizonMenu, menuCount, minimizableMenu } from 'src/plugins/extend-menu/extends/app/app.component';
@@ -223,7 +223,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       if(!pluginConfig.isHideFirstPeer && !pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponent, peerOption);
       if(!pluginConfig.isHideFirstPeer && pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponentExtendPlus, peerOption);
       if(!pluginConfig.isHideFirstChat) this.panelSerive.open(ChatWindowComponent, chatOption);
-      if(pluginConfig.isAddCounterBoard) this.panelSerive.open(CounterBoardComponent, { width: 500, height: 450, left: 300,top: 100 });
+      if(pluginConfig.isAddCounterBoard) this.panelSerive.open(CounterBoardWindowComponent, { width: 500, height: 450, left: 300,top: 100 });
       fetchZipRoom();
     }, 0);
   }
@@ -264,8 +264,8 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       case 'GameObjectInventoryComponent':
         component = GameObjectInventoryComponent;
         break;
-      case 'CounterBoardComponent':
-        component = CounterBoardComponent;
+      case 'CounterBoardWindowComponent':
+        component = CounterBoardWindowComponent;
         break;
     }
     if (component) {
