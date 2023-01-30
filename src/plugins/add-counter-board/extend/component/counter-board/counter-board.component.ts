@@ -1,12 +1,5 @@
-import { Component, OnDestroy, OnInit,HostListener, Input, } from '@angular/core';
-import { EventSystem } from '@udonarium/core/system';
-import { ModalService } from 'service/modal.service';
-import { PanelService } from 'service/panel.service';
+import { Component, OnDestroy, OnInit, Input, } from '@angular/core';
 import { TabletopService } from 'service/tabletop.service';
-import { ContextMenuService, ContextMenuAction } from 'service/context-menu.service';
-import { PointerDeviceService } from 'service/pointer-device.service';
-import { TabletopActionService } from 'service/tabletop-action.service';
-import { CoordinateService } from 'service/coordinate.service';
 import { CounterBoard } from '../../class/counter-board';
 
 const DETAIL_COUNT_NAME = 'カウント'
@@ -22,6 +15,8 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   get rightCorner () { return this.counterBoard.rightCorner; }
   get lowerRightCorner () { return this.counterBoard.lowerRightCorner; }
   get lowerLeftCorner () { return this.counterBoard.lowerLeftCorner; }
+  get startPositionX() { return this.counterBoard.startPositionX; }
+  get startPositionY() { return this.counterBoard.startPositionY; }
   get maxCount () { return this.counterBoard.maxCount; }
   get name() { return this.counterBoard.name }
   constructor(
@@ -33,15 +28,12 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
 
   get objects() {
     const name = this.name;
-    return this.tabletopService.terrains.filter(obj=>!!obj.detailDataElement.getFirstElementByName(name)).map(obj=> {
-     const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
-     const count = Number(countElement.value);
-     return {
-              name: obj.name
-            , count
-            , obj
-          }
-    })
+    return this.tabletopService.terrains.filter(obj=>!!obj.detailDataElement.getFirstElementByName(name))
+                .map(obj=> {
+                    const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
+                    const count = Number(countElement.value);
+                    return { name: obj.name, count, obj };
+                })
   }
 
   increaseCount(obj) {
@@ -70,6 +62,7 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
 
 const updatePosition  = (obj, count, that) => {
   const size = that.size;
+
 
   // 上に積まれているオブジェクトを取得
   const currentPositionObjects = that.tabletopService.terrains
@@ -114,8 +107,9 @@ const calcNextXY = (count, that) => {
   const remainder = count % that.maxCount;
   const nextYCount =  calcNextY(remainder, rightCorner, lowerRightCorner, lowerLeftCorner);
   const nextXcount = calcNextX(remainder, rightCorner, lowerRightCorner, lowerLeftCorner);
-  const x = (nextXcount) * size;
-  const y = (nextYCount) * size;
+
+  const x = (nextXcount) * size + that.startPositionX;
+  const y = (nextYCount) * size + that.startPositionY;
   return { x, y }
 }
 

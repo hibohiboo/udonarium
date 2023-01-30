@@ -10,6 +10,9 @@ export class CounterBoard extends TabletopObject {
   declare maxCount: number; // 盤上の数字の最大値
   declare rightCorner: number; // 右上角の数字
   declare lowerRightCorner: number; // 右下角の数字
+  declare startPositionX: number; // 開始位置: x
+  declare startPositionY: number; // 開始位置: y
+
   constructor(identifier?: string) {
     super(identifier);
     SyncVar()(this, 'name');
@@ -22,7 +25,10 @@ export class CounterBoard extends TabletopObject {
     this.rightCorner = 2;
     SyncVar()(this, 'lowerRightCorner');
     this.lowerRightCorner = 4;
-    console.warn('create counter board')
+    SyncVar()(this, 'startPositionX');
+    this.startPositionX = 0;
+    SyncVar()(this, 'startPositionY');
+    this.startPositionY = 0;
   }
   get lowerLeftCorner (): number { return this.lowerRightCorner + this.rightCorner; }
   static create() {

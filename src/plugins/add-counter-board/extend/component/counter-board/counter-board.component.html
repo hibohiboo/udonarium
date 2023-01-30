@@ -4,6 +4,10 @@
     <input type="text" [(ngModel)]="counterBoard.name" /><button (click)="delete()">削除</button><br />
     <label>サイズ: <input class="num-input" type="number" [(ngModel)]="counterBoard.size" /></label>
     <label>最大値: <input class="num-input" type="number" [(ngModel)]="counterBoard.maxCount" /></label>
+    <label>初期X: <input class="num-input" type="number" [(ngModel)]="counterBoard.startPositionX" /></label>
+    <label>初期Y: <input class="num-input" type="number" [(ngModel)]="counterBoard.startPositionY" /></label>
+
+    <br />
     <label>右上端: <input class="num-input" type="number" [(ngModel)]="counterBoard.rightCorner" /></label>
     <label>右下端: <input class="num-input" type="number" [(ngModel)]="counterBoard.lowerRightCorner" /></label>
   </div>
