@@ -2,10 +2,10 @@
 <div>
   <div>
     <input type="text" [(ngModel)]="counterBoard.name" /><br />
-    <label>サイズ: <input type="number" [(ngModel)]="counterBoard.size" /></label>
-    <label>最大値: <input type="number" [(ngModel)]="counterBoard.maxCount" /></label>
-    <label>右上端: <input type="number" [(ngModel)]="counterBoard.rightCorner" /></label>
-    <label>右下端: <input type="number" [(ngModel)]="counterBoard.lowerRightCorner" /></label>
+    <label>サイズ: <input class="num-input" type="number" [(ngModel)]="counterBoard.size" /></label>
+    <label>最大値: <input class="num-input" type="number" [(ngModel)]="counterBoard.maxCount" /></label>
+    <label>右上端: <input class="num-input" type="number" [(ngModel)]="counterBoard.rightCorner" /></label>
+    <label>右下端: <input class="num-input" type="number" [(ngModel)]="counterBoard.lowerRightCorner" /></label>
   </div>
 
   <h3>{{name}}</h3>
@@ -17,7 +17,7 @@
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let item of objects">
+      <ng-container *ngFor="let item of objects; trackBy: trackByItem">
         <tr>
           <td>{{item.name}}</td>
           <td>

@@ -59,6 +59,9 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
     countElement.value = `${newValue}`;
     updatePosition(obj, newValue, this);
   }
+  trackByItem(index: number, value: CounterBoard): string {
+    return value ? value.identifier : null;
+  }
 }
 
 const updatePosition  = (obj, count, that) => {

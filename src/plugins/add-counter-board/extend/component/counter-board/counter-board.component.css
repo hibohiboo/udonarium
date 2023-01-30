@@ -31,3 +31,7 @@ table tr td div {
   height: 30px;
   overflow: hidden;
 }
+
+.num-input {
+  width: 40px;
+}
