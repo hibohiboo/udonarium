@@ -95,7 +95,8 @@ const updatePositionX  = (obj, count, that, sign: 1 | -1) => {
   return updatePositionXDirection(obj, count, that, calcNextXDirection(sign))
 }
 const updatePositionY  = (obj, count, that, sign: 1 | -1) => {
-  updatePositionStack(obj, count, that, calcNextYDirection(sign));
+  if(that.samePositionDisplay === 'stack') updatePositionStack(obj, count, that, calcNextYDirection(sign));
+  return updatePositionYDirection(obj, count, that, calcNextYDirection(sign));
 }
 
 
@@ -146,7 +147,7 @@ const updatePositionXDirection  = (obj, count, that, calc) => {
                  && item.location.x === obj.location.x
                  && sort(obj, item) > 0
                  );
-  const {x, y} = calc(count, that);
+  const {x} = calc(count, that);
 
   // 移動先の一番上のオブジェクトを取得
   const [topObject] = that.tabletopService.terrains
@@ -169,13 +170,55 @@ const updatePositionXDirection  = (obj, count, that, calc) => {
   });
 }
 
+const updatePositionYDirection  = (obj, count, that, calc) => {
+  const size = that.size;
+  const sort = that.samePositionDisplay === 'right' ? (a,b)=> b.location.x - a.location.x : (a,b)=> a.location.x - b.location.x;
+  const sign = that.samePositionDisplay === 'right' ? 1 : -1;
+
+  // 同じ位置のオブジェクトを取得
+  const currentPositionObjects = that.tabletopService.terrains
+    .filter(item => !!item.detailDataElement.getFirstElementByName(that.name)
+                 && item.location.y === obj.location.y
+                 && sort(obj, item) > 0
+                 );
+  const {y} = calc(count, that);
+
+  // 移動先の一番上のオブジェクトを取得
+  const [topObject] = that.tabletopService.terrains
+  .filter(item => !!item.detailDataElement.getFirstElementByName(that.name)
+               && item.location.y === y
+  ).sort(sort);
+
+  obj.location.y = y;
+  obj.location.x = topObject == null ? 0 : calcNextWidth(topObject, obj, size, sign);
+  obj.posZ = 0;
+
+  obj.update();
+
+  // 上に積まれていたオブジェクトを下げる
+  const objDiff = obj.commonDataElement.getFirstElementByName('width').value;
+  const diff = sign * size * Number(objDiff)
+  currentPositionObjects.forEach(item=>{
+    item.location.x = item.location.x - diff;
+    item.update();
+  });
+}
+
 const calcNextDepth = (topObject, self, size, sign: 1 | -1) => {
   const topValue = topObject.commonDataElement.getFirstElementByName('depth').value;
   if(sign>0) {
     return Number(topObject.location.y) + Number(topValue) * size
   }
-  const selfValue = topObject.commonDataElement.getFirstElementByName('depth').value;
+  const selfValue = self.commonDataElement.getFirstElementByName('depth').value;
   return Number(topObject.location.y) - Number(selfValue) * size
+}
+const calcNextWidth = (topObject, self, size, sign: 1 | -1) => {
+  const topValue = topObject.commonDataElement.getFirstElementByName('width').value;
+  if(sign>0) {
+    return Number(topObject.location.x) + Number(topValue) * size
+  }
+  const selfValue = self.commonDataElement.getFirstElementByName('width').value;
+  return Number(topObject.location.x) - Number(selfValue) * size
 }
 
 const calcNextHeight = (topObject, size) => {
