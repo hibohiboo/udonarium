@@ -13,6 +13,7 @@ export class CounterBoard extends TabletopObject {
   declare startPositionX: number; // 開始位置: x
   declare startPositionY: number; // 開始位置: y
   declare direction: 'toRight' | 'toLeft' | 'toTop' | 'toBottom' | 'clockwise'
+  declare samePositionDisplay: 'right' | 'lefte' | 'top' | 'bottom' | 'stack'
 
   constructor(identifier?: string) {
     super(identifier);
@@ -32,6 +33,8 @@ export class CounterBoard extends TabletopObject {
     this.startPositionY = 0;
     SyncVar()(this, 'direction');
     this.direction = 'toRight';
+    SyncVar()(this, 'samePositionDisplay');
+    this.samePositionDisplay = 'stack';
   }
   get lowerLeftCorner (): number { return this.lowerRightCorner + this.rightCorner; }
   static create() {

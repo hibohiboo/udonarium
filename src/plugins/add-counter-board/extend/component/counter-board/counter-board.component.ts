@@ -20,6 +20,8 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   get maxCount () { return this.counterBoard.maxCount; }
   get name() { return this.counterBoard.name }
   get direction() { return this.counterBoard.direction; }
+  get samePositionDisplay() { return this.counterBoard.samePositionDisplay; }
+
   constructor(
     private tabletopService: TabletopService,
   ) { }
@@ -69,6 +71,9 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   selectDirection(value) {
     this.counterBoard.direction = value;
   }
+  selectSamePosition(value) {
+    this.counterBoard.samePositionDisplay = value;
+  }
 }
 
 const updatePosition  = (obj, count, that) => {
@@ -86,7 +91,8 @@ const updatePosition  = (obj, count, that) => {
 }
 
 const updatePositionX  = (obj, count, that, sign: 1 | -1) => {
-  updatePositionStack(obj, count, that, calcNextXDirection(sign));
+  if(that.samePositionDisplay === 'stack') return updatePositionStack(obj, count, that, calcNextXDirection(sign));
+  return updatePositionXDirection(obj, count, that, calcNextXDirection(sign))
 }
 const updatePositionY  = (obj, count, that, sign: 1 | -1) => {
   updatePositionStack(obj, count, that, calcNextYDirection(sign));
@@ -128,6 +134,48 @@ const updatePositionStack  = (obj, count, that, calc) => {
     item.posZ = item.posZ - height;
     item.update();
   });
+}
+
+const updatePositionXDirection  = (obj, count, that, calc) => {
+  const size = that.size;
+  const sort = that.samePositionDisplay === 'bottom' ? (a,b)=> b.location.y - a.location.y : (a,b)=> a.location.y - b.location.y;
+  const sign = that.samePositionDisplay === 'bottom' ? 1 : -1;
+  // 同じ位置のオブジェクトを取得
+  const currentPositionObjects = that.tabletopService.terrains
+    .filter(item => !!item.detailDataElement.getFirstElementByName(that.name)
+                 && item.location.x === obj.location.x
+                 && sort(obj, item) > 0
+                 );
+  const {x, y} = calc(count, that);
+
+  // 移動先の一番上のオブジェクトを取得
+  const [topObject] = that.tabletopService.terrains
+  .filter(item => !!item.detailDataElement.getFirstElementByName(that.name)
+               && item.location.x === x
+  ).sort(sort);
+
+  obj.location.x = x;
+  obj.location.y = topObject == null ? 0 : calcNextDepth(topObject, obj, size, sign);
+  obj.posZ = 0;
+
+  obj.update();
+
+  // 上に積まれていたオブジェクトを下げる
+  const objDiff = obj.commonDataElement.getFirstElementByName('depth').value;
+  const diff = sign * size * Number(objDiff)
+  currentPositionObjects.forEach(item=>{
+    item.location.y = item.location.y - diff;
+    item.update();
+  });
+}
+
+const calcNextDepth = (topObject, self, size, sign: 1 | -1) => {
+  const topValue = topObject.commonDataElement.getFirstElementByName('depth').value;
+  if(sign>0) {
+    return Number(topObject.location.y) + Number(topValue) * size
+  }
+  const selfValue = topObject.commonDataElement.getFirstElementByName('depth').value;
+  return Number(topObject.location.y) - Number(selfValue) * size
 }
 
 const calcNextHeight = (topObject, size) => {
