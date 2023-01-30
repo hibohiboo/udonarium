@@ -1,3 +1,4 @@
+import { innerXMLCounterBoard } from 'src/plugins/add-counter-board/extend/class/room';
 import { innerXMLHandStorageObject } from 'src/plugins/hand-storage/extend/class/room';
 import { Card } from './card';
 import { CardStack } from './card-stack';
@@ -30,6 +31,7 @@ export class Room extends GameObject implements InnerXml {
     objects = objects.concat(ObjectStore.instance.getObjects(Card).filter((obj) => { return obj.parent === null }));
     objects = objects.concat(ObjectStore.instance.getObjects(DiceSymbol));
     objects = innerXMLHandStorageObject(objects)
+    objects = innerXMLCounterBoard(objects)
     for (let object of objects) {
       xml += object.toXml();
     }

@@ -31,7 +31,10 @@ export class CounterBoardWindowComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     Promise.resolve().then(() => this.panelService.title = 'カウンターボード');
-    if(!this.currentBoard) this.currentBoard = new CounterBoard();
+    if(!this.currentBoard){
+      this.currentBoard = new CounterBoard();
+      this.currentBoard.initialize();
+    }
   }
 
   ngOnDestroy() { }
