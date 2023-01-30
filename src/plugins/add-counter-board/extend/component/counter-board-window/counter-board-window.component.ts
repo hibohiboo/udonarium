@@ -19,9 +19,9 @@ const DETAIL_COUNT_NAME = 'カウント'
 })
 export class CounterBoardWindowComponent implements OnInit, OnDestroy {
   private _currentBoardIdentifier = '';
-  private _currentBoard: CounterBoard | null = null;
   get currentBoard() : CounterBoard | null {
-    if(this._currentBoard)return this._currentBoard;
+    const currentBoard = this.counterBoardService.counterBoards.find(item=>this._currentBoardIdentifier === item.identifier);
+    if(currentBoard) return currentBoard;
     const [current] = this.counterBoardService.counterBoards
     return current;
   };
@@ -47,7 +47,8 @@ export class CounterBoardWindowComponent implements OnInit, OnDestroy {
   ngOnDestroy() { }
 
   addCounterBoard() {
-    this._currentBoard = CounterBoard.create();
+    const board = CounterBoard.create();
+    this._currentBoardIdentifier = board.identifier;
   }
   trackByBoard() {
     return this._currentBoardIdentifier;

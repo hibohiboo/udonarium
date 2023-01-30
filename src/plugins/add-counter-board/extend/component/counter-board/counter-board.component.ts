@@ -62,6 +62,10 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   trackByItem(index: number, value: CounterBoard): string {
     return value ? value.identifier : null;
   }
+  delete() {
+    if(!confirm(`カウンターボード ${this.counterBoard.name} を削除してもよいですか？`)) return;
+    this.counterBoard.destroy();
+  }
 }
 
 const updatePosition  = (obj, count, that) => {
