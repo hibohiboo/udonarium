@@ -34,7 +34,7 @@ export class HandStorageService {
       })
       .on('XML_LOADED', (event) => {
         const xmlElement: Element = event.data.xmlElement
-        if (xmlElement.firstChild.nodeName !== 'hand-storage') return
+        if (xmlElement?.firstChild?.nodeName !== 'hand-storage') return
         const gameObject = ObjectSerializer.instance.parseXml(xmlElement)
         if (gameObject instanceof HandStorage) {
           SoundEffect.play(PresetSound.cardPut)
