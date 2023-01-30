@@ -18,7 +18,7 @@ export class CounterBoard extends TabletopObject {
   constructor(identifier?: string) {
     super(identifier);
     SyncVar()(this, 'name');
-    this.name = '周囲カウンター';
+    this.name = '新規カウンター';
     SyncVar()(this, 'size');
     this.size = 50;
     SyncVar()(this, 'maxCount');
@@ -32,7 +32,7 @@ export class CounterBoard extends TabletopObject {
     SyncVar()(this, 'startPositionY');
     this.startPositionY = 0;
     SyncVar()(this, 'direction');
-    this.direction = 'toRight';
+    this.direction = 'clockwise';
     SyncVar()(this, 'samePositionDisplay');
     this.samePositionDisplay = 'stack';
   }
