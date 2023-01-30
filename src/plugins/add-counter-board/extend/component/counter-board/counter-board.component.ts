@@ -28,11 +28,18 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
 
   get objects() {
     const name = this.name;
+    const that = this;
     return this.tabletopService.terrains.filter(obj=>!!obj.detailDataElement.getFirstElementByName(name))
                 .map(obj=> {
                     const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
                     const count = Number(countElement.value);
-                    return { name: obj.name, count, obj };
+                    return { name: obj.name, obj
+                      ,get count(){ return countElement.value; }
+                      ,set count(value) {
+                        countElement.value = `${value}`;
+                        updatePosition(obj, value, that);
+                       }
+                     };
                 })
   }
 

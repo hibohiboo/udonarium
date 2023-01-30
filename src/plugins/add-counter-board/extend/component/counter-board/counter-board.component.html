@@ -26,7 +26,7 @@
           <td>{{item.name}}</td>
           <td>
             <i class="material-icons button" (click)="decreaseCount(item.obj)">remove_circle</i>
-            <div>{{item.count}}</div>
+            <div> <input class="num-input" type="number" [(ngModel)]="item.count" /></div>
             <i class="material-icons button" (click)="increaseCount(item.obj)">add_circle</i>
           </td>
       </ng-container>
