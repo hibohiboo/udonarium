@@ -10,7 +10,7 @@
     <br />
     <label>
       方向
-      <select class="direction"  (input)="selectDirection($event.target.value)">
+      <select class="direction" [(ngModel)]="counterBoard.direction">
           <option value="toRight">→</option>
           <option value="toLeft">←</option>
           <option value="toTop">↑</option>
@@ -20,7 +20,7 @@
     </label>
     <label *ngIf="direction !== 'clockwise'">
       重ね方
-      <select  [(ngModel)]="counterBoard.samePositionDisplay">
+      <select [(ngModel)]="counterBoard.samePositionDisplay">
           <option *ngIf="['toTop','toBottom'].includes(direction)" value="right">右に</option>
           <option *ngIf="['toTop','toBottom'].includes(direction)" value="left">左に</option>
           <option *ngIf="['toRight','toLeft'].includes(direction)" value="top">上に</option>

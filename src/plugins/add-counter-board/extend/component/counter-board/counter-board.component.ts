@@ -156,7 +156,7 @@ const updatePositionXDirection  = (obj, count, that, calc) => {
   ).sort(sort);
 
   obj.location.x = x;
-  obj.location.y = topObject == null ? 0 : calcNextDepth(topObject, obj, size, sign);
+  obj.location.y = topObject == null ? that.startPositionY : calcNextDepth(topObject, obj, size, sign);
   obj.posZ = 0;
 
   obj.update();
@@ -190,7 +190,7 @@ const updatePositionYDirection  = (obj, count, that, calc) => {
   ).sort(sort);
 
   obj.location.y = y;
-  obj.location.x = topObject == null ? 0 : calcNextWidth(topObject, obj, size, sign);
+  obj.location.x = topObject == null ? that.startPositionX : calcNextWidth(topObject, obj, size, sign);
   obj.posZ = 0;
 
   obj.update();
