@@ -76,6 +76,10 @@ const updatePosition  = (obj, count, that) => {
     updatePositionClockwise(obj, count, that);
   } else if (that.direction === 'toRight') {
     updatePositionX(obj, count, that, 1);
+  } else if (that.direction === 'toTop') {
+    updatePositionY(obj, count, that, -1);
+  } else if (that.direction === 'toBottom') {
+    updatePositionY(obj, count, that, 1);
   } else if (that.direction === 'toLeft') {
     updatePositionX(obj, count, that, -1);
   }
@@ -84,6 +88,10 @@ const updatePosition  = (obj, count, that) => {
 const updatePositionX  = (obj, count, that, sign: 1 | -1) => {
   updatePositionStack(obj, count, that, calcNextXDirection(sign));
 }
+const updatePositionY  = (obj, count, that, sign: 1 | -1) => {
+  updatePositionStack(obj, count, that, calcNextYDirection(sign));
+}
+
 
 const updatePositionClockwise  = (obj, count, that) => {
   updatePositionStack(obj, count, that, calcNextXY);
@@ -133,6 +141,15 @@ const calcNextXDirection = (sign: 1 | -1) => (count, that) => {
 
   const x = sign * (remainder) * size + that.startPositionX;
   const y = that.startPositionY;
+  return { x, y }
+}
+
+const calcNextYDirection = (sign: 1 | -1) => (count, that) => {
+  const size = that.size;
+  const remainder = count % that.maxCount;
+
+  const x = that.startPositionX;
+  const y = sign * (remainder) * size +that.startPositionY;
   return { x, y }
 }
 
