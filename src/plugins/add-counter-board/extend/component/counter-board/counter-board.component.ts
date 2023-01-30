@@ -19,6 +19,7 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   get startPositionY() { return this.counterBoard.startPositionY; }
   get maxCount () { return this.counterBoard.maxCount; }
   get name() { return this.counterBoard.name }
+  get direction() { return this.counterBoard.direction; }
   constructor(
     private tabletopService: TabletopService,
   ) { }
@@ -32,7 +33,7 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
     return this.tabletopService.terrains.filter(obj=>!!obj.detailDataElement.getFirstElementByName(name))
                 .map(obj=> {
                     const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
-                    const count = Number(countElement.value);
+
                     return { name: obj.name, obj
                       ,get count(){ return countElement.value; }
                       ,set count(value) {
@@ -65,11 +66,31 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
     if(!confirm(`カウンターボード ${this.counterBoard.name} を削除してもよいですか？`)) return;
     this.counterBoard.destroy();
   }
+  selectDirection(value) {
+    this.counterBoard.direction = value;
+  }
 }
 
 const updatePosition  = (obj, count, that) => {
-  const size = that.size;
+  if (that.direction === 'clockwise') {
+    updatePositionClockwise(obj, count, that);
+  } else if (that.direction === 'toRight') {
+    updatePositionX(obj, count, that, 1);
+  } else if (that.direction === 'toLeft') {
+    updatePositionX(obj, count, that, -1);
+  }
+}
 
+const updatePositionX  = (obj, count, that, sign: 1 | -1) => {
+  updatePositionStack(obj, count, that, calcNextXDirection(sign));
+}
+
+const updatePositionClockwise  = (obj, count, that) => {
+  updatePositionStack(obj, count, that, calcNextXY);
+}
+
+const updatePositionStack  = (obj, count, that, calc) => {
+  const size = that.size;
 
   // 上に積まれているオブジェクトを取得
   const currentPositionObjects = that.tabletopService.terrains
@@ -77,7 +98,7 @@ const updatePosition  = (obj, count, that) => {
                  && item.location.x === obj.location.x
                  && item.location.y === obj.location.y
                  && item.posZ > obj.posZ);
-  const {x, y} = calcNextXY(count, that);
+  const {x, y} = calc(count, that);
 
   // 移動先の一番上のオブジェクトを取得
   const [topObject] = that.tabletopService.terrains
@@ -104,6 +125,15 @@ const updatePosition  = (obj, count, that) => {
 const calcNextHeight = (topObject, size) => {
   const topHeight = topObject.commonDataElement.getFirstElementByName('height').value;
   return Number(topObject.posZ) + Number(topHeight) * size
+}
+
+const calcNextXDirection = (sign: 1 | -1) => (count, that) => {
+  const size = that.size;
+  const remainder = count % that.maxCount;
+
+  const x = sign * (remainder) * size + that.startPositionX;
+  const y = that.startPositionY;
+  return { x, y }
 }
 
 const calcNextXY = (count, that) => {

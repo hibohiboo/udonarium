@@ -8,8 +8,19 @@
     <label>初期Y: <input class="num-input" type="number" [(ngModel)]="counterBoard.startPositionY" /></label>
 
     <br />
-    <label>右上端: <input class="num-input" type="number" [(ngModel)]="counterBoard.rightCorner" /></label>
-    <label>右下端: <input class="num-input" type="number" [(ngModel)]="counterBoard.lowerRightCorner" /></label>
+    <label>
+      方向
+      <select class="direction"  (input)="selectDirection($event.target.value)">
+          <option value="toRight">→</option>
+          <option value="toLeft">←</option>
+          <option value="toTop">↑</option>
+          <option value="toBottom">←</option>
+          <option value="clockwise">⌚</option>
+      </select>
+    </label>
+
+    <label *ngIf="counterBoard.direction === 'clockwise'">右上端: <input class="num-input" type="number" [(ngModel)]="counterBoard.rightCorner" /></label>
+    <label *ngIf="counterBoard.direction === 'clockwise'">右下端: <input class="num-input" type="number" [(ngModel)]="counterBoard.lowerRightCorner" /></label>
   </div>
 
   <h3>{{name}}</h3>
