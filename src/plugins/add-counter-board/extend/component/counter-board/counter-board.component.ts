@@ -228,7 +228,7 @@ const calcNextHeight = (topObject, size) => {
 
 const calcNextXDirection = (sign: 1 | -1) => (count, that) => {
   const size = that.size;
-  const remainder = count % that.maxCount;
+  const remainder = count % (that.maxCount + 1);
 
   const x = sign * (remainder) * size + that.startPositionX;
   const y = that.startPositionY;
@@ -237,7 +237,7 @@ const calcNextXDirection = (sign: 1 | -1) => (count, that) => {
 
 const calcNextYDirection = (sign: 1 | -1) => (count, that) => {
   const size = that.size;
-  const remainder = count % that.maxCount;
+  const remainder = count % (that.maxCount + 1);
 
   const x = that.startPositionX;
   const y = sign * (remainder) * size +that.startPositionY;
@@ -249,7 +249,7 @@ const calcNextXY = (count, that) => {
   const rightCorner = that.rightCorner;
   const lowerRightCorner = that.lowerRightCorner;
   const lowerLeftCorner = that.lowerLeftCorner;
-  const remainder = count % that.maxCount;
+  const remainder = count % (that.maxCount + 1);
   const nextYCount =  calcNextY(remainder, rightCorner, lowerRightCorner, lowerLeftCorner);
   const nextXcount = calcNextX(remainder, rightCorner, lowerRightCorner, lowerLeftCorner);
 
