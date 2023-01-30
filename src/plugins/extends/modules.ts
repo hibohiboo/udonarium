@@ -2,6 +2,7 @@ import { CardListImageComponent } from "../add-card-text-writable/extend/compone
 import { CardStackListComponentExtendPlus } from "../add-card-text-writable/extend/component/card-stack-list/card-stack-list.component"
 import { CounterBoardWindowComponent } from "../add-counter-board/extend/component/counter-board-window/counter-board-window.component"
 import { CounterBoardComponent } from "../add-counter-board/extend/component/counter-board/counter-board.component"
+import { CounterBoardService } from "../add-counter-board/extend/service/counter-board.service"
 import { HandStorageComponent } from "../hand-storage/extend/component/hand-storage/hand-storage.component"
 import { HandStorageService } from "../hand-storage/extend/service/hand-storage.service"
 import { HelpKeyboardComponent } from "../keyboard-help/component/help-keyboard/help-keyboard.component"
@@ -34,7 +35,7 @@ const components = [
   , CounterBoardWindowComponent
 ]
 const imports = []
-const services = [PanelServiceExtnedPlus, HandStorageService]
+const services = [PanelServiceExtnedPlus, HandStorageService,CounterBoardService]
 const bootstarp = [AppComponentExtendPlus] // 本家の AppComponent は不使用
 
 export default { components, services, bootstarp }

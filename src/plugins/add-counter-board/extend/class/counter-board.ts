@@ -1,9 +1,10 @@
 import { SyncObject, SyncVar } from "@udonarium/core/synchronize-object/decorator";
 import { ObjectNode } from "@udonarium/core/synchronize-object/object-node";
 import { InnerXml } from "@udonarium/core/synchronize-object/object-serializer";
+import { TabletopObject } from "@udonarium/tabletop-object";
 
 @SyncObject('counter-board')
-export class CounterBoard extends ObjectNode {
+export class CounterBoard extends TabletopObject {
   declare name: string;
   declare size: number;
   declare maxCount: number; // 盤上の数字の最大値
@@ -21,6 +22,12 @@ export class CounterBoard extends ObjectNode {
     this.rightCorner = 2;
     SyncVar()(this, 'lowerRightCorner');
     this.lowerRightCorner = 4;
+    console.warn('create counter board')
   }
   get lowerLeftCorner (): number { return this.lowerRightCorner + this.rightCorner; }
+  static create() {
+    const board = new CounterBoard();
+    board.initialize();
+    return board;
+  }
 }

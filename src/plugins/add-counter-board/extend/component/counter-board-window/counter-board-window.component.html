@@ -3,6 +3,11 @@
   <div class="title">
       <h2>カウンター</h2>
   </div>
-  <counter-board [counterBoard]="currentBoard"></counter-board>
+  <button (click)="addCounterBoard()">カウンターを追加</button>
+  <label *ngFor="let board of counterBoards; trackBy: trackByBoard">
+    <input name="c-board" type="radio" value="{{board.identifier}}" ng-control="options" [(ngModel)]="_currentBoardIdentifier">
+    <div>{{board.name}}</div>
+  </label>
+  <counter-board *ngIf="currentBoard" [counterBoard]="currentBoard"></counter-board>
 
 </div>

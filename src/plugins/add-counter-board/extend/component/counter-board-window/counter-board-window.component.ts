@@ -8,7 +8,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { CoordinateService } from 'service/coordinate.service';
 import { CounterBoard } from '../../class/counter-board';
-
+import { CounterBoardService } from '../../service/counter-board.service'
 
 const DETAIL_COUNT_NAME = 'カウント'
 
@@ -18,7 +18,16 @@ const DETAIL_COUNT_NAME = 'カウント'
   styleUrls: ['./counter-board-window.component.css'],
 })
 export class CounterBoardWindowComponent implements OnInit, OnDestroy {
-  currentBoard : CounterBoard | null = null;
+  private _currentBoardIdentifier = '';
+  private _currentBoard: CounterBoard | null = null;
+  get currentBoard() : CounterBoard | null {
+    if(this._currentBoard)return this._currentBoard;
+    const [current] = this.counterBoardService.counterBoards
+    return current;
+  };
+  get counterBoards() : CounterBoard[] {
+    return  this.counterBoardService.counterBoards;
+  };
   constructor(
     private panelService: PanelService,
     private modalService: ModalService,
@@ -27,17 +36,20 @@ export class CounterBoardWindowComponent implements OnInit, OnDestroy {
     private pointerDeviceService: PointerDeviceService,
     private tabletopActionService: TabletopActionService,
     private coordinateService: CoordinateService,
+    private counterBoardService: CounterBoardService,
   ) { }
 
   ngOnInit() {
     Promise.resolve().then(() => this.panelService.title = 'カウンターボード');
-    if(!this.currentBoard){
-      this.currentBoard = new CounterBoard();
-      this.currentBoard.initialize();
-    }
   }
+
 
   ngOnDestroy() { }
 
-
+  addCounterBoard() {
+    this._currentBoard = CounterBoard.create();
+  }
+  trackByBoard() {
+    return this._currentBoardIdentifier;
+  }
 }

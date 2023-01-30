@@ -32,7 +32,8 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   ngOnDestroy() {}
 
   get objects() {
-    return this.tabletopService.terrains.map(obj=> {
+    const name = this.name;
+    return this.tabletopService.terrains.filter(obj=>!!obj.detailDataElement.getFirstElementByName(name)).map(obj=> {
      const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
      const count = Number(countElement.value);
      return {
@@ -65,7 +66,7 @@ const updatePosition  = (obj, count, that) => {
 
   // 上に積まれているオブジェクトを取得
   const currentPositionObjects = that.tabletopService.terrains
-    .filter(item => item.detailDataElement.getFirstElementByName(that.name)
+    .filter(item => !!item.detailDataElement.getFirstElementByName(that.name)
                  && item.location.x === obj.location.x
                  && item.location.y === obj.location.y
                  && item.posZ > obj.posZ);
@@ -73,7 +74,7 @@ const updatePosition  = (obj, count, that) => {
 
   // 移動先の一番上のオブジェクトを取得
   const [topObject] = that.tabletopService.terrains
-  .filter(item => item.detailDataElement.getFirstElementByName(that.name)
+  .filter(item => !!item.detailDataElement.getFirstElementByName(that.name)
                && item.location.x === x
                && item.location.y === y
   ).sort((a,b)=> b.posZ - a.posZ);
@@ -108,8 +109,6 @@ const calcNextXY = (count, that) => {
   const nextXcount = calcNextX(remainder, rightCorner, lowerRightCorner, lowerLeftCorner);
   const x = (nextXcount) * size;
   const y = (nextYCount) * size;
-  console.log('rightCorner', rightCorner);
-  console.log('lowerLeftCorner', lowerLeftCorner)
   return { x, y }
 }
 
