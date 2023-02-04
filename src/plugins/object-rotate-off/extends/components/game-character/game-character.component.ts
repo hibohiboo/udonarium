@@ -1,3 +1,6 @@
-import { rotateOffIndividuallyContextMenu } from "../../menu";
+import { extendCloneRotateOff, getObjectRotateOffFactory, rotateOffContextMenuFactory } from "../../domain/object-rotate-off";
 
-export const rotateOffContextMenu = rotateOffIndividuallyContextMenu
+const targetProp = 'gameCharacter';
+export const rotateOffContextMenuCharacter = rotateOffContextMenuFactory(targetProp)
+export const getObjectRotateOffCharacter = getObjectRotateOffFactory(targetProp)
+export const extendCloneRotateOffCharacter = extendCloneRotateOff

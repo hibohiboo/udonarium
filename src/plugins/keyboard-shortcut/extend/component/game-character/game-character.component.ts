@@ -2,6 +2,7 @@
 import { Network } from "@udonarium/core/system";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { pluginConfig } from "src/plugins/config";
+import { extendCloneRotateOffCharacter } from "src/plugins/object-rotate-off/extends/components/game-character/game-character.component";
 const menuKey = 'm'
 
 export const onKeyDownKeyboardShortcutGameCharacter = (that, e: KeyboardEvent) => {
@@ -14,6 +15,7 @@ export const onKeyDownKeyboardShortcutGameCharacter = (that, e: KeyboardEvent) =
       const cloneObject = that.gameCharacter.clone()
       cloneObject.location.x += that.gridSize
       cloneObject.location.y += that.gridSize
+      extendCloneRotateOffCharacter(that.gameCharacter, cloneObject);
       cloneObject.update()
       SoundEffect.play(PresetSound.piecePut)
       return true

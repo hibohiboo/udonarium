@@ -1,4 +1,5 @@
 import { createEmptyNewCharacter } from 'src/plugins/empty-new-character/extend/class/game-character';
+import { initRotateOfCharacter } from 'src/plugins/object-rotate-off/extends/class/gameCharacter';
 import { addSyncHideVirtualScreen } from 'src/plugins/virtual-screen/extend/class/addSyncHideVirtualScreen';
 import { ChatPalette } from './chat-palette';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
@@ -12,6 +13,7 @@ export class GameCharacter extends TabletopObject {
   constructor(identifier?: string) {
     super(identifier);
     addSyncHideVirtualScreen(this);
+    initRotateOfCharacter(this);
   }
 
   get name(): string { return this.getCommonValue('name', ''); }
