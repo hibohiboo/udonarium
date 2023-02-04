@@ -1,5 +1,6 @@
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { pluginConfig } from "src/plugins/config";
+import { extendCloneRotateOffHandStorage } from "src/plugins/object-rotate-off/extends/components/hand-storage/hand-storage.component";
 
 export const onKeyDownKeyboardShortcutHandStorage = (that, e: KeyboardEvent) => {
   e.stopPropagation();
@@ -12,6 +13,7 @@ export const onKeyDownKeyboardShortcutHandStorage = (that, e: KeyboardEvent) => 
     cloneObject.location.x += that.gridSize
     cloneObject.location.y += that.gridSize
     cloneObject.isLock = false
+    extendCloneRotateOffHandStorage(that.handStorage, cloneObject);
     if (that.handStorage.parent) that.handStorage.parent.appendChild(cloneObject)
     SoundEffect.play(PresetSound.cardPut)
     return true

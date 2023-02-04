@@ -35,7 +35,7 @@ import { Card } from '@udonarium/card'
 import { CardStack } from '@udonarium/card-stack'
 import { isMyHandStorageOnly } from 'src/plugins/hand-storage-self-only'
 import { RotableOption } from 'directive/rotable.directive'
-import { getObjectRotateOff, initRotateOffHandStorage, rotateOffContextMenuHandStorage } from 'src/plugins/object-rotate-off/extends/components/hand-storage/hand-storage.component'
+import { extendCloneRotateOffHandStorage, getObjectRotateOffHandStorage, rotateOffContextMenuHandStorage } from 'src/plugins/object-rotate-off/extends/components/hand-storage/hand-storage.component'
 import { returnHandCardContextMenu } from 'src/plugins/return-the-hand/extend/component/hand-storage/hand-storage.component'
 import { PeerCursor } from '@udonarium/peer-cursor'
 import { tapCardContextMenuHandStorage } from 'src/plugins/tap-card/extend/component/card/card.component'
@@ -116,11 +116,10 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     private tabletopActionService: TabletopActionService,
     private modalService: ModalService, // card-back-image-all-change で使用
   ) {
-    initRotateOffHandStorage(this);
     initKeyboardShortcutHandStorage(this);
   }
 
-  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOff(this); };
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOffHandStorage(this); };
 
   @HostBinding('tabIndex') tabIndex:string; //tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
   @HostListener("keydown", ["$event"])
@@ -272,8 +271,9 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
             cloneObject.location.x += this.gridSize
             cloneObject.location.y += this.gridSize
             cloneObject.isLock = false
+            extendCloneRotateOffHandStorage(this.handStorage, cloneObject);
             if (this.handStorage.parent)
-              this.handStorage.parent.appendChild(cloneObject)
+              this.handStorage.parent.appendChild(cloneObject);
             SoundEffect.play(PresetSound.cardPut)
           },
         }

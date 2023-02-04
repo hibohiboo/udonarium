@@ -1,14 +1,7 @@
-import { pluginConfig } from "src/plugins/config";
+import { extendCloneRotateOff, getObjectRotateOffFactory, rotateOffContextMenuFactory } from "../../domain/object-rotate-off";
 
-export const initRotateOffHandStorage = (that) =>{
-  if(!pluginConfig.isOffObjectRotateIndividually) return;
-  that.isRotateOffIndividually = false;
-}
+const targetProp = 'handStorage';
+export const rotateOffContextMenuHandStorage = rotateOffContextMenuFactory(targetProp)
+export const getObjectRotateOffHandStorage = getObjectRotateOffFactory(targetProp)
+export const extendCloneRotateOffHandStorage = extendCloneRotateOff
 
-export const getObjectRotateOff = (that)=>{
-  if(!pluginConfig.isOffObjectRotateIndividually) return false;
-  return that.isRotateOffIndividually;
-}
-import { rotateOffIndividuallyContextMenu } from "../../menu";
-
-export const rotateOffContextMenuHandStorage = rotateOffIndividuallyContextMenu
