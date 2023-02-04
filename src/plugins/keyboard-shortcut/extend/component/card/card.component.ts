@@ -4,7 +4,10 @@ import { PeerCursor } from "@udonarium/peer-cursor";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { pluginConfig } from "src/plugins/config";
 import { extendCloneRotateOffCard } from "src/plugins/object-rotate-off/extends/components/card/card.component";
+import { keyboardShortCutRotateOffFactory } from "src/plugins/object-rotate-off/extends/domain/object-rotate-off";
 const menuKey = 'm'
+
+const keyboardShortCutRotateOff = keyboardShortCutRotateOffFactory('card')
 
 export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
     e.stopPropagation();
@@ -37,6 +40,10 @@ export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
     } else if (e.key === 'q') {
       that.showDetail(that.card)
       return true
+    } else if (e.key === 'r') {
+      that.card.faceDown();
+      SoundEffect.play(PresetSound.cardDraw);
+      return true
     } else if (e.key === 'd') {
       that.card.destroy()
       SoundEffect.play(PresetSound.sweep)
@@ -49,6 +56,9 @@ export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
         return;
       }
       that.card.handOwner = PeerCursor.myCursor.userId;
+    } else if (e.key === 'a') {
+      keyboardShortCutRotateOff(that);
+      return;
     }
 };
 

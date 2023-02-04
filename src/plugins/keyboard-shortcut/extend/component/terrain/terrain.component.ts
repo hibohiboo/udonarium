@@ -3,7 +3,11 @@ import { Network } from "@udonarium/core/system";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { pluginConfig } from "src/plugins/config";
 import { extendCloneRotateOffTerrain } from "src/plugins/object-rotate-off/extends/components/terrain/terrain.component";
+import { keyboardShortCutRotateOffFactory } from "src/plugins/object-rotate-off/extends/domain/object-rotate-off";
 const menuKey = 'm'
+
+const keyboardShortCutRotateOff = keyboardShortCutRotateOffFactory('terrain')
+
 
 export const onKeyDownKeyboardShortcutTerrain = (that, e: KeyboardEvent) => {
     e.stopPropagation();
@@ -36,6 +40,9 @@ export const onKeyDownKeyboardShortcutTerrain = (that, e: KeyboardEvent) => {
         SoundEffect.play(PresetSound.lock)
       }
       return true
+    } else if (e.key === 'a') {
+      keyboardShortCutRotateOff(that);
+      return;
     }
 
 };

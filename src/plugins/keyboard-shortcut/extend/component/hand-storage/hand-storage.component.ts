@@ -1,6 +1,9 @@
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { pluginConfig } from "src/plugins/config";
 import { extendCloneRotateOffHandStorage } from "src/plugins/object-rotate-off/extends/components/hand-storage/hand-storage.component";
+import { keyboardShortCutRotateOffFactory } from "src/plugins/object-rotate-off/extends/domain/object-rotate-off";
+
+const keyboardShortCutRotateOff = keyboardShortCutRotateOffFactory('handStorage')
 
 export const onKeyDownKeyboardShortcutHandStorage = (that, e: KeyboardEvent) => {
   e.stopPropagation();
@@ -33,6 +36,9 @@ export const onKeyDownKeyboardShortcutHandStorage = (that, e: KeyboardEvent) => 
       SoundEffect.play(PresetSound.lock)
     }
     return true
+  } else if (e.key === 'a') {
+    keyboardShortCutRotateOff(that);
+    return;
   }
 
 };

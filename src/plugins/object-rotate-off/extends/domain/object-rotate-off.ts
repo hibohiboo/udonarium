@@ -37,3 +37,14 @@ export const extendCloneRotateOff = (original, clone) => {
   clone.isRotateOffIndividually = original.isRotateOffIndividually;
   return clone;
 }
+
+export const keyboardShortCutRotateOffFactory = (prop) => (that) => {
+  if(!pluginConfig.isOffObjectRotateIndividually) return;
+    if(!that[prop].isRotateOffIndividually) {
+      that[prop].isRotateOffIndividually = true;
+      SoundEffect.play(PresetSound.piecePut);
+      return;
+    }
+    that[prop].isRotateOffIndividually = false;
+    SoundEffect.play(PresetSound.piecePut);
+}
