@@ -1,3 +1,4 @@
+import { initRotateOffTextNote } from 'src/plugins/object-rotate-off/extends/class/text-note';
 import { addSyncIsUpright } from 'src/plugins/text-note-upright-flat/extend/class/text-note';
 import { addSyncHideVirtualScreen } from 'src/plugins/virtual-screen/extend/class/addSyncHideVirtualScreen';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
@@ -15,6 +16,7 @@ export class TextNote extends TabletopObject {
     super(identifier);
     addSyncIsUpright(this);
     addSyncHideVirtualScreen(this);
+    initRotateOffTextNote(this);
   }
 
   get width(): number { return this.getCommonValue('width', 1); }
