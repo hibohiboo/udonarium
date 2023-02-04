@@ -28,7 +28,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { getObjectRotateOffDice, rotateOffContextMenuDice } from 'src/plugins/object-rotate-off/extends/components/dice-symbol/dice-symbol.component';
-import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+
 import { hideVirtualScreenDiceSymbol, initVirtualScreenDiceSymbol, onMovedVirtualScreenDiceSymbol } from 'src/plugins/virtual-screen/extend/component/dice-symbol/dice-symbol.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
