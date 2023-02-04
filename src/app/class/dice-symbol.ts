@@ -1,3 +1,4 @@
+import { initRotateOffDiceSymbol } from 'src/plugins/object-rotate-off/extends/class/dice-symbol';
 import { addSyncHideVirtualScreen } from 'src/plugins/virtual-screen/extend/class/addSyncHideVirtualScreen';
 import { ImageFile } from './core/file-storage/image-file';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
@@ -26,6 +27,7 @@ export class DiceSymbol extends TabletopObject {
   constructor(identifier?: string) {
     super(identifier);
     addSyncHideVirtualScreen(this);
+    initRotateOffDiceSymbol(this);
   }
 
   get name(): string { return this.getCommonValue('name', ''); }

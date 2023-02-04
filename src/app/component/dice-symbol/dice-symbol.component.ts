@@ -27,6 +27,7 @@ import { ContextMenuAction, ContextMenuSeparator, ContextMenuService } from 'ser
 import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { getObjectRotateOffDice, rotateOffContextMenuDice } from 'src/plugins/object-rotate-off/extends/components/dice-symbol/dice-symbol.component';
 import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
 import { hideVirtualScreenDiceSymbol, initVirtualScreenDiceSymbol, onMovedVirtualScreenDiceSymbol } from 'src/plugins/virtual-screen/extend/component/dice-symbol/dice-symbol.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
@@ -214,8 +215,7 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private isRotateOffIndividually = false;
-  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOffDice(this); };
 
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
@@ -285,7 +285,7 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     actions = [
         ...actions
-      , ...rotateOffIndividuallyContextMenu(this)
+      , ...rotateOffContextMenuDice(this)
       , ...virtualScreenContextMenu(this)
     ]
     this.contextMenuService.open(position, actions, this.name);

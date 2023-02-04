@@ -35,7 +35,7 @@ import { drawNCardsContextMenu } from 'src/plugins/add-draw-n-cards/extend/compo
 import { cardBackImageAllChangeContextMenu } from 'src/plugins/card-back-image-all-change/extend/component/card-stack/card-stack.component';
 import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
 import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
-import { extendCloneRotateOffCardStack, getObjectRotateOffCardStack, rotateOffContextMenuCardStack } from 'src/plugins/object-rotate-off/extends/components/card-stack/card-stack';
+import { extendCloneRotateOffCardStack, getObjectRotateOffCardStack, rotateOffContextMenuCardStack } from 'src/plugins/object-rotate-off/extends/components/card-stack/card-stack.component';
 import { handCardStackContextMenu } from 'src/plugins/return-the-hand/extend/component/card-stack/card-stack.component';
 import { tapCardStackContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
 import { hideVirtualScreenCardStack, initVirtualScreenCardStack, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card-stack/card-stack.component';
