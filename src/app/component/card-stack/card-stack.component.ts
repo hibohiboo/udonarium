@@ -35,7 +35,7 @@ import { drawNCardsContextMenu } from 'src/plugins/add-draw-n-cards/extend/compo
 import { cardBackImageAllChangeContextMenu } from 'src/plugins/card-back-image-all-change/extend/component/card-stack/card-stack.component';
 import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
 import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
-import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+import { extendCloneRotateOffCardStack, getObjectRotateOffCardStack, rotateOffContextMenuCardStack } from 'src/plugins/object-rotate-off/extends/components/card-stack/card-stack';
 import { handCardStackContextMenu } from 'src/plugins/return-the-hand/extend/component/card-stack/card-stack.component';
 import { tapCardStackContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
 import { hideVirtualScreenCardStack, initVirtualScreenCardStack, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card-stack/card-stack.component';
@@ -246,8 +246,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: this.cardStack.identifier, className: 'GameCharacter' });
   }
 
-  private isRotateOffIndividually = false;
-  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOffCardStack(this); };
 
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
@@ -337,6 +336,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
           cloneObject.location.y += this.gridSize;
           cloneObject.owner = '';
           cloneObject.toTopmost();
+          extendCloneRotateOffCardStack(this.cardStack, cloneObject);
           SoundEffect.play(PresetSound.cardPut);
         }
       },
@@ -348,7 +348,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
       , ...cardBackImageAllChangeContextMenu(this)
-      , ...rotateOffIndividuallyContextMenu(this)
+      , ...rotateOffContextMenuCardStack(this)
       , ...virtualScreenContextMenu(this)
 
     ], this.name);

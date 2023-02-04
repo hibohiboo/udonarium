@@ -3,6 +3,7 @@ import { EventSystem, Network } from "@udonarium/core/system";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { cardShuffleNormalPosition } from "src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component";
 import { pluginConfig } from "src/plugins/config";
+import { extendCloneRotateOffCardStack } from "src/plugins/object-rotate-off/extends/components/card-stack/card-stack";
 const menuKey = 'm'
 
 export const onKeyDownKeyboardShortcutCardStack = (that, e: KeyboardEvent) => {
@@ -54,6 +55,7 @@ export const onKeyDownKeyboardShortcutCardStack = (that, e: KeyboardEvent) => {
       cloneObject.location.y += that.gridSize;
       cloneObject.owner = '';
       cloneObject.toTopmost();
+      extendCloneRotateOffCardStack(that.cardStack, cloneObject);
       SoundEffect.play(PresetSound.cardPut);
       return true
     }

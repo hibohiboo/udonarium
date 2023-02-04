@@ -1,3 +1,4 @@
+import { initRotateOffCardStack } from 'src/plugins/object-rotate-off/extends/class/card-stack';
 import { addSyncHideVirtualScreen } from 'src/plugins/virtual-screen/extend/class/addSyncHideVirtualScreen';
 import { Card } from './card';
 import { ImageFile } from './core/file-storage/image-file';
@@ -18,6 +19,7 @@ export class CardStack extends TabletopObject {
   constructor(identifier?: string) {
     super(identifier);
     addSyncHideVirtualScreen(this);
+    initRotateOffCardStack(this);
   }
 
   get name(): string { return this.getCommonValue('name', ''); }
