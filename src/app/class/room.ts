@@ -48,6 +48,7 @@ export class Room extends GameObject implements InnerXml {
     objects = objects.concat(ObjectStore.instance.getObjects(CardStack));
     objects = objects.concat(ObjectStore.instance.getObjects(Card));
     objects = objects.concat(ObjectStore.instance.getObjects(DiceSymbol));
+    objects = innerXMLHandStorageObject(objects)
     objects = innerXMLCounterBoard(objects)
     for (let object of objects) {
       object.destroy();
