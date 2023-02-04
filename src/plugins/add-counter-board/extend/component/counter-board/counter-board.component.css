@@ -35,3 +35,11 @@ table tr td div {
 .num-input {
   width: 40px;
 }
+
+.option-button {
+  display: flex;
+  justify-content: space-between;
+}
+.option-button button {
+  display: block;
+}

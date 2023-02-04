@@ -36,12 +36,14 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
                 .map(obj=> {
                     const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
 
-                    return { name: obj.name, obj
-                      ,get count(){ return countElement.value; }
-                      ,set count(value) {
-                        countElement.value = `${value}`;
-                        updatePosition(obj, value, that);
-                       }
+                    return {
+                        name: obj.name
+                      , obj
+                      , get count(){ return countElement.value; }
+                      , set count(value) {
+                          countElement.value = `${value}`;
+                          updatePosition(obj, value, that);
+                         }
                      };
                 })
   }
@@ -73,6 +75,18 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   }
   selectSamePosition(value) {
     this.counterBoard.samePositionDisplay = value;
+  }
+
+  resetCounter() {
+    this.objects.forEach(({ obj })=>{
+      obj.location.x = -1;
+      obj.location.y = -1;
+    })
+    this.objects.forEach(({ obj })=>{
+      const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
+      countElement.value = `0`;
+      updatePosition(obj, 0, this);
+    })
   }
 }
 
