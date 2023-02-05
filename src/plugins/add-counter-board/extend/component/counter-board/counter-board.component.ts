@@ -1,9 +1,19 @@
 import { Component, OnDestroy, OnInit, Input, } from '@angular/core';
+import { DataElement } from '@udonarium/data-element';
 import { TabletopService } from 'service/tabletop.service';
+import { createDefaultCubeTerrain } from 'src/plugins/default-terrain-cube/extend/service/tabletop-action.service';
 import { CounterBoard } from '../../class/counter-board';
 
 const DETAIL_COUNT_NAME = 'カウント'
-
+const DEFALUT_CUBES = [
+    { name: '青キューブ', url: './assets/images/extend/color_cube/blue.png' }
+  , { name: '黄キューブ', url: './assets/images/extend/color_cube/yellow.png' }
+  , { name: '赤キューブ', url: './assets/images/extend/color_cube/red.png' }
+  , { name: '緑キューブ', url: './assets/images/extend/color_cube/green.png' }
+  , { name: '黒キューブ', url: './assets/images/extend/color_cube/black.png' }
+  , { name: '灰キューブ', url: './assets/images/extend/cube.jpg' }
+];
+const DEFALUT_CUBES_COUNT = DEFALUT_CUBES.length;
 @Component({
   selector: 'counter-board',
   templateUrl: './counter-board.component.html',
@@ -87,6 +97,15 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
       countElement.value = `0`;
       updatePosition(obj, 0, this);
     })
+  }
+
+  addCube() {
+    const cubeProp = DEFALUT_CUBES[this.objects.length % DEFALUT_CUBES_COUNT];
+    const cube = createDefaultCubeTerrain({ x: 0, y: 0, z: 0 }, cubeProp.name, cubeProp.url);
+    const counterNameElement = DataElement.create(this.name, '', {}, `${this.name}${cube.identifier}`);
+    cube.detailDataElement.appendChild(counterNameElement);
+    counterNameElement.appendChild(DataElement.create(DETAIL_COUNT_NAME, '0', {}, `${DETAIL_COUNT_NAME}${cube.identifier}`));
+    updatePosition(cube, 0, this);
   }
 }
 

@@ -48,7 +48,7 @@ export class TabletopActionService {
   }
 
   createTerrain(position: PointerCoordinate): Terrain {
-    const extendCubeTerrain = createDefaultCubeTerrain(this, position);
+    const extendCubeTerrain = createDefaultCubeTerrain(position);
     if (extendCubeTerrain) return extendCubeTerrain;
     let url: string = './assets/images/tex.jpg';
     let image: ImageFile = ImageStorage.instance.get(url)

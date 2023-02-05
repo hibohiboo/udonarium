@@ -22,7 +22,7 @@ export class CounterBoard extends TabletopObject {
     SyncVar()(this, 'size');
     this.size = 50;
     SyncVar()(this, 'maxCount');
-    this.maxCount = 8;
+    this.maxCount = 7;
     SyncVar()(this, 'rightCorner');
     this.rightCorner = 2;
     SyncVar()(this, 'lowerRightCorner');

@@ -14,7 +14,6 @@ import { Terrain } from '@udonarium/terrain';
 import { TextNote } from '@udonarium/text-note';
 import { ContextMenuAction, ContextMenuService } from 'service/context-menu.service';
 import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service';
-import { createDefaultCubeTerrain } from 'src/plugins/default-terrain-cube/extend/service/tabletop-action.service';
 
 @Component({
   selector: 'context-menu-extend-plus',
