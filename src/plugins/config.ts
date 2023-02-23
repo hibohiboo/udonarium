@@ -48,6 +48,7 @@ export const pluginConfig = {
   , isMiniMenuFirstOpen: params.get('mini-menu-first-open') != null
   , isEmptyDefaultTable: params.get('empty-default-table') != null
   , isAddCounterBoard: params.get('add-counter-board') != null
+  , isOffLineMode: params.get('offline-mode') != null
 } as const;
 
 export const settings = [
@@ -98,7 +99,7 @@ export const settings = [
 , { label: 'メニューから削除: 保存', param: 'hide-menu-save', checked: false }
 
 
-
+, { label: 'オフラインモード', param: 'offline-mode', checked:false }
 
 ]
 

@@ -175,9 +175,11 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       .on('SYNCHRONIZE_FILE_LIST', event => { if (event.isSendFromSelf) this.lazyNgZoneUpdate(false); })
       .on<AppConfig>('LOAD_CONFIG', event => {
         console.log('LOAD_CONFIG !!!');
+        setSpreadSheetAPIKey(event.data);
+        if(pluginConfig.isOffLineMode) return;
         Network.setApiKey(event.data.webrtc.key);
         Network.open();
-        setSpreadSheetAPIKey(event.data);
+
       })
       .on<File>('FILE_LOADED', event => {
         this.lazyNgZoneUpdate(false);
@@ -220,9 +222,9 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       const peerOption = horizonMenu ? { width: 500, height: 400, top: 100 } : { width: 500, height: 450, left: 100 }
       const chatOption = horizonMenu ?  { width: 700, height: 450, top: 500 } : { width: 700, height: 400, left: 100, top: 450 }
 
-      if(!pluginConfig.isHideFirstPeer && !pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponent, peerOption);
-      if(!pluginConfig.isHideFirstPeer && pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponentExtendPlus, peerOption);
-      if(!pluginConfig.isHideFirstChat) this.panelSerive.open(ChatWindowComponent, chatOption);
+      if(!pluginConfig.isOffLineMode && !pluginConfig.isHideFirstPeer && !pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponent, peerOption);
+      if(!pluginConfig.isOffLineMode && !pluginConfig.isHideFirstPeer && pluginConfig.isAddReloadButton) this.panelSerive.open(PeerMenuComponentExtendPlus, peerOption);
+      if(!pluginConfig.isOffLineMode && !pluginConfig.isHideFirstChat) this.panelSerive.open(ChatWindowComponent, chatOption);
       if(pluginConfig.isAddCounterBoard) this.panelSerive.open(CounterBoardWindowComponent, { width: 500, height: 450, left: 300,top: 100 });
       fetchZipRoom();
     }, 0);
