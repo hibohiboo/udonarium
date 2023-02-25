@@ -8,11 +8,13 @@ export class CounterBoard extends TabletopObject {
   declare name: string;
   declare size: number;
   declare maxCount: number; // 盤上の数字の最大値
-  declare rightCorner: number; // 右上角の数字
-  declare lowerRightCorner: number; // 右下角の数字
+  declare rightCorner: number; // 右上角の数字 clockwise
+  declare lowerRightCorner: number; // 右下角の数字 clockwise
   declare startPositionX: number; // 開始位置: x
   declare startPositionY: number; // 開始位置: y
-  declare direction: 'toRight' | 'toLeft' | 'toTop' | 'toBottom' | 'clockwise'
+  declare inRadius: number; // inの半径: diaclock用
+  declare outRadius: number; // outの半径: diaclock用
+  declare direction: 'toRight' | 'toLeft' | 'toTop' | 'toBottom' | 'clockwise' | 'diaclock'
   declare samePositionDisplay: 'right' | 'lefte' | 'top' | 'bottom' | 'stack'
 
   constructor(identifier?: string) {
@@ -35,6 +37,10 @@ export class CounterBoard extends TabletopObject {
     this.direction = 'clockwise';
     SyncVar()(this, 'samePositionDisplay');
     this.samePositionDisplay = 'stack';
+    SyncVar()(this, 'inRadius');
+    this.inRadius = 0;
+    SyncVar()(this, 'outRadius');
+    this.inRadius = 100;
   }
   get lowerLeftCorner (): number { return this.lowerRightCorner + this.rightCorner; }
   static create() {

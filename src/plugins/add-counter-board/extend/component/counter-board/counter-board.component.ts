@@ -4,7 +4,8 @@ import { TabletopService } from 'service/tabletop.service';
 import { createDefaultCubeTerrain } from 'src/plugins/default-terrain-cube/extend/service/tabletop-action.service';
 import { CounterBoard } from '../../class/counter-board';
 
-const DETAIL_COUNT_NAME = 'カウント'
+const DETAIL_COUNT_NAME = 'カウント';
+const IN_OUT_NAME = '0:in/1:out';
 const DEFALUT_CUBES = [
     { name: '青キューブ', url: './assets/images/extend/color_cube/blue.png' }
   , { name: '黄キューブ', url: './assets/images/extend/color_cube/yellow.png' }
@@ -105,6 +106,8 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
     const counterNameElement = DataElement.create(this.name, '', {}, `${this.name}${cube.identifier}`);
     cube.detailDataElement.appendChild(counterNameElement);
     counterNameElement.appendChild(DataElement.create(DETAIL_COUNT_NAME, '0', {}, `${DETAIL_COUNT_NAME}${cube.identifier}`));
+    if(this.direction === 'diaclock') counterNameElement.appendChild(DataElement.create(IN_OUT_NAME, 1, { 'type': 'numberResource', 'currentValue': '1' }, `${DETAIL_COUNT_NAME}${cube.identifier}`));
+
     updatePosition(cube, 0, this);
   }
 }
@@ -120,6 +123,8 @@ const updatePosition  = (obj, count, that) => {
     updatePositionY(obj, count, that, 1);
   } else if (that.direction === 'toLeft') {
     updatePositionX(obj, count, that, -1);
+  } else if (that.direction === 'diaclock') {
+    updatePositionDiaclock(obj, count, that);
   }
 }
 
@@ -135,6 +140,9 @@ const updatePositionY  = (obj, count, that, sign: 1 | -1) => {
 
 const updatePositionClockwise  = (obj, count, that) => {
   updatePositionStack(obj, count, that, calcNextXY);
+}
+const updatePositionDiaclock  = (obj, count, that) => {
+  updatePositionStack(obj, count, that, calcNextXYDiaclock);
 }
 
 const updatePositionStack  = (obj, count, that, calc) => {
@@ -302,4 +310,19 @@ const calcNextY = (count, rightCorner, lowerRightCorner, lowerLeftCorner) => {
   if (count >= lowerLeftCorner) return lowerRightCorner - rightCorner - (count - lowerLeftCorner);
   if (count > lowerRightCorner) return lowerRightCorner - rightCorner;
   return count - rightCorner
+}
+
+const calcNextXYDiaclock = (count, that) => {
+  const sizeBias = that.size / 4;
+  const radius = 50; // 90; // that.outRadius; // TODO: inRadiusとの選択
+  const degree = count * 360 / that.maxCount;
+  const radian = degree * (Math.PI / 180);
+  const cos = Math.cos(radian);
+  const sin = Math.sin(radian);
+  const xBias =  -sizeBias ;
+  const yBias = sin >= 0 ? -sizeBias : 0 ; // sizeBias;
+  const x = cos * radius + that.startPositionX + xBias;
+  const y = sin * radius + that.startPositionY + yBias;
+
+  return { x, y }
 }
