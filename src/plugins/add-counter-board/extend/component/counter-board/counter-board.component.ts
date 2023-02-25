@@ -32,6 +32,8 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   get name() { return this.counterBoard.name }
   get direction() { return this.counterBoard.direction; }
   get samePositionDisplay() { return this.counterBoard.samePositionDisplay; }
+  get inRadius() { return this.counterBoard.inRadius; }
+  get outRadius() { return this.counterBoard.outRadius; }
 
   constructor(
     private tabletopService: TabletopService,
@@ -46,6 +48,7 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
     return this.tabletopService.terrains.filter(obj=>!!obj.detailDataElement.getFirstElementByName(name))
                 .map(obj=> {
                     const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
+                    const inOutElement = obj.detailDataElement.getFirstElementByName(IN_OUT_NAME);
 
                     return {
                         name: obj.name
@@ -55,6 +58,11 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
                           countElement.value = `${value}`;
                           updatePosition(obj, value, that);
                          }
+                      , get currentValue(){ return inOutElement.currentValue; }
+                      , set currentValue(value) {
+                          inOutElement.currentValue = `${value}`;
+                          updatePosition(obj, Number(obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME).value), that);
+                        }
                      };
                 })
   }
@@ -142,6 +150,12 @@ const updatePositionClockwise  = (obj, count, that) => {
   updatePositionStack(obj, count, that, calcNextXY);
 }
 const updatePositionDiaclock  = (obj, count, that) => {
+  const xBias = -that.size * obj.width / 2;
+  const yBias = -that.size * obj.height / 2;
+  const inOutElement = obj.detailDataElement.getFirstElementByName(IN_OUT_NAME);
+  const radius = inOutElement.currentValue === '1' ? that.outRadius : that.inRadius;
+  const calcNextXYDiaclock = calcNextXYDiaclockFactory(xBias, yBias, radius);
+
   updatePositionStack(obj, count, that, calcNextXYDiaclock);
 }
 
@@ -312,15 +326,12 @@ const calcNextY = (count, rightCorner, lowerRightCorner, lowerLeftCorner) => {
   return count - rightCorner
 }
 
-const calcNextXYDiaclock = (count, that) => {
-  const sizeBias = that.size / 4;
-  const radius = 50; // 90; // that.outRadius; // TODO: inRadiusとの選択
+const calcNextXYDiaclockFactory = (xBias:number, yBias:number, radius: number) => (count, that) => {
   const degree = count * 360 / that.maxCount;
   const radian = degree * (Math.PI / 180);
   const cos = Math.cos(radian);
   const sin = Math.sin(radian);
-  const xBias =  -sizeBias ;
-  const yBias = sin >= 0 ? -sizeBias : 0 ; // sizeBias;
+
   const x = cos * radius + that.startPositionX + xBias;
   const y = sin * radius + that.startPositionY + yBias;
 
