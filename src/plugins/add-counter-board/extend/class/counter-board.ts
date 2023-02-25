@@ -14,6 +14,7 @@ export class CounterBoard extends TabletopObject {
   declare startPositionY: number; // 開始位置: y
   declare inRadius: number; // inの半径: diaclock用
   declare outRadius: number; // outの半径: diaclock用
+  declare bufferDegree: number; // 初期の角度: diaclock用。 -90°: 12時位置。 0°: 3時位置
   declare direction: 'toRight' | 'toLeft' | 'toTop' | 'toBottom' | 'clockwise' | 'diaclock'
   declare samePositionDisplay: 'right' | 'lefte' | 'top' | 'bottom' | 'stack'
 
@@ -41,6 +42,8 @@ export class CounterBoard extends TabletopObject {
     this.inRadius = 50;
     SyncVar()(this, 'outRadius');
     this.outRadius = 90;
+    SyncVar()(this, 'bufferDegree');
+    this.outRadius = -90;
   }
   get lowerLeftCorner (): number { return this.lowerRightCorner + this.rightCorner; }
   static create() {

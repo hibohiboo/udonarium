@@ -41,6 +41,15 @@
     <label *ngIf="direction === 'clockwise'">右下端: <input class="num-input" type="number" [(ngModel)]="counterBoard.lowerRightCorner" /></label>
     <label *ngIf="direction === 'diaclock'">内半径: <input class="num-input" type="number" [(ngModel)]="counterBoard.inRadius" /></label>
     <label *ngIf="direction === 'diaclock'">外半径: <input class="num-input" type="number" [(ngModel)]="counterBoard.outRadius" /></label>
+    <label *ngIf="direction === 'diaclock'">初期位置:
+      <select [(ngModel)]="counterBoard.bufferDegree">
+        <option value="-90">0時</option>
+          <option value="0">3時</option>
+          <option value="90">6時</option>
+          <option value="180">9時</option>
+      </select>
+    </label>
+
   </div>
 
   <h3>{{name}}</h3>

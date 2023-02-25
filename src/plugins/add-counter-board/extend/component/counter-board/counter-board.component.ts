@@ -34,6 +34,7 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   get samePositionDisplay() { return this.counterBoard.samePositionDisplay; }
   get inRadius() { return this.counterBoard.inRadius; }
   get outRadius() { return this.counterBoard.outRadius; }
+  get bufferDegree() { return this.counterBoard.bufferDegree; }
 
   constructor(
     private tabletopService: TabletopService,
@@ -154,7 +155,7 @@ const updatePositionDiaclock  = (obj, count, that) => {
   const yBias = -that.size * obj.height / 2;
   const inOutElement = obj.detailDataElement.getFirstElementByName(IN_OUT_NAME);
   const radius = inOutElement.currentValue === '1' ? that.outRadius : that.inRadius;
-  const calcNextXYDiaclock = calcNextXYDiaclockFactory(xBias, yBias, radius);
+  const calcNextXYDiaclock = calcNextXYDiaclockFactory(xBias, yBias, radius, Number(that.bufferDegree));
 
   updatePositionStack(obj, count, that, calcNextXYDiaclock);
 }
@@ -326,9 +327,9 @@ const calcNextY = (count, rightCorner, lowerRightCorner, lowerLeftCorner) => {
   return count - rightCorner
 }
 
-const calcNextXYDiaclockFactory = (xBias:number, yBias:number, radius: number) => (count, that) => {
+const calcNextXYDiaclockFactory = (xBias:number, yBias:number, radius: number, bufferDegree: number) => (count, that) => {
   const degree = count * 360 / that.maxCount;
-  const radian = degree * (Math.PI / 180);
+  const radian = (degree  + bufferDegree ) * (Math.PI / 180);
   const cos = Math.cos(radian);
   const sin = Math.sin(radian);
 
