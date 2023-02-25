@@ -46,7 +46,8 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
   get objects() {
     const name = this.name;
     const that = this;
-    return this.tabletopService.terrains.filter(obj=>!!obj.detailDataElement.getFirstElementByName(name))
+    // 地形削除時にobj.detailDataElementがnullとなる可能性があるので detailDataElement?としている。
+    return this.tabletopService.terrains.filter(obj=>!!obj.detailDataElement?.getFirstElementByName(name))
                 .map(obj=> {
                     const countElement = obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME);
                     const inOutElement = obj.detailDataElement.getFirstElementByName(IN_OUT_NAME);
