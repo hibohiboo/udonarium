@@ -43,7 +43,7 @@ export class CounterBoard extends TabletopObject {
     SyncVar()(this, 'outRadius');
     this.outRadius = 90;
     SyncVar()(this, 'bufferDegree');
-    this.outRadius = -90;
+    this.bufferDegree = -90;
   }
   get lowerLeftCorner (): number { return this.lowerRightCorner + this.rightCorner; }
   static create() {
