@@ -62,6 +62,7 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
                          }
                       , get currentValue(){ return inOutElement.currentValue; }
                       , set currentValue(value) {
+                          if(inOutElement.currentValue === `${value}`) return; // 2回動いてしまうので防止
                           inOutElement.currentValue = `${value}`;
                           updatePosition(obj, Number(obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME).value), that);
                         }
@@ -153,7 +154,7 @@ const updatePositionClockwise  = (obj, count, that) => {
 }
 const updatePositionDiaclock  = (obj, count, that) => {
   const xBias = -that.size * obj.width / 2;
-  const yBias = -that.size * obj.height / 2;
+  const yBias = -that.size * obj.depth / 2; // 地形のY方向はheightではなくdepth
   const inOutElement = obj.detailDataElement.getFirstElementByName(IN_OUT_NAME);
   const radius = inOutElement.currentValue === '1' ? that.outRadius : that.inRadius;
   const calcNextXYDiaclock = calcNextXYDiaclockFactory(xBias, yBias, radius, Number(that.bufferDegree));
