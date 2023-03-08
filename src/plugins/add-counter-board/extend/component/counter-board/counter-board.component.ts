@@ -60,8 +60,9 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
                           countElement.value = `${value}`;
                           updatePosition(obj, value, that);
                          }
-                      , get currentValue(){ return inOutElement.currentValue; }
+                      , get currentValue(){ return inOutElement?.currentValue; }
                       , set currentValue(value) {
+                          if(!inOutElement?.currentValue) return;
                           if(inOutElement.currentValue === `${value}`) return; // 2回動いてしまうので防止
                           inOutElement.currentValue = `${value}`;
                           updatePosition(obj, Number(obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME).value), that);
