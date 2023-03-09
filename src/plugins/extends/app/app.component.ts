@@ -41,6 +41,8 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
+import { useCounterBoard } from 'src/plugins/add-counter-board/extend/app.component';
+import { CounterBoardWindowComponent } from 'src/plugins/add-counter-board/extend/component/counter-board-window/counter-board-window.component';
 import { pluginConfig } from 'src/plugins/config';
 import { setSpreadSheetAPIKey } from 'src/plugins/deck-from-spreadsheet/extend/app.component';
 import { hideMenu, horizonMenu, menuCount, minimizableMenu } from 'src/plugins/extend-menu/extends/app/app.component';
@@ -176,9 +178,11 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       .on('SYNCHRONIZE_FILE_LIST', event => { if (event.isSendFromSelf) this.lazyNgZoneUpdate(false); })
       .on<AppConfig>('LOAD_CONFIG', event => {
         console.log('LOAD_CONFIG !!!');
+        setSpreadSheetAPIKey(event.data);
+        if(pluginConfig.isOffLineMode) return;
         Network.setApiKey(event.data.webrtc.key);
         Network.open();
-        setSpreadSheetAPIKey(event.data);
+
       })
       .on<File>('FILE_LOADED', event => {
         this.lazyNgZoneUpdate(false);
@@ -221,12 +225,13 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       const peerOption = horizonMenu ? { width: 500, height: 400, top: 100 } : { width: 500, height: 450, left: 100 }
       const chatOption = horizonMenu ?  { width: 700, height: 450, top: 500 } : { width: 700, height: 400, left: 100, top: 450 }
 
-      if(!pluginConfig.isHideFirstPeer && !pluginConfig.isAddReloadButton) this.panelService.open(PeerMenuComponent, peerOption);
-      if(!pluginConfig.isHideFirstPeer && pluginConfig.isAddReloadButton) this.panelService.open(PeerMenuComponentExtendPlus, peerOption);
-      if(!pluginConfig.isHideFirstChat) this.panelService.open(ChatWindowComponent, chatOption);
       this.panelService.open(CutinListComponent, { width: 300, height: 450, left: 100, top: 350 });
       this.panelService.open(RooperGameSheetComponent, { width: 500, height: 450, left: 300, top: 0 });
 
+      if(!pluginConfig.isOffLineMode && !pluginConfig.isHideFirstPeer && !pluginConfig.isAddReloadButton) this.panelService.open(PeerMenuComponent, peerOption);
+      if(!pluginConfig.isOffLineMode && !pluginConfig.isHideFirstPeer && pluginConfig.isAddReloadButton) this.panelService.open(PeerMenuComponentExtendPlus, peerOption);
+      if(!pluginConfig.isOffLineMode && !pluginConfig.isHideFirstChat) this.panelService.open(ChatWindowComponent, chatOption);
+      if(pluginConfig.isAddCounterBoard) this.panelService.open(CounterBoardWindowComponent, { width: 500, height: 450, left: 300,top: 100 });
       fetchZipRoom();
     }, 0);
   }
@@ -273,6 +278,9 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       case 'CutinListComponent':
           component = CutinListComponent;
           break;
+      case 'CounterBoardWindowComponent':
+        component = CounterBoardWindowComponent;
+        break;
     }
     if (component) {
       option.top = (this.openPanelCount % 10 + 1) * 20;
@@ -354,6 +362,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   resetPointOfView() {
     resetPointOfView(this);
   }
+  get useCounterBoard(){ return useCounterBoard(); }
 }
 
 PanelService.UIPanelComponentClass = UIPanelComponent;

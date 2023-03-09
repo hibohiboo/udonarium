@@ -2,10 +2,10 @@ import {
   SyncObject,
   SyncVar,
 } from '@udonarium/core/synchronize-object/decorator'
-import { Network } from '@udonarium/core/system'
 import { DataElement } from '@udonarium/data-element'
 import { PeerCursor } from '@udonarium/peer-cursor'
 import { TabletopObject } from '@udonarium/tabletop-object'
+import { initRotateOffHandStorage } from 'src/plugins/object-rotate-off/extends/class/hand-storage'
 import { addSyncHideVirtualScreenHandStorage } from 'src/plugins/virtual-screen/extend/class/hand-storage'
 
 @SyncObject('hand-storage')
@@ -17,6 +17,7 @@ export class HandStorage extends TabletopObject {
   constructor(identifier?: string) {
     super(identifier);
     addSyncHideVirtualScreenHandStorage(this);
+    initRotateOffHandStorage(this);
   }
 
   get name(): string {

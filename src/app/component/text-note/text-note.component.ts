@@ -11,7 +11,7 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
-import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/text-note/text-note.component';
+import { extendCloneRotateOffTextNote, getObjectRotateOffTextNote, rotateOffContextMenuTextNote } from 'src/plugins/object-rotate-off/extends/components/text-note/text-note.component';
 import { getIsUpright, setIsUpright, uprightContextMenu } from 'src/plugins/text-note-upright-flat/extend/component/text-note.component';
 import { hideVirtualScreenTextNote, initVirtualScreenTextNote, onMovedVirtualScreenTextNote } from 'src/plugins/virtual-screen/extend/component/text-note/text-note.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
@@ -129,8 +129,7 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
     e.preventDefault();
   }
 
-  private isRotateOffIndividually = false;
-  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOffTextNote(this); };
 
   get isUpright(): boolean { return getIsUpright(this); }
   set isUpright(isUpright: boolean) { setIsUpright(this, isUpright); }
@@ -153,7 +152,9 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
           console.log('コピー', cloneObject);
           cloneObject.location.x += this.gridSize;
           cloneObject.location.y += this.gridSize;
+          extendCloneRotateOffTextNote(this.textNote, cloneObject);
           cloneObject.toTopmost();
+
           SoundEffect.play(PresetSound.cardPut);
         }
       },
@@ -163,7 +164,7 @@ export class TextNoteComponent implements OnInit, OnDestroy, AfterViewInit {
           SoundEffect.play(PresetSound.sweep);
         }
       }
-      , ...rotateOffContextMenu(this)
+      , ...rotateOffContextMenuTextNote(this)
       , ...uprightContextMenu(this)
       , ...virtualScreenContextMenu(this)
     ], this.title);

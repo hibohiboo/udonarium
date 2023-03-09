@@ -3,7 +3,11 @@ import { Network } from "@udonarium/core/system";
 import { PeerCursor } from "@udonarium/peer-cursor";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { pluginConfig } from "src/plugins/config";
+import { extendCloneRotateOffCard } from "src/plugins/object-rotate-off/extends/components/card/card.component";
+import { keyboardShortCutRotateOffFactory } from "src/plugins/object-rotate-off/extends/domain/object-rotate-off";
 const menuKey = 'm'
+
+const keyboardShortCutRotateOff = keyboardShortCutRotateOffFactory('card')
 
 export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
     e.stopPropagation();
@@ -25,6 +29,7 @@ export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
       const cloneObject =that.card.clone();
       cloneObject.location.x +=that.gridSize;
       cloneObject.location.y +=that.gridSize;
+      extendCloneRotateOffCard(that.card, cloneObject)
       cloneObject.toTopmost();
       SoundEffect.play(PresetSound.cardPut);
       return true
@@ -34,6 +39,10 @@ export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
       that.owner = Network.peerContext.userId;
     } else if (e.key === 'q') {
       that.showDetail(that.card)
+      return true
+    } else if (e.key === 'r') {
+      that.card.faceDown();
+      SoundEffect.play(PresetSound.cardDraw);
       return true
     } else if (e.key === 'd') {
       that.card.destroy()
@@ -47,6 +56,9 @@ export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
         return;
       }
       that.card.handOwner = PeerCursor.myCursor.userId;
+    } else if (e.key === 'a') {
+      keyboardShortCutRotateOff(that);
+      return;
     }
 };
 

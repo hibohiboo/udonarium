@@ -87,6 +87,13 @@
           <div>効果音</div>
         </a>
       </li>
+
+      <li *ngIf="useCounterBoard" (click)="open('CounterBoardWindowComponent')">
+        <a routerLink="/" routerLinkActive="active">
+          <div><i class="material-icons">view_quilt</i></div>
+          <div>カウンター</div>
+        </a>
+      </li>
       <li *ngIf="useHelp" (click)="openHelp()">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons">help</i></div>

@@ -27,13 +27,15 @@ import { MovableOption } from 'directive/movable.directive';
 import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { ImageService } from 'service/image.service';
+import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { initCardStackComponentForWritableText, isCardWritable, showStackListWritableText } from 'src/plugins/add-card-text-writable/extend/component/card-stack/card-stack.component';
 import { drawNCardsContextMenu } from 'src/plugins/add-draw-n-cards/extend/component/card-stack/card-stack.component';
+import { cardBackImageAllChangeContextMenu } from 'src/plugins/card-back-image-all-change/extend/component/card-stack/card-stack.component';
 import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
 import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
-import { rotateOffIndividuallyContextMenu } from 'src/plugins/object-rotate-off/extends/menu';
+import { extendCloneRotateOffCardStack, getObjectRotateOffCardStack, rotateOffContextMenuCardStack } from 'src/plugins/object-rotate-off/extends/components/card-stack/card-stack.component';
 import { handCardStackContextMenu } from 'src/plugins/return-the-hand/extend/component/card-stack/card-stack.component';
 import { tapCardStackContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
 import { hideVirtualScreenCardStack, initVirtualScreenCardStack, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card-stack/card-stack.component';
@@ -105,7 +107,8 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
     private imageService: ImageService,
-    private pointerDeviceService: PointerDeviceService
+    private pointerDeviceService: PointerDeviceService,
+    private modalService: ModalService, // card-back-image-all-change で使用
   ) {
     initVirtualScreenCardStack(this);
     initCardStackComponentForWritableText(this);
@@ -243,8 +246,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     EventSystem.trigger('SELECT_TABLETOP_OBJECT', { identifier: this.cardStack.identifier, className: 'GameCharacter' });
   }
 
-  private isRotateOffIndividually = false;
-  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOffCardStack(this); };
 
   @HostListener('contextmenu', ['$event'])
   onContextMenu(e: Event) {
@@ -334,6 +336,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
           cloneObject.location.y += this.gridSize;
           cloneObject.owner = '';
           cloneObject.toTopmost();
+          extendCloneRotateOffCardStack(this.cardStack, cloneObject);
           SoundEffect.play(PresetSound.cardPut);
         }
       },
@@ -343,9 +346,11 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
           this.cardStack.destroy();
           SoundEffect.play(PresetSound.sweep);
         }
-      },
-      ...rotateOffIndividuallyContextMenu(this)
+      }
+      , ...cardBackImageAllChangeContextMenu(this)
+      , ...rotateOffContextMenuCardStack(this)
       , ...virtualScreenContextMenu(this)
+
     ], this.name);
   }
 

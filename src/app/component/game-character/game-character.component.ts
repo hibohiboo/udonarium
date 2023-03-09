@@ -26,7 +26,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { initKeyboardShortcutGameCharacter, onKeyDownKeyboardShortcutGameCharacter } from 'src/plugins/keyboard-shortcut/extend/component/game-character/game-character.component';
-import { rotateOffContextMenu } from 'src/plugins/object-rotate-off/extends/components/game-character/game-character.component';
+import { extendCloneRotateOffCharacter, getObjectRotateOffCharacter, rotateOffContextMenuCharacter } from 'src/plugins/object-rotate-off/extends/components/game-character/game-character.component';
 import { hideVirtualScreenCharacter, initVirtualScreenCharacter, onMovedVirtualScreenGameCharacter } from 'src/plugins/virtual-screen/extend/component/game-character/game-character.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
 
@@ -63,8 +63,8 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   set rotate(rotate: number) { this.gameCharacter.rotate = rotate; }
   get roll(): number { return this.gameCharacter.roll; }
   set roll(roll: number) { this.gameCharacter.roll = roll; }
-  private isRotateOffIndividually = false;
-  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return this.isRotateOffIndividually; };
+
+  @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOffCharacter(this); };
   @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenCharacter(this); };
 
   gridSize: number = 50;
@@ -164,11 +164,12 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
           let cloneObject = this.gameCharacter.clone();
           cloneObject.location.x += this.gridSize;
           cloneObject.location.y += this.gridSize;
+          extendCloneRotateOffCharacter(this.gameCharacter, cloneObject);
           cloneObject.update();
           SoundEffect.play(PresetSound.piecePut);
         }
       },
-      ...rotateOffContextMenu(this)
+      ...rotateOffContextMenuCharacter(this)
       , ...virtualScreenContextMenu(this)
     ], this.name);
   }

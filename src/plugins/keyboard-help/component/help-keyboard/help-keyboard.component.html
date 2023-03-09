@@ -16,10 +16,12 @@
       <dd>カードの編集</dd>
       <dt>カードの上で[s]</dt>
       <dd>自分だけ見る</dd>
-      <dt>カードの上で[m]</dt>
-      <dd>メニューを開く</dd>
+      <dt>カードの上で[r]</dt>
+      <dd>カードを裏にする</dd>
       <dt *ngIf="config.canReturnHandToIndividualBoard">カードの上で[h]</dt>
       <dd *ngIf="config.canReturnHandToIndividualBoard">手札にする / 共用にする</dd>
+      <dt *ngIf="config.isOffObjectRotateIndividually">カードの上で[a]</dt>
+      <dd *ngIf="config.isOffObjectRotateIndividually">回転させない / 回転オン</dd>
     </dl>
     <h4>山札</h4>
     <dl class="help-list">
@@ -39,8 +41,8 @@
       <dd>山札を削除</dd>
       <dt>山札の上で[q]</dt>
       <dd>山札の編集</dd>
-      <dt>山札の上で[m]</dt>
-      <dd>メニューを開く</dd>
+      <dt *ngIf="config.isOffObjectRotateIndividually">山札の上で[a]</dt>
+      <dd *ngIf="config.isOffObjectRotateIndividually">回転させない / 回転オン</dd>
     </dl>
   </section>
 
@@ -56,6 +58,8 @@
       <dd>地形設定を編集</dd>
       <dt>[f]</dt>
       <dd>地形を固定/固定解除</dd>
+      <dt *ngIf="config.isOffObjectRotateIndividually">地形の上で[a]</dt>
+      <dd *ngIf="config.isOffObjectRotateIndividually">回転させない / 回転オン</dd>
     </dl>
   </section>
 
@@ -75,6 +79,8 @@
       <dd>キャラクターを共有インベントリに移動</dd>
       <dt>[shift]+[z]</dt>
       <dd>キャラクターを個人インベントリに移動</dd>
+      <dt *ngIf="config.isOffObjectRotateIndividually">キャラクターの上で[a]</dt>
+      <dd *ngIf="config.isOffObjectRotateIndividually">回転させない / 回転オン</dd>
     </dl>
   </section>
 
@@ -90,6 +96,8 @@
       <dd>ボード設定を編集</dd>
       <dt>[f]</dt>
       <dd>ボードを固定/固定解除</dd>
+      <dt *ngIf="config.isOffObjectRotateIndividually">ボードの上で[a]</dt>
+      <dd *ngIf="config.isOffObjectRotateIndividually">回転させない / 回転オン</dd>
     </dl>
   </section>
 
