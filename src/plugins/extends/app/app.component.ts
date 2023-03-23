@@ -64,6 +64,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   @ViewChild('modalLayer', { read: ViewContainerRef, static: true }) modalLayerViewContainerRef: ViewContainerRef;
 
   @HostBinding('class.is2d') get is2d(){ return is2d(); };
+  @HostBinding('class.is-hide-save') get isHideSave(){ return hideMenu.save; };
   @HostBinding('class.object-rotate-off') get objectRotateOff(){ return offObjectRotate; };
   @HostBinding('class.hide-pedestal') get pedestalOff(){ return hidePredestal; };
 
