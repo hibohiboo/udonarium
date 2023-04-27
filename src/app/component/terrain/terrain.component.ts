@@ -7,12 +7,10 @@ import {
   HostListener,
   Input,
   NgZone,
+  OnChanges,
   OnDestroy,
-  OnInit,
 } from '@angular/core';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
-import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem } from '@udonarium/core/system';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { Terrain, TerrainViewState } from '@udonarium/terrain';
@@ -26,6 +24,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
+import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 
 @Component({
   selector: 'terrain',
@@ -33,7 +32,7 @@ import { TabletopActionService } from 'service/tabletop-action.service';
   styleUrls: ['./terrain.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
+export class TerrainComponent implements OnChanges, OnDestroy, AfterViewInit {
   @Input() terrain: Terrain = null;
   @Input() is3D: boolean = false;
 
@@ -57,6 +56,10 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
   get isVisibleWallTopBottom(): boolean { return 0 < this.width * this.height; }
   get isVisibleWallLeftRight(): boolean { return 0 < this.depth * this.height; }
 
+  get selectionState(): SelectionState { return this.selectionService.state(this.terrain); }
+  get isSelected(): boolean { return this.selectionState !== SelectionState.NONE; }
+  get isMagnetic(): boolean { return this.selectionState === SelectionState.MAGNETIC; }
+
   gridSize: number = 50;
 
   movableOption: MovableOption = {};
@@ -72,23 +75,27 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
     private elementRef: ElementRef<HTMLElement>,
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
+    private selectionService: TabletopSelectionService,
     private pointerDeviceService: PointerDeviceService,
     private coordinateService: CoordinateService,
   ) { }
 
-  ngOnInit() {
+  ngOnChanges(): void {
+    EventSystem.unregister(this);
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', event => {
-        let object = ObjectStore.instance.get(event.data.identifier);
-        if (!this.terrain || !object) return;
-        if (this.terrain === object || (object instanceof ObjectNode && this.terrain.contains(object))) {
-          this.changeDetector.markForCheck();
-        }
+      .on(`UPDATE_GAME_OBJECT/identifier/${this.terrain?.identifier}`, event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_OBJECT_CHILDREN/identifier/${this.terrain?.identifier}`, event => {
+        this.changeDetector.markForCheck();
       })
       .on('SYNCHRONIZE_FILE_LIST', event => {
         this.changeDetector.markForCheck();
       })
       .on('UPDATE_FILE_RESOURE', event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_SELECTION/identifier/${this.terrain?.identifier}`, event => {
         this.changeDetector.markForCheck();
       });
     this.movableOption = {
@@ -123,7 +130,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // TODO:もっと良い方法考える
     if (this.isLocked) {
-      EventSystem.trigger('DRAG_LOCKED_OBJECT', {});
+      EventSystem.trigger('DRAG_LOCKED_OBJECT', { srcEvent: e });
     }
   }
 
@@ -188,6 +195,7 @@ export class TerrainComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onMove() {
+    this.contextMenuService.close();
     SoundEffect.play(PresetSound.blockPick);
   }
 

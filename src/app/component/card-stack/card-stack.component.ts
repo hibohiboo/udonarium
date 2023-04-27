@@ -8,13 +8,12 @@ import {
   HostListener,
   Input,
   NgZone,
+  OnChanges,
   OnDestroy,
-  OnInit,
 } from '@angular/core';
 import { Card } from '@udonarium/card';
 import { CardStack } from '@udonarium/card-stack';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { PeerCursor } from '@udonarium/peer-cursor';
@@ -28,6 +27,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 
 @Component({
   selector: 'card-stack',
@@ -49,7 +49,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
     ])
   ]
 })
-export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() cardStack: CardStack = null;
   @Input() is3D: boolean = false;
 
@@ -70,6 +70,10 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get topCard(): Card { return this.cardStack.topCard; }
   get imageFile(): ImageFile { return this.imageService.getSkeletonOr(this.cardStack.imageFile); }
+
+  get selectionState(): SelectionState { return this.selectionService.state(this.cardStack); }
+  get isSelected(): boolean { return this.selectionState !== SelectionState.NONE; }
+  get isMagnetic(): boolean { return this.selectionState === SelectionState.MAGNETIC; }
 
   animeState: string = 'inactive';
 
@@ -92,11 +96,13 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     private panelService: PanelService,
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
+    private selectionService: TabletopSelectionService,
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService
   ) { }
 
-  ngOnInit() {
+  ngOnChanges(): void {
+    EventSystem.unregister(this);
     EventSystem.register(this)
       .on('SHUFFLE_CARD_STACK', event => {
         if (event.data.identifier === this.cardStack.identifier) {
@@ -104,22 +110,25 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
           this.changeDetector.markForCheck();
         }
       })
-      .on('UPDATE_GAME_OBJECT', event => {
-        let object = ObjectStore.instance.get(event.data.identifier);
-        if (!this.cardStack || !object) return;
-        if ((this.cardStack === object)
-          || (object instanceof ObjectNode && this.cardStack.contains(object))
-          || (object instanceof PeerCursor && object.userId === this.cardStack.owner)) {
+      .on(`UPDATE_GAME_OBJECT/aliasName/${PeerCursor.aliasName}`, event => {
+        let object = ObjectStore.instance.get<PeerCursor>(event.data.identifier);
+        if (this.cardStack && object && object.userId === this.cardStack.owner) {
           this.changeDetector.markForCheck();
         }
       })
-      .on('CARD_STACK_DECREASED', event => {
-        if (event.data.cardStackIdentifier === this.cardStack.identifier && this.cardStack) this.changeDetector.markForCheck();
+      .on(`UPDATE_GAME_OBJECT/identifier/${this.cardStack?.identifier}`, event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_OBJECT_CHILDREN/identifier/${this.cardStack?.identifier}`, event => {
+        this.changeDetector.markForCheck();
       })
       .on('SYNCHRONIZE_FILE_LIST', event => {
         this.changeDetector.markForCheck();
       })
       .on('UPDATE_FILE_RESOURE', event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_SELECTION/identifier/${this.cardStack?.identifier}`, event => {
         this.changeDetector.markForCheck();
       })
       .on('DISCONNECT_PEER', event => {
@@ -215,6 +224,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onInputStart(e: MouseEvent | TouchEvent) {
+    if (e instanceof MouseEvent && (e.button !== 0 || e.ctrlKey || e.shiftKey)) return;
     this.startDoubleClickTimer(e);
     this.cardStack.toTopmost();
     this.startIconHiddenTimer();
@@ -287,7 +297,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
       ContextMenuSeparator,
       {
         name: '山札を人数分に分割する', action: () => {
-          this.splitStack(Network.peerIds.length);
+          this.splitStack(Network.peerIds.length + 1);
           SoundEffect.play(PresetSound.cardDraw);
         }
       },
@@ -320,6 +330,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onMove() {
+    this.contextMenuService.close();
     SoundEffect.play(PresetSound.cardPick);
   }
 
@@ -331,7 +342,6 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
   private drawCard(): Card {
     let card = this.cardStack.drawCard();
     if (card) {
-      this.cardStack.update(); // todo
       card.location.x += 100 + (Math.random() * 50);
       card.location.y += 25 + (Math.random() * 50);
       card.setLocation(this.cardStack.location.name);
@@ -426,7 +436,7 @@ export class CardStackComponent implements OnInit, AfterViewInit, OnDestroy {
     let coordinate = this.pointerDeviceService.pointers[0];
     let option: PanelOption = { left: coordinate.x - 200, top: coordinate.y - 300, width: 400, height: 600 };
 
-    this.cardStack.owner = Network.peerContext.userId;
+    this.cardStack.owner = Network.peer.userId;
     let component = this.panelService.open<CardStackListComponent>(CardStackListComponent, option);
     component.cardStack = gameObject;
   }

@@ -8,11 +8,10 @@ import {
   HostListener,
   Input,
   NgZone,
+  OnChanges,
   OnDestroy,
-  OnInit,
 } from '@angular/core';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { DiceSymbol } from '@udonarium/dice-symbol';
@@ -26,6 +25,7 @@ import { ContextMenuAction, ContextMenuSeparator, ContextMenuService } from 'ser
 import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 
 @Component({
   selector: 'dice-symbol',
@@ -60,7 +60,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
     ])
   ]
 })
-export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DiceSymbolComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() diceSymbol: DiceSymbol = null;
   @Input() is3D: boolean = false;
 
@@ -85,6 +85,10 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
   get ownerName(): string { return this.diceSymbol.ownerName; }
   get isVisible(): boolean { return this.diceSymbol.isVisible; }
 
+  get selectionState(): SelectionState { return this.selectionService.state(this.diceSymbol); }
+  get isSelected(): boolean { return this.selectionState !== SelectionState.NONE; }
+  get isMagnetic(): boolean { return this.selectionState === SelectionState.MAGNETIC; }
+
   animeState: string = 'inactive';
 
   private iconHiddenTimer: NodeJS.Timer = null;
@@ -106,10 +110,11 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
     private contextMenuService: ContextMenuService,
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
+    private selectionService: TabletopSelectionService,
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService) { }
 
-  ngOnInit() {
+  ngOnChanges(): void {
     EventSystem.register(this)
       .on('ROLL_DICE_SYMBOL', event => {
         if (event.data.identifier === this.diceSymbol.identifier) {
@@ -120,19 +125,25 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
           });
         }
       })
-      .on('UPDATE_GAME_OBJECT', event => {
-        let object = ObjectStore.instance.get(event.data.identifier);
-        if (!this.diceSymbol || !object) return;
-        if ((this.diceSymbol === object)
-          || (object instanceof ObjectNode && this.diceSymbol.contains(object))
-          || (object instanceof PeerCursor && object.userId === this.diceSymbol.owner)) {
+      .on(`UPDATE_GAME_OBJECT/aliasName/${PeerCursor.aliasName}`, event => {
+        let object = ObjectStore.instance.get<PeerCursor>(event.data.identifier);
+        if (this.diceSymbol && object && object.userId === this.diceSymbol.owner) {
           this.changeDetector.markForCheck();
         }
+      })
+      .on(`UPDATE_GAME_OBJECT/identifier/${this.diceSymbol?.identifier}`, event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_OBJECT_CHILDREN/identifier/${this.diceSymbol?.identifier}`, event => {
+        this.changeDetector.markForCheck();
       })
       .on('SYNCHRONIZE_FILE_LIST', event => {
         this.changeDetector.markForCheck();
       })
       .on('UPDATE_FILE_RESOURE', event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_SELECTION/identifier/${this.diceSymbol?.identifier}`, event => {
         this.changeDetector.markForCheck();
       })
       .on('DISCONNECT_PEER', event => {
@@ -173,6 +184,7 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onInputStart(e: MouseEvent | TouchEvent) {
+    if (e instanceof MouseEvent && (e.button !== 0 || e.ctrlKey || e.shiftKey)) return;
     this.startDoubleClickTimer(e);
     this.startIconHiddenTimer();
   }
@@ -235,7 +247,7 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.isMine) {
       actions.push({
         name: '自分だけ見る', action: () => {
-          this.owner = Network.peerContext.userId;
+          this.owner = Network.peer.userId;
           SoundEffect.play(PresetSound.lock);
         }
       });
@@ -276,6 +288,7 @@ export class DiceSymbolComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onMove() {
+    this.contextMenuService.close();
     SoundEffect.play(PresetSound.dicePick);
   }
 

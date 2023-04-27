@@ -7,13 +7,12 @@ import {
   HostListener,
   Input,
   NgZone,
+  OnChanges,
   OnDestroy,
-  OnInit,
 } from '@angular/core';
 import { Card, CardState } from '@udonarium/card';
 import { CardStack } from '@udonarium/card-stack';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { PeerCursor } from '@udonarium/peer-cursor';
@@ -26,6 +25,7 @@ import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.s
 import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 import { TabletopService } from 'service/tabletop.service';
 
 @Component({
@@ -34,7 +34,7 @@ import { TabletopService } from 'service/tabletop.service';
   styleUrls: ['./card.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
   @Input() card: Card = null;
   @Input() is3D: boolean = false;
 
@@ -59,6 +59,10 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   get frontImage(): ImageFile { return this.imageService.getSkeletonOr(this.card.frontImage); }
   get backImage(): ImageFile { return this.imageService.getSkeletonOr(this.card.backImage); }
 
+  get selectionState(): SelectionState { return this.selectionService.state(this.card); }
+  get isSelected(): boolean { return this.selectionState !== SelectionState.NONE; }
+  get isMagnetic(): boolean { return this.selectionState === SelectionState.MAGNETIC; }
+
   private iconHiddenTimer: NodeJS.Timer = null;
   get isIconHidden(): boolean { return this.iconHiddenTimer != null };
 
@@ -79,25 +83,33 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
     private elementRef: ElementRef<HTMLElement>,
     private changeDetector: ChangeDetectorRef,
     private tabletopService: TabletopService,
+    private selectionService: TabletopSelectionService,
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService
   ) { }
 
-  ngOnInit() {
+  ngOnChanges(): void {
+    EventSystem.unregister(this);
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', event => {
-        let object = ObjectStore.instance.get(event.data.identifier);
-        if (!this.card || !object) return;
-        if ((this.card === object)
-          || (object instanceof ObjectNode && this.card.contains(object))
-          || (object instanceof PeerCursor && object.userId === this.card.owner)) {
+      .on(`UPDATE_GAME_OBJECT/aliasName/${PeerCursor.aliasName}`, event => {
+        let object = ObjectStore.instance.get<PeerCursor>(event.data.identifier);
+        if (this.card && object && object.userId === this.card.owner) {
           this.changeDetector.markForCheck();
         }
+      })
+      .on(`UPDATE_GAME_OBJECT/identifier/${this.card?.identifier}`, event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_OBJECT_CHILDREN/identifier/${this.card?.identifier}`, event => {
+        this.changeDetector.markForCheck();
       })
       .on('SYNCHRONIZE_FILE_LIST', event => {
         this.changeDetector.markForCheck();
       })
       .on('UPDATE_FILE_RESOURE', event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_SELECTION/identifier/${this.card?.identifier}`, event => {
         this.changeDetector.markForCheck();
       })
       .on('DISCONNECT_PEER', event => {
@@ -186,6 +198,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onInputStart(e: MouseEvent | TouchEvent) {
+    if (e instanceof MouseEvent && (e.button !== 0 || e.ctrlKey || e.shiftKey)) return;
     this.startDoubleClickTimer(e);
     this.card.toTopmost();
     this.startIconHiddenTimer();
@@ -223,7 +236,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
           name: '自分だけ見る', action: () => {
             SoundEffect.play(PresetSound.cardDraw);
             this.card.faceDown();
-            this.owner = Network.peerContext.userId;
+            this.owner = Network.peer.userId;
           }
         }),
       ContextMenuSeparator,
@@ -255,6 +268,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onMove() {
     this.input.cancel();
+    this.contextMenuService.close();
     SoundEffect.play(PresetSound.cardPick);
   }
 

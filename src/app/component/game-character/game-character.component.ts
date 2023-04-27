@@ -1,17 +1,14 @@
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   HostListener,
   Input,
+  OnChanges,
   OnDestroy,
-  OnInit,
 } from '@angular/core';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
-import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { GameCharacter } from '@udonarium/game-character';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
@@ -22,6 +19,7 @@ import { RotableOption } from 'directive/rotable.directive';
 import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 
 @Component({
   selector: 'game-character',
@@ -45,7 +43,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
     ])
   ]
 })
-export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit {
+export class GameCharacterComponent implements OnChanges, OnDestroy {
   @Input() gameCharacter: GameCharacter = null;
   @Input() is3D: boolean = false;
 
@@ -57,31 +55,40 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   get roll(): number { return this.gameCharacter.roll; }
   set roll(roll: number) { this.gameCharacter.roll = roll; }
 
+  get selectionState(): SelectionState { return this.selectionService.state(this.gameCharacter); }
+  get isSelected(): boolean { return this.selectionState !== SelectionState.NONE; }
+  get isMagnetic(): boolean { return this.selectionState === SelectionState.MAGNETIC; }
+
   gridSize: number = 50;
 
   movableOption: MovableOption = {};
   rotableOption: RotableOption = {};
+  rollOption: RotableOption = {};
 
   constructor(
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
+    private selectionService: TabletopSelectionService,
     private pointerDeviceService: PointerDeviceService
   ) { }
 
-  ngOnInit() {
+  ngOnChanges(): void {
+    EventSystem.unregister(this);
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', event => {
-        let object = ObjectStore.instance.get(event.data.identifier);
-        if (!this.gameCharacter || !object) return;
-        if (this.gameCharacter === object || (object instanceof ObjectNode && this.gameCharacter.contains(object))) {
-          this.changeDetector.markForCheck();
-        }
+      .on(`UPDATE_GAME_OBJECT/identifier/${this.gameCharacter?.identifier}`, event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_OBJECT_CHILDREN/identifier/${this.gameCharacter?.identifier}`, event => {
+        this.changeDetector.markForCheck();
       })
       .on('SYNCHRONIZE_FILE_LIST', event => {
         this.changeDetector.markForCheck();
       })
       .on('UPDATE_FILE_RESOURE', event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_SELECTION/identifier/${this.gameCharacter?.identifier}`, event => {
         this.changeDetector.markForCheck();
       });
     this.movableOption = {
@@ -92,9 +99,11 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
     this.rotableOption = {
       tabletopObject: this.gameCharacter
     };
+    this.rollOption = {
+      tabletopObject: this.gameCharacter,
+      targetPropertyName: 'roll',
+    };
   }
-
-  ngAfterViewInit() { }
 
   ngOnDestroy() {
     EventSystem.unregister(this);
@@ -151,6 +160,7 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onMove() {
+    this.contextMenuService.close();
     SoundEffect.play(PresetSound.piecePick);
   }
 
