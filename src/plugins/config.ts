@@ -1,3 +1,5 @@
+import { listenMessage } from "./add-posts-messages";
+
 const params = new URL(document.URL).searchParams;
 export const configParam = {
   firstFetchZipRoom: params.get('first-fetch-zip-room')
@@ -49,6 +51,7 @@ export const pluginConfig = {
   , isEmptyDefaultTable: params.get('empty-default-table') != null
   , isAddCounterBoard: params.get('add-counter-board') != null
   , isOffLineMode: params.get('offline-mode') != null
+  , usePostMessage: params.get('post-message')  != null
 } as const;
 
 export const settings = [
@@ -148,3 +151,7 @@ export const lablsMinimum = [
 , 'サンプルのキャラクターコマを非表示'
 , 'カードを正位置のままシャッフルする'
 ]
+
+if(pluginConfig.usePostMessage){
+  listenMessage()
+}
