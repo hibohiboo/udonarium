@@ -33,7 +33,7 @@ import { GameCharacterSheetComponentExtendPlus } from 'src/plugins/extends/app/c
 import { initKeyboardShortcutCard, onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
 import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card.component';
 import { extendCloneRotateOffCard, getObjectRotateOffCard, rotateOffContextMenuCard } from 'src/plugins/object-rotate-off/extends/components/card/card.component';
-import { handCardContextMenu } from 'src/plugins/return-the-hand/extend/component/card/card.component';
+import { handCardContextMenu, selectedHandCardContextMenu } from 'src/plugins/return-the-hand/extend/component/card/card.component';
 import { tapCardContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
 import { hideVirtualScreenCard, initVirtualScreenCard, onMovedVirtualScreen } from 'src/plugins/virtual-screen/extend/component/card/card.component';
 import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu';
@@ -330,9 +330,11 @@ export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
                 SoundEffect.play(PresetSound.cardDraw);
               }
             },
+            ...selectedHandCardContextMenu(selectedCards)
           ]
         }
       );
+
     }
     if (this.selectionService.objects.length) {
       actions.push(ContextMenuSeparator);
