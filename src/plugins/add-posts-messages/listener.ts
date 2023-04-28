@@ -54,13 +54,10 @@ export const listenMessage = ()=>{
   );
   EventSystem.register({})
     .on('OPEN_NETWORK', event => {
-      console.warn('eero')
       postMessage(Network.peer.userId, 'open-connect')
       window.setTimeout(async() => {
-        console.log('room')
         const rooms = await loadRooms();
         postMessage(rooms, 'load-rooms');
-        console.log('rooms', rooms)
         loadedRooms = rooms;
       }, 1000);
     })
