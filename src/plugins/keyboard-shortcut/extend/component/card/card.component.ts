@@ -36,7 +36,7 @@ export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
     } else  if (e.key === 's') {
       SoundEffect.play(PresetSound.cardDraw);
       that.card.faceDown();
-      that.owner = Network.peerContext.userId;
+      that.owner = Network.peer.userId;
     } else if (e.key === 'q') {
       that.showDetail(that.card)
       return true

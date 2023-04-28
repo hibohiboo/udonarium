@@ -24,7 +24,6 @@ import { ChatWindowComponent } from 'component/chat-window/chat-window.component
 import { ContextMenuComponent } from 'component/context-menu/context-menu.component';
 import { CutinListComponent } from 'component/cutin-list/cutin-list.component';
 import { FileStorageComponent } from 'component/file-storage/file-storage.component';
-import { GameCharacterGeneratorComponent } from 'component/game-character-generator/game-character-generator.component';
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 import { GameObjectInventoryComponent } from 'component/game-object-inventory/game-object-inventory.component';
 import { GameTableSettingComponent } from 'component/game-table-setting/game-table-setting.component';
@@ -190,8 +189,8 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       })
       .on('OPEN_NETWORK', event => {
         console.log('OPEN_NETWORK', event.data.peerId);
-        PeerCursor.myCursor.peerId = Network.peerContext.peerId;
-        PeerCursor.myCursor.userId = Network.peerContext.userId;
+        PeerCursor.myCursor.peerId = Network.peer.peerId;
+        PeerCursor.myCursor.userId = Network.peer.userId;
       })
       .on('NETWORK_ERROR', event => {
         console.log('NETWORK_ERROR', event.data.peerId);
@@ -266,10 +265,6 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       case 'JukeboxComponent':
         component = JukeboxComponent;
         break;
-      case 'GameCharacterGeneratorComponent':
-        component = GameCharacterGeneratorComponent;
-        option = { width: 500, height: 300, left: 100 };
-        break;
       case 'GameObjectInventoryComponent':
         component = GameObjectInventoryComponent;
         break;
@@ -296,8 +291,8 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
     this.isSaveing = true;
     this.progresPercent = 0;
 
-    let roomName = Network.peerContext && 0 < Network.peerContext.roomName.length
-      ? Network.peerContext.roomName
+    let roomName = Network.peer && 0 < Network.peer.roomName.length
+      ? Network.peer.roomName
       : 'ルームデータ';
     await this.saveDataService.saveRoomAsync(roomName, percent => {
       this.progresPercent = percent;

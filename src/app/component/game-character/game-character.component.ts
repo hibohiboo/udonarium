@@ -1,6 +1,5 @@
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -9,12 +8,10 @@ import {
   HostListener,
   Input,
   NgZone,
+  OnChanges,
   OnDestroy,
-  OnInit,
 } from '@angular/core';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
-import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
-import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
 import { GameCharacter } from '@udonarium/game-character';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
@@ -22,9 +19,10 @@ import { ChatPaletteComponent } from 'component/chat-palette/chat-palette.compon
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 import { MovableOption } from 'directive/movable.directive';
 import { RotableOption } from 'directive/rotable.directive';
-import { ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
+import { ContextMenuAction, ContextMenuSeparator, ContextMenuService } from 'service/context-menu.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 import { initKeyboardShortcutGameCharacter, onKeyDownKeyboardShortcutGameCharacter } from 'src/plugins/keyboard-shortcut/extend/component/game-character/game-character.component';
 import { extendCloneRotateOffCharacter, getObjectRotateOffCharacter, rotateOffContextMenuCharacter } from 'src/plugins/object-rotate-off/extends/components/game-character/game-character.component';
 import { hideVirtualScreenCharacter, initVirtualScreenCharacter, onMovedVirtualScreenGameCharacter } from 'src/plugins/virtual-screen/extend/component/game-character/game-character.component';
@@ -52,7 +50,7 @@ import { virtualScreenContextMenu } from 'src/plugins/virtual-screen/extend/menu
     ])
   ]
 })
-export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit {
+export class GameCharacterComponent implements OnChanges, OnDestroy {
   @Input() gameCharacter: GameCharacter = null;
   @Input() is3D: boolean = false;
 
@@ -66,11 +64,15 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
 
   @HostBinding('class.object-rotate-off') get objectRotateOff(){ return getObjectRotateOffCharacter(this); };
   @HostBinding('class.hide-virtual-screen-component') get hideVirtualScreen(){ return hideVirtualScreenCharacter(this); };
+  get selectionState(): SelectionState { return this.selectionService.state(this.gameCharacter); }
+  get isSelected(): boolean { return this.selectionState !== SelectionState.NONE; }
+  get isMagnetic(): boolean { return this.selectionState === SelectionState.MAGNETIC; }
 
   gridSize: number = 50;
 
   movableOption: MovableOption = {};
   rotableOption: RotableOption = {};
+  rollOption: RotableOption = {};
 
   constructor(
     private ngZone: NgZone, // virtual screen で使用
@@ -78,7 +80,8 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
     private contextMenuService: ContextMenuService,
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
-    private pointerDeviceService: PointerDeviceService,
+    private selectionService: TabletopSelectionService,
+    private pointerDeviceService: PointerDeviceService
   ) {
     initVirtualScreenCharacter(this);
     initKeyboardShortcutGameCharacter(this);
@@ -90,19 +93,23 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
      onKeyDownKeyboardShortcutGameCharacter(this,e);
    }
 
-  ngOnInit() {
+
+  ngOnChanges(): void {
+    EventSystem.unregister(this);
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', event => {
-        let object = ObjectStore.instance.get(event.data.identifier);
-        if (!this.gameCharacter || !object) return;
-        if (this.gameCharacter === object || (object instanceof ObjectNode && this.gameCharacter.contains(object))) {
-          this.changeDetector.markForCheck();
-        }
+      .on(`UPDATE_GAME_OBJECT/identifier/${this.gameCharacter?.identifier}`, event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_OBJECT_CHILDREN/identifier/${this.gameCharacter?.identifier}`, event => {
+        this.changeDetector.markForCheck();
       })
       .on('SYNCHRONIZE_FILE_LIST', event => {
         this.changeDetector.markForCheck();
       })
       .on('UPDATE_FILE_RESOURE', event => {
+        this.changeDetector.markForCheck();
+      })
+      .on(`UPDATE_SELECTION/identifier/${this.gameCharacter?.identifier}`, event => {
         this.changeDetector.markForCheck();
       });
     this.movableOption = {
@@ -113,9 +120,11 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
     this.rotableOption = {
       tabletopObject: this.gameCharacter
     };
+    this.rollOption = {
+      tabletopObject: this.gameCharacter,
+      targetPropertyName: 'roll',
+    };
   }
-
-  ngAfterViewInit() { }
 
   ngOnDestroy() {
     EventSystem.unregister(this);
@@ -136,51 +145,115 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu) return;
 
     let position = this.pointerDeviceService.pointers[0];
-    this.contextMenuService.open(position, [
-      { name: '詳細を表示', action: () => { this.showDetail(this.gameCharacter); } },
-      { name: 'チャットパレットを表示', action: () => { this.showChatPalette(this.gameCharacter) } },
-      ContextMenuSeparator,
-      {
-        name: '共有イベントリに移動', action: () => {
-          this.gameCharacter.setLocation('common');
-          SoundEffect.play(PresetSound.piecePut);
-        }
-      },
-      {
-        name: '個人イベントリに移動', action: () => {
-          this.gameCharacter.setLocation(Network.peerId);
-          SoundEffect.play(PresetSound.piecePut);
-        }
-      },
-      {
-        name: '墓場に移動', action: () => {
-          this.gameCharacter.setLocation('graveyard');
-          SoundEffect.play(PresetSound.sweep);
-        }
-      },
-      ContextMenuSeparator,
-      {
-        name: 'コピーを作る', action: () => {
-          let cloneObject = this.gameCharacter.clone();
-          cloneObject.location.x += this.gridSize;
-          cloneObject.location.y += this.gridSize;
-          extendCloneRotateOffCharacter(this.gameCharacter, cloneObject);
-          cloneObject.update();
-          SoundEffect.play(PresetSound.piecePut);
-        }
-      },
-      ...rotateOffContextMenuCharacter(this)
-      , ...virtualScreenContextMenu(this)
-    ], this.name);
+
+    let menuActions: ContextMenuAction[] = [];
+    menuActions = menuActions.concat(this.makeSelectionContextMenu());
+    menuActions = menuActions.concat(this.makeContextMenu());
+    this.contextMenuService.open(position, menuActions, this.name);
   }
 
   onMove() {
+    this.contextMenuService.close();
     SoundEffect.play(PresetSound.piecePick);
   }
 
   onMoved() {
     onMovedVirtualScreenGameCharacter(this);
     SoundEffect.play(PresetSound.piecePut);
+  }
+
+  private makeSelectionContextMenu(): ContextMenuAction[] {
+    let actions: ContextMenuAction[] = [];
+
+    if (this.selectionService.objects.length) {
+      let objectPosition = {
+        x: this.gameCharacter.location.x + (this.gameCharacter.size * this.gridSize) / 2,
+        y: this.gameCharacter.location.y + (this.gameCharacter.size * this.gridSize) / 2,
+        z: this.gameCharacter.posZ
+      };
+      actions.push({ name: 'ここに集める', action: () => this.selectionService.congregate(objectPosition) });
+    }
+
+    if (this.isSelected) {
+      let selectedCharacter = () => this.selectionService.objects.filter(object => object.aliasName === this.gameCharacter.aliasName) as GameCharacter[];
+      actions.push(
+        {
+          name: '選択したキャラクター', action: null, subActions: [
+            {
+              name: 'すべて共有イベントリに移動', action: () => {
+                selectedCharacter().forEach(gameCharacter => {
+                  gameCharacter.setLocation('common')
+                  this.selectionService.remove(gameCharacter);
+                });
+                SoundEffect.play(PresetSound.piecePut);
+              }
+            },
+            {
+              name: 'すべて個人イベントリに移動', action: () => {
+                selectedCharacter().forEach(gameCharacter => {
+                  gameCharacter.setLocation(Network.peerId);
+                  this.selectionService.remove(gameCharacter);
+                });
+                SoundEffect.play(PresetSound.piecePut);
+              }
+            },
+            {
+              name: 'すべて墓場に移動', action: () => {
+                selectedCharacter().forEach(gameCharacter => {
+                  gameCharacter.setLocation('graveyard');
+                  this.selectionService.remove(gameCharacter);
+                });
+                SoundEffect.play(PresetSound.sweep);
+              }
+            },
+          ]
+        }
+      );
+    }
+    if (this.selectionService.objects.length) {
+      actions.push(ContextMenuSeparator);
+    }
+    return actions;
+  }
+
+  private makeContextMenu(): ContextMenuAction[] {
+    let actions: ContextMenuAction[] = [];
+
+    actions.push({ name: '詳細を表示', action: () => { this.showDetail(this.gameCharacter); } });
+    actions.push({ name: 'チャットパレットを表示', action: () => { this.showChatPalette(this.gameCharacter) } });
+    actions.push(ContextMenuSeparator);
+    actions.push({
+      name: '共有イベントリに移動', action: () => {
+        this.gameCharacter.setLocation('common');
+        SoundEffect.play(PresetSound.piecePut);
+      }
+    });
+    actions.push({
+      name: '個人イベントリに移動', action: () => {
+        this.gameCharacter.setLocation(Network.peerId);
+        SoundEffect.play(PresetSound.piecePut);
+      }
+    });
+    actions.push({
+      name: '墓場に移動', action: () => {
+        this.gameCharacter.setLocation('graveyard');
+        SoundEffect.play(PresetSound.sweep);
+      }
+    });
+    actions.push(ContextMenuSeparator);
+    actions.push({
+      name: 'コピーを作る', action: () => {
+        let cloneObject = this.gameCharacter.clone();
+        cloneObject.location.x += this.gridSize;
+        cloneObject.location.y += this.gridSize;
+        extendCloneRotateOffCharacter(this.gameCharacter, cloneObject);
+        cloneObject.update();
+        SoundEffect.play(PresetSound.piecePut);
+      }
+    });
+    actions.push(...rotateOffContextMenuCharacter(this));
+    actions.push(...virtualScreenContextMenu(this));
+    return actions;
   }
 
   private adjustMinBounds(value: number, min: number = 0): number {

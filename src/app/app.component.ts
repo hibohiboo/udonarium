@@ -23,7 +23,6 @@ import { TableSelecter } from '@udonarium/table-selecter';
 import { ChatWindowComponent } from 'component/chat-window/chat-window.component';
 import { ContextMenuComponent } from 'component/context-menu/context-menu.component';
 import { FileStorageComponent } from 'component/file-storage/file-storage.component';
-import { GameCharacterGeneratorComponent } from 'component/game-character-generator/game-character-generator.component';
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 import { GameObjectInventoryComponent } from 'component/game-object-inventory/game-object-inventory.component';
 import { GameTableSettingComponent } from 'component/game-table-setting/game-table-setting.component';
@@ -123,6 +122,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     PresetSound.unlock = AudioStorage.instance.add('./assets/sounds/tm2/tm2_switch001.wav').identifier;
     PresetSound.sweep = AudioStorage.instance.add('./assets/sounds/tm2/tm2_swing003.wav').identifier;
     PresetSound.bell = AudioStorage.instance.add('./assets/sounds/on-jin/bell.mp3').identifier;
+    PresetSound.selection = AudioStorage.instance.add('./assets/sounds/soundeffect-lab/decision50.mp3').identifier;
 
     AudioStorage.instance.get(PresetSound.dicePick).isHidden = true;
     AudioStorage.instance.get(PresetSound.dicePut).isHidden = true;
@@ -139,6 +139,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     AudioStorage.instance.get(PresetSound.lock).isHidden = true;
     AudioStorage.instance.get(PresetSound.unlock).isHidden = true;
     AudioStorage.instance.get(PresetSound.sweep).isHidden = true;
+    AudioStorage.instance.get(PresetSound.selection).isHidden = true;
 
     PeerCursor.createMyCursor();
     PeerCursor.myCursor.name = '';
@@ -147,6 +148,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     EventSystem.register(this)
       .on('UPDATE_GAME_OBJECT', event => { this.lazyNgZoneUpdate(event.isSendFromSelf); })
       .on('DELETE_GAME_OBJECT', event => { this.lazyNgZoneUpdate(event.isSendFromSelf); })
+      .on('UPDATE_SELECTION', event => { this.lazyNgZoneUpdate(event.isSendFromSelf); })
       .on('SYNCHRONIZE_AUDIO_LIST', event => { if (event.isSendFromSelf) this.lazyNgZoneUpdate(false); })
       .on('SYNCHRONIZE_FILE_LIST', event => { if (event.isSendFromSelf) this.lazyNgZoneUpdate(false); })
       .on<AppConfig>('LOAD_CONFIG', event => {
@@ -159,8 +161,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       })
       .on('OPEN_NETWORK', event => {
         console.log('OPEN_NETWORK', event.data.peerId);
-        PeerCursor.myCursor.peerId = Network.peerContext.peerId;
-        PeerCursor.myCursor.userId = Network.peerContext.userId;
+        PeerCursor.myCursor.peerId = Network.peer.peerId;
+        PeerCursor.myCursor.userId = Network.peer.userId;
       })
       .on('NETWORK_ERROR', event => {
         console.log('NETWORK_ERROR', event.data.peerId);
@@ -187,6 +189,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       .on('DISCONNECT_PEER', event => {
         this.lazyNgZoneUpdate(event.isSendFromSelf);
       });
+
+    workaroundForMobileSafari();
   }
 
   ngAfterViewInit() {
@@ -231,10 +235,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       case 'JukeboxComponent':
         component = JukeboxComponent;
         break;
-      case 'GameCharacterGeneratorComponent':
-        component = GameCharacterGeneratorComponent;
-        option = { width: 500, height: 300, left: 100 };
-        break;
       case 'GameObjectInventoryComponent':
         component = GameObjectInventoryComponent;
         break;
@@ -258,8 +258,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.isSaveing = true;
     this.progresPercent = 0;
 
-    let roomName = Network.peerContext && 0 < Network.peerContext.roomName.length
-      ? Network.peerContext.roomName
+    let roomName = 0 < Network.peer.roomName.length
+      ? Network.peer.roomName
       : 'ルームデータ';
     await this.saveDataService.saveRoomAsync(roomName, percent => {
       this.progresPercent = percent;
@@ -310,3 +310,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 PanelService.UIPanelComponentClass = UIPanelComponent;
 ContextMenuService.ContextMenuComponentClass = ContextMenuComponent;
 ModalService.ModalComponentClass = ModalComponent;
+
+function workaroundForMobileSafari() {
+  // Mobile Safari (iOS 16.4)で確認した問題のworkaround.
+  // chrome-smooth-image-trickがCSSアニメーション（keyframes）の挙動に悪影響を与えるので修正用CSSで上書きする.
+  let ua = window.navigator.userAgent.toLowerCase();
+  let isiOS = ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1 || ua.indexOf('macintosh') > -1 && 'ontouchend' in document;
+  if (isiOS) {
+    let style = document.createElement('style');
+    style.innerHTML = `
+      .chrome-smooth-image-trick {
+        transform-style: flat;
+      }
+      `;
+    document.body.appendChild(style);
+  }
+}

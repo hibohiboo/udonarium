@@ -1,5 +1,5 @@
 import { isSoundEffectMute } from 'src/plugins/toggle-sound-effect/extend/class/sound-effect';
-import { ChatMessage, ChatMessageContext } from './chat-message';
+import { ChatMessage } from './chat-message';
 import { AudioFile } from './core/file-storage/audio-file';
 import { AudioPlayer } from './core/file-storage/audio-player';
 import { AudioStorage } from './core/file-storage/audio-storage';
@@ -25,6 +25,7 @@ export class PresetSound {
   static unlock: string = '';
   static sweep: string = '';
   static bell: string = '';
+  static selection: string = '';
 }
 
 @SyncObject('sound-effect')
@@ -74,5 +75,21 @@ export class SoundEffect extends GameObject {
   private static _play(identifier: string) {
     if(isSoundEffectMute()) return;
     EventSystem.call('SOUND_EFFECT', identifier);
+  }
+
+  static playLocal(identifier: string)
+  static playLocal(audio: AudioFile)
+  static playLocal(arg: any) {
+    let identifier = '';
+    if (typeof arg === 'string') {
+      identifier = arg;
+    } else {
+      identifier = arg.identifier;
+    }
+    SoundEffect._playLocal(identifier);
+  }
+
+  private static _playLocal(identifier: string) {
+    EventSystem.trigger('SOUND_EFFECT', identifier);
   }
 }

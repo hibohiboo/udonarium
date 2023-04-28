@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { EventSystem, Network } from '@udonarium/core/system';
 import { DataElement } from '@udonarium/data-element';
@@ -16,7 +16,7 @@ import { initGameCharacterSheetComponentForWritableText, isCardWritable } from '
   templateUrl: './game-character-sheet.component.html',
   styleUrls: ['./game-character-sheet.component.css']
 })
-export class GameCharacterSheetComponentExtendPlus implements OnInit, OnDestroy, AfterViewInit {
+export class GameCharacterSheetComponentExtendPlus implements OnInit, OnDestroy {
 
   @Input() tabletopObject: TabletopObject = null;
   isEdit: boolean = false;
@@ -25,7 +25,6 @@ export class GameCharacterSheetComponentExtendPlus implements OnInit, OnDestroy,
 
   isSaveing: boolean = false;
   progresPercent: number = 0;
-
   get isCardWritable() { return isCardWritable; }
   constructor(
     private saveDataService: SaveDataService,
@@ -42,9 +41,6 @@ export class GameCharacterSheetComponentExtendPlus implements OnInit, OnDestroy,
           this.panelService.close();
         }
       });
-  }
-
-  ngAfterViewInit() {
   }
 
   ngOnDestroy() {
