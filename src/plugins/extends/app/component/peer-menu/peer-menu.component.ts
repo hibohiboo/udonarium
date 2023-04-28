@@ -60,10 +60,10 @@ export class PeerMenuComponentExtendPlus implements OnInit, OnDestroy, AfterView
     this.targetUserId = '';
     if (targetUserId.length < 1) return;
     this.help = '';
-    let context = PeerContext.create(targetUserId);
-    if (context.isRoom) return;
+    let peer = PeerContext.create(targetUserId);
+    if (peer.isRoom) return;
     ObjectStore.instance.clearDeleteHistory();
-    Network.connect(context.peerId);
+    Network.connect(peer);
   }
 
   showLobby() {
@@ -84,7 +84,7 @@ export class PeerMenuComponentExtendPlus implements OnInit, OnDestroy, AfterView
     return peerCursor ? peerCursor.name : '';
   }
 
-  get isConnectOpen() { return this.networkService.peerContexts.some(context=>context.isOpen); }
+  get isConnectOpen() { return this.networkService.peers.some(context=>context.isOpen); }
   reload(){
     window.location.reload();
   }

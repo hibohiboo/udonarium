@@ -5,8 +5,8 @@ import {
   Directive,
   Input,
   NgZone,
+  OnChanges,
   OnDestroy,
-  OnInit,
   ViewContainerRef,
 } from '@angular/core';
 import { EventSystem } from '@udonarium/core/system';
@@ -18,7 +18,7 @@ import { OverviewPanelComponentExtendPlus } from '../component/overview-panel/ov
 @Directive({
   selector: '[appTooltipExtendPlus]'
 })
-export class TooltipDirectiveExtendPlus implements OnInit, AfterViewInit, OnDestroy {
+export class TooltipDirectiveExtendPlus implements  AfterViewInit, OnDestroy {
   private static activeTooltips: ComponentRef<OverviewPanelComponentExtendPlus>[] = [];
 
   @Input('appTooltipExtendPlus') tabletopObject: TabletopObject;
@@ -26,6 +26,7 @@ export class TooltipDirectiveExtendPlus implements OnInit, AfterViewInit, OnDest
   private callbackOnMouseEnter = (e) => this.onMouseEnter(e);
   private callbackOnMouseLeave = (e) => this.onMouseLeave(e);
   private callbackOnMouseDown = (e) => this.onMouseDown(e);
+  private callbackOnPick = (e) => this.ngZone.run(() => this.closeAll());
 
   private openTooltipTimer: NodeJS.Timer;
   private closeTooltipTimer: NodeJS.Timer;
@@ -38,8 +39,6 @@ export class TooltipDirectiveExtendPlus implements OnInit, AfterViewInit, OnDest
     private componentFactoryResolver: ComponentFactoryResolver,
     private pointerDeviceService: PointerDeviceService
   ) { }
-
-  ngOnInit() { }
 
   ngAfterViewInit() {
     this.addEventListeners(this.viewContainerRef.element.nativeElement);
@@ -103,7 +102,7 @@ export class TooltipDirectiveExtendPlus implements OnInit, AfterViewInit, OnDest
 
   private open() {
     this.closeAll();
-    if (this.pointerDeviceService.isDragging) return;
+    if (this.pointerDeviceService.isDragging || this.pointerDeviceService.isTablePickGesture) return;
 
     let parentViewContainerRef = ContextMenuService.defaultParentViewContainerRef;
 
@@ -120,9 +119,18 @@ export class TooltipDirectiveExtendPlus implements OnInit, AfterViewInit, OnDest
     this.ngZone.runOutsideAngular(() => {
       document.body.addEventListener('touchstart', this.callbackOnMouseDown, true);
       document.body.addEventListener('mousedown', this.callbackOnMouseDown, true);
+      document.addEventListener('pickstart', this.callbackOnPick, true);
+      document.addEventListener('pickobject', this.callbackOnPick, true);
+      document.addEventListener('pickregion', this.callbackOnPick, true);
     });
 
     EventSystem.register(this)
+      .on(`UPDATE_GAME_OBJECT/identifier/${this.tabletopObject.identifier}`, event => {
+        if (this.pointerDeviceService.isDragging) this.ngZone.run(() => this.closeAll());
+      })
+      .on('UPDATE_SELECTION', event => {
+        if (this.pointerDeviceService.isDragging) this.ngZone.run(() => this.closeAll());
+      })
       .on('DELETE_GAME_OBJECT', event => {
         if (this.tabletopObject && this.tabletopObject.identifier === event.data.identifier) this.closeAll();
       });
@@ -131,11 +139,20 @@ export class TooltipDirectiveExtendPlus implements OnInit, AfterViewInit, OnDest
       this.removeEventListeners(this.tooltipComponentRef.location.nativeElement);
       document.body.removeEventListener('touchstart', this.callbackOnMouseDown, true);
       document.body.removeEventListener('mousedown', this.callbackOnMouseDown, true);
+      document.removeEventListener('pickstart', this.callbackOnPick, true);
+      document.removeEventListener('pickobject', this.callbackOnPick, true);
+      document.removeEventListener('pickregion', this.callbackOnPick, true);
       this.clearTimer();
       this.tooltipComponentRef = null;
       EventSystem.unregister(this);
     });
     TooltipDirectiveExtendPlus.activeTooltips.push(this.tooltipComponentRef);
+    let onChanges = this.tooltipComponentRef.instance as OnChanges;
+    if (onChanges?.ngOnChanges != null) {
+      queueMicrotask(() => {
+        if (this.tooltipComponentRef.instance) onChanges?.ngOnChanges({});
+      });
+    }
   }
 
   private close() {
