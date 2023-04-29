@@ -2,6 +2,7 @@
 import { PeerCursor } from "@udonarium/peer-cursor"
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect"
 import { ContextMenuSeparator } from "service/context-menu.service"
+import { setAutoSelfViewCard } from "src/plugins/auto-self-view-mode/extend/component/hand-storage.component"
 import { pluginConfig } from "src/plugins/config"
 import { addVirtualScreen, deleteVirtualScreen } from "src/plugins/virtual-screen/domain/virtualScreen"
 
@@ -131,5 +132,6 @@ export const onObjectDropVirtualStorage = (that, e)=>{
   const { distanceX, distanceY } = that.getDistance(x,y,obj);
   if (that.isTopOfHandStorage(x, y, w, h, distanceX, distanceY)) {
     addVirtualScreen(obj);
+    setAutoSelfViewCard(obj);
   }
 }

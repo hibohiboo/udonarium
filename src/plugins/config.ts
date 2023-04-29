@@ -52,6 +52,7 @@ export const pluginConfig = {
   , isAddCounterBoard: params.get('add-counter-board') != null
   , isOffLineMode: params.get('offline-mode') != null
   , usePostMessage: params.get('post-message')  != null
+  , isAutoSelfViewCard: params.get('auto-self-view-mode') != null
 } as const;
 
 export const settings = [
@@ -76,6 +77,7 @@ export const settings = [
 , { label: 'スプレッドシートからデッキ読込', param: 'deck-from-spreadsheet', checked:false }
 , { label: 'ボード', param: 'hand-storage', checked:false }
 , { label: 'ボード（ついたて）', param: 'virtual-screen', checked:false }
+, { label: 'ついたてに入れたカードを自動的に自分だけ見るモードにする', param: 'auto-self-view-mode', checked:false }
 , { label: 'ボードを自分のものだけ触れるようにする', param: 'hand-storage-self-only', checked:false }
 , { label: '自分のボードにしたときにボード上のカードを手札にする', param: 'hand-card-self-hand-storage', checked:false }
 , { label: '操作音オンオフ', param: 'toggle-sound-effect', checked:false }
@@ -117,6 +119,7 @@ export const labelsAllInOne = [
     ,'重ねカード移動機能'
     ,'ボード'
     ,'ボード（ついたて）'
+    ,'ついたてに入れたカードを自動的に自分だけ見るモードにする'
     ,'操作音オンオフ'
     ,'視点リセット'
     ,'カードに文字入力可能にする'
