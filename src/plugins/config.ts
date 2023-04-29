@@ -52,7 +52,9 @@ export const pluginConfig = {
   , isAddCounterBoard: params.get('add-counter-board') != null
   , isOffLineMode: params.get('offline-mode') != null
   , usePostMessage: params.get('post-message')  != null
-  , isAutoSelfViewCard: true
+  , isAutoSelfViewCard: params.get('auto-self-view-mode') != null
+  , isAutoSelfViewCardFromDeck: params.get('auto-self-view-mode-from-stack') != null
+  , isContextMenuAutoSelfViewCardFromDeck: params.get('add-stack-context-auto-self-view-mode') != null
 } as const;
 
 export const settings = [
@@ -70,6 +72,8 @@ export const settings = [
 , { label: 'カードに文字入力可能にする', param: 'add-card-text-writable', checked:false }
 , { label: '「カードをn枚引く」を山札のコンテキストメニューに追加', param: 'add-draw-n-cards', checked:false }
 , { label: '「カードを横にする」をカードのコンテキストメニューに追加', param: 'tap-card', checked:false }
+, { label: '「自分だけ見る」を山札のコンテキストメニューに追加', param: 'add-stack-context-auto-self-view-mode', checked:false }
+, { label: '山札から引いたカードを自動的に自分だけ見るモードにする', param: 'auto-self-view-mode-from-stack', checked:false }
 , { label: '重ねカード移動機能', param: 'move-stacked-card', checked:false }
 , { label: 'カードを正位置のままシャッフルする', param: 'card-shuffle-normal-position', checked:false }
 , { label: 'カード裏画像の一括変更', param: 'card-back-image-all-change', checked:false }
@@ -120,6 +124,7 @@ export const labelsAllInOne = [
     ,'ボード'
     ,'ボード（ついたて）'
     ,'ついたてに入れたカードを自動的に自分だけ見るモードにする'
+    ,'「自分だけ見る」を山札のコンテキストメニューに追加'
     ,'操作音オンオフ'
     ,'視点リセット'
     ,'カードに文字入力可能にする'
