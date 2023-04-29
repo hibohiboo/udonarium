@@ -1,5 +1,7 @@
+import { Network } from "@udonarium/core/system";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { ContextMenuSeparator } from "service/context-menu.service";
+import { setAutoSelfViewCard } from "src/plugins/auto-self-view-mode/extend/component/hand-storage.component";
 import { pluginConfig } from "src/plugins/config";
 
 
@@ -19,10 +21,12 @@ export const returnHandCardContextMenu = (that) => {
             card.location.x = x + i * 55*2;
             card.location.y = y;
             card.update();
+            if(owner === Network.peer.userId && that.handStorage.isVirtualScreen){
+              setAutoSelfViewCard(card)
+            }
           })
         }
       }
     ]
-
 }
 
