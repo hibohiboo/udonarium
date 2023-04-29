@@ -52,7 +52,7 @@ export const pluginConfig = {
   , isAddCounterBoard: params.get('add-counter-board') != null
   , isOffLineMode: params.get('offline-mode') != null
   , usePostMessage: params.get('post-message')  != null
-  , isAutoSelfViewCard: params.get('auto-self-view-mode') != null
+  , isAutoSelfViewCard: true
 } as const;
 
 export const settings = [
