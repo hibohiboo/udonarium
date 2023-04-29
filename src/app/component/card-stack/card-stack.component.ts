@@ -32,6 +32,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 import { initCardStackComponentForWritableText, isCardWritable, showStackListWritableText } from 'src/plugins/add-card-text-writable/extend/component/card-stack/card-stack.component';
 import { drawNCardsContextMenu } from 'src/plugins/add-draw-n-cards/extend/component/card-stack/card-stack.component';
+import { setAutoSelfViewCardFromDeck } from 'src/plugins/auto-self-view-mode/extend/component/card-stack/card-stack.component';
 import { cardBackImageAllChangeContextMenu } from 'src/plugins/card-back-image-all-change/extend/component/card-stack/card-stack.component';
 import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
 import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
@@ -289,6 +290,7 @@ export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
     if (card) {
       card.location.x += 100 + (Math.random() * 50);
       card.location.y += 25 + (Math.random() * 50);
+      setAutoSelfViewCardFromDeck(card);
       card.setLocation(this.cardStack.location.name);
     }
     return card;

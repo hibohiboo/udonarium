@@ -8,6 +8,7 @@ import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
 
 import { PanelOption, PanelService } from 'service/panel.service';
+import { setAutoSelfViewCardFromDeck } from 'src/plugins/auto-self-view-mode/extend/component/card-stack/card-stack.component';
 
 @Component({
   selector: 'card-stack-list',
@@ -59,6 +60,7 @@ export class CardStackListComponent implements OnChanges, OnDestroy {
     card.location.name = this.cardStack.location.name;
     card.rotate += this.cardStack.rotate;
     if (360 < card.rotate) card.rotate -= 360;
+    setAutoSelfViewCardFromDeck(card);
     card.toTopmost();
     SoundEffect.play(PresetSound.cardDraw);
   }

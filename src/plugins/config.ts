@@ -53,6 +53,7 @@ export const pluginConfig = {
   , isOffLineMode: params.get('offline-mode') != null
   , usePostMessage: params.get('post-message')  != null
   , isAutoSelfViewCard: params.get('auto-self-view-mode') != null
+  , isAutoSelfViewCardFromDeck: params.get('auto-self-view-mode-from-deck') != null
 } as const;
 
 export const settings = [
@@ -70,6 +71,7 @@ export const settings = [
 , { label: 'カードに文字入力可能にする', param: 'add-card-text-writable', checked:false }
 , { label: '「カードをn枚引く」を山札のコンテキストメニューに追加', param: 'add-draw-n-cards', checked:false }
 , { label: '「カードを横にする」をカードのコンテキストメニューに追加', param: 'tap-card', checked:false }
+, { label: '山札から引いたカードを自動的に自分だけ見るモードにする', param: 'auto-self-view-mode-from-deck', checked:false }
 , { label: '重ねカード移動機能', param: 'move-stacked-card', checked:false }
 , { label: 'カードを正位置のままシャッフルする', param: 'card-shuffle-normal-position', checked:false }
 , { label: 'カード裏画像の一括変更', param: 'card-back-image-all-change', checked:false }
