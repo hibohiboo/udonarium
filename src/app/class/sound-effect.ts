@@ -24,7 +24,7 @@ export class PresetSound {
   static lock: string = '';
   static unlock: string = '';
   static sweep: string = '';
-  static selection: string = '';
+  static selectionStart: string = '';
 }
 
 @SyncObject('sound-effect')

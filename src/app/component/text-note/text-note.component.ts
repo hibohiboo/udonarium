@@ -180,16 +180,14 @@ export class TextNoteComponent implements OnChanges, OnDestroy {
   }
 
   private makeSelectionContextMenu(): ContextMenuAction[] {
+    if (this.selectionService.objects.length < 1) return [];
+
     let actions: ContextMenuAction[] = [];
 
-    if (this.selectionService.objects.length) {
-      let objectPosition = { x: this.textNote.location.x, y: this.textNote.location.y, z: this.textNote.posZ };
-      actions.push({ name: 'ここに集める', action: () => this.selectionService.congregate(objectPosition) });
-    }
+    let objectPosition = { x: this.textNote.location.x, y: this.textNote.location.y, z: this.textNote.posZ };
+    actions.push({ name: 'ここに集める', action: () => this.selectionService.congregate(objectPosition) });
+    actions.push(ContextMenuSeparator);
 
-    if (this.selectionService.objects.length) {
-      actions.push(ContextMenuSeparator);
-    }
     return actions;
   }
 
@@ -200,7 +198,6 @@ export class TextNoteComponent implements OnChanges, OnDestroy {
     actions.push({
       name: 'コピーを作る', action: () => {
         let cloneObject = this.textNote.clone();
-        console.log('コピー', cloneObject);
         cloneObject.location.x += this.gridSize;
         cloneObject.location.y += this.gridSize;
         extendCloneRotateOffTextNote(this.textNote, cloneObject);

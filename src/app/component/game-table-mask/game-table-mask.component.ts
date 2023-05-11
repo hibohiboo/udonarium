@@ -141,12 +141,12 @@ export class GameTableMaskComponent implements OnChanges, OnDestroy, AfterViewIn
   }
 
   private makeSelectionContextMenu(): ContextMenuAction[] {
+    if (this.selectionService.objects.length < 1) return [];
+
     let actions: ContextMenuAction[] = [];
 
-    if (this.selectionService.objects.length) {
-      let objectPosition = this.coordinateService.calcTabletopLocalCoordinate();
-      actions.push({ name: 'ここに集める', action: () => this.selectionService.congregate(objectPosition) });
-    }
+    let objectPosition = this.coordinateService.calcTabletopLocalCoordinate();
+    actions.push({ name: 'ここに集める', action: () => this.selectionService.congregate(objectPosition) });
 
     if (this.isSelected) {
       let selectedGameTableMasks = () => this.selectionService.objects.filter(object => object.aliasName === this.gameTableMask.aliasName) as GameTableMask[];
@@ -163,7 +163,6 @@ export class GameTableMaskComponent implements OnChanges, OnDestroy, AfterViewIn
               name: 'すべてのコピーを作る', action: () => {
                 selectedGameTableMasks().forEach(gameTableMask => {
                   let cloneObject = gameTableMask.clone();
-                  console.log('コピー', cloneObject);
                   cloneObject.location.x += this.gridSize;
                   cloneObject.location.y += this.gridSize;
                   cloneObject.isLock = false;
@@ -176,9 +175,7 @@ export class GameTableMaskComponent implements OnChanges, OnDestroy, AfterViewIn
         }
       );
     }
-    if (this.selectionService.objects.length) {
-      actions.push(ContextMenuSeparator);
-    }
+    actions.push(ContextMenuSeparator);
     return actions;
   }
 
@@ -204,7 +201,6 @@ export class GameTableMaskComponent implements OnChanges, OnDestroy, AfterViewIn
     actions.push({
       name: 'コピーを作る', action: () => {
         let cloneObject = this.gameTableMask.clone();
-        console.log('コピー', cloneObject);
         cloneObject.location.x += this.gridSize;
         cloneObject.location.y += this.gridSize;
         cloneObject.isLock = false;
