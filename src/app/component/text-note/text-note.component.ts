@@ -9,10 +9,11 @@ import {
   NgZone,
   OnChanges,
   OnDestroy,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { EventSystem } from '@udonarium/core/system';
+import { MathUtil } from '@udonarium/core/system/util/math-util';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { TextNote } from '@udonarium/text-note';
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
@@ -46,8 +47,8 @@ export class TextNoteComponent implements OnChanges, OnDestroy {
   get imageFile(): ImageFile { return this.textNote.imageFile; }
   get rotate(): number { return this.textNote.rotate; }
   set rotate(rotate: number) { this.textNote.rotate = rotate; }
-  get height(): number { return this.adjustMinBounds(this.textNote.height); }
-  get width(): number { return this.adjustMinBounds(this.textNote.width); }
+  get height(): number { return MathUtil.clampMin(this.textNote.height); }
+  get width(): number { return MathUtil.clampMin(this.textNote.width); }
 
   get isActive(): boolean { return document.activeElement === this.textAreaElementRef.nativeElement; }
 
@@ -234,10 +235,6 @@ export class TextNoteComponent implements OnChanges, OnDestroy {
     if (textArea.scrollHeight > textArea.offsetHeight) {
       textArea.style.height = textArea.scrollHeight + 'px';
     }
-  }
-
-  private adjustMinBounds(value: number, min: number = 0): number {
-    return value < min ? min : value;
   }
 
   private addMouseEventListeners() {

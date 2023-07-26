@@ -1,5 +1,6 @@
-import { ComponentFactoryResolver, ComponentRef, Injectable, ViewContainerRef } from '@angular/core';
+import { ComponentRef, Injectable, ViewContainerRef } from '@angular/core';
 import { openContextMenuWithIcons } from 'src/plugins/context-menu-add-icon/extend/servies/context-menu.service';
+
 
 interface ContextMenuPoint {
   x: number,
@@ -37,10 +38,6 @@ export class ContextMenuService {
   actions: ContextMenuAction[] = [];
   position: ContextMenuPoint = { x: 0, y: 0 };
 
-  constructor(
-    private componentFactoryResolver: ComponentFactoryResolver
-  ) { }
-
   get isShow(): boolean {
     return this.panelComponentRef ? true : false;
   }
@@ -53,12 +50,9 @@ export class ContextMenuService {
     if (!parentViewContainerRef) {
       parentViewContainerRef = ContextMenuService.defaultParentViewContainerRef;
     }
-    let panelComponentRef: ComponentRef<any>;
 
     const injector = parentViewContainerRef.injector;
-    const panelComponentFactory = this.componentFactoryResolver.resolveComponentFactory(ContextMenuService.ContextMenuComponentClass);
-
-    panelComponentRef = parentViewContainerRef.createComponent(panelComponentFactory, parentViewContainerRef.length, injector);
+    let panelComponentRef: ComponentRef<any> = parentViewContainerRef.createComponent(ContextMenuService.ContextMenuComponentClass, { index: parentViewContainerRef.length, injector: injector });
 
     const childPanelService: ContextMenuService = panelComponentRef.injector.get(ContextMenuService);
 
