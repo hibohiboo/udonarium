@@ -15,6 +15,7 @@ import { CardStack } from '@udonarium/card-stack';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { EventSystem, Network } from '@udonarium/core/system';
+import { MathUtil } from '@udonarium/core/system/util/math-util';
 import { PeerCursor } from '@udonarium/peer-cursor';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
@@ -46,7 +47,7 @@ export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
   get owner(): string { return this.card.owner; }
   set owner(owner: string) { this.card.owner = owner; }
   get zindex(): number { return this.card.zindex; }
-  get size(): number { return this.adjustMinBounds(this.card.size); }
+  get size(): number { return MathUtil.clampMin(this.card.size); }
 
   get isHand(): boolean { return this.card.isHand; }
   get isFront(): boolean { return this.card.isFront; }
@@ -147,7 +148,7 @@ export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
 
     if (e.detail instanceof CardStack) {
       let cardStack: CardStack = e.detail;
-      let distance: number = (cardStack.location.x - this.card.location.x) ** 2 + (cardStack.location.y - this.card.location.y) ** 2 + (cardStack.posZ - this.card.posZ) ** 2;
+      let distance: number = this.card.calcSqrDistance(cardStack);
       if (distance < 25 ** 2) {
         cardStack.location.x = this.card.location.x;
         cardStack.location.y = this.card.location.y;
@@ -213,7 +214,7 @@ export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
     cardStack.zindex = this.card.zindex;
 
     let cards: Card[] = this.tabletopService.cards.filter(card => {
-      let distance: number = (card.location.x - this.card.location.x) ** 2 + (card.location.y - this.card.location.y) ** 2 + (card.posZ - this.card.posZ) ** 2;
+      let distance: number = this.card.calcSqrDistance(card);
       return distance < 100 ** 2;
     });
 
@@ -348,10 +349,6 @@ export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
       this.changeDetector.markForCheck();
     }, 300);
     this.changeDetector.markForCheck();
-  }
-
-  private adjustMinBounds(value: number, min: number = 0): number {
-    return value < min ? min : value;
   }
 
   private showDetail(gameObject: Card) {
