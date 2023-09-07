@@ -105,12 +105,8 @@ export class TooltipDirectiveExtendPlus implements  AfterViewInit, OnDestroy {
     if (this.pointerDeviceService.isDragging || this.pointerDeviceService.isTablePickGesture) return;
 
     let parentViewContainerRef = ContextMenuService.defaultParentViewContainerRef;
-
     const injector = parentViewContainerRef.injector;
-    const panelComponentFactory = this.componentFactoryResolver.resolveComponentFactory(OverviewPanelComponentExtendPlus);
-
-    this.tooltipComponentRef = parentViewContainerRef.createComponent(panelComponentFactory, parentViewContainerRef.length, injector);
-
+    this.tooltipComponentRef = parentViewContainerRef.createComponent(OverviewPanelComponentExtendPlus, { index: parentViewContainerRef.length, injector: injector });
     this.tooltipComponentRef.instance.tabletopObject = this.tabletopObject;
     this.tooltipComponentRef.instance.left = this.pointerDeviceService.pointerX;
     this.tooltipComponentRef.instance.top = this.pointerDeviceService.pointerY;

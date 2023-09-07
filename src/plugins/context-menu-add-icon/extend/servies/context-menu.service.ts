@@ -11,13 +11,9 @@ export const openContextMenuWithIcons = (that, position, actions, title, parentV
     parentViewContainerRef = ContextMenuService.defaultParentViewContainerRef;
     console.log('Context Open');
   }
-  let panelComponentRef: ComponentRef<any>;
 
   const injector = parentViewContainerRef.injector;
-  const panelComponentFactory = that.componentFactoryResolver.resolveComponentFactory(ContextMenuComponentExtendPlus);
-  console.log(title, actions)
-  console.log(title, that)
-  panelComponentRef = parentViewContainerRef.createComponent(panelComponentFactory, parentViewContainerRef.length, injector);
+  let panelComponentRef: ComponentRef<any> = parentViewContainerRef.createComponent(ContextMenuComponentExtendPlus, { index: parentViewContainerRef.length, injector: injector });
 
   const childPanelService = panelComponentRef.injector.get(ContextMenuService) as any;
 
