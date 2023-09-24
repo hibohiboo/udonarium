@@ -9,6 +9,7 @@
 @import './plugins/hide-pedestal/hide-pedestal.css';
 @import './plugins/default-terrain-cube/terrain-cube.css';
 @import './plugins/extend-menu/extend-menu.css';
+@import './plugins/hide-peer-cursor/hide-peer-cursor.css';
 
 /* You can add global styles to this file, and also import other style files */
 button {

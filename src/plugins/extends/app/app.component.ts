@@ -66,6 +66,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
   @HostBinding('class.is-hide-save') get isHideSave(){ return hideMenu.save; };
   @HostBinding('class.object-rotate-off') get objectRotateOff(){ return offObjectRotate; };
   @HostBinding('class.hide-pedestal') get pedestalOff(){ return hidePredestal; };
+  @HostBinding('class.hide-peer-cursor') get iisHidePeerCursor (){ return pluginConfig.isHidePeerCursor; }
 
   hidePredestal
   private immediateUpdateTimer: NodeJS.Timer = null;

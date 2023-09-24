@@ -55,6 +55,7 @@ export const pluginConfig = {
   , isAutoSelfViewCard: params.get('auto-self-view-mode') != null
   , isAutoSelfViewCardFromDeck: params.get('auto-self-view-mode-from-stack') != null
   , isContextMenuAutoSelfViewCardFromDeck: params.get('add-stack-context-auto-self-view-mode') != null
+  , isHidePeerCursor: params.get('hide-peer-cursor') != null
 } as const;
 
 export const settings = [
@@ -107,7 +108,7 @@ export const settings = [
 , { label: 'メニューから削除: ZIP読込', param: 'hide-menu-zip', checked: false }
 , { label: 'メニューから削除: 保存', param: 'hide-menu-save', checked: false }
 
-
+, { label: 'カーソルを非表示', param: 'hide-peer-cursor', checked:false }
 , { label: 'オフラインモード', param: 'offline-mode', checked:false }
 
 ]
