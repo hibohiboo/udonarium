@@ -55,7 +55,7 @@ export const pluginConfig = {
   , isAutoSelfViewCard: true
   , isAutoSelfViewCardFromDeck: true
   , isContextMenuAutoSelfViewCardFromDeck: params.get('add-stack-context-auto-self-view-mode') != null
-  , isHidePeerCursor: params.get('hide-peer-cursor') != null
+  , isHidePeerCursor: params.get('hide-peer-cursor') == null ? true : params.get('hide-peer-cursor') !== 'false'
 } as const;
 
 export const settings = [
