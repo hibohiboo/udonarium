@@ -257,7 +257,7 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
 
   onTablePickStart() {
     this.isTableTransformMode = false;
-    SoundEffect.playLocal(PresetSound.selection);
+    SoundEffect.playLocal(PresetSound.selectionStart);
 
     if (this.pickGesture.isStrokeMode) {
       let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;

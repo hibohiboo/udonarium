@@ -1,3 +1,4 @@
+import { MathUtil } from '@udonarium/core/system/util/math-util';
 import { TabletopObject } from '@udonarium/tabletop-object';
 import { Stackable } from '@udonarium/tabletop-object-util';
 import { PointerCoordinate, PointerDeviceService } from 'service/pointer-device.service';
@@ -43,7 +44,8 @@ export class MovableSelectionSynchronizer {
 
   private onPickStart(e: CustomEvent) {
     if (this.movable.tabletopObject == null || this.movable.isDisable) return;
-    this.movable.state = SelectionState.MAGNETIC;
+    this.movable.state = e.detail.isMagnetic ? SelectionState.MAGNETIC : SelectionState.SELECTED;
+    this.prepareMove();
   }
 
   private onPickObject(e: CustomEvent) {
@@ -81,24 +83,26 @@ export class MovableSelectionSynchronizer {
   }
 
   prepareMove() {
-    if (1 < this.selection.size && this.movable.state !== SelectionState.NONE) {
-      this.movable.state = SelectionState.SELECTED;
-      for (let movable of this.selectedMovables) {
-        if (movable === this.movable) continue;
-        if (movable.isDisable) {
-          movable.state = SelectionState.NONE;
-        } else {
-          movable.state = SelectionState.SELECTED;
-          movable.setPointerEvents(false);
-          movable.setAnimatedTransition(false);
-        }
+    if (!this.shouldSynchronize()) return;
+
+    for (let movable of this.selectedMovables) {
+      if (movable === this.movable) continue;
+      if (movable.isDisable) {
+        movable.state = SelectionState.NONE;
+      } else {
+        movable.state = SelectionState.SELECTED;
+        movable.setPointerEvents(false);
+        movable.setAnimatedTransition(false);
       }
-    } else {
-      this.selection.clear();
     }
   }
 
   updateMove(delta: PointerCoordinate) {
+    if (!this.shouldSynchronize()) {
+      if (this.movable.isPointerMoved) this.selection.clear();
+      return;
+    }
+
     if (this.movable.state === SelectionState.MAGNETIC) {
       let layer = MovableDirective.layerMap.get(this.movable.layerName);
       if (layer) {
@@ -134,6 +138,11 @@ export class MovableSelectionSynchronizer {
   }
 
   finishMove(delta: PointerCoordinate) {
+    if (!this.shouldSynchronize()) {
+      this.selection.clear();
+      return;
+    }
+
     for (let movable of this.selectedMovables) {
       if (movable === this.movable) continue;
       movable.posX += delta.x;
@@ -146,7 +155,7 @@ export class MovableSelectionSynchronizer {
       let zindexB = (b.tabletopObject as Stackable).zindex;
       if (zindexA == null || zindexB == null) return 0;
       return zindexA - zindexB;
-    }).filter(a => a.state === SelectionState.MAGNETIC);
+    }).filter(movable => movable.state === SelectionState.MAGNETIC && movable !== this.movable);
 
     let polygonal = 360 / movables.length;
     let angle = Math.random() * 360;
@@ -158,16 +167,21 @@ export class MovableSelectionSynchronizer {
       //movable.ondragend.emit(e as PointerEvent);
       //movable.onend.emit(e as PointerEvent);
       angle += polygonal;
-      let rad = angle * (Math.PI / 180);
+      let rad = MathUtil.radians(angle);
       movable.posX = center.x + distance * Math.sin(rad) - (movable.width / 2);
       movable.posY = center.y + distance * Math.cos(rad) - (movable.height / 2);
     }
 
-    if (this.selection.size <= 1 && this.movable.state !== SelectionState.NONE) {
+    if (this.movable.state === SelectionState.MAGNETIC && this.selection.size <= 1) {
       this.selection.clear();
     } else {
       this.refreshState();
     }
+  }
+
+  private shouldSynchronize(): boolean {
+    let isSynchronize = this.movable.state !== SelectionState.NONE;
+    return isSynchronize;
   }
 
   private refreshState() {
@@ -180,13 +194,19 @@ export class MovableSelectionSynchronizer {
     }
   }
 
-  private calcDistance(a: MovableDirective, b: MovableDirective = this.movable): number {
-    return ((a.posX + a.width / 2) - (b.posX + b.width / 2)) ** 2 + ((a.posY + a.height / 2) - (b.posY + b.height / 2)) ** 2 + (a.posZ - b.posZ) ** 2;
-  }
-
   private isProximity(a: MovableDirective, b: MovableDirective = this.movable): boolean {
     let range = Math.max((((a.width + b.width) / 4) + ((a.height + b.height) / 4)) * 0.95, 25) ** 2;
-    let distance = this.calcDistance(a, b);
+    let posA = {
+      x: a.posX + a.width / 2,
+      y: a.posY + a.height / 2,
+      z: a.posZ
+    };
+    let posB = {
+      x: b.posX + b.width / 2,
+      y: b.posY + b.height / 2,
+      z: b.posZ
+    };
+    let distance = MathUtil.sqrMagnitude(posA, posB);
     return distance < range;
   }
 
@@ -235,7 +255,7 @@ export class MovableSelectionSynchronizer {
         if (movable.width < 0) movable.width = movable.nativeElement.clientWidth;
         if (movable.height < 0) movable.height = movable.nativeElement.clientHeight;
         angle += polygonal;
-        let rad = angle * (Math.PI / 180);
+        let rad = MathUtil.radians(angle);
         movable.posX = center.x + distance * Math.sin(rad) - (movable.width / 2);
         movable.posY = center.y + distance * Math.cos(rad) - (movable.height / 2);
         movable.posZ = center.z;

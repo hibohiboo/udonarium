@@ -7,7 +7,7 @@ import {
   NgZone,
   OnChanges,
   OnDestroy,
-  Output,
+  Output
 } from '@angular/core';
 import { EventSystem } from '@udonarium/core/system';
 import { TableSelecter } from '@udonarium/table-selecter';
@@ -81,6 +81,9 @@ export class MovableDirective implements AfterViewInit, OnChanges, OnDestroy {
 
   private pointerOffset2d: PointerCoordinate = { x: 0, y: 0, z: 0 };
   private pointerStart3d: PointerCoordinate = { x: 0, y: 0, z: 0 };
+
+  get magnitude(): number { return this.input.magnitude; }
+  get isPointerMoved(): boolean { return this.input.isPointerMoved; }
 
   private targetStartRect: DOMRect;
 

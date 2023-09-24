@@ -1,6 +1,5 @@
 import {
   AfterViewInit,
-  ComponentFactoryResolver,
   ComponentRef,
   Directive,
   Input,
@@ -10,6 +9,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import { EventSystem } from '@udonarium/core/system';
+import { MathUtil } from '@udonarium/core/system/util/math-util';
 import { TabletopObject } from '@udonarium/tabletop-object';
 import { OverviewPanelComponent } from 'component/overview-panel/overview-panel.component';
 import { ContextMenuService } from 'service/context-menu.service';
@@ -36,7 +36,6 @@ export class TooltipDirective implements AfterViewInit, OnDestroy {
   constructor(
     private ngZone: NgZone,
     private viewContainerRef: ViewContainerRef,
-    private componentFactoryResolver: ComponentFactoryResolver,
     private pointerDeviceService: PointerDeviceService
   ) { }
 
@@ -69,12 +68,11 @@ export class TooltipDirective implements AfterViewInit, OnDestroy {
   }
 
   private startOpenTimer() {
-    let pointerX = this.pointerDeviceService.pointerX;
-    let pointerY = this.pointerDeviceService.pointerY;
+    let prevPointer = this.pointerDeviceService.pointer;
 
     this.openTooltipTimer = setTimeout(() => {
       this.openTooltipTimer = null;
-      let magnitude = (pointerX - this.pointerDeviceService.pointerX) ** 2 + (pointerY - this.pointerDeviceService.pointerY) ** 2;
+      let magnitude = MathUtil.sqrMagnitude(prevPointer, this.pointerDeviceService.pointer);
       if (4 < magnitude) {
         this.startOpenTimer();
       } else {
@@ -107,9 +105,7 @@ export class TooltipDirective implements AfterViewInit, OnDestroy {
     let parentViewContainerRef = ContextMenuService.defaultParentViewContainerRef;
 
     const injector = parentViewContainerRef.injector;
-    const panelComponentFactory = this.componentFactoryResolver.resolveComponentFactory(OverviewPanelComponent);
-
-    this.tooltipComponentRef = parentViewContainerRef.createComponent(panelComponentFactory, parentViewContainerRef.length, injector);
+    this.tooltipComponentRef = parentViewContainerRef.createComponent(OverviewPanelComponent, { index: parentViewContainerRef.length, injector: injector });
 
     this.tooltipComponentRef.instance.tabletopObject = this.tabletopObject;
     this.tooltipComponentRef.instance.left = this.pointerDeviceService.pointerX;

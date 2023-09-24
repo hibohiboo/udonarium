@@ -9,10 +9,11 @@ import {
   Input,
   NgZone,
   OnChanges,
-  OnDestroy,
+  OnDestroy
 } from '@angular/core';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { EventSystem, Network } from '@udonarium/core/system';
+import { MathUtil } from '@udonarium/core/system/util/math-util';
 import { GameCharacter } from '@udonarium/game-character';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { ChatPaletteComponent } from 'component/chat-palette/chat-palette.component';
@@ -55,7 +56,7 @@ export class GameCharacterComponent implements OnChanges, OnDestroy {
   @Input() is3D: boolean = false;
 
   get name(): string { return this.gameCharacter.name; }
-  get size(): number { return this.adjustMinBounds(this.gameCharacter.size); }
+  get size(): number { return MathUtil.clampMin(this.gameCharacter.size); }
   get imageFile(): ImageFile { return this.gameCharacter.imageFile; }
   get rotate(): number { return this.gameCharacter.rotate; }
   set rotate(rotate: number) { this.gameCharacter.rotate = rotate; }
@@ -163,16 +164,16 @@ export class GameCharacterComponent implements OnChanges, OnDestroy {
   }
 
   private makeSelectionContextMenu(): ContextMenuAction[] {
+    if (this.selectionService.objects.length < 1) return [];
+
     let actions: ContextMenuAction[] = [];
 
-    if (this.selectionService.objects.length) {
-      let objectPosition = {
-        x: this.gameCharacter.location.x + (this.gameCharacter.size * this.gridSize) / 2,
-        y: this.gameCharacter.location.y + (this.gameCharacter.size * this.gridSize) / 2,
-        z: this.gameCharacter.posZ
-      };
-      actions.push({ name: 'ここに集める', action: () => this.selectionService.congregate(objectPosition) });
-    }
+    let objectPosition = {
+      x: this.gameCharacter.location.x + (this.gameCharacter.size * this.gridSize) / 2,
+      y: this.gameCharacter.location.y + (this.gameCharacter.size * this.gridSize) / 2,
+      z: this.gameCharacter.posZ
+    };
+    actions.push({ name: 'ここに集める', action: () => this.selectionService.congregate(objectPosition) });
 
     if (this.isSelected) {
       let selectedCharacter = () => this.selectionService.objects.filter(object => object.aliasName === this.gameCharacter.aliasName) as GameCharacter[];
@@ -210,9 +211,7 @@ export class GameCharacterComponent implements OnChanges, OnDestroy {
         }
       );
     }
-    if (this.selectionService.objects.length) {
-      actions.push(ContextMenuSeparator);
-    }
+    actions.push(ContextMenuSeparator);
     return actions;
   }
 
@@ -254,10 +253,6 @@ export class GameCharacterComponent implements OnChanges, OnDestroy {
     actions.push(...rotateOffContextMenuCharacter(this));
     actions.push(...virtualScreenContextMenu(this));
     return actions;
-  }
-
-  private adjustMinBounds(value: number, min: number = 0): number {
-    return value < min ? min : value;
   }
 
   private showDetail(gameObject: GameCharacter) {

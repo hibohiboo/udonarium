@@ -307,9 +307,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onTablePickStart() {
     this.isTableTransformMode = false;
-    SoundEffect.playLocal(PresetSound.selection);
+    SoundEffect.playLocal(PresetSound.selectionStart);
 
-    if (this.pickGesture.isStrokeMode) {
+    if (!this.pickGesture.isMagneticMode) {
       let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
       this.gridCanvas.nativeElement.style.opacity = opacity + '';
     }

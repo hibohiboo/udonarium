@@ -9,10 +9,11 @@ import {
   Input,
   NgZone,
   OnChanges,
-  OnDestroy,
+  OnDestroy
 } from '@angular/core';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { EventSystem } from '@udonarium/core/system';
+import { MathUtil } from '@udonarium/core/system/util/math-util';
 import { PresetSound, SoundEffect } from '@udonarium/sound-effect';
 import { Terrain, TerrainViewState } from '@udonarium/terrain';
 import { GameCharacterSheetComponent } from 'component/game-character-sheet/game-character-sheet.component';
@@ -56,9 +57,9 @@ export class TerrainComponent implements OnChanges, OnDestroy, AfterViewInit {
   get wallImage(): ImageFile { return this.imageService.getSkeletonOr(this.terrain.wallImage); }
   get floorImage(): ImageFile { return this.imageService.getSkeletonOr(this.terrain.floorImage); }
 
-  get height(): number { return this.adjustMinBounds(this.terrain.height); }
-  get width(): number { return this.adjustMinBounds(this.terrain.width); }
-  get depth(): number { return this.adjustMinBounds(this.terrain.depth); }
+  get height(): number { return MathUtil.clampMin(this.terrain.height); }
+  get width(): number { return MathUtil.clampMin(this.terrain.width); }
+  get depth(): number { return MathUtil.clampMin(this.terrain.depth); }
 
   get isVisibleFloor(): boolean { return 0 < this.width * this.depth; }
   get isVisibleWallTopBottom(): boolean { return 0 < this.width * this.height; }
@@ -183,12 +184,12 @@ export class TerrainComponent implements OnChanges, OnDestroy, AfterViewInit {
   }
 
   private makeSelectionContextMenu(): ContextMenuAction[] {
+    if (this.selectionService.objects.length < 1) return [];
+
     let actions: ContextMenuAction[] = [];
 
-    if (this.selectionService.objects.length) {
-      let objectPosition = this.coordinateService.calcTabletopLocalCoordinate();
-      actions.push({ name: 'ここに集める', action: () => this.selectionService.congregate(objectPosition) });
-    }
+    let objectPosition = this.coordinateService.calcTabletopLocalCoordinate();
+    actions.push({ name: 'ここに集める', action: () => this.selectionService.congregate(objectPosition) });
 
     if (this.isSelected) {
       let selectedGameTableMasks = () => this.selectionService.objects.filter(object => object.aliasName === this.terrain.aliasName) as Terrain[];
@@ -217,9 +218,7 @@ export class TerrainComponent implements OnChanges, OnDestroy, AfterViewInit {
         }
       );
     }
-    if (this.selectionService.objects.length) {
-      actions.push(ContextMenuSeparator);
-    }
+    actions.push(ContextMenuSeparator);
     return actions;
   }
 
@@ -278,10 +277,6 @@ export class TerrainComponent implements OnChanges, OnDestroy, AfterViewInit {
     actions.push(...rotateOffContextMenu(this));
     actions.push(...virtualScreenContextMenu(this));
     return actions;
-  }
-
-  private adjustMinBounds(value: number, min: number = 0): number {
-    return value < min ? min : value;
   }
 
   private showDetail(gameObject: Terrain) {

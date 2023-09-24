@@ -26,6 +26,7 @@ export class PresetSound {
   static sweep: string = '';
   static bell: string = '';
   static selection: string = '';
+  static selectionStart: string = '';
 }
 
 @SyncObject('sound-effect')
