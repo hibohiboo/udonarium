@@ -28,7 +28,7 @@ export const returnHandCardContextMenu = (that) => {
         }
       },
       {
-        name: 'ランダムに並べる',
+        name: 'ボード上のカードをランダムに並べる',
         action: ()=> {
           SoundEffect.play(PresetSound.cardDraw);
           const owner = that.handStorage.owner;
