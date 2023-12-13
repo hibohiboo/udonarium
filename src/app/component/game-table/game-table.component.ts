@@ -35,6 +35,7 @@ import { HelpKeyboardComponent } from "component/help-keyboard/help-keyboard.com
 import { Device } from '@udonarium/device/device';
 import { RooperCard } from '@udonarium/rooper-card';
 
+// ※こちらではなく、extendのほうほゲームテーブルを使用
 const viewPotisonZDefault = -600;
 const viewPotisonXDefault = 200;
 

@@ -41,6 +41,12 @@ import { RooperCard } from '@udonarium/rooper-card';
 import { contextMenuAddIcon } from 'src/plugins/context-menu-add-icon/extend/components/game-table/game-table.component';
 import { TablePickGesture } from 'component/game-table/table-pick-gesture';
 
+
+// 初期表示のテーブルを全体が映るように修正
+const viewPotisonZDefault = -2000;
+const viewPotisonXDefault = 200;
+
+
 @Component({
   selector: 'game-table-extend-plus',
   templateUrl: './game-table.component.html',
@@ -66,9 +72,9 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
 
   get isPointerDragging(): boolean { return this.pointerDeviceService.isDragging; }
 
-  private viewPotisonX: number = 100;
+  private viewPotisonX: number = viewPotisonXDefault;
   private viewPotisonY: number = 0;
-  private viewPotisonZ: number = 0;
+  private viewPotisonZ: number = viewPotisonZDefault;
 
   private viewRotateX: number = is2d() ? 0 : 50;
   private viewRotateY: number = 0;
@@ -259,7 +265,7 @@ export class GameTableComponentExtendPlus implements OnInit, OnDestroy, AfterVie
     this.isTableTransformMode = false;
     SoundEffect.playLocal(PresetSound.selectionStart);
 
-    if (this.pickGesture.isStrokeMode) {
+    if (!this.pickGesture.isMagneticMode) {
       let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
       this.gridCanvas.nativeElement.style.opacity = opacity + '';
     }

@@ -225,14 +225,12 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       const peerOption = horizonMenu ? { width: 500, height: 400, top: 100 } : { width: 500, height: 450, left: 100 }
       const chatOption = horizonMenu ?  { width: 700, height: 450, top: 500 } : { width: 700, height: 400, left: 100, top: 450 }
-
-      this.panelService.open(CutinListComponent, { width: 300, height: 450, left: 100, top: 350 });
-      this.panelService.open(RooperGameSheetComponent, { width: 500, height: 450, left: 300, top: 0 });
-
       if(!pluginConfig.isOffLineMode && !pluginConfig.isHideFirstPeer && !pluginConfig.isAddReloadButton) this.panelService.open(PeerMenuComponent, peerOption);
       if(!pluginConfig.isOffLineMode && !pluginConfig.isHideFirstPeer && pluginConfig.isAddReloadButton) this.panelService.open(PeerMenuComponentExtendPlus, peerOption);
       if(!pluginConfig.isOffLineMode && !pluginConfig.isHideFirstChat) this.panelService.open(ChatWindowComponent, chatOption);
       if(pluginConfig.isAddCounterBoard) this.panelService.open(CounterBoardWindowComponent, { width: 500, height: 450, left: 300,top: 100 });
+      this.panelService.open(CutinListComponent, { width: 300, height: 450, left: 100, top: 350 });
+      this.panelService.open(RooperGameSheetComponent, { width: 500, height: 450, left: 300, top: 0 });
       fetchZipRoom();
     }, 0);
   }
