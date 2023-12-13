@@ -31,7 +31,7 @@ import { PanelOption, PanelService } from "service/panel.service";
 import { PointerDeviceService } from "service/pointer-device.service";
 import { TabletopService } from "service/tabletop.service";
 import { RooperCard } from "@udonarium/rooper-card";
-
+import { ObjectInteractGesture } from 'component/game-table/object-interact-gesture';
 interface TopOfCard {
   card: Card
   distanceX: number
@@ -104,7 +104,7 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.card.backImage;
   }
 
-  private iconHiddenTimer: NodeJS.Timer = null;
+  private iconHiddenTimer: NodeJS.Timeout = null;
   get isIconHidden(): boolean {
     return this.iconHiddenTimer != null;
   }
@@ -113,9 +113,6 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   movableOption: MovableOption = {};
   rotableOption: RotableOption = {};
-
-  private doubleClickTimer: NodeJS.Timer = null;
-  private doubleClickPoint = { x: 0, y: 0 };
 
   private input: InputHandler = null;
 
@@ -164,10 +161,15 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
       tabletopObject: this.card
     };
   }
+  private interactGesture: ObjectInteractGesture = null;
 
   ngAfterViewInit() {
-    this.input = new InputHandler(this.elementRef.nativeElement);
-    this.input.onStart = this.onInputStart.bind(this);
+    this.ngZone.runOutsideAngular(() => {
+      this.interactGesture = new ObjectInteractGesture(this.elementRef.nativeElement);
+    });
+
+    this.interactGesture.onstart = this.onInputStart.bind(this);
+    this.interactGesture.oninteract = this.onDoubleClick.bind(this);
   }
 
   ngOnDestroy() {
@@ -203,27 +205,11 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onDoubleClick(e) {
-    if (!this.doubleClickTimer) {
-      this.doubleClickTimer = setTimeout(() => {
-        clearTimeout(this.doubleClickTimer);
-        this.doubleClickTimer = null;
-      }, 300);
-      this.doubleClickPoint = this.input.pointer;
-      return;
-    }
-    clearTimeout(this.doubleClickTimer);
-    this.doubleClickTimer = null;
-    let distance =
-      (this.doubleClickPoint.x - this.input.pointer.x) ** 2 +
-      (this.doubleClickPoint.y - this.input.pointer.y) ** 2;
-    if (distance < 10 ** 2) {
-      console.log("onDoubleClick !!!!");
-      if (this.hasOwner && !this.isHand) return;
-      this.state =
-        this.isVisible && !this.isHand ? CardState.BACK : CardState.FRONT;
-      this.owner = "";
+    this.ngZone.run(() => {
+      this.state = this.isVisible && !this.isHand ? CardState.BACK : CardState.FRONT;
+      this.owner = '';
       SoundEffect.play(PresetSound.cardDraw);
-    }
+    });
   }
 
   @HostListener("dragstart", ["$event"])
@@ -388,6 +374,7 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
     }, 300);
     this.changeDetector.markForCheck();
   }
+
 
   private adjustMinBounds(value: number, min: number = 0): number {
     return value < min ? min : value;

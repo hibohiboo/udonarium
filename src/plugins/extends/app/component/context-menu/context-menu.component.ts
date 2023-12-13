@@ -31,8 +31,8 @@ export class ContextMenuComponentExtendPlus implements OnInit, OnDestroy, AfterV
   parentMenu: ContextMenuAction;
   subMenu: ContextMenuAction[];
 
-  showSubMenuTimer: NodeJS.Timer;
-  hideSubMenuTimer: NodeJS.Timer;
+  showSubMenuTimer: NodeJS.Timeout;
+  hideSubMenuTimer: NodeJS.Timeout;
 
   private callbackOnOutsideClick = (e) => this.onOutsideClick(e);
 
