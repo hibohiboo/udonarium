@@ -60,7 +60,7 @@ export class TextNoteComponent implements OnChanges, OnDestroy {
 
   gridSize: number = 50;
 
-  private calcFitHeightTimer: NodeJS.Timer = null;
+  private calcFitHeightTimer: NodeJS.Timeout = null;
 
   movableOption: MovableOption = {};
   rotableOption: RotableOption = {};

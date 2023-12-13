@@ -30,6 +30,7 @@ import { CoordinateService } from './coordinate.service';
 import { ImageStorage } from '@udonarium/core/file-storage/image-storage';
 
 type ObjectIdentifier = string;
+type ObjecNodeIndex = number;
 type LocationName = string;
 
 let first = true; // rooper-card が継承しているからか、2回initが走ってしまう。対症療法だが。。 2020.10.05
@@ -45,19 +46,10 @@ export class TabletopService {
 
   private locationMap: Map<ObjectIdentifier, LocationName> = new Map();
   private parentMap: Map<ObjectIdentifier, ObjectIdentifier> = new Map();
-  private characterCache = new TabletopCache<GameCharacter>(() =>
-    ObjectStore.instance
-      .getObjects(GameCharacter)
-      .filter(obj => obj.isVisibleOnTable)
-  );
-  private cardCache = new TabletopCache<Card>(() =>
-    ObjectStore.instance.getObjects(Card).filter(obj => obj.isVisibleOnTable)
-  );
-  private cardStackCache = new TabletopCache<CardStack>(() =>
-    ObjectStore.instance
-      .getObjects(CardStack)
-      .filter(obj => obj.isVisibleOnTable)
-  );
+  private indexMap: Map<ObjectIdentifier, ObjecNodeIndex> = new Map();
+  private characterCache = new TabletopCache<GameCharacter>(() => ObjectStore.instance.getObjects(GameCharacter).filter(obj => obj.isVisibleOnTable));
+  private cardCache = new TabletopCache<Card>(() => ObjectStore.instance.getObjects(Card).filter(obj => obj.isVisibleOnTable));
+  private cardStackCache = new TabletopCache<CardStack>(() => ObjectStore.instance.getObjects(CardStack).filter(obj => obj.isVisibleOnTable));
   private tableMaskCache = new TabletopCache<GameTableMask>(() => {
     let viewTable = this.tableSelecter.viewTable;
     return viewTable ? viewTable.masks : [];
@@ -82,7 +74,6 @@ export class TabletopService {
   private rooperCardCache = new TabletopCache<RooperCard>(() =>
     ObjectStore.instance.getObjects(RooperCard).filter(obj => obj.isVisibleOnTable)
   );
-
   get characters(): GameCharacter[] {
     return this.characterCache.objects;
   }
@@ -247,17 +238,21 @@ export class TabletopService {
   }
 
   private shouldRefreshCache(object: TabletopObject): boolean {
-    return this.locationMap.get(object.identifier) !== object.location.name || this.parentMap.get(object.identifier) !== object.parentId;
+    return this.locationMap.get(object.identifier) !== object.location.name
+      || this.parentMap.get(object.identifier) !== object.parentId
+      || (object.isVisibleOnTable && this.indexMap.get(object.identifier) !== object.index);
   }
 
   private updateMap(object: TabletopObject) {
     this.locationMap.set(object.identifier, object.location.name);
     this.parentMap.set(object.identifier, object.parentId);
+    this.indexMap.set(object.identifier, object.index);
   }
 
   private clearMap() {
     this.locationMap.clear();
     this.parentMap.clear();
+    this.indexMap.clear();
   }
 
   private placeToTabletop(gameObject: TabletopObject) {
