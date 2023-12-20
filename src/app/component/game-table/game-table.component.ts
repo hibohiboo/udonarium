@@ -30,6 +30,7 @@ import { TableMouseGesture } from './table-mouse-gesture';
 import { TablePickGesture } from './table-pick-gesture';
 import { TableTouchGesture } from './table-touch-gesture';
 import { is2d } from 'src/plugins/mode2d/extends/components/game-table/game-table.components';
+import { isEmptyDefaultTabletopObjects, viewPositonZDefault } from 'src/plugins/first-fetch-zip-room/extend/components/game-table/game-table.components';
 
 @Component({
   selector: 'game-table',
@@ -58,7 +59,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private viewPotisonX: number = 100;
   private viewPotisonY: number = 0;
-  private viewPotisonZ: number = 0;
+  private viewPotisonZ: number = viewPositonZDefault() ?? 0;
 
   private viewRotateX: number = is2d() ? 0 : 50;
   private viewRotateY: number = 0;
@@ -103,6 +104,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
         this.gridCanvas.nativeElement.style.opacity = opacity + '';
       });
+    if(isEmptyDefaultTabletopObjects) return;
     this.tabletopActionService.makeDefaultTable();
     this.tabletopActionService.makeDefaultTabletopObjects();
   }

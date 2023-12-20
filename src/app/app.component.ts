@@ -38,6 +38,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
+import { fetchZipRoom } from 'src/plugins/first-fetch-zip-room/extend/app.component';
 import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
 
 @Component({
@@ -195,6 +196,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       this.panelService.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
       this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
+      fetchZipRoom();
     }, 0);
   }
 
