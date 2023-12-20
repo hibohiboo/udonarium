@@ -24,15 +24,8 @@ export class AWSYakumiClientStack extends core.Stack {
       props.bucketName,
       props.bucketName,
     )
-    // CloudFront で設定する オリジンアクセスアイデンティティ を作成
-    const identity = this.createIdentity(
-      bucket,
-      `${props.projectId}-origin-access-identity-to-s3-bucket`,
-    )
-    // S3バケットポリシーで、CloudFrontのオリジンアクセスアイデンティティを許可
-    this.createPolicy(bucket, identity)
 
-    // CloudFrontディストリビューションを作成
+    // CloudFrontディストリビューションを取得
     const distribution = cf.Distribution.fromDistributionAttributes(
       this,
       props.distributionId,
@@ -50,27 +43,6 @@ export class AWSYakumiClientStack extends core.Stack {
     })
 
     core.Tags.of(this).add('Project', props.projectNameTag)
-  }
-
-  private createIdentity(bucket: s3.IBucket, identityName: string) {
-    const identity = new cf.OriginAccessIdentity(this, identityName, {
-      comment: `${bucket.bucketName} access identity`,
-    })
-    return identity
-  }
-
-  private createPolicy(bucket: s3.IBucket, identity: cf.OriginAccessIdentity) {
-    const myBucketPolicy = new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: ['s3:GetObject', 's3:ListBucket'],
-      principals: [
-        new iam.CanonicalUserPrincipal(
-          identity.cloudFrontOriginAccessIdentityS3CanonicalUserId,
-        ),
-      ],
-      resources: [bucket.bucketArn + '/*', bucket.bucketArn],
-    })
-    bucket.addToResourcePolicy(myBucketPolicy)
   }
 
   private deployS3(
