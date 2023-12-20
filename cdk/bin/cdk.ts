@@ -2,7 +2,7 @@
 import 'source-map-support/register'
 import * as cdk from 'aws-cdk-lib'
 import * as dotenv from 'dotenv'
-import { AWSCarTaGraphLoopCityTRPGClientStack } from '../lib/cdk-stack'
+import { AWSYakumiClientStack } from '../lib/cdk-stack'
 
 dotenv.config()
 const envList = [
@@ -24,7 +24,7 @@ const env = {
 }
 const projectId = processEnv.PROJECT_ID
 
-new AWSCarTaGraphLoopCityTRPGClientStack(app, `${projectId}-stack`, {
+new AWSYakumiClientStack(app, `${projectId}-stack`, {
   bucketName: processEnv.BUCKET_NAME,
   projectId: `${projectId}`,
   distributionId: processEnv.DISTRIBUTION_ID,

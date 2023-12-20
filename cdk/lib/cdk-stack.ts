@@ -5,7 +5,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
 
-const basePath = 'cartagraph-udonarium'
+const basePath = 'yakumi-udonarium'
 
 interface Props extends core.StackProps {
   bucketName: string
@@ -15,7 +15,7 @@ interface Props extends core.StackProps {
   projectId: string
 }
 
-export class AWSCarTaGraphLoopCityTRPGClientStack extends core.Stack {
+export class AWSYakumiClientStack extends core.Stack {
   constructor(scope: Construct, id: string, props: Props) {
     super(scope, id, props)
     // CloudFront オリジン用のS3バケットへの参照を取得
