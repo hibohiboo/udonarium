@@ -30,6 +30,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
+import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
 import { initKeyboardShortcutCardStack, onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
 
 @Component({
@@ -360,6 +361,7 @@ export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
                 SoundEffect.play(PresetSound.cardShuffle);
                 selectedCardStacks().forEach(cardStack => {
                   cardStack.shuffle();
+                  cardShuffleNormalPosition(this);
                   EventSystem.call('SHUFFLE_CARD_STACK', { identifier: cardStack.identifier });
                 });
               }
@@ -418,6 +420,7 @@ export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
     actions.push({
       name: 'シャッフル', action: () => {
         this.cardStack.shuffle();
+        cardShuffleNormalPosition(this);
         SoundEffect.play(PresetSound.cardShuffle);
         EventSystem.call('SHUFFLE_CARD_STACK', { identifier: this.cardStack.identifier });
       }
