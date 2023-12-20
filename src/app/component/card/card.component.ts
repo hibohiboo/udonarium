@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostBinding,
   HostListener,
   Input,
   NgZone,
@@ -28,6 +29,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 import { TabletopService } from 'service/tabletop.service';
+import { initKeyboardShortcutCard, onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
 
 @Component({
   selector: 'card',
@@ -74,6 +76,7 @@ export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
 
   private interactGesture: ObjectInteractGesture = null;
 
+  @HostBinding('tabIndex') tabIndex:string;
   constructor(
     private ngZone: NgZone,
     private contextMenuService: ContextMenuService,
@@ -84,7 +87,12 @@ export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
     private selectionService: TabletopSelectionService,
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+    initKeyboardShortcutCard(this);
+   }
+
+   @HostListener("keydown", ["$event"])
+   onKeydown(e: KeyboardEvent) { onKeyDownKeyboardShortcutCard(this,e); }
 
   ngOnChanges(): void {
     EventSystem.unregister(this);
