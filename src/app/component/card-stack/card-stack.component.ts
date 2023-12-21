@@ -32,6 +32,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
 import { initKeyboardShortcutCardStack, onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
+import { tapCardStackContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
 
 @Component({
   selector: 'card-stack',
@@ -416,6 +417,7 @@ export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
         SoundEffect.play(PresetSound.cardDraw);
       }
     });
+    actions.push(...tapCardStackContextMenu(this));
     actions.push(ContextMenuSeparator);
     actions.push({
       name: 'シャッフル', action: () => {

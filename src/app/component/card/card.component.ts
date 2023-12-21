@@ -30,6 +30,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 import { TabletopService } from 'service/tabletop.service';
 import { initKeyboardShortcutCard, onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
+import { tapCardContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
 
 @Component({
   selector: 'card',
@@ -330,6 +331,7 @@ export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
         SoundEffect.play(PresetSound.cardPut);
       }
     });
+    actions.push(...tapCardContextMenu(this))
     actions.push(ContextMenuSeparator);
     actions.push({ name: 'カードを編集', action: () => { this.showDetail(this.card); } });
     actions.push({
