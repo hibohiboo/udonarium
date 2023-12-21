@@ -2,7 +2,6 @@ const params = new URL(document.URL).searchParams;
 
 const hollowConfig = params.get('room') !== 'hollow' ? {} : {
     isHollow: true
-  , is2d: true
   , isTapCard: true
   , isUseKeyboardShortcut: true
   , isCardShuffleNormalPosition: true
@@ -10,5 +9,6 @@ const hollowConfig = params.get('room') !== 'hollow' ? {} : {
 }
 export const pluginConfig = {
   ...hollowConfig
+  , is2d:  params.get('2d') !=null
 } as const;
 
