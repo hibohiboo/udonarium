@@ -32,7 +32,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
 import { initKeyboardShortcutCardStack, onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
-import { tapCardStackContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
+import { tapCardStackContextMenu, tapCardStackEnter } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
 
 @Component({
   selector: 'card-stack',
@@ -105,9 +105,13 @@ export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
     initKeyboardShortcutCardStack(this);
    }
 
-   @HostListener("keydown", ["$event"])
-   onKeydown(e: KeyboardEvent) { onKeyDownKeyboardShortcutCardStack(this,e); }
+  @HostListener("keydown", ["$event"])
+  onKeydown(e: KeyboardEvent) { onKeyDownKeyboardShortcutCardStack(this,e); }
 
+  @HostListener("pointerenter", ["$event"])
+  onPointerenter(e: MouseEvent) {
+     tapCardStackEnter(this, e);
+  }
 
   ngOnChanges(): void {
     EventSystem.unregister(this);

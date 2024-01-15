@@ -41,3 +41,8 @@ export const tapCardContextMenuHandStorage = (that) => {
     },
   ]
 }
+export const tapCardEnter = (that:any, e: MouseEvent) => {
+  e.stopPropagation();
+  e.preventDefault();
+  that.elementRef.nativeElement.focus();
+}

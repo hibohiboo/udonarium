@@ -15,3 +15,8 @@ export const tapCardStackContextMenu = (that) => {
     }
   ]
 }
+export const tapCardStackEnter = (that:any, e: MouseEvent) => {
+  e.stopPropagation();
+  e.preventDefault();
+  that.elementRef.nativeElement.focus();
+}
