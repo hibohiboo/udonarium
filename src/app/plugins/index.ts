@@ -35,6 +35,7 @@ import type { GameTable } from '@udonarium/game-table'
  * @return boolean true: 処理中断, false: 処理継続
  */
 export const gameBoardKeydownHook = (that, e: KeyboardEvent) => {
+  if (!that.isTransformMode || document.body !== document.activeElement) return true;
   let ret = false
   if (config.useKeyboardHelp) {
     ret = keyboardHelp.keyboardHook(that.modalService, e)
