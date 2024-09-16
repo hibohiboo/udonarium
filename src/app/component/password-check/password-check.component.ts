@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { EventSystem, Network } from '@udonarium/core/system';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
@@ -11,9 +11,7 @@ import { PanelService } from 'service/panel.service';
   templateUrl: './password-check.component.html',
   styleUrls: ['./password-check.component.css']
 })
-export class PasswordCheckComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('passwordInput', { static: true }) passwordInputElementRef: ElementRef<HTMLInputElement>;
-
+export class PasswordCheckComponent implements OnInit, OnDestroy {
   password: string = '';
   help: string = '';
 
@@ -36,10 +34,6 @@ export class PasswordCheckComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnInit() {
     Promise.resolve().then(() => this.modalService.title = this.panelService.title = `パスワード ＜${this.title}＞`);
     EventSystem.register(this);
-  }
-
-  ngAfterViewInit() {
-    this.passwordInputElementRef.nativeElement.focus();
   }
 
   ngOnDestroy() {

@@ -1,7 +1,3 @@
-:host {
-  display: block;
-}
-
 .drop-zone {
   border: 2px dashed #555;
   -moz-border-radius: 5px;

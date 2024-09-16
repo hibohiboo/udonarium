@@ -1,7 +1,3 @@
-:host {
-  display: block;
-}
-
 .is-grab {
   cursor: -moz-grab;
   cursor: -webkit-grab;

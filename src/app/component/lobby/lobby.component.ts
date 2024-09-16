@@ -115,7 +115,6 @@ export class LobbyComponent implements OnInit, OnDestroy {
             if (peerContexts.length <= triedPeer.length) {
               this.resetNetwork();
               EventSystem.unregister(triedPeer);
-              this.closeIfConnected();
             }
           })
           .on('DISCONNECT_PEER', event => {
@@ -125,7 +124,6 @@ export class LobbyComponent implements OnInit, OnDestroy {
             if (peerContexts.length <= triedPeer.length) {
               this.resetNetwork();
               EventSystem.unregister(triedPeer);
-              this.closeIfConnected();
             }
           });
       });
@@ -136,10 +134,6 @@ export class LobbyComponent implements OnInit, OnDestroy {
       Network.open();
       PeerCursor.myCursor.peerId = Network.peerId;
     }
-  }
-
-  private closeIfConnected() {
-    if (0 < Network.peerContexts.length) this.modalService.resolve();
   }
 
   async showRoomSetting() {

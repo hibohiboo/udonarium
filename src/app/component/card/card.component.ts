@@ -111,7 +111,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', event => {
+      .on('UPDATE_GAME_OBJECT', -1000, event => {
         let object = ObjectStore.instance.get(event.data.identifier);
         if (!this.card || !object) return;
         if ((this.card === object)
@@ -123,7 +123,7 @@ export class CardComponent implements OnInit, OnDestroy, AfterViewInit {
       .on('SYNCHRONIZE_FILE_LIST', event => {
         this.changeDetector.markForCheck();
       })
-      .on('UPDATE_FILE_RESOURE', event => {
+      .on('UPDATE_FILE_RESOURE', -1000, event => {
         this.changeDetector.markForCheck();
       })
       .on('DISCONNECT_PEER', event => {

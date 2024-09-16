@@ -81,12 +81,12 @@ export class TabletopService {
           this.updateMap(object);
         }
       })
-      .on('DELETE_GAME_OBJECT', event => {
-        let aliasName = event.data.aliasName;
-        if (!aliasName) {
+      .on('DELETE_GAME_OBJECT', -1000, event => {
+        let garbage = ObjectStore.instance.get(event.data.identifier);
+        if (garbage == null || garbage.aliasName.length < 1) {
           this.refreshCacheAll();
         } else {
-          this.refreshCache(aliasName);
+          this.refreshCache(garbage.aliasName);
         }
       })
       .on('XML_LOADED', event => {

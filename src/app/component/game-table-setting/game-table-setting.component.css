@@ -1,7 +1,3 @@
-:host {
-  display: block;
-}
-
 .flex-container {
   display: -webkit-flex; /* Safari */
   display: flex;
