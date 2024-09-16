@@ -30,13 +30,20 @@
 </ng-container>
 <hr/>
 <div *ngFor="let peer of networkService.peers">
-  <div>
+  <div class="peer-info">
     <span *ngIf="!peer.isOpen">[接続中]</span>
     <span>他の参加者：{{findUserId(peer.peerId)}} [{{findPeerName(peer.peerId)}}]</span>
+    <div class="session-info">
+      <span>接続状態
+        Grade:{{stringFromSessionGrade(peer.session.grade)}} ({{peer.session.description}})
+        Health:{{(peer.session.health * 100).toFixed(0)}}%
+        Speed:{{(peer.session.speed * 100).toFixed(0)}}%
+        Ping:{{peer.session.ping.toFixed(1)}}ms</span>
+    </div>
   </div>
 </div>
 <div>
-  <ng-container *ngIf="!networkService.peer.isRoom">
+  <ng-container *ngIf="!networkService.peer.isRoom && canUsePrivateSession">
     <input [(ngModel)]="targetUserId" placeholder="接続したい相手のID" name="targetUserId" />
     <button (click)="connectPeer()" [disabled]="!networkService.isOpen">プライベート接続</button><br>
   </ng-container>
@@ -44,9 +51,9 @@
 </div>
 <div><span style="font-size: 12px;">{{help}}</span></div>
 <ng-container *ngIf="!networkService.peer.isRoom">
-  <div style="font-size: 12px;" *ngIf="networkService.peers.length < 1">※プライベート接続を使用する場合は、お互いのIDをユドナリウム外で共有してください。</div>
+  <div style="font-size: 12px;" *ngIf="networkService.peers.length < 1 && canUsePrivateSession">※プライベート接続を使用する場合は、お互いのIDをユドナリウム外で共有してください。</div>
   <div style="font-size: 12px;" *ngIf="networkService.peers.length < 1">※一人で動作確認を行いたい場合はブラウザを2つ開くと良いと思います。</div>
 </ng-container>
-<ng-container *ngIf="networkService.peer.isRoom">
+<ng-container *ngIf="networkService.peer.isRoom && canUsePrivateSession">
   <div style="font-size: 12px;">※ルーム機能を利用している時はプライベート接続を利用できません。</div>
 </ng-container>

@@ -1,6 +1,7 @@
-import * as SHA256 from 'crypto-js/sha256';
-
+import Peer from 'skyway-js';
+import { ArrayUtil } from '../../util/array-util';
 import { compressAsync, decompressAsync } from '../../util/compress';
+import { CryptoUtil } from '../../util/crypto-util';
 import { MessagePack } from '../../util/message-pack';
 import { setZeroTimeout } from '../../util/zero-timeout';
 import { Connection, ConnectionCallback } from '../connection';
@@ -8,13 +9,6 @@ import { IPeerContext, PeerContext } from '../peer-context';
 import { IRoomInfo, RoomInfo } from '../room-info';
 import { SkyWayDataConnection } from './skyway-data-connection';
 import { SkyWayDataConnectionList } from './skyway-data-connection-list';
-
-// @types/skywayを使用すると@types/webrtcが定義エラーになるので代替定義
-declare var Peer;
-declare module PeerJs {
-  export type Peer = any;
-  export type DataConnection = any;
-}
 
 interface DataContainer {
   data: Uint8Array;
@@ -36,7 +30,7 @@ export class SkyWayConnection implements Connection {
   bandwidthUsage: number = 0;
 
   private key: string = '';
-  private skyWay: PeerJs.Peer;
+  private skyWay: Peer;
   private connections: SkyWayDataConnectionList = new SkyWayDataConnectionList();
 
   private listAllPeersCache: string[] = [];
@@ -45,8 +39,13 @@ export class SkyWayConnection implements Connection {
   private outboundQueue: Promise<any> = Promise.resolve();
   private inboundQueue: Promise<any> = Promise.resolve();
 
-  private relayingPeerIds: Map<string, string[]> = new Map();
-  private maybeUnavailablePeerIds: Set<string> = new Set();
+  private readonly relayingPeerIds: Map<string, string[]> = new Map();
+  private readonly maybeUnavailablePeerIds: Set<string> = new Set();
+
+  configure(config: any) {
+    if (this.key !== config?.webrtc?.key) console.log('Key Change');
+    this.key = config?.webrtc?.key ?? '';
+  }
 
   open(userId?: string)
   open(userId: string, roomId: string, roomName: string, password: string)
@@ -76,7 +75,7 @@ export class SkyWayConnection implements Connection {
       serialization: 'none',
       metadata: {
         sortKey: this.peer.digestUserId,
-        token: this.peer.isRoom ? '' : calcSHA256Base64(this.peer.digestUserId + peer.userId)
+        token: this.peer.isRoom ? '' : CryptoUtil.sha256Base64Url(this.peer.digestUserId + peer.userId)
       }
     }), peer);
 
@@ -101,7 +100,7 @@ export class SkyWayConnection implements Connection {
     }
 
     if (!this.peer.verifyPeer(peerId)) {
-      console.log('connect() is Fail. <' + peerId + '> is not valid.');
+      console.log('connect() is Fail. <' + peerId + '> is invalid.');
       return false;
     }
 
@@ -164,11 +163,6 @@ export class SkyWayConnection implements Connection {
     }
   }
 
-  setApiKey(key: string) {
-    if (this.key !== key) console.log('Key Change');
-    this.key = key;
-  }
-
   listAllPeers(): Promise<string[]> {
     return new Promise((resolve, reject) => {
       if (!this.skyWay) return resolve([]);
@@ -218,11 +212,11 @@ export class SkyWayConnection implements Connection {
 
     skyWay.on('connection', conn => {
       let validPeerId = this.peer.verifyPeer(conn.remoteId);
-      let validToken = this.peer.isRoom || conn.metadata.token === calcSHA256Base64(conn.metadata.sortKey + this.peer.userId);
+      let validToken = this.peer.isRoom || conn.metadata.token === CryptoUtil.sha256Base64Url(conn.metadata.sortKey + this.peer.userId);
       if (!validPeerId || !validToken) {
         conn.close();
         conn.on('open', () => conn.close());
-        console.log('connection is close. <' + conn.remoteId + '> is not valid.');
+        console.log('connection is close. <' + conn.remoteId + '> is invalid.');
         return;
       }
       let peer = PeerContext.parse(conn.remoteId);
@@ -274,8 +268,10 @@ export class SkyWayConnection implements Connection {
       this.closeDataConnection(conn);
     });
     conn.on('stats', () => {
-      if (conn.peer.session.health < 0.2) {
+      if (conn.peer.session.health < 0.35 || (conn.peer.session.grade < 1 && conn.peer.session.health < 0.7)) {
+        console.log(`reconnecting... ${conn.peer.peerId}`);
         this.closeDataConnection(conn);
+        this.connect(conn.peer);
       }
     });
   }
@@ -295,18 +291,18 @@ export class SkyWayConnection implements Connection {
   private onData(conn: SkyWayDataConnection, container: DataContainer) {
     if (container.users && 0 < container.users.length) this.onUpdateUserIds(conn, container.users);
     if (0 < container.ttl) this.onRelay(conn, container);
-    if (this.callback.onData) {
-      let byteLength = container.data.byteLength;
-      this.bandwidthUsage += byteLength;
-      this.inboundQueue = this.inboundQueue.then(() => new Promise<void>((resolve, reject) => {
-        setZeroTimeout(async () => {
-          let data = container.isCompressed ? await decompressAsync(container.data) : container.data;
-          this.callback.onData(conn.peer, MessagePack.decode(data));
-          this.bandwidthUsage -= byteLength;
-          return resolve();
-        });
-      }));
-    }
+    if (!this.callback.onData) return;
+    let byteLength = container.data.byteLength;
+    this.bandwidthUsage += byteLength;
+    this.inboundQueue = this.inboundQueue.then(() => new Promise<void>((resolve, reject) => {
+      setZeroTimeout(async () => {
+        if (!this.callback.onData) return;
+        let data = container.isCompressed ? await decompressAsync(container.data) : container.data;
+        this.callback.onData(conn.peer, MessagePack.decode(data));
+        this.bandwidthUsage -= byteLength;
+        return resolve();
+      });
+    }));
   }
 
   private onRelay(conn: SkyWayDataConnection, container: DataContainer) {
@@ -339,7 +335,7 @@ export class SkyWayConnection implements Connection {
       }
     });
 
-    let diff = diffArray(this.userIds, userIds);
+    let diff = ArrayUtil.diff(this.userIds, userIds);
     let relayingUserIds = diff.diff1;
     let unknownUserIds = diff.diff2;
     this.relayingPeerIds.set(conn.remoteId, relayingUserIds.map(userId => this.makeFriendPeer(userId).peerId));
@@ -393,31 +389,4 @@ export class SkyWayConnection implements Connection {
       default: return 'SkyWayに関する不明なエラーが発生しました。';
     }
   }
-}
-
-function diffArray<T>(array1: T[], array2: T[]): { diff1: T[], diff2: T[] } {
-  let diff1: T[] = [];
-  let diff2: T[] = [];
-
-  let includesInArray1: boolean = false;
-  let includesInArray2: boolean = false;
-
-  for (let item of array1.concat(array2)) {
-    includesInArray1 = array1.includes(item);
-    includesInArray2 = array2.includes(item);
-    if (includesInArray1 && !includesInArray2) {
-      diff1.push(item);
-    } else if (!includesInArray1 && includesInArray2) {
-      diff2.push(item);
-    }
-  }
-  return { diff1: diff1, diff2: diff2 };
-}
-
-function calcSHA256Base64(str: string): string {
-  if (str == null) return '';
-  let hash = SHA256(str);
-  let arrayBuffer = Uint32Array.from(hash.words).buffer;
-  let base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-  return base64;
 }

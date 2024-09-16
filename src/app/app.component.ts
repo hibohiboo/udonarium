@@ -47,8 +47,8 @@ import { SaveDataService } from 'service/save-data.service';
 export class AppComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('modalLayer', { read: ViewContainerRef, static: true }) modalLayerViewContainerRef: ViewContainerRef;
-  private immediateUpdateTimer: NodeJS.Timer = null;
-  private lazyUpdateTimer: NodeJS.Timer = null;
+  private immediateUpdateTimer: NodeJS.Timeout = null;
+  private lazyUpdateTimer: NodeJS.Timeout = null;
   private openPanelCount: number = 0;
   isSaveing: boolean = false;
   progresPercent: number = 0;
@@ -147,7 +147,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       .on('SYNCHRONIZE_FILE_LIST', event => { if (event.isSendFromSelf) this.lazyNgZoneUpdate(false); })
       .on<AppConfig>('LOAD_CONFIG', event => {
         console.log('LOAD_CONFIG !!!');
-        Network.setApiKey(event.data.webrtc.key);
+        Network.configure(event.data);
         Network.open();
       })
       .on<File>('FILE_LOADED', event => {
