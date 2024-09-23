@@ -3,5 +3,5 @@
 デプロイにはcloudflareを利用。
 
 ```
-npx wrangler pages deploy dist/udonarium
+npm run build && npx wrangler pages deploy dist/udonarium
 ```
