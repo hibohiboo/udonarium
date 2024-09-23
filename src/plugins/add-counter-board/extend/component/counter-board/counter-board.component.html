@@ -1,0 +1,85 @@
+
+<div>
+  <div>
+    <input type="text" [(ngModel)]="counterBoard.name" /><button (click)="delete()">削除</button><br />
+    <label>サイズ: <input class="num-input" type="number" [(ngModel)]="counterBoard.size" /></label>
+    <label>最大値: <input class="num-input" type="number" [(ngModel)]="counterBoard.maxCount" /></label>
+    <label>
+      <span *ngIf="direction !== 'diaclock'">初期</span>
+      <span *ngIf="direction === 'diaclock'">中心点</span>
+      X: <input class="num-input" type="number" [(ngModel)]="counterBoard.startPositionX" />
+    </label>
+    <label>
+      <span *ngIf="direction !== 'diaclock'">初期</span>
+      <span *ngIf="direction === 'diaclock'">中心点</span>
+      Y: <input class="num-input" type="number" [(ngModel)]="counterBoard.startPositionY" />
+    </label>
+
+    <br />
+    <label>
+      方向
+      <select class="direction" [(ngModel)]="counterBoard.direction">
+          <option value="toRight">→</option>
+          <option value="toLeft">←</option>
+          <option value="toTop">↑</option>
+          <option value="toBottom">↓</option>
+          <option value="clockwise">⌚</option>
+          <option value="diaclock">☸</option>
+      </select>
+    </label>
+    <label *ngIf="!['clockwise', 'diaclock'].includes(direction)">
+      重ね方
+      <select [(ngModel)]="counterBoard.samePositionDisplay">
+          <option *ngIf="['toTop','toBottom'].includes(direction)" value="right">右に</option>
+          <option *ngIf="['toTop','toBottom'].includes(direction)" value="left">左に</option>
+          <option *ngIf="['toRight','toLeft'].includes(direction)" value="top">上に</option>
+          <option *ngIf="['toRight','toLeft'].includes(direction)" value="bottom">下に</option>
+          <option value="stack">積む</option>
+      </select>
+    </label>
+    <label *ngIf="direction === 'clockwise'">右上端: <input class="num-input" type="number" [(ngModel)]="counterBoard.rightCorner" /></label>
+    <label *ngIf="direction === 'clockwise'">右下端: <input class="num-input" type="number" [(ngModel)]="counterBoard.lowerRightCorner" /></label>
+    <label *ngIf="direction === 'diaclock'">内半径: <input class="num-input" type="number" [(ngModel)]="counterBoard.inRadius" /></label>
+    <label *ngIf="direction === 'diaclock'">外半径: <input class="num-input" type="number" [(ngModel)]="counterBoard.outRadius" /></label>
+    <label *ngIf="direction === 'diaclock'">初期位置:
+      <select [(ngModel)]="counterBoard.bufferDegree">
+        <option value="-90">0時</option>
+          <option value="0">3時</option>
+          <option value="90">6時</option>
+          <option value="180">9時</option>
+      </select>
+    </label>
+
+  </div>
+
+  <h3>{{name}}</h3>
+  <div class="option-button">
+    <button (click)="resetCounter()">初期化</button>
+    <button (click)="addCube()">コマ追加</button>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>名前</th>
+        <th>カウント</th>
+        <th *ngIf="direction === 'diaclock'">IN/OUT</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let item of objects; trackBy: trackByItem">
+        <tr>
+          <td>{{item.name}}</td>
+          <td>
+            <i class="material-icons button" (click)="decreaseCount(item.obj)">remove_circle</i>
+            <div> <input class="num-input" type="number" [(ngModel)]="item.count" /></div>
+            <i class="material-icons button" (click)="increaseCount(item.obj)">add_circle</i>
+          </td>
+          <td *ngIf="direction === 'diaclock'">
+            IN <input type="range" min="0" max="1" [(ngModel)]="item.currentValue" /> OUT
+          </td>
+      </ng-container>
+    </tbody>
+
+  </table>
+</div>

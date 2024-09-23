@@ -1,0 +1,171 @@
+
+<div>
+  <h3>キーボードショートカット</h3>
+  <section *ngIf="config.isUseKeyboardShortcut">
+    <h4>磁石モード</h4>
+    <p>オブジェクトを移動させた際に同じ種類のオブジェクトを巻き込みながら移動させる</p>
+    <dl class="help-list">
+      <dt>オブジェクトをマウス左ボタン長押し+ドラッグ操作</dt>
+      <dd> 長押しで磁石モードを開始し、ドラッグでオブジェクトを移動</dd>
+      <dt>任意の場所をクリック</dt>
+      <dd> 磁石モードを解除</dd>
+    </dl>
+    <h4>範囲選択モード</h4>
+    <p>選択領域の内側に見えているオブジェクトを選択状態にする。</p>
+    <dl class="help-list">
+      <dt>テーブルをマウス左ボタン長押し+ドラッグ操作</dt>
+      <dd> 長押しで範囲選択モードを開始し、ドラッグで範囲領域を指定</dd>
+      <dt>[shift]+マウス左ボタン+ドラッグ操作</dt>
+      <dd> 即時に範囲選択モードを開始し、ドラッグで範囲領域を指定</dd>
+      <dt>[ctrl]+マウス左ボタン</dt>
+      <dd> クリックしたオブジェクトの選択状態を切り替える</dd>
+      <dt>[ctrl]+マウス左ボタン+ドラッグ操作</dt>
+      <dd> マウスカーソルの触れた対象を選択状態にする</dd>
+      <dt>選択状態のカードを移動</dt>
+      <dd> 選択状態のすべてのオブジェクトを動機して移動</dd>
+      <dt>選択状態のカードを回転</dt>
+      <dd> 選択状態のすべてのオブジェクトを動機して回転</dd>
+      <dt>選択状態のカードを右クリックして「選択したカード」のコンテキストメニューを開く</dt>
+      <dd> 選択状態のすべてのカードを「表にする」「裏にする」「自分だけ見る」が可能</dd>
+      <dt>選択状態のデッキを右クリックして「選択した山札」のコンテキストメニューを開く</dt>
+      <dd> 選択状態のすべてのカードを「表にする」「裏にする」「自分だけ見る」「シャッフル」が可能</dd>
+      <dt>選択状態のキャラクターを右クリックして「選択したカード」のコンテキストメニューを開く</dt>
+      <dd> 選択状態のすべてのキャラクターを「共有インベントリ」「個人インベントリ」「墓場」に移動が可能</dd>
+      <dt>任意の場所をクリック</dt>
+      <dd> 全ての選択状態を解除</dd>
+    </dl>
+    <h4>カード</h4>
+    <dl class="help-list">
+      <dt *ngIf="config.isTapCard">カードの上で[u]</dt>
+      <dd *ngIf="config.isTapCard">カードを縦にする</dd>
+      <dt *ngIf="config.isTapCard">カードの上で[t]</dt>
+      <dd *ngIf="config.isTapCard">カードを横にする</dd>
+      <dt *ngIf="config.isTapCard">カードの上で[r]</dt>
+      <dd *ngIf="config.isTapCard">カードを逆位置にする</dd>
+      <dt>カードの上で[c]</dt>
+      <dd>カードのコピー</dd>
+      <dt>カードの上で[d]</dt>
+      <dd>カードの削除</dd>
+      <dt>カードの上で[q]</dt>
+      <dd>カードの編集</dd>
+      <dt>カードの上で[s]</dt>
+      <dd>自分だけ見る</dd>
+      <dt>カードの上で[R]</dt>
+      <dd>カードを裏にする</dd>
+      <dt *ngIf="config.canReturnHandToIndividualBoard">カードの上で[h]</dt>
+      <dd *ngIf="config.canReturnHandToIndividualBoard">手札にする / 共用にする</dd>
+      <dt *ngIf="config.isOffObjectRotateIndividually">カードの上で[a]</dt>
+      <dd *ngIf="config.isOffObjectRotateIndividually">回転させない / 回転オン</dd>
+    </dl>
+    <h4>山札</h4>
+    <dl class="help-list">
+      <dt *ngIf="config.isTapCard">山札の上で[u]</dt>
+      <dd *ngIf="config.isTapCard">山札を縦にする</dd>
+      <dt *ngIf="config.isTapCard">山札の上で[t]</dt>
+      <dd *ngIf="config.isTapCard">山札を横にする</dd>
+      <dt *ngIf="config.isTapCard">山札の上で[r]</dt>
+      <dd *ngIf="config.isTapCard">山札を逆位置にする</dd>
+      <dt>山札の上で[R]</dt>
+      <dd>山札を全て裏にする</dd>
+      <dt>山札の上で[shift]+[u]</dt>
+      <dd>山札を全て正位置にする</dd>
+      <dt>山札の上で[shift]+[s]</dt>
+      <dd>山札をシャッフルする</dd>
+      <dt>山札の上で[c]</dt>
+      <dd>山札をコピー</dd>
+      <dt>山札の上で[d]</dt>
+      <dd>山札を削除</dd>
+      <dt>山札の上で[q]</dt>
+      <dd>山札の編集</dd>
+      <dt *ngIf="config.isOffObjectRotateIndividually">山札の上で[a]</dt>
+      <dd *ngIf="config.isOffObjectRotateIndividually">回転させない / 回転オン</dd>
+    </dl>
+  </section>
+
+  <!-- <section *ngIf="config.isUseKeyboardShortcut">
+    <h4>地形</h4>
+    <p>※対象の地形をクリックしてからキーボードを押してください。</p>
+    <dl class="help-list">
+      <dt>[c]</dt>
+      <dd>地形をコピー</dd>
+      <dt>[d]</dt>
+      <dd>地形を削除</dd>
+      <dt>[q]</dt>
+      <dd>地形設定を編集</dd>
+      <dt>[f]</dt>
+      <dd>地形を固定/固定解除</dd>
+      <dt *ngIf="config.isOffObjectRotateIndividually">地形の上で[a]</dt>
+      <dd *ngIf="config.isOffObjectRotateIndividually">回転させない / 回転オン</dd>
+    </dl>
+  </section>
+
+  <section *ngIf="config.isUseKeyboardShortcut">
+    <h4>キャラクター</h4>
+    <p>※対象のキャラクターをクリックしてからキーボードを押してください。</p>
+    <dl class="help-list">
+      <dt>[c]</dt>
+      <dd>キャラクターをコピー</dd>
+      <dt>[d]</dt>
+      <dd>キャラクターを墓場へ移動</dd>
+      <dt>[q]</dt>
+      <dd>キャラクターの詳細を表示</dd>
+      <dt>[v]</dt>
+      <dd>キャラクターのチャットパレットを表示</dd>
+      <dt>[shift]+[n]</dt>
+      <dd>キャラクターを共有インベントリに移動</dd>
+      <dt>[shift]+[z]</dt>
+      <dd>キャラクターを個人インベントリに移動</dd>
+      <dt *ngIf="config.isOffObjectRotateIndividually">キャラクターの上で[a]</dt>
+      <dd *ngIf="config.isOffObjectRotateIndividually">回転させない / 回転オン</dd>
+    </dl>
+  </section> -->
+
+  <section *ngIf="config.isUseKeyboardShortcut && config.isUseHandStorage">
+    <h4>ボード</h4>
+    <p>※対象のボードをクリックしてからキーボードを押してください。</p>
+    <dl class="help-list">
+      <dt>[c]</dt>
+      <dd>ボードをコピー</dd>
+      <dt>[d]</dt>
+      <dd>ボードを削除</dd>
+      <dt>[q]</dt>
+      <dd>ボード設定を編集</dd>
+      <dt>[f]</dt>
+      <dd>ボードを固定/固定解除</dd>
+      <dt *ngIf="config.isOffObjectRotateIndividually">ボードの上で[a]</dt>
+      <dd *ngIf="config.isOffObjectRotateIndividually">回転させない / 回転オン</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h4>テーブル</h4>
+    <dl class="help-list">
+      <dt>[→]</dt>
+      <dd>テーブルを左に移動</dd>
+      <dt>[↑]</dt>
+      <dd>テーブルを下に移動</dd>
+      <dt>[←]</dt>
+      <dd>テーブルを右に移動</dd>
+      <dt>[↓]</dt>
+      <dd>テーブルを上に移動</dd>
+      <dt>[shift]+[→]</dt>
+      <dd>テーブルを時計回りに回転</dd>
+      <dt>[shift]+[↑]</dt>
+      <dd>テーブルを手前に倒す</dd>
+      <dt>[shift]+[←]</dt>
+      <dd>テーブルを逆時計回りに移動</dd>
+      <dt>[shift]+[↓]</dt>
+      <dd>テーブルを奥に倒す</dd>
+      <dt>[?]</dt>
+      <dd>キーボードショートカット表示</dd>
+      <dt>[ESC]</dt>
+      <dd>キーボードショートカットを閉じる</dd>
+    </dl>
+  </section>
+
+  <h3>マウス</h3>
+  <dl class="help-list">
+    <dt>カードの上でダブルクリック</dt>
+    <dd>カードを裏返す</dd>
+  </dl>
+</div>

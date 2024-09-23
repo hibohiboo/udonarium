@@ -1,0 +1,15 @@
+
+<div>
+  <div class="title">
+      <h2>カウンター</h2>
+  </div>
+  <div class="counter-board">
+    <label *ngFor="let board of counterBoards; trackBy: trackByBoard">
+      <input name="c-board" type="radio" value="{{board.identifier}}" ng-control="options" [(ngModel)]="currentBoardIdentifier">
+      <div>{{board.name}}</div>
+    </label>
+    <button class="counter-board-setting small-font"(click)="addCounterBoard()"><i class="material-icons small-font">add_circle</i>カウンターを追加</button>
+  </div>
+  <counter-board *ngIf="currentBoard" [counterBoard]="currentBoard"></counter-board>
+
+</div>

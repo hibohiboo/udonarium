@@ -1,0 +1,38 @@
+<div class="component" [ngClass]="{'is-grab': !isLock}"
+  [style.width.px]="width * gridSize" [style.height.px]="height * gridSize"
+  appMovable [movable.option]="movableOption" [movable.disable]="isLock"
+   (movable.ondragstart)="onMove()" (movable.ondragend)="onMoved()">
+  <div class="component-content is-pointer-events-auto" [ngClass]="{'is-grab': !isLock}"
+    appRotable [rotable.option]="rotableOption" (rotable.ondragstart)="onRotate()" (rotable.ondragend)="onRotated()" [rotable.disable]="isLock">
+      <div *ngIf="titleLabel.length > 0" class="name-tag is-nowrap has-length-limit is-black-background" [ngStyle]="{'background-color': ownerColor, 'transform': 'translateY(-75%) translateX(-50%) translateX(' + width * gridSize / 2 +'px)'}">
+        <span [ngStyle]="{'color': ownerColor, filter: 'invert(100%) grayscale(100%) contrast(100)'}"><b>{{titleLabel}}</b></span>
+      </div>
+      <div *ngIf="imageFile.url.length < 1; then blackMask; else imageMask"></div>
+      <ng-template #blackMask>
+        <div class="border is-fit-full" [style.background-color]="'rgba(100, 100, 100,' + opacity +')'"></div>
+      </ng-template>
+      <ng-template #imageMask>
+        <div class="border is-fit-full">
+          <img class="image is-fit-full" [style.opacity]="opacity" [src]="imageFile.url | safe: 'resourceUrl'">
+        </div>
+      </ng-template>
+      <div *ngIf="isLock" class="lock-icon is-center">
+        <i class="material-icons">lock</i>
+      </div>
+      <ng-container *ngIf="!isLock">
+        <div class="pedestal-grab rotate-grab"></div>
+        <div class="rotate-grab of-left-top rotate-grab-icon">
+          <i class="material-icons">autorenew</i>
+        </div>
+        <div class="rotate-grab of-left-bottom rotate-grab-icon">
+          <i class="material-icons">autorenew</i>
+        </div>
+        <div class="rotate-grab of-right-bottom rotate-grab-icon">
+          <i class="material-icons">autorenew</i>
+        </div>
+        <div class="rotate-grab of-right-top rotate-grab-icon">
+          <i class="material-icons">autorenew</i>
+        </div>
+      </ng-container>
+  </div>
+</div>

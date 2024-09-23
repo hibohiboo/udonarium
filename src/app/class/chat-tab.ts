@@ -1,3 +1,4 @@
+import { useChatCommand } from 'src/plugins/use-chat-command';
 import { ChatMessage, ChatMessageContext } from './chat-message';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
@@ -44,6 +45,7 @@ export class ChatTab extends ObjectNode implements InnerXml {
     chat.initialize();
     EventSystem.trigger('SEND_MESSAGE', { tabIdentifier: this.identifier, messageIdentifier: chat.identifier });
     this.appendChild(chat);
+    useChatCommand(message?.text);
     return chat;
   }
 
