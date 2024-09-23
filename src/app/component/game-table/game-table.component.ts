@@ -30,7 +30,11 @@ import { TableMouseGesture } from './table-mouse-gesture';
 import { TablePickGesture } from './table-pick-gesture';
 import { TableTouchGesture } from './table-touch-gesture';
 import { is2d } from 'src/plugins/mode2d/extends/components/game-table/game-table.components';
-import { isEmptyDefaultTabletopObjects, viewPositonZDefault } from 'src/plugins/first-fetch-zip-room/extend/components/game-table/game-table.components';
+import { isEmptyDefaultTabletopObjects, transformDefault } from 'src/plugins/first-fetch-zip-room/extend/components/game-table/game-table.components';
+import { init2d } from 'src/plugins/mode2d';
+import { initCommandGameBoard } from 'src/plugins/use-chat-command/game-board';
+import { HandStorageService } from 'src/plugins/hand-storage/extend/service/hand-storage.service';
+import { HandStorage } from 'src/plugins/hand-storage/extend/class/hand-storage';
 
 @Component({
   selector: 'game-table',
@@ -59,11 +63,11 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private viewPotisonX: number = 100;
   private viewPotisonY: number = 0;
-  private viewPotisonZ: number = viewPositonZDefault() ?? 0;
+  private viewPotisonZ: number = 0;
 
-  private viewRotateX: number = is2d() ? 0 : 50;
+  private viewRotateX: number = 50;
   private viewRotateY: number = 0;
-  private viewRotateZ: number = is2d() ? 0 : 10;
+  private viewRotateZ: number = 10;
 
   private mouseGesture: TableMouseGesture = null;
   private touchGesture: TableTouchGesture = null;
@@ -77,6 +81,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   get textNotes(): TextNote[] { return this.tabletopService.textNotes; }
   get diceSymbols(): DiceSymbol[] { return this.tabletopService.diceSymbols; }
   get peerCursors(): PeerCursor[] { return this.tabletopService.peerCursors; }
+  get handStorages(): HandStorage[] { return this.handStorageService.handStorages; }
 
   constructor(
     private ngZone: NgZone,
@@ -88,6 +93,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     private tabletopActionService: TabletopActionService,
     private selectionService: TabletopSelectionService,
     private modalService: ModalService,
+    private handStorageService: HandStorageService,
   ) { }
 
   ngOnInit() {
@@ -104,6 +110,8 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
         this.gridCanvas.nativeElement.style.opacity = opacity + '';
       });
+    init2d(this);
+
     if(isEmptyDefaultTabletopObjects) return;
     this.tabletopActionService.makeDefaultTable();
     this.tabletopActionService.makeDefaultTabletopObjects();
@@ -114,11 +122,14 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
       this.initializeTableTouchGesture();
       this.initializeTableMouseGesture();
       this.initializeTablePickGesture();
+      initCommandGameBoard(this);
+
     });
     this.cancelInput();
 
     this.setGameTableGrid(this.currentTable.width, this.currentTable.height, this.currentTable.gridSize, this.currentTable.gridType, this.currentTable.gridColor);
     this.setTransform(0, 0, 0, 0, 0, 0);
+    transformDefault(this);
     this.coordinateService.tabletopOriginElement = this.gameObjects.nativeElement;
   }
 
