@@ -43,7 +43,7 @@ import { afterViewInitExtend } from 'src/plugins/extends/app.component';
 import { fetchZipRoom } from 'src/plugins/first-fetch-zip-room/extend/app.component';
 import { openHelpEvent, openHelp,useHelp  } from 'src/plugins/keyboard-help/app/app.component';
 import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
-import * as conunterBoard from 'src/plugins/add-counter-board/extend/app.component';
+import * as counterBoard from 'src/plugins/add-counter-board/extend/app.component';
 
 @Component({
   selector: 'app-root',
@@ -201,9 +201,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       afterViewInitExtend(this);
       fetchZipRoom();
       if (pluginConfig.isTutorial) return;
-      conunterBoard.afterViewInit(this);
       this.panelService.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
       this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
+      counterBoard.afterViewInit(this);
     }, 0);
   }
 

@@ -10,6 +10,9 @@ import { GameTable } from './game-table';
 import { GameTableMask } from './game-table-mask';
 import { Terrain } from './terrain';
 import { TextNote } from './text-note';
+import { innerXMLHandStorageObject } from 'src/plugins/hand-storage/extend/class/room';
+import { innerXMLCounterBoard } from 'src/plugins/add-counter-board/extend/class/room';
+
 
 @SyncObject('room')
 export class Room extends GameObject implements InnerXml {
@@ -28,6 +31,8 @@ export class Room extends GameObject implements InnerXml {
     objects = objects.concat(ObjectStore.instance.getObjects(CardStack));
     objects = objects.concat(ObjectStore.instance.getObjects(Card).filter((obj) => { return obj.parent === null }));
     objects = objects.concat(ObjectStore.instance.getObjects(DiceSymbol));
+    objects = innerXMLHandStorageObject(objects)
+    objects = innerXMLCounterBoard(objects);
     for (let object of objects) {
       xml += object.toXml();
     }
@@ -44,6 +49,8 @@ export class Room extends GameObject implements InnerXml {
     objects = objects.concat(ObjectStore.instance.getObjects(CardStack));
     objects = objects.concat(ObjectStore.instance.getObjects(Card));
     objects = objects.concat(ObjectStore.instance.getObjects(DiceSymbol));
+    objects = innerXMLHandStorageObject(objects)
+    objects = innerXMLCounterBoard(objects)
     for (let object of objects) {
       object.destroy();
     }
