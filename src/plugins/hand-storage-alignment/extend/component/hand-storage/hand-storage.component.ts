@@ -4,7 +4,7 @@ import { ContextMenuSeparator } from 'service/context-menu.service';
 import { setAutoSelfViewCard } from 'src/plugins/auto-self-view-mode/extend/component/hand-storage.component';
 import { pluginConfig } from 'src/plugins/config';
 
-const cardWidth = 80;
+const cardWidth = 55;
 
 const alignmentCards = (that) => {
   const x = that.handStorage.location.x;
