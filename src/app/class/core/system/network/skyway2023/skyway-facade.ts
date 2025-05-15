@@ -77,7 +77,9 @@ export class SkyWayFacade {
     if (this.isDestroyed) return;
 
     let backend = new SkyWayBackend(this.url);
-    let channelName = CryptoUtil.sha256Base64Url(this.peer.roomId + this.peer.roomName + this.peer.password);
+    let channelName = this.peer.isRoom
+      ? CryptoUtil.sha256Base64Url(this.peer.roomId + this.peer.roomName + this.peer.password)
+      : this.peer.peerId;
 
     let authToken = await backend.createSkyWayAuthToken(channelName, this.peer.peerId);
     if (authToken.length < 1) {
@@ -350,11 +352,42 @@ export class SkyWayFacade {
   }
 
   private getLobbyNames(): string[] {
-    let lobbyBaseName = this.context?.authToken.scope.app.channels?.find(channel => channel.name.startsWith('udonarium-lobby-'))?.name ?? '';
-    let regArray = /of-(\d+)$/.exec(lobbyBaseName);
-    let lobbySize = Number(regArray[1]);
-    if (isNaN(lobbySize)) lobbySize = 0;
-    let lobbyNames = [...Array(lobbySize)].map((value, index) => `udonarium-lobby-${index + 1}-of-${lobbySize}`);
-    return lobbyNames;
+    let names: Set<string> = new Set();
+    let wildcards: Set<string> = new Set();
+    let maxLobbySize = 0;
+
+    // udonarium-lobby-* -> udonarium-lobby-1, udonarium-lobby-2, ...
+    // udonarium-lobby-*-of-4 -> udonarium-lobby-1-of-4, udonarium-lobby-2-of-4, ...
+    for (let channel of this.context?.authToken.scope.app.channels ?? []) {
+      let name = channel.name ?? '';
+      if (name.startsWith('udonarium-lobby-')) {
+        if (name.includes('*')) {
+          wildcards.add(name);
+        } else {
+          names.add(name);
+        }
+        try {
+          let regArray = /-(\d+)$/.exec(name);
+          console.log(regArray);
+          let lobbySize = regArray && 1 < regArray.length ? Number(regArray[1]) : 0;
+          if (isNaN(lobbySize)) lobbySize = 0;
+          if (maxLobbySize < lobbySize) maxLobbySize = lobbySize;
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+    }
+
+    for (let wildcard of wildcards) {
+      [...Array(maxLobbySize)].map((value, index) => names.add(wildcard.replace('*', `${index + 1}`)));
+    }
+
+    let sorted = Array.from(names).sort((a, b) => {
+      let aIndex = a.replace(/\d+/g, m => m.padStart(10, '0'));
+      let bIndex = b.replace(/\d+/g, m => m.padStart(10, '0'));
+      return aIndex < bIndex ? -1 : aIndex > bIndex ? 1 : 0;
+    });
+
+    return sorted;
   }
 }
