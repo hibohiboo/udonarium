@@ -8,7 +8,7 @@ import { PeerCursor } from '@udonarium/peer-cursor';
 
 import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component';
 import { LobbyComponent } from 'component/lobby/lobby.component';
-import { AppConfigService } from 'service/app-config.service';
+import { AppConfig, AppConfigService } from 'service/app-config.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 import { Device } from '@udonarium/device/device';
@@ -29,6 +29,9 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   private interval: NodeJS.Timeout;
   get myPeer(): PeerCursor { return PeerCursor.myCursor; }
   get isMobile(): boolean { return Device.isMobile(); }
+
+  get config(): AppConfig { return AppConfigService.appConfig; }
+  get canUsePrivateSession(): boolean { return this.config.backend.mode == 'skyway'; }
 
   constructor(
     private ngZone: NgZone,
