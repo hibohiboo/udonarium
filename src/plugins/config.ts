@@ -56,6 +56,7 @@ export const pluginConfig = {
   , isAutoSelfViewCardFromDeck: true
   , isContextMenuAutoSelfViewCardFromDeck: params.get('add-stack-context-auto-self-view-mode') != null
   , isHidePeerCursor: params.get('hide-peer-cursor') != null
+  , useChatCommand: params.get('chat-command') != null
 } as const;
 
 export const settings = [
