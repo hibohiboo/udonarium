@@ -40,6 +40,8 @@
       <dd *ngIf="config.isTapCard">カードを縦にする</dd>
       <dt *ngIf="config.isTapCard">カードの上で[t]</dt>
       <dd *ngIf="config.isTapCard">カードを横にする</dd>
+      <dt *ngIf="config.isTapCard">カードの上で[r]</dt>
+      <dd *ngIf="config.isTapCard">カードを逆位置にする</dd>
       <dt>カードの上で[c]</dt>
       <dd>カードのコピー</dd>
       <dt>カードの上で[d]</dt>
@@ -48,7 +50,7 @@
       <dd>カードの編集</dd>
       <dt>カードの上で[s]</dt>
       <dd>自分だけ見る</dd>
-      <dt>カードの上で[r]</dt>
+      <dt>カードの上で[R]</dt>
       <dd>カードを裏にする</dd>
       <dt *ngIf="config.canReturnHandToIndividualBoard">カードの上で[h]</dt>
       <dd *ngIf="config.canReturnHandToIndividualBoard">手札にする / 共用にする</dd>
@@ -61,7 +63,9 @@
       <dd *ngIf="config.isTapCard">山札を縦にする</dd>
       <dt *ngIf="config.isTapCard">山札の上で[t]</dt>
       <dd *ngIf="config.isTapCard">山札を横にする</dd>
-      <dt>山札の上で[r]</dt>
+      <dt *ngIf="config.isTapCard">山札の上で[r]</dt>
+      <dd *ngIf="config.isTapCard">山札を逆位置にする</dd>
+      <dt>山札の上で[R]</dt>
       <dd>山札を全て裏にする</dd>
       <dt>山札の上で[shift]+[u]</dt>
       <dd>山札を全て正位置にする</dd>

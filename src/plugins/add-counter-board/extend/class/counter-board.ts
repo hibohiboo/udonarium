@@ -1,7 +1,8 @@
-import { SyncObject, SyncVar } from "@udonarium/core/synchronize-object/decorator";
-import { ObjectNode } from "@udonarium/core/synchronize-object/object-node";
-import { InnerXml } from "@udonarium/core/synchronize-object/object-serializer";
-import { TabletopObject } from "@udonarium/tabletop-object";
+import {
+  SyncObject,
+  SyncVar,
+} from '@udonarium/core/synchronize-object/decorator';
+import { TabletopObject } from '@udonarium/tabletop-object';
 
 @SyncObject('counter-board')
 export class CounterBoard extends TabletopObject {
@@ -15,8 +16,14 @@ export class CounterBoard extends TabletopObject {
   declare inRadius: number; // inの半径: diaclock用
   declare outRadius: number; // outの半径: diaclock用
   declare bufferDegree: number; // 初期の角度: diaclock用。 -90°: 12時位置。 0°: 3時位置
-  declare direction: 'toRight' | 'toLeft' | 'toTop' | 'toBottom' | 'clockwise' | 'diaclock'
-  declare samePositionDisplay: 'right' | 'lefte' | 'top' | 'bottom' | 'stack'
+  declare direction:
+    | 'toRight'
+    | 'toLeft'
+    | 'toTop'
+    | 'toBottom'
+    | 'clockwise'
+    | 'diaclock';
+  declare samePositionDisplay: 'right' | 'lefte' | 'top' | 'bottom' | 'stack';
 
   constructor(identifier?: string) {
     super(identifier);
@@ -45,7 +52,9 @@ export class CounterBoard extends TabletopObject {
     SyncVar()(this, 'bufferDegree');
     this.bufferDegree = -90;
   }
-  get lowerLeftCorner (): number { return this.lowerRightCorner + this.rightCorner; }
+  get lowerLeftCorner(): number {
+    return this.lowerRightCorner + this.rightCorner;
+  }
   static create() {
     const board = new CounterBoard();
     board.initialize();

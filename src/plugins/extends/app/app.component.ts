@@ -181,7 +181,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
         console.log('LOAD_CONFIG !!!');
         setSpreadSheetAPIKey(event.data);
         if(pluginConfig.isOffLineMode) return;
-        Network.setApiKey(event.data.webrtc.key);
+        Network.configure(event.data);
         Network.open();
 
       })
@@ -218,6 +218,7 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
       .on('DISCONNECT_PEER', event => {
         this.lazyNgZoneUpdate(event.isSendFromSelf);
       });
+      workaroundForMobileSafari();
   }
 
   ngAfterViewInit() {
@@ -363,3 +364,20 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
 PanelService.UIPanelComponentClass = UIPanelComponent;
 ContextMenuService.ContextMenuComponentClass = ContextMenuComponent;
 ModalService.ModalComponentClass = ModalComponent;
+
+
+function workaroundForMobileSafari() {
+  // Mobile Safari (iOS 16.4)で確認した問題のworkaround.
+  // chrome-smooth-image-trickがCSSアニメーション（keyframes）の挙動に悪影響を与えるので修正用CSSで上書きする.
+  let ua = window.navigator.userAgent.toLowerCase();
+  let isiOS = ua.indexOf('iphone') > -1 || ua.indexOf('ipad') > -1 || ua.indexOf('macintosh') > -1 && 'ontouchend' in document;
+  if (isiOS) {
+    let style = document.createElement('style');
+    style.innerHTML = `
+      .chrome-smooth-image-trick {
+        transform-style: flat;
+      }
+      `;
+    document.body.appendChild(style);
+  }
+}

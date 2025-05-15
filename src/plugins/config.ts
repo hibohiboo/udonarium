@@ -164,3 +164,4 @@ export const lablsMinimum = [
 if(pluginConfig.usePostMessage){
   listenMessage()
 }
+
