@@ -3,11 +3,13 @@ import { AfterViewInit, Component, NgZone, OnDestroy, OnInit } from '@angular/co
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { PeerContext } from '@udonarium/core/system/network/peer-context';
 import { EventSystem, Network } from '@udonarium/core/system';
+
+import { PeerSessionGrade } from '@udonarium/core/system/network/peer-session-state';
 import { PeerCursor } from '@udonarium/peer-cursor';
 
 import { FileSelecterComponent } from 'component/file-selecter/file-selecter.component';
 import { LobbyComponent } from 'component/lobby/lobby.component';
-import { AppConfigService } from 'service/app-config.service';
+import { AppConfig, AppConfigService } from 'service/app-config.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
 
@@ -24,7 +26,11 @@ export class PeerMenuComponentExtendPlus implements OnInit, OnDestroy, AfterView
   help: string = '';
   isPasswordVisible = false;
 
+  private interval: NodeJS.Timeout;
   get myPeer(): PeerCursor { return PeerCursor.myCursor; }
+
+  get config(): AppConfig { return AppConfigService.appConfig; }
+  get canUsePrivateSession(): boolean { return this.config.backend.mode == 'skyway'; }
 
   constructor(
     private ngZone: NgZone,
@@ -46,6 +52,7 @@ export class PeerMenuComponentExtendPlus implements OnInit, OnDestroy, AfterView
 
   ngOnDestroy() {
     EventSystem.unregister(this);
+    clearInterval(this.interval);
   }
 
   changeIcon() {
@@ -72,6 +79,10 @@ export class PeerMenuComponentExtendPlus implements OnInit, OnDestroy, AfterView
 
   togglePasswordVisibility() {
     this.isPasswordVisible = !this.isPasswordVisible;
+  }
+
+  stringFromSessionGrade(grade: PeerSessionGrade): string {
+    return PeerSessionGrade[grade] ?? PeerSessionGrade[PeerSessionGrade.UNSPECIFIED];
   }
 
   findUserId(peerId: string) {
