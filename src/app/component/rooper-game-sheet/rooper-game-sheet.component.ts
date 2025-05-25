@@ -42,7 +42,7 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
   }
 
   private changeTitle() {
-    this.modalService.title = this.panelService.title = '惨劇RoopeR管理';
+    this.modalService.title = this.panelService.title = this.messages['惨劇RoopeR管理'][this.appLang];
   }
 
   ngOnDestroy() {
@@ -159,11 +159,21 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     '日数': { ja: '日数',    en: 'Days'},
     '残ループ': { ja: '残ループ', en: 'Remaining Loops'},
     '拡張ゲージ': { ja: '拡張ゲージ', en: 'EX'},
-        'キャラクター': { ja: 'キャラクター', en: 'Character'},
+    'キャラクター': { ja: 'キャラクター', en: 'Character'},
     'レイで追加されたトークンを使用する': { ja: 'レイで追加されたトークンを使用する', en: 'Use tokens added by Rei'},
     'カウンターリセット': { ja: 'カウンターリセット', en: 'Reset Counters'},
     '初期位置に配置': { ja: '初期位置に配置', en: 'Reset Positions'},
     '一括蘇生': { ja: '一括蘇生', en: 'Revive All'},
+    '名前': { ja: '名前', en: 'Name'},
+    '友好': { ja: '友好', en: 'Goodwill'},
+    '不安': { ja: '不安', en: 'Paranoia'},
+    '暗躍': { ja: '暗躍', en: 'Intrigue'},
+    '希望': { ja: '希望', en: 'Hope'},
+    '絶望': { ja: '絶望', en: 'Despair'},
+    '死亡': { ja: '死亡', en: 'Dead'},
+    '死亡済': { ja: '死亡済', en: 'Died'},
+    '交友': { ja: '交友', en: 'Friendship'},
+    '交友(拒否)': { ja: '交友(拒否)', en: 'Friendship (Rejected)'},
     '学校': { ja: '学校', en: 'School'},
     '病院': { ja: '病院', en: 'Hospital'},
     '神社': { ja: '神社', en: 'Shrine'},

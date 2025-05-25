@@ -29,17 +29,17 @@
   </div>
   <table style="font-size:12px; border: 0; border-spacing: 0; width: 100%;">
       <tr>
-        <th>名前</th>
+        <th>{{appLang | i18nSelect: messages['名前']}}</th>
         <!-- <th>位置</th> -->
-        <th>友好</th>
-        <th>不安</th>
-        <th>暗躍</th>
-        <th *ngIf="isRei">希望</th>
-        <th *ngIf="isRei">絶望</th>
-        <th>死亡</th>
-        <th *ngIf="isRei">死亡済</th>
-        <th *ngIf="isRei">交友</th>
-        <th *ngIf="isRei">交友(拒否)</th>
+        <th>{{appLang | i18nSelect: messages['友好']}}</th>
+        <th>{{appLang | i18nSelect: messages['不安']}}</th>
+        <th>{{appLang | i18nSelect: messages['暗躍']}}</th>
+        <th *ngIf="isRei">{{appLang | i18nSelect: messages['希望']}}</th>
+        <th *ngIf="isRei">{{appLang | i18nSelect: messages['絶望']}}</th>
+        <th>{{appLang | i18nSelect: messages['死亡']}}</th>
+        <th *ngIf="isRei">{{appLang | i18nSelect: messages['死亡済']}}</th>
+        <th *ngIf="isRei">{{appLang | i18nSelect: messages['交友']}}</th>
+        <th *ngIf="isRei">{{appLang | i18nSelect: messages['交友(拒否)']}}</th>
       </tr>
       <ng-container *ngFor="let card of rooperCards">
         <tr>
