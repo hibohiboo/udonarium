@@ -110,6 +110,7 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
 
   // カウンターの初期値
   private _currentDate: number = 1;
+  private _maxDate: number = 5;
   private _loop: number = 4;
   private _expansionGauge: number = 0;
 
@@ -121,6 +122,14 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
   set currentDate(value: number) {
     this._currentDate = value;
     updatePosition(this.tabletopService, '現在日数', value, (i)=>i-1);
+  }
+  // 最大日付
+  get maxDate(): number {
+    return this._maxDate;
+  }
+  set maxDate(value: number) {
+    this._maxDate = value;
+    updatePosition(this.tabletopService, '最大日数', value, (i)=>i);
   }
 
   // ループ回数
@@ -162,6 +171,7 @@ function getLocationY(i:number){
     case 5: return 570;
     case 6: return 630;
     case 7: return 690;
+    case 8: return 750;
     default: return 255;
   }
 }

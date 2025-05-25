@@ -31,6 +31,16 @@ table tr td div {
   height: 30px;
 }
 
-.num-input {
-  width: 40px;
+.counters input {
+  field-sizing: content;
+  font-size: 1.1rem;
+  padding-left: 12px;
+  padding-top: 4px;
+  padding-bottom: 2px;
+}
+.counters label {
+  padding-left: 10px;
+}
+.counters {
+  margin-bottom: 10px;
 }

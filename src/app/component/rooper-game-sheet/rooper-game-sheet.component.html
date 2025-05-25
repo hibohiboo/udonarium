@@ -3,10 +3,10 @@
   <div class="title">
     <h2>ゲームシート</h2>
   </div>
-  <div>
-    <label>現在日数: <input class="num-input" type="number" [(ngModel)]="currentDate" /></label>
-    <label>残ループ: <input class="num-input" type="number" [(ngModel)]="loop" /></label>
-    <label>拡張ゲージ: <input class="num-input" type="number" [(ngModel)]="expansionGauge" /></label>
+  <div class="counters">
+    <label>日数: <input  type="number" [(ngModel)]="currentDate" /></label> <label> / <input  type="number" [(ngModel)]="maxDate" /></label>
+    <label>残ループ: <input  type="number" [(ngModel)]="loop" /></label>
+    <label>拡張ゲージ: <input  type="number" [(ngModel)]="expansionGauge" /></label>
   </div>
   <div class="title">
       <h2>キャラクター</h2>
