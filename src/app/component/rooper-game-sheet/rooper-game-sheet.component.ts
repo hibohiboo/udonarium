@@ -180,8 +180,6 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     'キャラクターを蘇生します。よろしいですか？': { ja: 'キャラクターを蘇生します。よろしいですか？', en: 'Revive all characters?'},
     '惨劇RoopeR管理': { ja: '惨劇RoopeR管理', en: 'Rooper Management'},
     'キャラクターを追加': { ja: 'キャラクターを追加', en: 'Add Character'},
-
-
   }
 }
 

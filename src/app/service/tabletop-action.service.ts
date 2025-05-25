@@ -350,12 +350,13 @@ export class TabletopActionService {
       });
       return subMenus;
     }
-    const characters = rooperCharacterList;
+    const characters = rooperCharacterList.map(c=>({...c, name: this.getI18nName(c.name)}));
+    const charactersTitle = this.getI18nName("キャラクター一覧");
 
     subMenus.push({
-      name: "キャラクター一覧",
+      name: charactersTitle,
       action: () => {
-        const cardStack = CardStack.create("キャラクター一覧");
+        const cardStack = CardStack.create(charactersTitle);
         cardStack.location.x = position.x - 25;
         cardStack.location.y = position.y - 25;
         cardStack.posZ = position.z;
@@ -377,7 +378,7 @@ export class TabletopActionService {
     });
     characters.forEach(({name,card_num, default_position})=>{
       subMenus.push({
-        name: this.getI18nName(name),
+        name,
         action: () => {
           action(name, card_num, default_position);
         }
@@ -426,6 +427,7 @@ export class TabletopActionService {
         case 'アルバイト？': return 'Part-time Worker?';
         case '従者': return 'Servant';
         case '上位存在': return 'Higher Being';
+        case 'キャラクター一覧': return 'Character List';
       }
     }
     return name;
