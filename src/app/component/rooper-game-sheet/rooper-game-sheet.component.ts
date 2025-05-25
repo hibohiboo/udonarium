@@ -149,6 +149,33 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     this._expansionGauge = value;
     updatePosition(this.tabletopService, 'Exカウンター', value, (i)=>i);
   }
+
+  translate(word: string): string {
+    return 'Days';
+  }
+  // 多言語対応
+  appLang = location.search.includes('lang=en') ? 'en' : 'ja';
+  messages = {
+    '日数': { ja: '日数',    en: 'Days'},
+    '残ループ': { ja: '残ループ', en: 'Remaining Loops'},
+    '拡張ゲージ': { ja: '拡張ゲージ', en: 'EX'},
+        'キャラクター': { ja: 'キャラクター', en: 'Character'},
+    'レイで追加されたトークンを使用する': { ja: 'レイで追加されたトークンを使用する', en: 'Use tokens added by Rei'},
+    'カウンターリセット': { ja: 'カウンターリセット', en: 'Reset Counters'},
+    '初期位置に配置': { ja: '初期位置に配置', en: 'Reset Positions'},
+    '一括蘇生': { ja: '一括蘇生', en: 'Revive All'},
+    '学校': { ja: '学校', en: 'School'},
+    '病院': { ja: '病院', en: 'Hospital'},
+    '神社': { ja: '神社', en: 'Shrine'},
+    '都市': { ja: '都市', en: 'City'},
+    'キャラクターを初期配置に戻します。よろしいですか？': { ja: 'キャラクターを初期配置に戻します。よろしいですか？', en: 'Reset character positions?'},
+    'カウンターをリセットします。よろしいですか？': { ja: 'カウンターをリセットします。よろしいですか？', en: 'Reset counters?'},
+    'キャラクターを蘇生します。よろしいですか？': { ja: 'キャラクターを蘇生します。よろしいですか？', en: 'Revive all characters?'},
+    '惨劇RoopeR管理': { ja: '惨劇RoopeR管理', en: 'Rooper Management'},
+    'キャラクターを追加': { ja: 'キャラクターを追加', en: 'Add Character'},
+
+
+  }
 }
 
 function updatePosition(tabletopService: TabletopService, name: string, value: number,locationCalc: (i:number)=>number){

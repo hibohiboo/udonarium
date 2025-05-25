@@ -2,28 +2,29 @@
 <div>
 
   <div class="counters">
-    <label>日数: <input  type="number" [(ngModel)]="currentDate" /></label> <label> / <input  type="number" [(ngModel)]="maxDate" /></label>
-    <label>残ループ: <input  type="number" [(ngModel)]="loop" /></label>
-    <label>拡張ゲージ: <input  type="number" [(ngModel)]="expansionGauge" /></label>
+    <label>{{appLang | i18nSelect: messages['日数']}}: <input  type="number" [(ngModel)]="currentDate" /></label> <span style="padding-left:5px"> / </span> <label><input  type="number" [(ngModel)]="maxDate" /></label>
+    <label>{{appLang | i18nSelect: messages['残ループ']}}: <input  type="number" [(ngModel)]="loop" /></label>
+    <label>{{appLang | i18nSelect: messages['拡張ゲージ']}}: <input  type="number" [(ngModel)]="expansionGauge" /></label>
   </div>
   <div class="title">
-      <h2>キャラクター</h2>
+      <h2>{{appLang | i18nSelect: messages['キャラクター']}}</h2>
       <button (click)="addRooperCard()">
           <i class="material-icons">person_add</i>
       </button>
       <label>
-        <input type="checkbox" [(ngModel)]="isRei"/> レイで追加されたトークンを使用する
+        <input type="checkbox" [(ngModel)]="isRei"/>
+        {{appLang | i18nSelect: messages['レイで追加されたトークンを使用する']}}
       </label>
   </div>
   <div style="padding-bottom: 5px;">
     <button (click)="resetCounter()">
-    カウンターリセット
+    {{appLang | i18nSelect: messages['カウンターリセット']}}
     </button>
     <button (click)="resetLocation()">
-      初期位置に配置
+      {{appLang | i18nSelect: messages['初期位置に配置']}}
     </button>
     <button (click)="reviveAll()">
-      一括蘇生
+      {{appLang | i18nSelect: messages['一括蘇生']}}
     </button>
   </div>
   <table style="font-size:12px; border: 0; border-spacing: 0; width: 100%;">
