@@ -377,7 +377,7 @@ export class TabletopActionService {
     });
     characters.forEach(({name,card_num, default_position})=>{
       subMenus.push({
-        name,
+        name: this.getI18nName(name),
         action: () => {
           action(name, card_num, default_position);
         }
@@ -387,6 +387,49 @@ export class TabletopActionService {
     return subMenus;
   }
 
+  getI18nName(name: string): string {
+    const appLang = location.search.includes('lang=en') ? 'en' : 'ja';
+    if(appLang === 'en') {
+      switch(name){
+        case '男子学生': return 'Boy Student';
+        case '女子学生': return 'Girl Student';
+        case 'お嬢様': return "Rich Man's Daughter";
+        case '委員長': return 'Class Rep';
+        case '巫女': return 'Shrine Maiden';
+        case 'イレギュラー': return 'Mystery Boy';
+        case '異世界人': return 'Alien';
+        case '神格': return 'Godly Being';
+        case '刑事': return 'Police Officer';
+        case 'サラリーマン': return 'Office Worker';
+        case '情報屋': return 'Informer';
+        case 'アイドル': return 'Pop Idol';
+        case 'マスコミ': return 'Journalist';
+        case '大物': return 'Boss';
+        case '医者': return 'Doctor';
+        case '入院患者': return 'Patient';
+        case 'ナース': return 'Nurse';
+        case '手先': return 'Henchman';
+        case '転校生': return 'Transfer Student';
+        case '学者': return 'Scientist';
+        case '鑑識官': return 'Forensic Specialist';
+        case 'A.I.': return 'A.I.';
+        case '幻想': return 'Illusion';
+        case '教師': return 'Teacher';
+        case '軍人': return 'Soldier';
+        case '黒猫': return 'Black Cat';
+        case '女の子': return 'Girl';
+        case 'コピーキャット': return 'Copycat';
+        case '教祖': return 'Cult Leader';
+        case 'ご神木': return 'Sacred Tree';
+        case '妹': return 'Younger Sister';
+        case 'アルバイト': return 'Part-time Worker';
+        case 'アルバイト？': return 'Part-time Worker?';
+        case '従者': return 'Servant';
+        case '上位存在': return 'Higher Being';
+      }
+    }
+    return name;
+  }
 
 
   createGameCharacter(position: PointerCoordinate): GameCharacter {

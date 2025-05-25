@@ -150,9 +150,6 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     updatePosition(this.tabletopService, 'Exカウンター', value, (i)=>i);
   }
 
-  translate(word: string): string {
-    return 'Days';
-  }
   // 多言語対応
   appLang = location.search.includes('lang=en') ? 'en' : 'ja';
   messages = {
