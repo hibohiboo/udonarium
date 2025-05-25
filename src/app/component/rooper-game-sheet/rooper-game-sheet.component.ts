@@ -65,7 +65,7 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     this.contextMenuService.open(position, actions);
   }
   resetCounter(){
-    if (!window.confirm("カウンターをリセットします。よろしいですか？")){
+    if (!window.confirm(this.messages["カウンターをリセットします。よろしいですか？"][this.appLang])){
       return;
     }
     this.rooperCards.forEach(card=>{
@@ -77,7 +77,7 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     })
   }
   reviveAll(){
-    if (!window.confirm("キャラクターを蘇生します。よろしいですか？")){
+    if (!window.confirm(this.messages["キャラクターを蘇生します。よろしいですか？"][this.appLang])){
       return;
     }
     this.rooperCards.forEach(card=>{
@@ -85,7 +85,7 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     })
   }
   resetLocation(){
-    if (!window.confirm("キャラクターを初期配置に戻します。よろしいですか？")){
+    if (!window.confirm(this.messages["キャラクターを初期配置に戻します。よろしいですか？"][this.appLang])){
       return;
     }
     let numbers = {
