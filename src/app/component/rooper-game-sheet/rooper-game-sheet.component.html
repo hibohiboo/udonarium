@@ -1,6 +1,14 @@
 
 <div>
   <div class="title">
+    <h2>ゲームシート</h2>
+  </div>
+  <div>
+    <label>現在日数: <input class="num-input" type="number" [(ngModel)]="currentDate" /></label>
+    <label>残ループ: <input class="num-input" type="number" [(ngModel)]="loop" /></label>
+    <label>拡張ゲージ: <input class="num-input" type="number" [(ngModel)]="expansionGauge" /></label>
+  </div>
+  <div class="title">
       <h2>キャラクター</h2>
       <button (click)="addRooperCard()">
           <i class="material-icons">person_add</i>
@@ -8,7 +16,6 @@
       <label>
         <input type="checkbox" [(ngModel)]="isRei"/> レイで追加されたトークンを使用する
       </label>
-
   </div>
   <div style="padding-bottom: 5px;">
     <button (click)="resetCounter()">

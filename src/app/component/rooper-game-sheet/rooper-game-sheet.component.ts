@@ -26,6 +26,8 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     }
   };
   get isRei(){return this._isRei}
+
+
   constructor(
     private panelService: PanelService,
     private modalService: ModalService,
@@ -104,6 +106,63 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
         case '都市': return numbers.city++;
       }
     })
+  }
+
+  // カウンターの初期値
+  private _currentDate: number = 1;
+  private _loop: number = 4;
+  private _expansionGauge: number = 0;
+
+  // カウンター更新時機能
+  // 現在日付
+  get currentDate(): number {
+    return this._currentDate;
+  }
+  set currentDate(value: number) {
+    this._currentDate = value;
+    updatePosition(this.tabletopService, '現在日数', value, (i)=>i-1);
+  }
+
+  // ループ回数
+  get loop(): number {
+    return this._loop;
+  }
+  set loop(value: number) {
+    this._loop = value;
+    updatePosition(this.tabletopService, 'ループカウンター', value, (i)=>7-i);
+  }
+
+  // 拡張ゲージ
+  get expansionGauge(): number {
+    return this._expansionGauge;
+  }
+  set expansionGauge(value: number) {
+    this._expansionGauge = value;
+    updatePosition(this.tabletopService, 'Exカウンター', value, (i)=>i);
+  }
+}
+
+function updatePosition(tabletopService: TabletopService, name: string, value: number,locationCalc: (i:number)=>number){
+    tabletopService.cards.forEach((obj) => {
+      if(obj.name !== name) return;
+      const [target] = obj.detailDataElement?.getFirstElementByName('カウント')?.children;
+      if (!target) return;
+      (target as any).currentValue = value.toString();
+      obj.location.y = getLocationY(locationCalc(value));
+      obj.update();
+    });
+}
+
+function getLocationY(i:number){
+  switch(i){
+    case 1: return 310;
+    case 2: return 380;
+    case 3: return 440;
+    case 4: return 500;
+    case 5: return 570;
+    case 6: return 630;
+    case 7: return 690;
+    default: return 255;
   }
 }
 
