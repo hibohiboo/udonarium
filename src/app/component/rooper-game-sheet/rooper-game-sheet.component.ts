@@ -121,7 +121,7 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
   }
   set currentDate(value: number) {
     this._currentDate = value;
-    updatePosition(this.tabletopService, '現在日数', value, (i)=>i-1);
+    updatePosition(this.messages['カウント'][this.appLang],this.tabletopService, this.messages['現在日数'][this.appLang], value, (i)=>i-1);
   }
   // 最大日付
   get maxDate(): number {
@@ -129,7 +129,7 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
   }
   set maxDate(value: number) {
     this._maxDate = value;
-    updatePosition(this.tabletopService, '最大日数', value, (i)=>i);
+    updatePosition(this.messages['カウント'][this.appLang],this.tabletopService, this.messages['最大日数'][this.appLang], value, (i)=>i);
   }
 
   // ループ回数
@@ -138,7 +138,7 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
   }
   set loop(value: number) {
     this._loop = value;
-    updatePosition(this.tabletopService, 'ループカウンター', value, (i)=>7-i);
+    updatePosition(this.messages['カウント'][this.appLang],this.tabletopService, this.messages['ループカウンター'][this.appLang], value, (i)=>7-i);
   }
 
   // 拡張ゲージ
@@ -147,7 +147,7 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
   }
   set expansionGauge(value: number) {
     this._expansionGauge = value;
-    updatePosition(this.tabletopService, 'Exカウンター', value, (i)=>i);
+    updatePosition(this.messages['カウント'][this.appLang], this.tabletopService, this.messages['Exカウンター'][this.appLang], value, (i)=>i);
   }
 
   // 多言語対応
@@ -180,13 +180,19 @@ export class RooperGameSheetComponent implements OnInit, OnDestroy {
     'キャラクターを蘇生します。よろしいですか？': { ja: 'キャラクターを蘇生します。よろしいですか？', en: 'Revive all characters?'},
     '惨劇RoopeR管理': { ja: '惨劇RoopeR管理', en: 'Rooper Management'},
     'キャラクターを追加': { ja: 'キャラクターを追加', en: 'Add Character'},
+    '現在日数': { ja: '現在日数', en: 'Current Day'},
+    '最大日数': { ja: '最大日数', en: 'Maximum Number of Days'},
+    'ループカウンター': { ja: 'ループカウンター', en: 'Loop Counter'},
+    'Exカウンター': { ja: 'Exカウンター', en: 'EX Gauge'},
+    'カウント': { ja: 'カウント', en: 'Count'},
   }
 }
 
-function updatePosition(tabletopService: TabletopService, name: string, value: number,locationCalc: (i:number)=>number){
-    tabletopService.cards.forEach((obj) => {
+function updatePosition(countName:string, tabletopService: TabletopService, name: string, value: number,locationCalc: (i:number)=>number){
+
+  tabletopService.cards.forEach((obj) => {
       if(obj.name !== name) return;
-      const [target] = obj.detailDataElement?.getFirstElementByName('カウント')?.children;
+      const [target] = obj.detailDataElement?.getFirstElementByName(countName)?.children;
       if (!target) return;
       (target as any).currentValue = value.toString();
       obj.location.y = getLocationY(locationCalc(value));

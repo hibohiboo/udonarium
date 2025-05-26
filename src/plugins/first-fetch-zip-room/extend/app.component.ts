@@ -6,6 +6,8 @@ const getZipName = () => {
   if(pluginConfig.isAddCounterBoard) return 'number_table';
   const params = new URL(document.URL).searchParams;
   if (params.has('room')) return params.get('room');
+
+  if (params.get('lang') === 'en') return 'looper-en';
   return 'rooper';
 };
 
