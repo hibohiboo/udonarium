@@ -359,6 +359,23 @@ export class AppComponentExtendPlus implements AfterViewInit, OnDestroy {
     resetPointOfView(this);
   }
   get useCounterBoard(){ return useCounterBoard(); }
+      // 多言語対応
+  appLang = location.search.includes('lang=en') ? 'en' : 'ja';
+  messages = {
+    '日数': { ja: '日数', en: 'Days'},
+    'カットイン': { ja: 'カットイン', en: 'Cut-in'},
+    '回転リセット': { ja: '回転リセット', en: 'Rotation Reset'},
+    'チャット': { ja: 'チャット', en: 'Chat'},
+    'テーブル設定': { ja: 'テーブル設定', en: 'Table Setting'},
+    '画像': { ja: '画像', en: 'Image'},
+    '音楽': { ja: '音楽', en: 'Audio'},
+    'インベントリ': { ja: 'インベントリ', en: 'Inventory'},
+    'ZIP読込': { ja: 'ZIP読込', en: 'Load ZIP'},
+    '保存': { ja: '保存', en: 'Save' },
+    '接続': { ja: '接続', en: 'Connect' },
+    'ヘルプ': { ja: 'ヘルプ', en: 'Help' },
+    'カウンター': { ja: 'カウンター', en: 'Counter' },
+  }
 }
 
 PanelService.UIPanelComponentClass = UIPanelComponent;

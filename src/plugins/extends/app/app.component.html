@@ -13,51 +13,51 @@
         <li (click)="open('CutinListComponent')">
           <a routerLink="/" routerLinkActive="active">
             <div><i class="material-icons icon-size">movie_filter</i></div>
-            <div>カットイン</div>
+            <div>{{appLang | i18nSelect: messages['カットイン']}}</div>
           </a>
       </li>
 
       <li (click)="open('PeerMenuComponent')">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">people</i></div>
-          <div>接続</div>
+          <div>{{appLang | i18nSelect: messages['接続']}}</div>
         </a>
       </li>
       <li (click)="open('ChatWindowComponent')">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">speaker_notes</i></div>
-          <div>チャット画面</div>
+          <div>{{appLang | i18nSelect: messages['チャット']}}</div>
         </a>
       </li>
       <li *ngIf="!hideTable" (click)="open('GameTableSettingComponent')">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">layers</i></div>
-          <div>テーブル設定</div>
+          <div>{{appLang | i18nSelect: messages['テーブル設定']}}</div>
         </a>
       </li>
       <li *ngIf="!hideImage" (click)="open('FileStorageComponent')">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">photo_library</i></div>
-          <div>画像</div>
+          <div>{{appLang | i18nSelect: messages['画像']}}</div>
         </a>
       </li>
       <li *ngIf="!hideMusic" (click)="open('JukeboxComponent')">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons">queue_music</i></div>
-          <div>音楽</div>
+          <div>{{appLang | i18nSelect: messages['音楽']}}</div>
         </a>
       </li>
       <li *ngIf="!hideInventory" (click)="open('GameObjectInventoryComponent')">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">folder_shared</i></div>
-          <div>インベントリ</div>
+          <div>{{appLang | i18nSelect: messages['インベントリ']}}</div>
         </a>
       </li>
       <li *ngIf="!hideZip">
         <a routerLink="/" routerLinkActive="active">
           <label>
             <div><i class="material-icons">open_in_browser</i></div>
-            <div>ZIP読込</div>
+            <div>{{appLang | i18nSelect: messages['ZIP読込']}}</div>
             <input type="file" style="display: none;" (change)="handleFileSelect($event)" multiple
               accept="application/xml,text/xml,application/zip" />
           </label>
@@ -66,38 +66,38 @@
       <li *ngIf="!hideSave && !isSaveing" (click)="save()">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons">sd_storage</i></div>
-          <div>保存</div>
+          <div>{{appLang | i18nSelect: messages['保存']}}</div>
         </a>
       </li>
       <li *ngIf="useResetPointOfView" (click)="resetPointOfView()">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">remove_red_eye</i></div>
-          <div>視点リセット</div>
+          <div>{{appLang | i18nSelect: messages['視点リセット']}}</div>
         </a>
       </li>
       <li *ngIf="useMuteOff" (click)="toggleMute()">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons">music_off</i></div>
-          <div>効果音</div>
+          <div>{{appLang | i18nSelect: messages['効果音']}}</div>
         </a>
       </li>
       <li *ngIf="useMute" (click)="toggleMute()">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons">music_note</i></div>
-          <div>効果音</div>
+          <div>{{appLang | i18nSelect: messages['効果音']}}</div>
         </a>
       </li>
 
       <li *ngIf="useCounterBoard" (click)="open('CounterBoardWindowComponent')">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons">view_quilt</i></div>
-          <div>カウンター</div>
+          <div>{{appLang | i18nSelect: messages['カウンター']}}</div>
         </a>
       </li>
       <li *ngIf="useHelp" (click)="openHelp()">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons">help</i></div>
-          <div>ヘルプ</div>
+          <div>{{appLang | i18nSelect: messages['ヘルプ']}}</div>
         </a>
       </li>
       <li *ngIf="isSaveing" style="pointer-events: none;">
