@@ -22,6 +22,11 @@ import { getCreateHandStorageMenu } from 'src/plugins/hand-storage/extend/servic
 import { ContextMenuAction } from './context-menu.service';
 import { PointerCoordinate } from './pointer-device.service';
 
+const appLang = location.search.includes('lang=en') ? 'en' : 'ja';
+const prefix_path_rooper = './assets/images/tragedy_commons_5th';
+const characterCardPath = appLang === 'en' ? `chara_cards_en` : `chara_cards`;
+const prefix_path_characters = `${prefix_path_rooper}/${characterCardPath}`;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -310,8 +315,7 @@ export class TabletopActionService {
 
   getCreateRooperSubSubMenu(position: PointerCoordinate) : ContextMenuAction[] {
     const subMenus: ContextMenuAction[] = [];
-    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
-    const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
+
     const action = (name:string, card_num:string, default_position: Board)=>{
       const card_back = `${prefix_path_characters}/character_${card_num}_0.png`;
       if (!ImageStorage.instance.get(card_back)) {
@@ -389,7 +393,6 @@ export class TabletopActionService {
   }
 
   getI18nName(name: string): string {
-    const appLang = location.search.includes('lang=en') ? 'en' : 'ja';
     if(appLang === 'en') {
       switch(name){
         case '男子学生': return 'Boy Student';
@@ -556,9 +559,6 @@ export class TabletopActionService {
     let fileContext: ImageContext = null;
 
     // キャラクター追加
-    const prefix_path_rooper = './assets/images/tragedy_commons_5th';
-    const prefix_path_characters = `${prefix_path_rooper}/chara_cards`;
-
     const tick = 50;
     const board_left_edge_x = 5.5 * tick;
     const board_top_y = 0;
