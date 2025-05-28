@@ -421,15 +421,15 @@ export class TabletopActionService {
         case '教師': return 'Teacher';
         case '軍人': return 'Soldier';
         case '黒猫': return 'Black Cat';
-        case '女の子': return 'Girl';
+        case '女の子': return 'Little Girl';
         case 'コピーキャット': return 'Copycat';
-        case '教祖': return 'Cult Leader';
+        case '教祖': return 'Sect Founder';
         case 'ご神木': return 'Sacred Tree';
         case '妹': return 'Younger Sister';
         case 'アルバイト': return 'Part-time Worker';
         case 'アルバイト？': return 'Part-time Worker?';
         case '従者': return 'Servant';
-        case '上位存在': return 'Higher Being';
+        case '上位存在': return 'Metaworld Denizen';
         case 'キャラクター一覧': return 'Character List';
       }
     }
@@ -552,7 +552,31 @@ export class TabletopActionService {
 
     TableSelecter.instance.viewTableIdentifier = gameTable.identifier;
   }
-
+  private turnCards = appLang === 'en' ? [
+      {title:'Turn Start'},
+      {title:'Mastermind Action'},
+      {title:'Leader Action A'},
+      {title:'Leader Action B'},
+      {title:'Leader Action C'},
+      {title:'Resolve Actions'},
+      {title:'Mastermind Ability'},
+      {title:'Leader Ability'},
+      {title:'Incidents'},
+      {title:'Change Leader'},
+      {title:'End of Turn'},
+    ] : [
+      {title:'ターン開始'},
+      {title:'脚本家行動'},
+      {title:'主人公行動 A'},
+      {title:'主人公行動 B'},
+      {title:'主人公行動 C'},
+      {title:'行動解決'},
+      {title:'脚本家能力'},
+      {title:'主人公能力'},
+      {title:'事件'},
+      {title:'リーダー交代'},
+      {title:'ターン終了'},
+    ];
   makeDefaultTabletopObjects() {
     let testCharacter: GameCharacter = null;
     let testFile: ImageFile = null;
@@ -660,19 +684,8 @@ export class TabletopActionService {
     textNote.posZ = 0;
 
     const prefix_path_turns = `${prefix_path_rooper}/turn`;
-    [
-      {title:'ターン開始'},
-      {title:'脚本家行動'},
-      {title:'主人公行動 A'},
-      {title:'主人公行動 B'},
-      {title:'主人公行動 C'},
-      {title:'行動解決'},
-      {title:'脚本家能力'},
-      {title:'主人公能力'},
-      {title:'事件'},
-      {title:'リーダー交代'},
-      {title:'ターン終了'},
-    ].forEach(({title,}, index)=>{
+
+    this.turnCards.forEach(({title,}, index)=>{
       const card_num:number = index + 1;
       const card_front = `${prefix_path_turns}/turn_${card_num}.png`;
       if (!ImageStorage.instance.get(card_front)) {
@@ -685,19 +698,7 @@ export class TabletopActionService {
   makeDefaultCutins() {
     const prefix_path_rooper = './assets/images/tragedy_commons_5th';
     const prefix_path_turns = `${prefix_path_rooper}/turn`;
-    [
-      {title:'ターン開始'},
-      {title:'脚本家行動'},
-      {title:'主人公行動 A'},
-      {title:'主人公行動 B'},
-      {title:'主人公行動 C'},
-      {title:'行動解決'},
-      {title:'脚本家能力'},
-      {title:'主人公能力'},
-      {title:'事件'},
-      {title:'リーダー交代'},
-      {title:'ターン終了'},
-    ].forEach(({title,}, index)=>{
+    this.turnCards.forEach(({title,}, index)=>{
       const card_num:number = index + 1;
       const card_front = `${prefix_path_turns}/turn_${card_num}.png`;
       if (!ImageStorage.instance.get(card_front)) {
