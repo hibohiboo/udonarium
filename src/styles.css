@@ -188,3 +188,17 @@ body {
   transform-style: inherit;
   overflow: visible;
 }
+
+/*
+ * Windows版デスクトップChrome 138におけるレンダリング改善の定義.
+ * rotateZ(180deg)された3D要素の高さ軸（z軸）を正しく表示するトリック.
+ * 将来的なChromeのアップデートでレンダリングが改善された場合は削除を検討.
+ */
+.is-3d:has(> .chrome-smooth-image-trick)::before {
+  content: ".";
+  position: absolute;
+  color: transparent;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
