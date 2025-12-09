@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, HostBinding, HostListener, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 
 import { ChatTabList } from '@udonarium/chat-tab-list';
 import { AudioPlayer } from '@udonarium/core/file-storage/audio-player';
@@ -60,6 +61,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private openPanelCount: number = 0;
   isSaveing: boolean = false;
   progresPercent: number = 0;
+  isSettingsRoute: boolean = false;
 
   constructor(
     private modalService: ModalService,
@@ -68,8 +70,18 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private chatMessageService: ChatMessageService,
     private appConfigService: AppConfigService,
     private saveDataService: SaveDataService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private router: Router
   ) {
+    // ルートの変更を監視
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.isSettingsRoute = event.url.startsWith('/settings');
+      }
+    });
+
+    // 初期URLをチェック
+    this.isSettingsRoute = this.router.url.startsWith('/settings');
 
     this.ngZone.runOutsideAngular(() => {
       EventSystem;

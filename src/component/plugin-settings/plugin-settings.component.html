@@ -1,0 +1,143 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>ユドナリウム プラグイン設定</h1>
+    <p>各種機能を有効化してゲームを起動できます</p>
+  </div>
+
+  <div class="settings-content">
+    <!-- プリセット選択 -->
+    <section class="settings-section">
+      <h2>プリセット</h2>
+      <div class="form-group">
+        <label for="room-type">部屋タイプ:</label>
+        <select id="room-type" [(ngModel)]="roomType" (change)="onPresetChange()">
+          <option *ngFor="let preset of presets" [value]="preset.value">
+            {{ preset.label }}
+          </option>
+        </select>
+      </div>
+    </section>
+
+    <!-- 表示モード -->
+    <section class="settings-section">
+      <h2>表示モード</h2>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="is2d">
+          2Dモード
+        </label>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="isTutorial">
+          チュートリアルモード
+        </label>
+      </div>
+    </section>
+
+    <!-- カード操作 -->
+    <section class="settings-section">
+      <h2>カード操作</h2>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="isTapCard">
+          タップカード機能
+        </label>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="isCardShuffleNormalPosition">
+          通常位置でカードシャッフル
+        </label>
+      </div>
+    </section>
+
+    <!-- UI機能 -->
+    <section class="settings-section">
+      <h2>UI機能</h2>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="isUseKeyboardShortcut">
+          キーボードショートカット
+        </label>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="isAddCounterBoard">
+          カウンターボード追加
+        </label>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="isChangeDefaultTerrain">
+          デフォルト地形変更
+        </label>
+      </div>
+    </section>
+
+    <!-- チャット・手札 -->
+    <section class="settings-section">
+      <h2>チャット・手札</h2>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="useChatCommand">
+          チャットコマンド使用
+        </label>
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="isUseHandStorage">
+          手札ストレージ使用
+        </label>
+      </div>
+    </section>
+
+    <!-- カメラ座標 -->
+    <section class="settings-section">
+      <h2>カメラ初期位置（オプション）</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="camera-x">X座標:</label>
+          <input id="camera-x" type="text" [(ngModel)]="cameraX" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label for="camera-y">Y座標:</label>
+          <input id="camera-y" type="text" [(ngModel)]="cameraY" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label for="camera-z">Z座標:</label>
+          <input id="camera-z" type="text" [(ngModel)]="cameraZ" placeholder="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="camera-rx">回転X:</label>
+          <input id="camera-rx" type="text" [(ngModel)]="cameraRX" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label for="camera-ry">回転Y:</label>
+          <input id="camera-ry" type="text" [(ngModel)]="cameraRY" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label for="camera-rz">回転Z:</label>
+          <input id="camera-rz" type="text" [(ngModel)]="cameraRZ" placeholder="0">
+        </div>
+      </div>
+    </section>
+
+    <!-- 生成URL -->
+    <section class="settings-section url-section">
+      <h2>生成されるURL</h2>
+      <div class="url-display">
+        <code>{{ window.location.origin }}/{{ generateQueryString() ? '?' + generateQueryString() : '' }}</code>
+      </div>
+    </section>
+
+    <!-- アクションボタン -->
+    <div class="settings-actions">
+      <button class="btn btn-primary" (click)="launchGame()">ゲームを起動</button>
+      <button class="btn btn-secondary" (click)="copyUrl()">URLをコピー</button>
+      <button class="btn btn-tertiary" (click)="reset()">リセット</button>
+    </div>
+  </div>
+</div>
