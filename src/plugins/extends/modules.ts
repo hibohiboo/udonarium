@@ -8,6 +8,7 @@ import { HelpKeyboardComponent } from '../keyboard-help/component/help-keyboard/
 import { PluginSettingsComponent } from '../settings/component/plugin-settings.component';
 import { settingsRoutes } from '../settings/routing';
 
+
 const components = [
   CounterBoardComponent,
   CounterBoardWindowComponent,
@@ -22,4 +23,4 @@ const routes: Routes = [
   ...settingsRoutes,
 ];
 
-export default { components, services, bootstarp, routes };
+export default { components, services, bootstarp, routes,imports };

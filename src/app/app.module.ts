@@ -54,7 +54,6 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
 
 import pluginModules from '../plugins/extends/modules';
 
@@ -109,8 +108,7 @@ import pluginModules from '../plugins/extends/modules';
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
-    FormsModule,
-    AppRoutingModule
+    FormsModule
   ],
   providers: [
     AppConfigService,

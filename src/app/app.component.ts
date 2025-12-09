@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostBinding, HostListener, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 
 import { ChatTabList } from '@udonarium/chat-tab-list';
 import { AudioPlayer } from '@udonarium/core/file-storage/audio-player';
@@ -38,13 +38,7 @@ import { ModalService } from 'service/modal.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SaveDataService } from 'service/save-data.service';
-import { pluginConfig } from 'src/plugins/config';
-import { afterViewInitExtend } from 'src/plugins/extends/app.component';
-import { fetchZipRoom } from 'src/plugins/first-fetch-zip-room/extend/app.component';
-import { openHelpEvent, openHelp,useHelp  } from 'src/plugins/keyboard-help/app/app.component';
-import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
-import * as counterBoard from 'src/plugins/add-counter-board/extend/app.component';
-import { isSettingsRoute } from 'src/plugins/settings/extend/app.component';
+import { extendsAppComponent } from 'src/plugins/extends/app.component';
 
 @Component({
   selector: 'app-root',
@@ -52,10 +46,6 @@ import { isSettingsRoute } from 'src/plugins/settings/extend/app.component';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
-
-  @HostBinding('class.is2d') get is2d(){ return is2d(); };
-
-  get isSettingsRoute() { return isSettingsRoute(); }
 
   @ViewChild('modalLayer', { read: ViewContainerRef, static: true }) modalLayerViewContainerRef: ViewContainerRef;
   private immediateUpdateTimer: NodeJS.Timeout = null;
@@ -196,17 +186,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       });
 
     workaroundForMobileSafari();
+    extendsAppComponent(this);
   }
 
   ngAfterViewInit() {
     PanelService.defaultParentViewContainerRef = ModalService.defaultParentViewContainerRef = ContextMenuService.defaultParentViewContainerRef = this.modalLayerViewContainerRef;
     setTimeout(() => {
-      afterViewInitExtend(this);
-      fetchZipRoom();
-      if (pluginConfig.isTutorial) return;
       this.panelService.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
       this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
-      counterBoard.afterViewInit(this);
     }, 0);
   }
 
@@ -297,14 +284,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
         this.ngZone.run(() => { });
       }, 100);
     }
-  }
-  @HostListener('document:keydown', ['$event'])
-  onKeydown(e: KeyboardEvent) {
-    openHelpEvent(this.modalService, e);
-  }
-  get useHelp(){ return useHelp; }
-  openHelp() {
-    openHelp(this.modalService)
   }
 }
 
