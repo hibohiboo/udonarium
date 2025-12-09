@@ -15,8 +15,6 @@ import { TextNote } from '@udonarium/text-note';
 
 import { ContextMenuAction } from './context-menu.service';
 import { PointerCoordinate } from './pointer-device.service';
-import { getCreateHandStorageMenu } from 'src/plugins/hand-storage/extend/service/tabletop-action.service';
-import { getCounterboardStorageMenu } from 'src/plugins/add-counter-board/extend/service/tabletop-action.service';
 
 @Injectable({
   providedIn: 'root'
@@ -202,8 +200,6 @@ export class TabletopActionService {
       this.getCreateTextNoteMenu(position),
       this.getCreateTrumpMenu(position),
       this.getCreateDiceSymbolMenu(position),
-      ...getCreateHandStorageMenu(position),
-      ...getCounterboardStorageMenu()
     ];
   }
 
