@@ -1,12 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PluginSettingsComponent } from '../component/plugin-settings/plugin-settings.component';
+import pluginModules from '../plugins/extends/modules';
 
 const routes: Routes = [
-  {
-    path: 'settings',
-    component: PluginSettingsComponent
-  },
+  ...pluginModules.routes,
   // 他のルートはAppComponentにフォールバック（既存のゲーム画面）
 ];
 

@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, HostBinding, HostListener, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
 
 import { ChatTabList } from '@udonarium/chat-tab-list';
 import { AudioPlayer } from '@udonarium/core/file-storage/audio-player';
@@ -45,6 +44,7 @@ import { fetchZipRoom } from 'src/plugins/first-fetch-zip-room/extend/app.compon
 import { openHelpEvent, openHelp,useHelp  } from 'src/plugins/keyboard-help/app/app.component';
 import { is2d } from 'src/plugins/mode2d/extends/app/app.component';
 import * as counterBoard from 'src/plugins/add-counter-board/extend/app.component';
+import { isSettingsRoute } from 'src/plugins/settings/extend/app.component';
 
 @Component({
   selector: 'app-root',
@@ -55,13 +55,14 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   @HostBinding('class.is2d') get is2d(){ return is2d(); };
 
+  get isSettingsRoute() { return isSettingsRoute(); }
+
   @ViewChild('modalLayer', { read: ViewContainerRef, static: true }) modalLayerViewContainerRef: ViewContainerRef;
   private immediateUpdateTimer: NodeJS.Timeout = null;
   private lazyUpdateTimer: NodeJS.Timeout = null;
   private openPanelCount: number = 0;
   isSaveing: boolean = false;
   progresPercent: number = 0;
-  isSettingsRoute: boolean = false;
 
   constructor(
     private modalService: ModalService,
@@ -70,18 +71,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private chatMessageService: ChatMessageService,
     private appConfigService: AppConfigService,
     private saveDataService: SaveDataService,
-    private ngZone: NgZone,
-    private router: Router
+    private ngZone: NgZone
   ) {
-    // ルートの変更を監視
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.isSettingsRoute = event.url.startsWith('/settings');
-      }
-    });
-
-    // 初期URLをチェック
-    this.isSettingsRoute = this.router.url.startsWith('/settings');
 
     this.ngZone.runOutsideAngular(() => {
       EventSystem;

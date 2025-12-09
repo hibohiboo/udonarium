@@ -55,7 +55,6 @@ import { TabletopService } from 'service/tabletop.service';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { PluginSettingsComponent } from '../component/plugin-settings/plugin-settings.component';
 
 import pluginModules from '../plugins/extends/modules';
 
@@ -63,7 +62,6 @@ import pluginModules from '../plugins/extends/modules';
 @NgModule({
   declarations: [
     AppComponent,
-    PluginSettingsComponent,
     BadgeComponent,
     CardComponent,
     CardStackComponent,
