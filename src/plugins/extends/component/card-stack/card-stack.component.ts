@@ -1,8 +1,10 @@
 import { addTabIndex } from 'src/plugins/keyboard-shortcut/extend/component/addTabIndex';
+import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
 import {  onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
+import { tapCardStackContextMenu, tapCardStackEnter, tapCardStackSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
 import { tapCardContextMenu, tapCardEnter, tapCardSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
 
-export const extendsCardComponent = (that: any) => {
+export const extendsCardStackComponent = (that: any) => {
   // keyboard-shortcut プラグインの初期化
   addTabIndex(that);
 
@@ -23,13 +25,13 @@ export const extendsCardComponent = (that: any) => {
 
     // @HostListener("keydown", ["$event"]) 相当の処理
     const keydownHandler = (e: KeyboardEvent) => {
-      onKeyDownKeyboardShortcutCard(this, e);
+      onKeyDownKeyboardShortcutCardStack(this, e);
     };
     this.elementRef.nativeElement.addEventListener('keydown', keydownHandler);
 
     // @HostListener("pointerenter", ["$event"]) 相当の処理
     const pointerenterHandler = (e: MouseEvent) => {
-      tapCardEnter(this, e);
+      tapCardStackEnter(this, e);
     };
     this.elementRef.nativeElement.addEventListener('pointerenter', pointerenterHandler);
 
@@ -58,10 +60,10 @@ export const extendsCardComponent = (that: any) => {
 
 // makeSelectionContextMenu に追加するアクション
 export const makeSelectionContextMenuExtend = (that: any) => {
-  return tapCardSelectedContextMenu(that);
+  return tapCardStackSelectedContextMenu(that);
 };
 
 // makeContextMenu に追加するアクション
 export const makeContextMenuExtend = (that: any) => {
-  return tapCardContextMenu(that);
+  return tapCardStackContextMenu(that);
 };
