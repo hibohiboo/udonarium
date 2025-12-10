@@ -30,7 +30,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
-import { extendsCardStackComponent, makeContextMenuExtend, makeSelectionContextMenuExtend } from 'src/plugins/extends/component/card-stack/card-stack.component';
+import { extendsCardStackComponent } from 'src/plugins/extends/component/card-stack/card-stack.component';
 
 @Component({
   selector: 'card-stack',
@@ -349,7 +349,6 @@ export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
                 SoundEffect.play(PresetSound.cardDraw);
               }
             },
-            ...makeSelectionContextMenuExtend(this),
             ContextMenuSeparator,
             {
               name: 'すべてシャッフル', action: () => {
@@ -411,7 +410,6 @@ export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
         SoundEffect.play(PresetSound.cardDraw);
       }
     });
-    actions.push(...makeContextMenuExtend(this));
     actions.push(ContextMenuSeparator);
     actions.push({
       name: 'シャッフル', action: () => {
