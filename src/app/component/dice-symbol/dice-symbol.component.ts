@@ -27,6 +27,7 @@ import { ImageService } from 'service/image.service';
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
+import { extendsDiceSymbolComponent } from 'src/plugins/extends/component/dice-symbol/dice-symbol.component';
 
 @Component({
   selector: 'dice-symbol',
@@ -110,7 +111,9 @@ export class DiceSymbolComponent implements OnChanges, AfterViewInit, OnDestroy 
     private changeDetector: ChangeDetectorRef,
     private selectionService: TabletopSelectionService,
     private imageService: ImageService,
-    private pointerDeviceService: PointerDeviceService) { }
+    private pointerDeviceService: PointerDeviceService) {
+    extendsDiceSymbolComponent(this);
+  }
 
   ngOnChanges(): void {
     EventSystem.register(this)
