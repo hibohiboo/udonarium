@@ -2,21 +2,11 @@ import { ContextMenuSeparator } from 'service/context-menu.service';
 import { pluginConfig } from 'src/plugins/config';
 import { addTabIndex } from 'src/plugins/keyboard-shortcut/extend/component/addTabIndex';
 import {  onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
-import { initRotateOffCard } from 'src/plugins/object-rotate-off/extends/class/card';
 import { tapCardContextMenu, tapCardEnter, tapCardSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
 
 export const extendsCardComponent = (that: any) => {
   // keyboard-shortcut プラグインの初期化
   addTabIndex(that);
-
-  // CardにisRotateOffIndividuallyプロパティを初期化
-  if (pluginConfig.isOffObjectRotateIndividually && that.card) {
-    const card = that.card;
-    if (card.isRotateOffIndividually === undefined) {
-      // 初回のみ初期化（既存のデータには影響しない）
-      initRotateOffCard(card);
-    }
-  }
 
   // Angularのライフサイクルフックをプロトタイプレベルでオーバーライド
   const constructor = that.constructor;
@@ -26,18 +16,14 @@ export const extendsCardComponent = (that: any) => {
     return;
   }
   constructor.prototype._pluginExtended = true;
-
-  // ngOnChangesをオーバーライドして回転オフクラスを更新
-  const originalNgOnChanges = constructor.prototype.ngOnChanges;
-  constructor.prototype.ngOnChanges = function() {
-    if (originalNgOnChanges) {
-      originalNgOnChanges.call(this);
-    }
-    // 回転オフクラスを更新
-    if (this._updateRotateOffClass) {
-      this._updateRotateOffClass();
-    }
-  };
+  if (pluginConfig.isOffObjectRotateIndividually) {
+    // ngOnChangesをオーバーライドして回転オフクラスを更新
+    const originalNgOnChanges = constructor.prototype.ngOnChanges;
+    constructor.prototype.ngOnChanges = function() {
+      if (originalNgOnChanges) { originalNgOnChanges.call(this); }
+      if (this._updateRotateOffClass) { this._updateRotateOffClass(); }
+    };
+  }
 
   const originalNgAfterViewInit = constructor.prototype.ngAfterViewInit;
 
@@ -51,20 +37,6 @@ export const extendsCardComponent = (that: any) => {
     if (this.elementRef && this.elementRef.nativeElement) {
       this.elementRef.nativeElement.setAttribute('tabindex', this.tabIndex || '0');
     }
-
-    // @HostBinding('class.object-rotate-off')相当の処理：回転オフクラスを設定
-    const updateRotateOffClass = () => {
-      if (this.elementRef && this.elementRef.nativeElement) {
-        const isRotateOff = pluginConfig.isOffObjectRotateIndividually && this.card?.isRotateOffIndividually;
-        if (isRotateOff) {
-          this.elementRef.nativeElement.classList.add('object-rotate-off');
-        } else {
-          this.elementRef.nativeElement.classList.remove('object-rotate-off');
-        }
-      }
-    };
-    updateRotateOffClass();
-    this._updateRotateOffClass = updateRotateOffClass;
 
     // @HostListener("keydown", ["$event"]) 相当の処理
     const keydownHandler = (e: KeyboardEvent) => {
@@ -81,6 +53,21 @@ export const extendsCardComponent = (that: any) => {
     // イベントリスナーを破棄時に削除するため保存
     this._keydownHandler = keydownHandler;
     this._pointerenterHandler = pointerenterHandler;
+
+    if (pluginConfig.isOffObjectRotateIndividually) {
+      // @HostBinding('class.object-rotate-off')相当の処理：回転オフクラスを設定
+      const updateRotateOffClass = () => {
+        if (!this.elementRef?.nativeElement) { return; }
+        if (this.card?.isRotateOffIndividually) {
+          this.elementRef.nativeElement.classList.add('object-rotate-off');
+        } else {
+          this.elementRef.nativeElement.classList.remove('object-rotate-off');
+        }
+
+      };
+      updateRotateOffClass();
+      this._updateRotateOffClass = updateRotateOffClass;
+    }
   };
 
   // ngOnDestroyもオーバーライドしてイベントリスナーをクリーンアップ

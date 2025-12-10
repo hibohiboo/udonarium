@@ -20,13 +20,8 @@ export const extendsCardStackComponent = (that: any) => {
     // ngOnChangesをオーバーライドして回転オフクラスを更新
     const originalNgOnChanges = constructor.prototype.ngOnChanges;
     constructor.prototype.ngOnChanges = function() {
-      if (originalNgOnChanges) {
-        originalNgOnChanges.call(this);
-      }
-      // 回転オフクラスを更新
-      if (this._updateRotateOffClass) {
-        this._updateRotateOffClass();
-      }
+      if (originalNgOnChanges) { originalNgOnChanges.call(this); }
+      if (this._updateRotateOffClass) { this._updateRotateOffClass(); }
     };
   }
 
