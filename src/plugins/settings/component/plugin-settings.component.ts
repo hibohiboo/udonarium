@@ -1,4 +1,12 @@
 import { Component } from '@angular/core';
+import {
+  BOOLEAN_SETTINGS,
+  STRING_SETTINGS,
+  ROOM_PRESETS,
+  PRESET_OPTIONS,
+  CATEGORIES,
+  SettingItem
+} from '../../config-schema';
 
 /**
  * プラグイン設定ページコンポーネント
@@ -13,135 +21,103 @@ export class PluginSettingsComponent {
   // windowオブジェクトへの参照（テンプレートで使用）
   window = window;
 
-  // 表示モード
-  is2d = false;
-  isTutorial = false;
-
-  // カード操作
-  isTapCard = false;
-  isCardShuffleNormalPosition = false;
-
-  // UI機能
-  isUseKeyboardShortcut = false;
-  isAddCounterBoard = false;
-  isChangeDefaultTerrain = false;
-
-  // チャット・手札
-  useChatCommand = false;
-  isUseHandStorage = false;
-
-  // カメラ座標
-  cameraZ = '';
-  cameraX = '';
-  cameraY = '';
-  cameraRX = '';
-  cameraRY = '';
-  cameraRZ = '';
+  // 設定値を格納するオブジェクト（スキーマから動的に初期化）
+  settings: Record<string, boolean | string> = {};
 
   // 部屋設定
   roomType = '';
 
-  // プリセット設定
-  presets = [
-    { value: '', label: 'なし' },
-    { value: 'vsrank', label: 'VSRank用設定' },
-    { value: 'hollow', label: 'Hollow用設定' },
-  ];
+  // プリセット設定（スキーマから取得）
+  presets = PRESET_OPTIONS;
+
+  // カテゴリ情報（テンプレートで使用）
+  categories = CATEGORIES;
+
+  // カメラ設定（テンプレートで使用）
+  cameraSettings = STRING_SETTINGS;
 
   constructor() {
+    this.initializeSettings();
     this.loadFromCurrentParams();
   }
 
   /**
-   * 現在のURLパラメータから設定を読み込む
+   * カテゴリに属する設定項目を取得
+   */
+  getSettingsByCategory(categoryId: string): SettingItem[] {
+    return BOOLEAN_SETTINGS.filter(s => s.category === categoryId);
+  }
+
+  /**
+   * 設定を初期化（スキーマから動的に初期化）
+   */
+  private initializeSettings() {
+    // Boolean設定を初期化
+    for (const setting of BOOLEAN_SETTINGS) {
+      this.settings[setting.key] = false;
+    }
+
+    // String設定を初期化
+    for (const setting of STRING_SETTINGS) {
+      this.settings[setting.key] = '';
+    }
+  }
+
+  /**
+   * 現在のURLパラメータから設定を読み込む（スキーマベース）
    */
   private loadFromCurrentParams() {
     const params = new URLSearchParams(window.location.search);
 
-    // 表示モード
-    this.is2d = params.has('2d');
-    this.isTutorial = params.has('tutorial');
+    // Boolean設定を読み込み
+    for (const setting of BOOLEAN_SETTINGS) {
+      this.settings[setting.key] = params.has(setting.param);
+    }
 
-    // カード操作
-    this.isTapCard = params.has('tap-card');
-    this.isCardShuffleNormalPosition = params.has('shuffle-normal');
-
-    // UI機能
-    this.isUseKeyboardShortcut = params.has('key-shortcut');
-    this.isAddCounterBoard = params.has('counter-board');
-    this.isChangeDefaultTerrain = params.has('change-default-terrain');
-
-    // チャット・手札
-    this.useChatCommand = params.has('use-chat-command');
-    this.isUseHandStorage = params.has('use-hand-storage');
-
-    // カメラ座標
-    this.cameraZ = params.get('z') ?? '';
-    this.cameraX = params.get('x') ?? '';
-    this.cameraY = params.get('y') ?? '';
-    this.cameraRX = params.get('rx') ?? '';
-    this.cameraRY = params.get('ry') ?? '';
-    this.cameraRZ = params.get('rz') ?? '';
+    // String設定を読み込み
+    for (const setting of STRING_SETTINGS) {
+      this.settings[setting.key] = params.get(setting.param) ?? '';
+    }
 
     // 部屋設定
     this.roomType = params.get('room') ?? '';
   }
 
   /**
-   * プリセット変更時
+   * プリセット変更時（スキーマベース）
    */
   onPresetChange() {
-    // プリセット適用時のデフォルト値設定
-    switch (this.roomType) {
-      case 'vsrank':
-        this.isTapCard = true;
-        this.isUseKeyboardShortcut = true;
-        this.isCardShuffleNormalPosition = true;
-        this.isAddCounterBoard = true;
-        this.isChangeDefaultTerrain = false;
-        break;
-      case 'hollow':
-        this.isTapCard = true;
-        this.isUseKeyboardShortcut = true;
-        this.isCardShuffleNormalPosition = true;
-        this.isChangeDefaultTerrain = false;
-        break;
-      case '':
-        // プリセットなし - 現在の設定を維持
-        break;
+    if (!this.roomType || !ROOM_PRESETS[this.roomType]) {
+      return; // プリセットなし - 現在の設定を維持
+    }
+
+    // プリセット設定を適用
+    const preset = ROOM_PRESETS[this.roomType];
+    for (const [key, value] of Object.entries(preset)) {
+      this.settings[key] = value;
     }
   }
 
   /**
-   * クエリパラメータ文字列を生成
+   * クエリパラメータ文字列を生成（スキーマベース）
    */
   generateQueryString(): string {
     const params = new URLSearchParams();
 
-    // 表示モード
-    if (this.is2d) params.set('2d', '');
-    if (this.isTutorial) params.set('tutorial', '');
+    // Boolean設定をパラメータ化
+    for (const setting of BOOLEAN_SETTINGS) {
+      if (this.settings[setting.key]) {
+        params.set(setting.param, '');
+      }
+    }
 
-    // カード操作
-    if (this.isTapCard) params.set('tap-card', '');
-    if (this.isCardShuffleNormalPosition) params.set('shuffle-normal', '');
-
-    // UI機能
-    if (this.isUseKeyboardShortcut) params.set('key-shortcut', '');
-    if (this.isAddCounterBoard) params.set('counter-board', '');
-    if (this.isChangeDefaultTerrain) params.set('change-default-terrain', '');
-
-    // チャット・手札
-    if (this.useChatCommand) params.set('use-chat-command', '');
-    if (this.isUseHandStorage) params.set('use-hand-storage', '');
-
-    // カメラ座標
-    if (this.cameraZ) params.set('z', this.cameraZ);
-    if (this.cameraX) params.set('x', this.cameraX);
-    if (this.cameraY) params.set('y', this.cameraY);
-    if (this.cameraRX) params.set('rx', this.cameraRX);
-    if (this.cameraRY) params.set('ry', this.cameraRY);
-    if (this.cameraRZ) params.set('rz', this.cameraRZ);
+    // String設定をパラメータ化
+    for (const setting of STRING_SETTINGS) {
+      const value = this.settings[setting.key];
+      if (value) {
+        params.set(setting.param, String(value));
+      }
+    }
 
     // 部屋設定
     if (this.roomType) params.set('room', this.roomType);
@@ -168,24 +144,10 @@ export class PluginSettingsComponent {
   }
 
   /**
-   * 設定をリセット
+   * 設定をリセット（スキーマベース）
    */
   reset() {
-    this.is2d = false;
-    this.isTutorial = false;
-    this.isTapCard = false;
-    this.isCardShuffleNormalPosition = false;
-    this.isUseKeyboardShortcut = false;
-    this.isAddCounterBoard = false;
-    this.isChangeDefaultTerrain = false;
-    this.useChatCommand = false;
-    this.isUseHandStorage = false;
-    this.cameraZ = '';
-    this.cameraX = '';
-    this.cameraY = '';
-    this.cameraRX = '';
-    this.cameraRY = '';
-    this.cameraRZ = '';
+    this.initializeSettings();
     this.roomType = '';
   }
 }

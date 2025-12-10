@@ -1,3 +1,5 @@
+import { BOOLEAN_SETTINGS, STRING_SETTINGS, ROOM_PRESETS } from './config-schema';
+
 // ========================================
 // 型定義
 // ========================================
@@ -50,31 +52,6 @@ type RoomSpecificConfig = Partial<QueryParamConfig & UnimplementedFeatureFlags>;
 /** 最終的なプラグイン設定 */
 type PluginConfig = QueryParamConfig & UnimplementedFeatureFlags;
 
-// ========================================
-// 設定の定義
-// ========================================
-
-/** 部屋別の設定マッピング */
-const ROOM_CONFIGS: Record<string, RoomSpecificConfig> = {
-  vsrank: {
-    isTapCard: true,
-    isUseKeyboardShortcut: true,
-    isCardShuffleNormalPosition: true,
-    isFirstFetchZipRoom: true,
-    isAddCounterBoard: true,
-    isChangeDefaultTerrain: false,
-    isOffObjectRotateIndividually: false,
-  },
-  hollow: {
-    isTapCard: true,
-    isUseKeyboardShortcut: true,
-    isCardShuffleNormalPosition: true,
-    isFirstFetchZipRoom: true,
-    isChangeDefaultTerrain: false,
-    isOffObjectRotateIndividually: false,
-  },
-} as const;
-
 /** 未実装フラグのデフォルト値 */
 const UNIMPLEMENTED_FLAGS: UnimplementedFeatureFlags = {
   // NOTE: hand-storage機能のエラー回避のため、一時的にfalseで定義
@@ -116,40 +93,27 @@ function getRoomConfig(params: URLSearchParams): RoomSpecificConfig {
   const roomName = params.get('room');
   if (!roomName) return {};
 
-  return ROOM_CONFIGS[roomName] ?? {};
+  return ROOM_PRESETS[roomName] ?? {};
 }
 
 /**
  * クエリパラメータから基本設定を構築
+ * スキーマから動的に構築することで、設定追加時の変更を最小化
  */
 function buildBaseConfig(params: URLSearchParams): QueryParamConfig {
-  return {
-    // 表示モード
-    is2d: getBooleanParam(params, '2d'),
-    isTutorial: getBooleanParam(params, 'tutorial'),
-    isFirstFetchZipRoom: false,
+  const config: any = {};
 
-    // カード操作
-    isTapCard: getBooleanParam(params, 'tap-card'),
-    isCardShuffleNormalPosition: getBooleanParam(params, 'shuffle-normal'),
+  // Boolean設定を動的に構築
+  for (const setting of BOOLEAN_SETTINGS) {
+    config[setting.key] = getBooleanParam(params, setting.param);
+  }
 
-    // UI機能
-    isUseKeyboardShortcut: getBooleanParam(params, 'key-shortcut'),
-    isAddCounterBoard: getBooleanParam(params, 'counter-board'),
-    isChangeDefaultTerrain: getBooleanParam(params, 'change-default-terrain'),
+  // String設定を動的に構築
+  for (const setting of STRING_SETTINGS) {
+    config[setting.key] = getStringParam(params, setting.param);
+  }
 
-    // チャット・手札
-    useChatCommand: getBooleanParam(params, 'use-chat-command'),
-    isUseHandStorage: getBooleanParam(params, 'use-hand-storage'),
-
-    // カメラ座標
-    z: getStringParam(params, 'z'),
-    x: getStringParam(params, 'x'),
-    y: getStringParam(params, 'y'),
-    rx: getStringParam(params, 'rx'),
-    ry: getStringParam(params, 'ry'),
-    rz: getStringParam(params, 'rz'),
-  };
+  return config as QueryParamConfig;
 }
 
 // ========================================
