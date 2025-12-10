@@ -1,4 +1,4 @@
-import { useChatCommand } from 'src/plugins/use-chat-command';
+import { extendsChatTab } from 'src/plugins/extends/class/chat-tab';
 import { ChatMessage, ChatMessageContext } from './chat-message';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
@@ -17,6 +17,11 @@ export class ChatTab extends ObjectNode implements InnerXml {
   get latestTimeStamp(): number {
     let lastIndex = this.chatMessages.length - 1;
     return lastIndex < 0 ? 0 : this.chatMessages[lastIndex].timestamp;
+  }
+
+  constructor(identifier: string | undefined) {
+    super(identifier);
+    extendsChatTab(this);
   }
 
   // ObjectNode Lifecycle
@@ -45,7 +50,6 @@ export class ChatTab extends ObjectNode implements InnerXml {
     chat.initialize();
     EventSystem.trigger('SEND_MESSAGE', { tabIdentifier: this.identifier, messageIdentifier: chat.identifier });
     this.appendChild(chat);
-    useChatCommand(message?.text);
     return chat;
   }
 
