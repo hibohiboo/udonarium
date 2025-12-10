@@ -29,10 +29,7 @@ import { GridLineRender } from './grid-line-render';
 import { TableMouseGesture } from './table-mouse-gesture';
 import { TablePickGesture } from './table-pick-gesture';
 import { TableTouchGesture } from './table-touch-gesture';
-import { is2d } from 'src/plugins/mode2d/extends/components/game-table/game-table.components';
-import { isEmptyDefaultTabletopObjects, transformDefault } from 'src/plugins/first-fetch-zip-room/extend/components/game-table/game-table.components';
-import { init2d } from 'src/plugins/mode2d';
-import { initCommandGameBoard } from 'src/plugins/use-chat-command/game-board';
+import { extendsGameTableComponent } from 'src/plugins/extends/component/game-table/game-table.component';
 import { HandStorageService } from 'src/plugins/hand-storage/extend/service/hand-storage.service';
 import { HandStorage } from 'src/plugins/hand-storage/extend/class/hand-storage';
 
@@ -94,7 +91,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     private selectionService: TabletopSelectionService,
     private modalService: ModalService,
     private handStorageService: HandStorageService,
-  ) { }
+  ) {
+    extendsGameTableComponent(this);
+  }
 
   ngOnInit() {
     EventSystem.register(this)
@@ -110,9 +109,6 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
         this.gridCanvas.nativeElement.style.opacity = opacity + '';
       });
-    init2d(this);
-
-    if(isEmptyDefaultTabletopObjects) return;
     this.tabletopActionService.makeDefaultTable();
     this.tabletopActionService.makeDefaultTabletopObjects();
   }
@@ -122,14 +118,11 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
       this.initializeTableTouchGesture();
       this.initializeTableMouseGesture();
       this.initializeTablePickGesture();
-      initCommandGameBoard(this);
-
     });
     this.cancelInput();
 
     this.setGameTableGrid(this.currentTable.width, this.currentTable.height, this.currentTable.gridSize, this.currentTable.gridType, this.currentTable.gridColor);
     this.setTransform(0, 0, 0, 0, 0, 0);
-    transformDefault(this);
     this.coordinateService.tabletopOriginElement = this.gameObjects.nativeElement;
   }
 
@@ -331,9 +324,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.viewPotisonX += transformX;
     this.viewPotisonY += transformY;
     this.viewPotisonZ += transformZ;
-    if (is2d()) {
-      this.viewRotateX -= rotateX;
-    }
+
     this.gameTable.nativeElement.style.transform = `translateZ(${this.viewPotisonZ.toFixed(4)}px) translateY(${this.viewPotisonY.toFixed(4)}px) translateX(${this.viewPotisonX.toFixed(4)}px) rotateY(${this.viewRotateY.toFixed(4)}deg) rotateX(${this.viewRotateX.toFixed(4) + 'deg) rotateZ(' + this.viewRotateZ.toFixed(4)}deg)`;
   }
 
