@@ -24,6 +24,9 @@ interface QueryParamConfig {
   useChatCommand: boolean;
   isUseHandStorage: boolean;
 
+  // 機能制限
+  isOffTableRotate: boolean;
+
   // カメラ座標（オプショナル）
   z: string | null;
   x: string | null;

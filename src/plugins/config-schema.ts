@@ -8,7 +8,7 @@ export interface SettingItem {
   param: string;
   label: string;
   type: 'boolean' | 'string';
-  category: 'display' | 'card' | 'ui' | 'chat' | 'camera';
+  category: 'display' | 'card' | 'ui' | 'chat' | 'camera' | 'restriction';
 }
 
 /** カテゴリ情報 */
@@ -24,6 +24,7 @@ export const CATEGORIES: CategoryInfo[] = [
   { id: 'card', title: 'カード操作' },
   { id: 'ui', title: 'UI機能' },
   { id: 'chat', title: 'チャット・手札' },
+  { id: 'restriction', title: '機能制限' },
 ];
 
 /** Boolean型の設定項目 */
@@ -45,6 +46,9 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   // チャット・手札
   { key: 'useChatCommand', param: 'use-chat-command', label: 'チャットコマンド', type: 'boolean', category: 'chat' },
   { key: 'isUseHandStorage', param: 'use-hand-storage', label: '手札ストレージ', type: 'boolean', category: 'chat' },
+
+  // 機能制限
+  { key: 'isOffTableRotate', param: 'table-rotate-off', label: 'テーブル回転オフ', type: 'boolean', category: 'restriction' },
 ];
 
 /** String型の設定項目（カメラ座標） */

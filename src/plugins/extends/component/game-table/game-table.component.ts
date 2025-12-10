@@ -4,6 +4,7 @@ import { isEmptyDefaultTabletopObjects, transformDefault } from 'src/plugins/fir
 import { initCommandGameBoard } from 'src/plugins/use-chat-command/game-board';
 import { extendsGameTableComponentForHandStorage } from 'src/plugins/hand-storage/extend/component/game-table/game-table.component';
 import { EventSystem } from '@udonarium/core/system';
+import { pluginConfig } from 'src/plugins/config';
 
 export const extendsGameTableComponent = (that: any) => {
   // Angularのライフサイクルフックをプロトタイプレベルでオーバーライド
@@ -60,12 +61,15 @@ export const extendsGameTableComponent = (that: any) => {
 
   // setTransformをオーバーライド（mode2dプラグイン対応）
   constructor.prototype.setTransform = function(transformX: number, transformY: number, transformZ: number, rotateX: number, rotateY: number, rotateZ: number) {
+    if (pluginConfig.isOffTableRotate){
+      originalSetTransform.call(this, transformX, transformY, transformZ, rotateX, rotateY, rotateZ);
+      originalSetTransform.call(this, 0, 0, 0, -rotateX,  -rotateY, -rotateZ);
+    }
     // mode2dプラグイン: 2Dモードの場合はX軸回転を無効化
-    if (is2d()) {
+    else if (is2d()) {
       // 元のsetTransformが rotateX を加算するので、その分を打ち消す
-      const adjustedRotateX = -rotateX;
-      originalSetTransform.call(this, transformX, transformY, transformZ, adjustedRotateX, rotateY, rotateZ);
-      originalSetTransform.call(this, 0, 0, 0, rotateX, 0, 0);
+      originalSetTransform.call(this, transformX, transformY, transformZ, rotateX, rotateY, rotateZ);
+      originalSetTransform.call(this, 0, 0, 0, -rotateX, 0, 0);
     } else {
       // 通常モードは元の処理を呼び出し
       originalSetTransform.call(this, transformX, transformY, transformZ, rotateX, rotateY, rotateZ);
