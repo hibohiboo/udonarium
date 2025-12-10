@@ -7,6 +7,11 @@ import { EventSystem } from './core/system';
 
 @SyncObject('chat-tab')
 export class ChatTab extends ObjectNode implements InnerXml {
+  constructor(identifier?: string) {
+    super(identifier);
+    extendsChatTab(this);
+  }
+
   @SyncVar() name: string = 'タブ';
   get chatMessages(): ChatMessage[] { return <ChatMessage[]>this.children; }
 
@@ -17,11 +22,6 @@ export class ChatTab extends ObjectNode implements InnerXml {
   get latestTimeStamp(): number {
     let lastIndex = this.chatMessages.length - 1;
     return lastIndex < 0 ? 0 : this.chatMessages[lastIndex].timestamp;
-  }
-
-  constructor(identifier: string | undefined) {
-    super(identifier);
-    extendsChatTab(this);
   }
 
   // ObjectNode Lifecycle
