@@ -1,6 +1,6 @@
-import { AppComponent as OriginalAppComponent } from './app.component';
+import { AppComponent as OriginalAppComponent } from 'src/app/app.component';
 
-declare module './app.component' {
+declare module 'src/app/app.component' {
   interface AppComponent {
     /**
      * 設定ルートかどうかを判定するプロパティ（プラグインから注入）
