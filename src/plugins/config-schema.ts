@@ -49,6 +49,7 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
 
   // 機能制限
   { key: 'isOffTableRotate', param: 'table-rotate-off', label: 'テーブル回転オフ', type: 'boolean', category: 'restriction' },
+  { key: 'isOffObjectRotateIndividually', param: 'object-rotate-off-individually', label: 'オブジェクト回転オフ(個別設定可能)', type: 'boolean', category: 'restriction' },
 ];
 
 /** String型の設定項目（カメラ座標） */

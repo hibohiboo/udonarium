@@ -26,6 +26,7 @@ interface QueryParamConfig {
 
   // 機能制限
   isOffTableRotate: boolean;
+  isOffObjectRotateIndividually: boolean;
 
   // カメラ座標（オプショナル）
   z: string | null;
@@ -40,7 +41,7 @@ interface QueryParamConfig {
 interface UnimplementedFeatureFlags {
   isUseHandStorageSelfOnly: boolean;
   isCardBackImageAllChangeMenu: boolean;
-  isOffObjectRotateIndividually: boolean;
+
   isUseVirtualScreen: boolean;
   canReturnHandToIndividualBoard: boolean;
   isAutoSelfViewCardFromDeck: boolean;
@@ -61,7 +62,6 @@ const UNIMPLEMENTED_FLAGS: UnimplementedFeatureFlags = {
   // TODO: 各機能の実装予定を issue #XXX で管理
   isUseHandStorageSelfOnly: false,
   isCardBackImageAllChangeMenu: false,
-  isOffObjectRotateIndividually: false,
   isUseVirtualScreen: false,
   canReturnHandToIndividualBoard: false,
   isAutoSelfViewCardFromDeck: false,

@@ -1,6 +1,9 @@
+import { ContextMenuSeparator } from 'service/context-menu.service';
+import { pluginConfig } from 'src/plugins/config';
 import { addTabIndex } from 'src/plugins/keyboard-shortcut/extend/component/addTabIndex';
 import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
 import {  onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
+import { initRotateOffCardStack } from 'src/plugins/object-rotate-off/extends/class/card-stack';
 import { tapCardStackContextMenu, tapCardStackEnter, tapCardStackSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
 import { tapCardContextMenu, tapCardEnter, tapCardSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
 
@@ -8,8 +11,30 @@ export const extendsCardStackComponent = (that: any) => {
   // keyboard-shortcut プラグインの初期化
   addTabIndex(that);
 
+  // CardStackにisRotateOffIndividuallyプロパティを初期化
+  if (pluginConfig.isOffObjectRotateIndividually && that.cardStack) {
+    const cardStack = that.cardStack;
+    if (cardStack.isRotateOffIndividually === undefined) {
+      // 初回のみ初期化（既存のデータには影響しない）
+      initRotateOffCardStack(cardStack);
+    }
+  }
+
   // Angularのライフサイクルフックをプロトタイプレベルでオーバーライド
   const constructor = that.constructor;
+
+  // ngOnChangesをオーバーライドして回転オフクラスを更新
+  const originalNgOnChanges = constructor.prototype.ngOnChanges;
+  constructor.prototype.ngOnChanges = function() {
+    if (originalNgOnChanges) {
+      originalNgOnChanges.call(this);
+    }
+    // 回転オフクラスを更新
+    if (this._updateRotateOffClass) {
+      this._updateRotateOffClass();
+    }
+  };
+
   const originalNgAfterViewInit = constructor.prototype.ngAfterViewInit;
 
   constructor.prototype.ngAfterViewInit = function() {
@@ -22,6 +47,20 @@ export const extendsCardStackComponent = (that: any) => {
     if (this.elementRef && this.elementRef.nativeElement) {
       this.elementRef.nativeElement.setAttribute('tabindex', this.tabIndex || '0');
     }
+
+    // @HostBinding('class.object-rotate-off')相当の処理：回転オフクラスを設定
+    const updateRotateOffClass = () => {
+      if (this.elementRef && this.elementRef.nativeElement) {
+        const isRotateOff = pluginConfig.isOffObjectRotateIndividually && this.cardStack?.isRotateOffIndividually;
+        if (isRotateOff) {
+          this.elementRef.nativeElement.classList.add('object-rotate-off');
+        } else {
+          this.elementRef.nativeElement.classList.remove('object-rotate-off');
+        }
+      }
+    };
+    updateRotateOffClass();
+    this._updateRotateOffClass = updateRotateOffClass;
 
     // @HostListener("keydown", ["$event"]) 相当の処理
     const keydownHandler = (e: KeyboardEvent) => {
@@ -90,16 +129,36 @@ export const extendsCardStackComponent = (that: any) => {
       actions.splice(uprightIndex + 1, 0, ...makeContextMenuExtend(this));
     }
 
+      // オブジェクト回転オフ(個別設定可能)が有効な場合、メニューを最後に追加
+    if (pluginConfig.isOffObjectRotateIndividually) {
+      const cardStack = this.cardStack;
+      const isRotateOff = cardStack.isRotateOffIndividually;
+      actions.push(ContextMenuSeparator);
+      actions.push({
+        name: isRotateOff ? '回転を有効にする' : '回転を無効にする',
+        action: () => {
+          cardStack.isRotateOffIndividually = !isRotateOff;
+          // クラスを更新
+          if (this._updateRotateOffClass) {
+            this._updateRotateOffClass();
+          }
+        }
+      });
+    }
     return actions;
   };
 };
 
 // makeSelectionContextMenu に追加するアクション
-export const makeSelectionContextMenuExtend = (that: any) => {
+const makeSelectionContextMenuExtend = (that: any) => {
   return tapCardStackSelectedContextMenu(that);
 };
 
 // makeContextMenu に追加するアクション
-export const makeContextMenuExtend = (that: any) => {
-  return tapCardStackContextMenu(that);
+const makeContextMenuExtend = (that: any) => {
+  const actions = tapCardStackContextMenu(that);
+
+
+
+  return actions;
 };
