@@ -31,7 +31,6 @@ import { TablePickGesture } from './table-pick-gesture';
 import { TableTouchGesture } from './table-touch-gesture';
 import { extendsGameTableComponent } from 'src/plugins/extends/component/game-table/game-table.component';
 import { HandStorageService } from 'src/plugins/hand-storage/extend/service/hand-storage.service';
-import { HandStorage } from 'src/plugins/hand-storage/extend/class/hand-storage';
 
 @Component({
   selector: 'game-table',
@@ -78,7 +77,6 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   get textNotes(): TextNote[] { return this.tabletopService.textNotes; }
   get diceSymbols(): DiceSymbol[] { return this.tabletopService.diceSymbols; }
   get peerCursors(): PeerCursor[] { return this.tabletopService.peerCursors; }
-  get handStorages(): HandStorage[] { return this.handStorageService.handStorages; }
 
   constructor(
     private ngZone: NgZone,
