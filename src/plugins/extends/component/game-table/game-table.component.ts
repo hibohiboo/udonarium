@@ -1,8 +1,9 @@
 import { init2d } from 'src/plugins/mode2d';
 import { is2d } from 'src/plugins/mode2d/extends/components/game-table/game-table.components';
-import { transformDefault } from 'src/plugins/first-fetch-zip-room/extend/components/game-table/game-table.components';
+import { isEmptyDefaultTabletopObjects, transformDefault } from 'src/plugins/first-fetch-zip-room/extend/components/game-table/game-table.components';
 import { initCommandGameBoard } from 'src/plugins/use-chat-command/game-board';
 import { extendsGameTableComponentForHandStorage } from 'src/plugins/hand-storage/extend/component/game-table/game-table.component';
+import { EventSystem } from '@udonarium/core/system';
 
 export const extendsGameTableComponent = (that: any) => {
   // Angularのライフサイクルフックをプロトタイプレベルでオーバーライド
@@ -13,6 +14,25 @@ export const extendsGameTableComponent = (that: any) => {
 
   // ngOnInitをオーバーライド
   constructor.prototype.ngOnInit = function() {
+    // 初期テーブル設定を呼び出さない場合
+    if(isEmptyDefaultTabletopObjects){
+        EventSystem.register(this)
+          .on('UPDATE_GAME_OBJECT', event => {
+            if (event.data.identifier !== this.currentTable.identifier && event.data.identifier !== this.tableSelecter.identifier) return;
+            console.log('UPDATE_GAME_OBJECT GameTableComponent ' + this.currentTable.identifier);
+
+            this.setGameTableGrid(this.currentTable.width, this.currentTable.height, this.currentTable.gridSize, this.currentTable.gridType, this.currentTable.gridColor);
+          })
+          .on('DRAG_LOCKED_OBJECT', event => {
+            this.isTableTransformMode = true;
+            this.pointerDeviceService.isDragging = false;
+            let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
+            this.gridCanvas.nativeElement.style.opacity = opacity + '';
+          });
+        init2d(this);
+        return;
+    }
+
     // 元のngOnInitを呼び出し
     if (originalNgOnInit) {
       originalNgOnInit.call(this);
