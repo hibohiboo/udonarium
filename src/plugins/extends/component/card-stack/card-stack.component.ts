@@ -23,6 +23,12 @@ export const extendsCardStackComponent = (that: any) => {
   // Angularのライフサイクルフックをプロトタイプレベルでオーバーライド
   const constructor = that.constructor;
 
+  // 既にプラグインでオーバーライド済みかチェック
+  if (constructor.prototype._pluginExtended) {
+    return;
+  }
+  constructor.prototype._pluginExtended = true;
+
   // ngOnChangesをオーバーライドして回転オフクラスを更新
   const originalNgOnChanges = constructor.prototype.ngOnChanges;
   constructor.prototype.ngOnChanges = function() {
