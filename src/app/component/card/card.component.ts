@@ -28,7 +28,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 import { TabletopService } from 'service/tabletop.service';
-import { extendsCardComponent, makeSelectionContextMenuExtend, makeContextMenuExtend } from 'src/plugins/extends/component/card/card.component';
+import { extendsCardComponent } from 'src/plugins/extends/component/card/card.component';
 
 @Component({
   selector: 'card',
@@ -280,7 +280,6 @@ export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
                 SoundEffect.play(PresetSound.cardDraw);
               }
             },
-            ...makeSelectionContextMenuExtend(this)
           ]
         }
       );
@@ -326,7 +325,6 @@ export class CardComponent implements OnDestroy, OnChanges, AfterViewInit {
         SoundEffect.play(PresetSound.cardPut);
       }
     });
-    actions.push(...makeContextMenuExtend(this));
     actions.push(ContextMenuSeparator);
     actions.push({ name: 'カードを編集', action: () => { this.showDetail(this.card); } });
     actions.push({

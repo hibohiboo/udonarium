@@ -54,6 +54,41 @@ export const extendsCardComponent = (that: any) => {
       originalNgOnDestroy.call(this);
     }
   };
+
+  // makeSelectionContextMenuメソッドをオーバーライドして拡張メニューを追加
+  const originalMakeSelectionContextMenu = constructor.prototype.makeSelectionContextMenu;
+  constructor.prototype.makeSelectionContextMenu = function() {
+    // 元のメソッドを呼び出して基本メニューを取得
+    const actions = originalMakeSelectionContextMenu.call(this);
+
+    // 選択されている場合、拡張メニューを追加
+    if (this.isSelected && actions.length > 0) {
+      // '選択したカード'のsubActionsを探して拡張
+      const selectionMenu = actions.find((action: any) => action.name === '選択したカード');
+      if (selectionMenu && selectionMenu.subActions) {
+        // 拡張メニューをsubActionsの最後に追加
+        selectionMenu.subActions.push(...makeSelectionContextMenuExtend(this));
+      }
+    }
+
+    return actions;
+  };
+
+  // makeContextMenuメソッドをオーバーライドして拡張メニューを追加
+  const originalMakeContextMenu = constructor.prototype.makeContextMenu;
+  constructor.prototype.makeContextMenu = function() {
+    // 元のメソッドを呼び出して基本メニューを取得
+    const actions = originalMakeContextMenu.call(this);
+
+    // 拡張メニューを適切な位置に挿入
+    // '重なったカードで山札を作る'の後に挿入
+    const createStackIndex = actions.findIndex((action: any) => action.name === '重なったカードで山札を作る');
+    if (createStackIndex !== -1) {
+      actions.splice(createStackIndex + 1, 0, ...makeContextMenuExtend(this));
+    }
+
+    return actions;
+  };
 };
 
 // makeSelectionContextMenu に追加するアクション
