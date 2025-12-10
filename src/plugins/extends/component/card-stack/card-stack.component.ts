@@ -2,23 +2,11 @@ import { ContextMenuSeparator } from 'service/context-menu.service';
 import { pluginConfig } from 'src/plugins/config';
 import { addTabIndex } from 'src/plugins/keyboard-shortcut/extend/component/addTabIndex';
 import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
-import {  onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
-import { initRotateOffCardStack } from 'src/plugins/object-rotate-off/extends/class/card-stack';
 import { tapCardStackContextMenu, tapCardStackEnter, tapCardStackSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
-import { tapCardContextMenu, tapCardEnter, tapCardSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
 
 export const extendsCardStackComponent = (that: any) => {
   // keyboard-shortcut プラグインの初期化
   addTabIndex(that);
-
-  // CardStackにisRotateOffIndividuallyプロパティを初期化
-  if (pluginConfig.isOffObjectRotateIndividually && that.cardStack) {
-    const cardStack = that.cardStack;
-    if (cardStack.isRotateOffIndividually === undefined) {
-      // 初回のみ初期化（既存のデータには影響しない）
-      initRotateOffCardStack(cardStack);
-    }
-  }
 
   // Angularのライフサイクルフックをプロトタイプレベルでオーバーライド
   const constructor = that.constructor;
@@ -28,18 +16,19 @@ export const extendsCardStackComponent = (that: any) => {
     return;
   }
   constructor.prototype._pluginExtended = true;
-
-  // ngOnChangesをオーバーライドして回転オフクラスを更新
-  const originalNgOnChanges = constructor.prototype.ngOnChanges;
-  constructor.prototype.ngOnChanges = function() {
-    if (originalNgOnChanges) {
-      originalNgOnChanges.call(this);
-    }
-    // 回転オフクラスを更新
-    if (this._updateRotateOffClass) {
-      this._updateRotateOffClass();
-    }
-  };
+  if (pluginConfig.isOffObjectRotateIndividually) {
+    // ngOnChangesをオーバーライドして回転オフクラスを更新
+    const originalNgOnChanges = constructor.prototype.ngOnChanges;
+    constructor.prototype.ngOnChanges = function() {
+      if (originalNgOnChanges) {
+        originalNgOnChanges.call(this);
+      }
+      // 回転オフクラスを更新
+      if (this._updateRotateOffClass) {
+        this._updateRotateOffClass();
+      }
+    };
+  }
 
   const originalNgAfterViewInit = constructor.prototype.ngAfterViewInit;
 
@@ -53,20 +42,6 @@ export const extendsCardStackComponent = (that: any) => {
     if (this.elementRef && this.elementRef.nativeElement) {
       this.elementRef.nativeElement.setAttribute('tabindex', this.tabIndex || '0');
     }
-
-    // @HostBinding('class.object-rotate-off')相当の処理：回転オフクラスを設定
-    const updateRotateOffClass = () => {
-      if (this.elementRef && this.elementRef.nativeElement) {
-        const isRotateOff = pluginConfig.isOffObjectRotateIndividually && this.cardStack?.isRotateOffIndividually;
-        if (isRotateOff) {
-          this.elementRef.nativeElement.classList.add('object-rotate-off');
-        } else {
-          this.elementRef.nativeElement.classList.remove('object-rotate-off');
-        }
-      }
-    };
-    updateRotateOffClass();
-    this._updateRotateOffClass = updateRotateOffClass;
 
     // @HostListener("keydown", ["$event"]) 相当の処理
     const keydownHandler = (e: KeyboardEvent) => {
@@ -83,6 +58,21 @@ export const extendsCardStackComponent = (that: any) => {
     // イベントリスナーを破棄時に削除するため保存
     this._keydownHandler = keydownHandler;
     this._pointerenterHandler = pointerenterHandler;
+
+    if (pluginConfig.isOffObjectRotateIndividually) {
+      // @HostBinding('class.object-rotate-off')相当の処理：回転オフクラスを設定
+      const updateRotateOffClass = () => {
+        if (!this.elementRef?.nativeElement) { return; }
+        if (this.cardStack?.isRotateOffIndividually) {
+          this.elementRef.nativeElement.classList.add('object-rotate-off');
+        } else {
+          this.elementRef.nativeElement.classList.remove('object-rotate-off');
+        }
+      };
+      updateRotateOffClass();
+      this._updateRotateOffClass = updateRotateOffClass;
+    }
+
   };
 
   // ngOnDestroyもオーバーライドしてイベントリスナーをクリーンアップ
@@ -115,7 +105,7 @@ export const extendsCardStackComponent = (that: any) => {
       const selectionMenu = actions.find((action: any) => action.name === '選択した山札');
       if (selectionMenu && selectionMenu.subActions) {
         // 拡張メニューをsubActionsの最後に追加
-        selectionMenu.subActions.push(...makeSelectionContextMenuExtend(this));
+        selectionMenu.subActions.push(...tapCardStackSelectedContextMenu(this));
       }
     }
 
@@ -157,7 +147,3 @@ export const extendsCardStackComponent = (that: any) => {
   };
 };
 
-// makeSelectionContextMenu に追加するアクション
-const makeSelectionContextMenuExtend = (that: any) => {
-  return tapCardStackSelectedContextMenu(that);
-};
