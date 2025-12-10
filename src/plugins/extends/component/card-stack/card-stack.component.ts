@@ -123,13 +123,14 @@ export const extendsCardStackComponent = (that: any) => {
     const actions = originalMakeContextMenu.call(this);
 
     // 拡張メニューを適切な位置に挿入
-    // 'すべて正位置にする'の後に挿入
+    // tap-cardなどの拡張は'すべて正位置にする'の後に挿入
     const uprightIndex = actions.findIndex((action: any) => action.name === 'すべて正位置にする');
-    if (uprightIndex !== -1) {
-      actions.splice(uprightIndex + 1, 0, ...makeContextMenuExtend(this));
+    const tapCardExtensions = tapCardStackContextMenu(this);
+    if (uprightIndex !== -1 && tapCardExtensions.length > 0) {
+      actions.splice(uprightIndex + 1, 0, ...tapCardExtensions);
     }
 
-      // オブジェクト回転オフ(個別設定可能)が有効な場合、メニューを最後に追加
+    // 回転オフメニューは最後に追加
     if (pluginConfig.isOffObjectRotateIndividually) {
       const cardStack = this.cardStack;
       const isRotateOff = cardStack.isRotateOffIndividually;
@@ -145,6 +146,7 @@ export const extendsCardStackComponent = (that: any) => {
         }
       });
     }
+
     return actions;
   };
 };
@@ -152,13 +154,4 @@ export const extendsCardStackComponent = (that: any) => {
 // makeSelectionContextMenu に追加するアクション
 const makeSelectionContextMenuExtend = (that: any) => {
   return tapCardStackSelectedContextMenu(that);
-};
-
-// makeContextMenu に追加するアクション
-const makeContextMenuExtend = (that: any) => {
-  const actions = tapCardStackContextMenu(that);
-
-
-
-  return actions;
 };

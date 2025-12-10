@@ -1,7 +1,7 @@
 import { SyncVar } from "@udonarium/core/synchronize-object/decorator";
 import { pluginConfig } from "src/plugins/config";
 
-export const initRotateOffCard = (that) => {
+export const initRotateOffCard = (that: any) => {
   if(!pluginConfig.isOffObjectRotateIndividually) return;
   SyncVar()(that, 'isRotateOffIndividually');
   that.isRotateOffIndividually = false;

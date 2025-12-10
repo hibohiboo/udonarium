@@ -1,13 +1,38 @@
+import { ContextMenuSeparator } from 'service/context-menu.service';
+import { pluginConfig } from 'src/plugins/config';
 import { addTabIndex } from 'src/plugins/keyboard-shortcut/extend/component/addTabIndex';
 import {  onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
+import { initRotateOffCard } from 'src/plugins/object-rotate-off/extends/class/card';
 import { tapCardContextMenu, tapCardEnter, tapCardSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
 
 export const extendsCardComponent = (that: any) => {
   // keyboard-shortcut プラグインの初期化
   addTabIndex(that);
 
+  // CardにisRotateOffIndividuallyプロパティを初期化
+  if (pluginConfig.isOffObjectRotateIndividually && that.card) {
+    const card = that.card;
+    if (card.isRotateOffIndividually === undefined) {
+      // 初回のみ初期化（既存のデータには影響しない）
+      initRotateOffCard(card);
+    }
+  }
+
   // Angularのライフサイクルフックをプロトタイプレベルでオーバーライド
   const constructor = that.constructor;
+
+  // ngOnChangesをオーバーライドして回転オフクラスを更新
+  const originalNgOnChanges = constructor.prototype.ngOnChanges;
+  constructor.prototype.ngOnChanges = function() {
+    if (originalNgOnChanges) {
+      originalNgOnChanges.call(this);
+    }
+    // 回転オフクラスを更新
+    if (this._updateRotateOffClass) {
+      this._updateRotateOffClass();
+    }
+  };
+
   const originalNgAfterViewInit = constructor.prototype.ngAfterViewInit;
 
   constructor.prototype.ngAfterViewInit = function() {
@@ -20,6 +45,20 @@ export const extendsCardComponent = (that: any) => {
     if (this.elementRef && this.elementRef.nativeElement) {
       this.elementRef.nativeElement.setAttribute('tabindex', this.tabIndex || '0');
     }
+
+    // @HostBinding('class.object-rotate-off')相当の処理：回転オフクラスを設定
+    const updateRotateOffClass = () => {
+      if (this.elementRef && this.elementRef.nativeElement) {
+        const isRotateOff = pluginConfig.isOffObjectRotateIndividually && this.card?.isRotateOffIndividually;
+        if (isRotateOff) {
+          this.elementRef.nativeElement.classList.add('object-rotate-off');
+        } else {
+          this.elementRef.nativeElement.classList.remove('object-rotate-off');
+        }
+      }
+    };
+    updateRotateOffClass();
+    this._updateRotateOffClass = updateRotateOffClass;
 
     // @HostListener("keydown", ["$event"]) 相当の処理
     const keydownHandler = (e: KeyboardEvent) => {
@@ -67,7 +106,7 @@ export const extendsCardComponent = (that: any) => {
       const selectionMenu = actions.find((action: any) => action.name === '選択したカード');
       if (selectionMenu && selectionMenu.subActions) {
         // 拡張メニューをsubActionsの最後に追加
-        selectionMenu.subActions.push(...makeSelectionContextMenuExtend(this));
+        selectionMenu.subActions.push(...tapCardSelectedContextMenu(this));
       }
     }
 
@@ -81,22 +120,31 @@ export const extendsCardComponent = (that: any) => {
     const actions = originalMakeContextMenu.call(this);
 
     // 拡張メニューを適切な位置に挿入
-    // '重なったカードで山札を作る'の後に挿入
+    // tap-cardなどの拡張は'重なったカードで山札を作る'の後に挿入
     const createStackIndex = actions.findIndex((action: any) => action.name === '重なったカードで山札を作る');
-    if (createStackIndex !== -1) {
-      actions.splice(createStackIndex + 1, 0, ...makeContextMenuExtend(this));
+    const tapCardExtensions = tapCardContextMenu(this);
+    if (createStackIndex !== -1 && tapCardExtensions.length > 0) {
+      actions.splice(createStackIndex + 1, 0, ...tapCardExtensions);
+    }
+
+    // 回転オフメニューは最後に追加
+    if (pluginConfig.isOffObjectRotateIndividually) {
+      const card = this.card;
+      const isRotateOff = card.isRotateOffIndividually;
+      actions.push(ContextMenuSeparator);
+      actions.push({
+        name: isRotateOff ? '回転を有効にする' : '回転を無効にする',
+        action: () => {
+          card.isRotateOffIndividually = !isRotateOff;
+          // クラスを更新
+          if (this._updateRotateOffClass) {
+            this._updateRotateOffClass();
+          }
+        }
+      });
     }
 
     return actions;
   };
 };
 
-// makeSelectionContextMenu に追加するアクション
-export const makeSelectionContextMenuExtend = (that: any) => {
-  return tapCardSelectedContextMenu(that);
-};
-
-// makeContextMenu に追加するアクション
-export const makeContextMenuExtend = (that: any) => {
-  return tapCardContextMenu(that);
-};
