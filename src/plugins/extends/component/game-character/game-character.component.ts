@@ -30,17 +30,6 @@ export const extendsGameCharacterComponent = (that: any) => {
     }
 
     if (pluginConfig.isOffObjectRotateIndividually) {
-      // ElementRefを取得（constructorで注入されていない場合は手動で取得）
-      if (!this.elementRef) {
-        // ElementRefがない場合は、ホスト要素から取得
-        const nativeElement = (this as any).constructor.prototype.constructor.name === 'GameCharacterComponent'
-          ? document.querySelector(`game-character[data-object-id="${this.gameCharacter?.identifier}"]`)
-          : null;
-        if (nativeElement) {
-          this.elementRef = new ElementRef(nativeElement);
-        }
-      }
-
       // @HostBinding('class.object-rotate-off')相当の処理：回転オフクラスを設定
       const updateRotateOffClass = () => {
         if (!this.elementRef?.nativeElement) { return; }

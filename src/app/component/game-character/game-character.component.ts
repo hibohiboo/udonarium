@@ -74,7 +74,7 @@ export class GameCharacterComponent implements OnChanges, OnDestroy {
     private changeDetector: ChangeDetectorRef,
     private selectionService: TabletopSelectionService,
     private pointerDeviceService: PointerDeviceService,
-    private elementRef: ElementRef<HTMLElement>
+    private elementRef: ElementRef<HTMLElement>, // extendsGameCharacterComponent で使用
   ) {
     extendsGameCharacterComponent(this);
   }
