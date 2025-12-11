@@ -1,9 +1,10 @@
-<div [@flyInOut]="'in'" [ngClass]="{'pointer-events-none': isPointerDragging}" class="draggable-panel"
+<div [@flyInOut]="'in'" [ngClass]="{'pointer-events-none': isPointerDragging, 'is-minimized': isMinimized}" class="draggable-panel"
   [style.left.px]="left" [style.top.px]="top" [style.width.px]="width" [style.height.px]="height"
   [draggable.stack]="'.draggable-panel'" [resizable.stack]="'.draggable-panel'" appDraggable appResizable #draggablePanel>
   <div class="title">
     <div class="title-text">{{panelService.title}}</div>
     <div class="title-button" *ngIf="showTitleButtons">
+      <button *ngIf="isAbleMinimizeButton" (click)="toggleMinimize()"><i class="material-icons" [style.font-size.px]="isMinimized ? 12 : 14">{{ isMinimized ? 'crop_din' : 'minimize' }}</i></button>
       <button (click)="toggleFullScreen()"><i class="material-icons" style="font-size: 14px;">fullscreen</i></button>
       <button (click)="close()"><i class="material-icons" style="font-size: 14px;">close</i></button>
     </div>

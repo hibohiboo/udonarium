@@ -2,6 +2,7 @@ import { animate, keyframes, style, transition, trigger } from '@angular/animati
 import { Component, ElementRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
+import { extendsUIPanelComponent } from 'src/plugins/extends/component/ui-panel/ui-panel.component';
 
 @Component({
   selector: 'ui-panel',
@@ -55,7 +56,9 @@ export class UIPanelComponent implements OnInit {
   constructor(
     public panelService: PanelService,
     private pointerDeviceService: PointerDeviceService
-  ) { }
+  ) {
+     extendsUIPanelComponent(this);
+   }
 
   ngOnInit() {
     this.panelService.scrollablePanel = this.scrollablePanel.nativeElement;

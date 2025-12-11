@@ -42,6 +42,7 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   { key: 'isUseKeyboardShortcut', param: 'key-shortcut', label: 'キーボードショートカット', type: 'boolean', category: 'ui' },
   { key: 'isAddCounterBoard', param: 'counter-board', label: 'カウンターボード', type: 'boolean', category: 'ui' },
   { key: 'isChangeDefaultTerrain', param: 'change-default-terrain', label: 'デフォルト地形をCubeに変更', type: 'boolean', category: 'ui' },
+  { key: 'isMinimizableMenu', param: 'mini-menu', label: 'メニュー最小化', type: 'boolean', category: 'ui' },
 
   // チャット・手札
   { key: 'useChatCommand', param: 'use-chat-command', label: 'チャットコマンド', type: 'boolean', category: 'chat' },

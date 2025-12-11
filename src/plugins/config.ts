@@ -19,6 +19,7 @@ interface QueryParamConfig {
   isUseKeyboardShortcut: boolean;
   isAddCounterBoard: boolean;
   isChangeDefaultTerrain: boolean;
+  isMinimizableMenu: boolean;
 
   // チャット・手札
   useChatCommand: boolean;
