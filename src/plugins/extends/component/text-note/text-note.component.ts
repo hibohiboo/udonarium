@@ -1,4 +1,3 @@
-import { ElementRef } from '@angular/core';
 import { ContextMenuSeparator } from 'service/context-menu.service';
 import { pluginConfig } from 'src/plugins/config';
 
@@ -12,14 +11,17 @@ export const extendsTextNoteComponent = (that: any) => {
   }
   constructor.prototype._pluginExtended = true;
 
-  if (pluginConfig.isOffObjectRotateIndividually) {
-    // ngOnChangesをオーバーライドして回転オフクラスを更新
-    const originalNgOnChanges = constructor.prototype.ngOnChanges;
-    constructor.prototype.ngOnChanges = function() {
-      if (originalNgOnChanges) { originalNgOnChanges.call(this); }
-      if (this._updateRotateOffClass) { this._updateRotateOffClass(); }
-    };
-  }
+  // ngOnChangesをオーバーライドしてクラスを更新
+  const originalNgOnChanges = constructor.prototype.ngOnChanges;
+  constructor.prototype.ngOnChanges = function() {
+    if (originalNgOnChanges) { originalNgOnChanges.call(this); }
+    if (pluginConfig.isOffObjectRotateIndividually && this._updateRotateOffClass) {
+      this._updateRotateOffClass();
+    }
+    if (pluginConfig.isTextNoteSelectableUprightFlat && this._updateFlatClass) {
+      this._updateFlatClass();
+    }
+  };
 
   const originalNgAfterViewInit = constructor.prototype.ngAfterViewInit;
 
@@ -42,6 +44,20 @@ export const extendsTextNoteComponent = (that: any) => {
       updateRotateOffClass();
       this._updateRotateOffClass = updateRotateOffClass;
     }
+
+    if (pluginConfig.isTextNoteSelectableUprightFlat) {
+      // @HostBinding('class.text-note-flat')相当の処理：平置きクラスを設定
+      const updateFlatClass = () => {
+        if (!this.elementRef?.nativeElement) { return; }
+        if (this.textNote?.isUpright === false) {
+          this.elementRef.nativeElement.classList.add('text-note-flat');
+        } else {
+          this.elementRef.nativeElement.classList.remove('text-note-flat');
+        }
+      };
+      updateFlatClass();
+      this._updateFlatClass = updateFlatClass;
+    }
   };
 
   // makeSelectionContextMenuメソッドをオーバーライドして拡張メニューを追加
@@ -62,6 +78,34 @@ export const extendsTextNoteComponent = (that: any) => {
   constructor.prototype.makeContextMenu = function() {
     // 元のメソッドを呼び出して基本メニューを取得
     const actions = originalMakeContextMenu.call(this);
+
+    // 直立メニューを追加
+    if (pluginConfig.isTextNoteSelectableUprightFlat) {
+      const textNote = this.textNote;
+      const isUpright = textNote.isUpright;
+      actions.push(ContextMenuSeparator);
+      actions.push(
+        isUpright
+          ? {
+            name: '☑ 直立', action: () => {
+              textNote.isUpright = false;
+              // クラスを更新
+              if (this._updateFlatClass) {
+                this._updateFlatClass();
+              }
+            }
+          }
+          : {
+            name: '☐ 直立', action: () => {
+              textNote.isUpright = true;
+              // クラスを更新
+              if (this._updateFlatClass) {
+                this._updateFlatClass();
+              }
+            }
+          }
+      );
+    }
 
     // 回転オフメニューは最後に追加
     if (pluginConfig.isOffObjectRotateIndividually) {

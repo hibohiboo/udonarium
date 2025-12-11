@@ -8,7 +8,7 @@ export interface SettingItem {
   param: string;
   label: string;
   type: 'boolean' | 'string';
-  category: 'display' | 'card' | 'ui' | 'chat' | 'camera' | 'restriction';
+  category: Category;
 }
 
 /** カテゴリ情報 */
@@ -19,13 +19,17 @@ export interface CategoryInfo {
 }
 
 /** カテゴリ定義 */
-export const CATEGORIES: CategoryInfo[] = [
+export const CATEGORIES = [
   { id: 'display', title: '表示モード' },
   { id: 'card', title: 'カード操作' },
   { id: 'ui', title: 'UI機能' },
   { id: 'chat', title: 'チャット・手札' },
+  { id: 'note', title: 'メモ' },
   { id: 'restriction', title: '機能制限' },
-];
+] as const satisfies readonly CategoryInfo[];
+
+/** カテゴリIDの型 */
+export type Category = typeof CATEGORIES[number]['id'];
 
 /** Boolean型の設定項目 */
 export const BOOLEAN_SETTINGS: SettingItem[] = [
@@ -48,6 +52,9 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   { key: 'useChatCommand', param: 'use-chat-command', label: 'チャットコマンド', type: 'boolean', category: 'chat' },
   { key: 'isUseHandStorage', param: 'use-hand-storage', label: '手札ストレージ', type: 'boolean', category: 'chat' },
 
+  // メモ
+  { key: 'isTextNoteSelectableUprightFlat', param: 'text-note-upright-flat', label: '共有メモの直立と並行の切り替え', type: 'boolean', category: 'note' },
+
   // 機能制限
   { key: 'isOffTableRotate', param: 'table-rotate-off', label: 'テーブル回転オフ', type: 'boolean', category: 'restriction' },
   { key: 'isOffObjectRotateAll', param: 'object-rotate-off-all', label: 'オブジェクト回転オフ', type: 'boolean', category: 'restriction' },
@@ -56,12 +63,12 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
 
 /** String型の設定項目（カメラ座標） */
 export const STRING_SETTINGS: SettingItem[] = [
-  { key: 'z', param: 'z', label: 'カメラZ座標', type: 'string', category: 'camera' },
-  { key: 'x', param: 'x', label: 'カメラX座標', type: 'string', category: 'camera' },
-  { key: 'y', param: 'y', label: 'カメラY座標', type: 'string', category: 'camera' },
-  { key: 'rx', param: 'rx', label: 'カメラRX回転', type: 'string', category: 'camera' },
-  { key: 'ry', param: 'ry', label: 'カメラRY回転', type: 'string', category: 'camera' },
-  { key: 'rz', param: 'rz', label: 'カメラRZ回転', type: 'string', category: 'camera' },
+  { key: 'z', param: 'z', label: 'カメラZ座標', type: 'string', category: 'display' },
+  { key: 'x', param: 'x', label: 'カメラX座標', type: 'string', category: 'display' },
+  { key: 'y', param: 'y', label: 'カメラY座標', type: 'string', category: 'display' },
+  { key: 'rx', param: 'rx', label: 'カメラRX回転', type: 'string', category: 'display' },
+  { key: 'ry', param: 'ry', label: 'カメラRY回転', type: 'string', category: 'display' },
+  { key: 'rz', param: 'rz', label: 'カメラRZ回転', type: 'string', category: 'display' },
 ];
 
 /** 全設定項目 */

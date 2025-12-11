@@ -25,6 +25,9 @@ interface QueryParamConfig {
   useChatCommand: boolean;
   isUseHandStorage: boolean;
 
+  // メモ帳
+  isTextNoteSelectableUprightFlat: boolean;
+
   // 機能制限
   isOffTableRotate: boolean;
   isOffObjectRotateIndividually: boolean;
