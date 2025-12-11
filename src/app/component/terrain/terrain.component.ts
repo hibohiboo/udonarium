@@ -26,6 +26,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
+import { extendsTerrainComponent } from 'src/plugins/extends/component/terrain/terrain.component';
 
 @Component({
   selector: 'terrain',
@@ -79,7 +80,9 @@ export class TerrainComponent implements OnChanges, OnDestroy, AfterViewInit {
     private selectionService: TabletopSelectionService,
     private pointerDeviceService: PointerDeviceService,
     private coordinateService: CoordinateService,
-  ) { }
+  ) {
+    extendsTerrainComponent(this);
+  }
 
   ngOnChanges(): void {
     EventSystem.unregister(this);
