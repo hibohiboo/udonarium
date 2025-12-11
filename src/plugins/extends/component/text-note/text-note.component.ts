@@ -11,6 +11,18 @@ export const extendsTextNoteComponent = (that: any) => {
   }
   constructor.prototype._pluginExtended = true;
 
+  // 共通のクラス更新関数を生成するヘルパー
+  const createClassUpdater = function(className: string, shouldAddClass: () => boolean) {
+    return function(this: any) {
+      if (!this.elementRef?.nativeElement) { return; }
+      if (shouldAddClass.call(this)) {
+        this.elementRef.nativeElement.classList.add(className);
+      } else {
+        this.elementRef.nativeElement.classList.remove(className);
+      }
+    };
+  };
+
   // ngOnChangesをオーバーライドしてクラスを更新
   const originalNgOnChanges = constructor.prototype.ngOnChanges;
   constructor.prototype.ngOnChanges = function() {
@@ -33,29 +45,19 @@ export const extendsTextNoteComponent = (that: any) => {
 
     if (pluginConfig.isOffObjectRotateIndividually) {
       // @HostBinding('class.object-rotate-off')相当の処理：回転オフクラスを設定
-      const updateRotateOffClass = () => {
-        if (!this.elementRef?.nativeElement) { return; }
-        if (this.textNote?.isRotateOffIndividually) {
-          this.elementRef.nativeElement.classList.add('object-rotate-off');
-        } else {
-          this.elementRef.nativeElement.classList.remove('object-rotate-off');
-        }
-      };
-      updateRotateOffClass();
+      const updateRotateOffClass = createClassUpdater('object-rotate-off', function() {
+        return this.textNote?.isRotateOffIndividually === true;
+      });
+      updateRotateOffClass.call(this);
       this._updateRotateOffClass = updateRotateOffClass;
     }
 
     if (pluginConfig.isTextNoteSelectableUprightFlat) {
       // @HostBinding('class.text-note-flat')相当の処理：平置きクラスを設定
-      const updateFlatClass = () => {
-        if (!this.elementRef?.nativeElement) { return; }
-        if (this.textNote?.isUpright === false) {
-          this.elementRef.nativeElement.classList.add('text-note-flat');
-        } else {
-          this.elementRef.nativeElement.classList.remove('text-note-flat');
-        }
-      };
-      updateFlatClass();
+      const updateFlatClass = createClassUpdater('text-note-flat', function() {
+        return this.textNote?.isUpright === false;
+      });
+      updateFlatClass.call(this);
       this._updateFlatClass = updateFlatClass;
     }
   };
