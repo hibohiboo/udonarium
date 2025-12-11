@@ -7,6 +7,7 @@ import { fetchZipRoom } from "../first-fetch-zip-room/extend/app.component";
 import * as counterBoard from 'src/plugins/add-counter-board/extend/app.component';
 import { ContextMenuService } from "service/context-menu.service";
 import { openHelpEvent, openHelp, useHelp } from "../keyboard-help/app/app.component";
+import { extendTabletopActionService } from "./service/tabletop-action.service";
 
 export const outerApp = {
   panelService: null,
@@ -17,6 +18,8 @@ const afterViewInitExtend = (that: any) => {
 };
 
 export const extendsAppComponent = (that: any) => {
+  // TabletopActionServiceのプロトタイプを拡張
+  extendTabletopActionService();
   // isSettingsRoute プロパティをプラグインから注入
   Object.defineProperty(that, 'isSettingsRoute', {
     get: function() {

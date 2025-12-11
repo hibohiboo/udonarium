@@ -14,6 +14,7 @@ interface QueryParamConfig {
   // カード操作
   isTapCard: boolean;
   isCardShuffleNormalPosition: boolean;
+  addBlankCardAddContextMenu: boolean;
 
   // UI機能
   isUseKeyboardShortcut: boolean;
