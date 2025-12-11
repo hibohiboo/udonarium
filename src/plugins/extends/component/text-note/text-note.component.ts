@@ -1,5 +1,6 @@
 import { ContextMenuSeparator } from 'service/context-menu.service';
 import { pluginConfig } from 'src/plugins/config';
+import { createClassUpdater } from '../utils';
 
 export const extendsTextNoteComponent = (that: any) => {
   // Angularのライフサイクルフックをプロトタイプレベルでオーバーライド
@@ -10,18 +11,6 @@ export const extendsTextNoteComponent = (that: any) => {
     return;
   }
   constructor.prototype._pluginExtended = true;
-
-  // 共通のクラス更新関数を生成するヘルパー
-  const createClassUpdater = function(className: string, shouldAddClass: () => boolean) {
-    return function(this: any) {
-      if (!this.elementRef?.nativeElement) { return; }
-      if (shouldAddClass.call(this)) {
-        this.elementRef.nativeElement.classList.add(className);
-      } else {
-        this.elementRef.nativeElement.classList.remove(className);
-      }
-    };
-  };
 
   // ngOnChangesをオーバーライドしてクラスを更新
   const originalNgOnChanges = constructor.prototype.ngOnChanges;

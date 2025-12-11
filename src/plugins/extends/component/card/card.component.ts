@@ -1,5 +1,6 @@
 import { ContextMenuSeparator } from 'service/context-menu.service';
 import { pluginConfig } from 'src/plugins/config';
+import { createClassUpdater } from '../utils';
 import { addTabIndex } from 'src/plugins/keyboard-shortcut/extend/component/addTabIndex';
 import {  onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
 import { tapCardContextMenu, tapCardEnter, tapCardSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
@@ -56,16 +57,10 @@ export const extendsCardComponent = (that: any) => {
 
     if (pluginConfig.isOffObjectRotateIndividually) {
       // @HostBinding('class.object-rotate-off')相当の処理：回転オフクラスを設定
-      const updateRotateOffClass = () => {
-        if (!this.elementRef?.nativeElement) { return; }
-        if (this.card?.isRotateOffIndividually) {
-          this.elementRef.nativeElement.classList.add('object-rotate-off');
-        } else {
-          this.elementRef.nativeElement.classList.remove('object-rotate-off');
-        }
-
-      };
-      updateRotateOffClass();
+      const updateRotateOffClass = createClassUpdater('object-rotate-off', function() {
+        return this.card?.isRotateOffIndividually === true;
+      });
+      updateRotateOffClass.call(this);
       this._updateRotateOffClass = updateRotateOffClass;
     }
   };

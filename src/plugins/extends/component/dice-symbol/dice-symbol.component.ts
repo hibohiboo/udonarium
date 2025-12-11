@@ -1,5 +1,6 @@
 import { ContextMenuSeparator } from 'service/context-menu.service';
 import { pluginConfig } from 'src/plugins/config';
+import { createClassUpdater } from '../utils';
 
 export const extendsDiceSymbolComponent = (that: any) => {
   // Angularのライフサイクルフックをプロトタイプレベルでオーバーライド
@@ -29,16 +30,10 @@ export const extendsDiceSymbolComponent = (that: any) => {
 
     if (pluginConfig.isOffObjectRotateIndividually) {
       // @HostBinding('class.object-rotate-off')相当の処理：回転オフクラスを設定
-      const updateRotateOffClass = () => {
-        if (!this.elementRef?.nativeElement) { return; }
-        if (this.diceSymbol?.isRotateOffIndividually) {
-          this.elementRef.nativeElement.classList.add('object-rotate-off');
-        } else {
-          this.elementRef.nativeElement.classList.remove('object-rotate-off');
-        }
-
-      };
-      updateRotateOffClass();
+      const updateRotateOffClass = createClassUpdater('object-rotate-off', function() {
+        return this.diceSymbol?.isRotateOffIndividually === true;
+      });
+      updateRotateOffClass.call(this);
       this._updateRotateOffClass = updateRotateOffClass;
     }
   };
