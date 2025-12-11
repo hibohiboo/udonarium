@@ -61,13 +61,17 @@ export const extendsAppComponent = (that: any) => {
 
   // プロトタイプレベルでngAfterViewInitをオーバーライド
   constructor.prototype.ngAfterViewInit = function() {
-    // @HostBinding('class.is2d')相当の処理：ホスト要素（app-root）にis2dクラスを追加
+
     const appRoot = document.querySelector('app-root');
     if (appRoot) {
+      // @HostBinding('class.is2d')相当の処理：ホスト要素（app-root）にis2dクラスを追加
       if (is2d()) {
         appRoot.classList.add('is2d');
       } else {
         appRoot.classList.remove('is2d');
+      }
+      if(pluginConfig.isOffObjectRotateAll){
+         appRoot.classList.add('object-rotate-off');
       }
     }
 

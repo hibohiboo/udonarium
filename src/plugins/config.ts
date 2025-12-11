@@ -27,6 +27,7 @@ interface QueryParamConfig {
   // 機能制限
   isOffTableRotate: boolean;
   isOffObjectRotateIndividually: boolean;
+  isOffObjectRotateAll: boolean;
 
   // カメラ座標（オプショナル）
   z: string | null;
