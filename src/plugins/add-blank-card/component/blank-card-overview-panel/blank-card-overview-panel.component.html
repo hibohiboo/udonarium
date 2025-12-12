@@ -19,6 +19,17 @@
       <ng-container *ngIf="displayCard?.isVisible == null || displayCard?.isVisible">{{card.name}}</ng-container>
       <ng-container *ngIf="displayCard?.isVisible != null && !displayCard?.isVisible">ブランクカード</ng-container>
     </div>
+    <div *ngIf="displayCard && displayCard.isVisible && displayCard.isFront" class="component-background">
+      <div class="section" style="padding: 8px;">
+        <div class="section-text">テキスト</div>
+        <div class="note" style="position: relative;">
+          <div class="is-fill">
+            <textarea  class="textarea" [(ngModel)]="displayCard.text" spellcheck="false"></textarea>
+          </div>
+          <div class="textarea-spacer">{{displayCard.text}}</div>
+        </div>
+      </div>
+    </div>
     <div class="component-background">
       <div class="grid-container-root" *ngIf="hasDataElms && displayCard && displayCard.isVisible">
         <div class="grid-container">
