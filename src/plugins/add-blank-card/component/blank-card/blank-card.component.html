@@ -9,7 +9,7 @@
     <img *ngIf="isHand && frontImage" class="card-image thumbnail-transform is-translucent chrome-smooth-image-trick" [src]="frontImage.url | safe: 'resourceUrl'">
     <div *ngIf="isFront && text"
       class="text" style="z-index: 5; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px; pointer-events: none; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-      <div [style.font-size.px]="fontsize" [style.color]="color" [innerHTML]="text | safe: 'html'"></div>
+      <div [style.font-size.px]="fontsize" [style.color]="color" [innerHTML]="text | safe: 'html'" style="white-space: pre-wrap; word-wrap: break-word;"></div>
     </div>
     <ng-container *ngIf="!isIconHidden">
       <div class="rotate-grab of-left-top">

@@ -4,7 +4,7 @@
     <div *ngIf="hasImage" style="position: relative;">
       <img class="card-image" [src]="imageUrl | safe: 'resourceUrl'" />
       <div *ngIf="displayCard && displayCard.isFront && displayCard.text" style="position: absolute; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-        <div [style.font-size.px]="displayCard.fontsize" [style.color]="displayCard.color" [innerHTML]="displayCard.text | safe: 'html'"></div>
+        <div [style.font-size.px]="displayCard.fontsize" [style.color]="displayCard.color" [innerHTML]="displayCard.text | safe: 'html'" style="white-space: pre-wrap; word-wrap: break-word;"></div>
       </div>
       <button class="zoom-button" (click)="chanageImageView(true)">
         <i class="material-icons">zoom_in</i>
@@ -93,7 +93,7 @@
     <img class="contain-image" [src]="imageUrl | safe: 'resourceUrl'" />
 
     <div *ngIf="displayCard && displayCard.isFront && displayCard.text" style="position: absolute; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-      <div [style.font-size.px]="displayCard.fontsize * 3" [style.color]="displayCard.color" [innerHTML]="displayCard.text | safe: 'html'"></div>
+      <div [style.font-size.px]="displayCard.fontsize * 3" [style.color]="displayCard.color" [innerHTML]="displayCard.text | safe: 'html'" style="white-space: pre-wrap; word-wrap: break-word;"></div>
     </div>
   </div>
 </ng-template>
