@@ -3,6 +3,7 @@ import { is2d } from 'src/plugins/mode2d/extends/components/game-table/game-tabl
 import { isEmptyDefaultTabletopObjects, transformDefault } from 'src/plugins/first-fetch-zip-room/extend/components/game-table/game-table.components';
 import { initCommandGameBoard } from 'src/plugins/use-chat-command/game-board';
 import { extendsGameTableComponentForHandStorage } from 'src/plugins/hand-storage/extend/component/game-table/game-table.component';
+import { extendsGameTableComponentForBlankCard } from 'src/plugins/add-blank-card/extend/component/game-table/game-table.component';
 import { EventSystem } from '@udonarium/core/system';
 import { pluginConfig } from 'src/plugins/config';
 
@@ -78,4 +79,6 @@ export const extendsGameTableComponent = (that: any) => {
 
   // HandStorageプラグイン拡張を適用
   extendsGameTableComponentForHandStorage(that);
+  // BlankCardプラグイン拡張を適用
+  extendsGameTableComponentForBlankCard(that);
 };

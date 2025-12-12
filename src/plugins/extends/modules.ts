@@ -7,6 +7,10 @@ import { HandStorageService } from '../hand-storage/extend/service/hand-storage.
 import { HelpKeyboardComponent } from '../keyboard-help/component/help-keyboard/help-keyboard.component';
 import { PluginSettingsComponent } from '../settings/component/plugin-settings.component';
 import { settingsRoutes } from '../settings/routing';
+import { BlankCardComponent } from '../add-blank-card/component/blank-card/blank-card.component';
+import { BlankCardStackComponent } from '../add-blank-card/component/blank-card-stack/blank-card-stack.component';
+import { BlankCardOverviewPanelComponent } from '../add-blank-card/component/blank-card-overview-panel/blank-card-overview-panel.component';
+import { BlankCardSheetComponent } from '../add-blank-card/component/blank-card-sheet/blank-card-sheet.component';
 
 
 const components = [
@@ -15,6 +19,10 @@ const components = [
   HandStorageComponent,
   HelpKeyboardComponent,
   PluginSettingsComponent,
+  BlankCardComponent,
+  BlankCardStackComponent,
+  BlankCardOverviewPanelComponent,
+  BlankCardSheetComponent,
 ];
 const imports = [];
 const services = [CounterBoardService, HandStorageService];

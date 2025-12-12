@@ -8,6 +8,8 @@ import * as counterBoard from 'src/plugins/add-counter-board/extend/app.componen
 import { ContextMenuService } from "service/context-menu.service";
 import { openHelpEvent, openHelp, useHelp } from "../keyboard-help/app/app.component";
 import { extendTabletopActionService } from "./service/tabletop-action.service";
+import { extendTabletopServiceForBlankCard } from "../add-blank-card/extend/service/tabletop.service";
+import { extendTooltipDirectiveForBlankCard } from "../add-blank-card/extend/directive/tooltip.directive";
 
 export const outerApp = {
   panelService: null,
@@ -20,6 +22,10 @@ const afterViewInitExtend = (that: any) => {
 export const extendsAppComponent = (that: any) => {
   // TabletopActionServiceのプロトタイプを拡張
   extendTabletopActionService();
+  // TabletopServiceのプロトタイプを拡張（BlankCard対応）
+  extendTabletopServiceForBlankCard();
+  // TooltipDirectiveのプロトタイプを拡張（BlankCard専用OverviewPanel対応）
+  extendTooltipDirectiveForBlankCard();
   // isSettingsRoute プロパティをプラグインから注入
   Object.defineProperty(that, 'isSettingsRoute', {
     get: function() {
