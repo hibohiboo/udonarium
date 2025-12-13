@@ -375,6 +375,8 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     const objects = [
       ...this.tabletopService.cards,
       ...this.tabletopService.cardStacks,
+      ...(this.tabletopService as any).blankCards || [],
+      ...(this.tabletopService as any).blankCardStacks || [],
       ...this.tabletopService.characters,
       ...this.tabletopService.terrains,
       ...this.tabletopService.tableMasks,

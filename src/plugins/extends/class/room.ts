@@ -12,6 +12,8 @@ import { DiceSymbol } from '@udonarium/dice-symbol';
 import { DataElement } from '@udonarium/data-element';
 import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
 import { TabletopObject } from '@udonarium/tabletop-object';
+import { BlankCard } from 'src/plugins/add-blank-card/class/blank-card';
+import { BlankCardStack } from 'src/plugins/add-blank-card/class/blank-card-stack';
 import { innerXMLHandStorageObject } from 'src/plugins/hand-storage/extend/class/room';
 import { innerXMLCounterBoard } from 'src/plugins/add-counter-board/extend/class/room';
 
@@ -168,6 +170,8 @@ export const extendsRoom = (that: any) => {
     objects = objects.concat(ObjectStore.instance.getObjects(TextNote));
     objects = objects.concat(ObjectStore.instance.getObjects(CardStack));
     objects = objects.concat(ObjectStore.instance.getObjects(Card).filter((obj: any) => { return obj.parent === null }));
+    objects = objects.concat(ObjectStore.instance.getObjects(BlankCardStack));
+    objects = objects.concat(ObjectStore.instance.getObjects(BlankCard).filter((obj: any) => { return obj.parent === null }));
     objects = objects.concat(ObjectStore.instance.getObjects(DiceSymbol));
 
     // プラグインによる拡張を適用
@@ -193,6 +197,8 @@ export const extendsRoom = (that: any) => {
     objects = objects.concat(ObjectStore.instance.getObjects(TextNote));
     objects = objects.concat(ObjectStore.instance.getObjects(CardStack));
     objects = objects.concat(ObjectStore.instance.getObjects(Card));
+    objects = objects.concat(ObjectStore.instance.getObjects(BlankCardStack));
+    objects = objects.concat(ObjectStore.instance.getObjects(BlankCard));
     objects = objects.concat(ObjectStore.instance.getObjects(DiceSymbol));
 
     // プラグインによる拡張を適用
