@@ -53,6 +53,7 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   // チャット・手札
   { key: 'useChatCommand', param: 'use-chat-command', label: 'チャットコマンド', type: 'boolean', category: 'chat' },
   { key: 'isUseHandStorage', param: 'use-hand-storage', label: '手札ストレージ', type: 'boolean', category: 'chat' },
+  { key: 'isKeepBoardOnLoad', param: 'keep-board-on-load', label: 'ボード上に残す機能', type: 'boolean', category: 'chat' },
 
   // メモ
   { key: 'isTextNoteSelectableUprightFlat', param: 'text-note-upright-flat', label: '共有メモの直立と並行の切り替え', type: 'boolean', category: 'note' },

@@ -25,6 +25,7 @@ interface QueryParamConfig {
   // チャット・手札
   useChatCommand: boolean;
   isUseHandStorage: boolean;
+  isKeepBoardOnLoad: boolean;
 
   // メモ帳
   isTextNoteSelectableUprightFlat: boolean;
