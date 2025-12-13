@@ -377,6 +377,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
       ...this.tabletopService.cardStacks,
       ...this.tabletopService.characters,
       ...this.tabletopService.terrains,
+      ...this.tabletopService.textNotes,
       ...this.tabletopService.diceSymbols,
     ];
     const topOfObjects = this._calcTopObjects(objects);

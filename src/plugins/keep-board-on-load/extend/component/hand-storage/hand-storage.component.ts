@@ -19,7 +19,7 @@ export function keepBoardOnLoadContextMenu(component: any): any[] {
       name: isKeepOnLoad ? 'ロード時に残す設定を解除' : 'ロード時にボード上に残す',
       action: () => {
         if (isKeepOnLoad) {
-          removeKeepOnLoadSettings(handStorage);
+          removeKeepOnLoadSettings(component);
         } else {
           setKeepOnLoadSettings(component);
         }
@@ -66,8 +66,18 @@ function setKeepOnLoadSettings(component: any): void {
 /**
  * ボードとボード上のオブジェクトから「ロード時に残す」設定を削除
  */
-function removeKeepOnLoadSettings(handStorage: TabletopObject): void {
+function removeKeepOnLoadSettings(component: any): void {
+  const handStorage = component.handStorage;
+
+  // ボード自体から設定を削除
   removeExtensionSettings(handStorage);
+
+  // ボード上のオブジェクトから設定を削除
+  component.calcTopOfObjects();
+  for (const topOfObject of component.topOfObjects) {
+    removeExtensionSettings(topOfObject.obj);
+  }
+
   handStorage.update();
 }
 
@@ -118,9 +128,16 @@ function removeExtensionSettings(object: TabletopObject): void {
   const settingsElement = detailElement.getFirstElementByName('拡張設定');
   if (!settingsElement) return;
 
+  // ロード時に残すかフラグを削除
   const keepElement = settingsElement.getFirstElementByName('ロード時に残すか');
   if (keepElement) {
     keepElement.destroy();
+  }
+
+  // IDも削除
+  const idElement = settingsElement.getFirstElementByName('ID');
+  if (idElement) {
+    idElement.destroy();
   }
 
   object.update();
