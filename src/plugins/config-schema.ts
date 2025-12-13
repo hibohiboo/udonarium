@@ -20,6 +20,7 @@ export interface CategoryInfo {
 
 /** カテゴリ定義 */
 export const CATEGORIES = [
+  { id: 'extend', title: '拡張機能' },
   { id: 'display', title: '表示モード' },
   { id: 'card', title: 'カード操作' },
   { id: 'ui', title: 'UI機能' },

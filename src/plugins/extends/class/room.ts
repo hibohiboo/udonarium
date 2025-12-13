@@ -194,6 +194,7 @@ export const extendsRoom = (that: any) => {
     objects = objects.concat(ObjectStore.instance.getObjects(CardStack));
     objects = objects.concat(ObjectStore.instance.getObjects(Card));
     objects = objects.concat(ObjectStore.instance.getObjects(DiceSymbol));
+
     // プラグインによる拡張を適用
     objects = innerXMLHandStorageObject(objects);
     objects = innerXMLCounterBoard(objects);
