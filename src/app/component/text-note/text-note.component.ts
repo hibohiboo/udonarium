@@ -22,6 +22,7 @@ import { ContextMenuAction, ContextMenuSeparator, ContextMenuService } from 'ser
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
+import { extendsTextNoteComponent } from 'src/plugins/extends/component/text-note/text-note.component';
 
 @Component({
   selector: 'text-note',
@@ -66,8 +67,11 @@ export class TextNoteComponent implements OnChanges, OnDestroy {
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
     private selectionService: TabletopSelectionService,
-    private pointerDeviceService: PointerDeviceService
-  ) { }
+    private pointerDeviceService: PointerDeviceService,
+    private elementRef: ElementRef<HTMLElement>
+  ) {
+    extendsTextNoteComponent(this);
+  }
 
   ngOnChanges(): void {
     EventSystem.unregister(this);

@@ -1,3 +1,4 @@
+import { extendCard } from 'src/plugins/extends/class/card';
 import { ImageFile } from './core/file-storage/image-file';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { Network } from './core/system';
@@ -13,6 +14,10 @@ export enum CardState {
 
 @SyncObject('card')
 export class Card extends TabletopObject {
+  constructor(identifier?: string) {
+    super(identifier);
+    extendCard(this);
+  }
   @SyncVar() state: CardState = CardState.FRONT;
   @SyncVar() rotate: number = 0;
   @SyncVar() owner: string = '';

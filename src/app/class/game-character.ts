@@ -1,3 +1,4 @@
+import { extendGameCharacter } from 'src/plugins/extends/class/game-character';
 import { ChatPalette } from './chat-palette';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { DataElement } from './data-element';
@@ -5,6 +6,10 @@ import { TabletopObject } from './tabletop-object';
 
 @SyncObject('character')
 export class GameCharacter extends TabletopObject {
+  constructor(identifier?: string) {
+    super(identifier);
+    extendGameCharacter(this);
+  }
   @SyncVar() rotate: number = 0;
   @SyncVar() roll: number = 0;
 

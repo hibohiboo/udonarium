@@ -1,0 +1,138 @@
+import { ContextMenuSeparator } from 'service/context-menu.service';
+import { pluginConfig } from 'src/plugins/config';
+import { createClassUpdater } from '../utils';
+import { addTabIndex } from 'src/plugins/keyboard-shortcut/extend/component/addTabIndex';
+import {  onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
+import { tapCardContextMenu, tapCardEnter, tapCardSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
+
+export const extendsCardComponent = (that: any) => {
+  // keyboard-shortcut プラグインの初期化
+  addTabIndex(that);
+
+  // Angularのライフサイクルフックをプロトタイプレベルでオーバーライド
+  const constructor = that.constructor;
+
+  // 既にプラグインでオーバーライド済みかチェック
+  if (constructor.prototype._pluginExtended) {
+    return;
+  }
+  constructor.prototype._pluginExtended = true;
+  if (pluginConfig.isOffObjectRotateIndividually) {
+    // ngOnChangesをオーバーライドして回転オフクラスを更新
+    const originalNgOnChanges = constructor.prototype.ngOnChanges;
+    constructor.prototype.ngOnChanges = function() {
+      if (originalNgOnChanges) { originalNgOnChanges.call(this); }
+      if (this._updateRotateOffClass) { this._updateRotateOffClass(); }
+    };
+  }
+
+  const originalNgAfterViewInit = constructor.prototype.ngAfterViewInit;
+
+  constructor.prototype.ngAfterViewInit = function() {
+    // 元のngAfterViewInitを実行
+    if (originalNgAfterViewInit) {
+      originalNgAfterViewInit.call(this);
+    }
+
+    // @HostBinding('tabIndex')相当の処理：DOM要素のtabindex属性を設定
+    if (this.elementRef && this.elementRef.nativeElement) {
+      this.elementRef.nativeElement.setAttribute('tabindex', this.tabIndex || '0');
+    }
+
+    // @HostListener("keydown", ["$event"]) 相当の処理
+    const keydownHandler = (e: KeyboardEvent) => {
+      onKeyDownKeyboardShortcutCard(this, e);
+    };
+    this.elementRef.nativeElement.addEventListener('keydown', keydownHandler);
+
+    // @HostListener("pointerenter", ["$event"]) 相当の処理
+    const pointerenterHandler = (e: MouseEvent) => {
+      tapCardEnter(this, e);
+    };
+    this.elementRef.nativeElement.addEventListener('pointerenter', pointerenterHandler);
+
+    // イベントリスナーを破棄時に削除するため保存
+    this._keydownHandler = keydownHandler;
+    this._pointerenterHandler = pointerenterHandler;
+
+    if (pluginConfig.isOffObjectRotateIndividually) {
+      // @HostBinding('class.object-rotate-off')相当の処理：回転オフクラスを設定
+      const updateRotateOffClass = createClassUpdater('object-rotate-off', function() {
+        return this.card?.isRotateOffIndividually === true;
+      });
+      updateRotateOffClass.call(this);
+      this._updateRotateOffClass = updateRotateOffClass;
+    }
+  };
+
+  // ngOnDestroyもオーバーライドしてイベントリスナーをクリーンアップ
+  const originalNgOnDestroy = constructor.prototype.ngOnDestroy;
+  constructor.prototype.ngOnDestroy = function() {
+    // イベントリスナーを削除
+    if (this._keydownHandler) {
+      this.elementRef.nativeElement.removeEventListener('keydown', this._keydownHandler);
+    }
+    if (this._pointerenterHandler) {
+      this.elementRef.nativeElement.removeEventListener('pointerenter', this._pointerenterHandler);
+    }
+
+    // 元のngOnDestroyを実行
+    if (originalNgOnDestroy) {
+      originalNgOnDestroy.call(this);
+    }
+  };
+
+  // makeSelectionContextMenuメソッドをオーバーライドして拡張メニューを追加
+  const originalMakeSelectionContextMenu = constructor.prototype.makeSelectionContextMenu;
+  constructor.prototype.makeSelectionContextMenu = function() {
+    // 元のメソッドを呼び出して基本メニューを取得
+    const actions = originalMakeSelectionContextMenu.call(this);
+
+    // 選択されている場合、拡張メニューを追加
+    if (this.isSelected && actions.length > 0) {
+      // '選択したカード'のsubActionsを探して拡張
+      const selectionMenu = actions.find((action: any) => action.name === '選択したカード');
+      if (selectionMenu && selectionMenu.subActions) {
+        // 拡張メニューをsubActionsの最後に追加
+        selectionMenu.subActions.push(...tapCardSelectedContextMenu(this));
+      }
+    }
+
+    return actions;
+  };
+
+  // makeContextMenuメソッドをオーバーライドして拡張メニューを追加
+  const originalMakeContextMenu = constructor.prototype.makeContextMenu;
+  constructor.prototype.makeContextMenu = function() {
+    // 元のメソッドを呼び出して基本メニューを取得
+    const actions = originalMakeContextMenu.call(this);
+
+    // 拡張メニューを適切な位置に挿入
+    // tap-cardなどの拡張は'重なったカードで山札を作る'の後に挿入
+    const createStackIndex = actions.findIndex((action: any) => action.name === '重なったカードで山札を作る');
+    const tapCardExtensions = tapCardContextMenu(this);
+    if (createStackIndex !== -1 && tapCardExtensions.length > 0) {
+      actions.splice(createStackIndex + 1, 0, ...tapCardExtensions);
+    }
+
+    // 回転オフメニューは最後に追加
+    if (pluginConfig.isOffObjectRotateIndividually) {
+      const card = this.card;
+      const isRotateOff = card.isRotateOffIndividually;
+      actions.push(ContextMenuSeparator);
+      actions.push({
+        name: isRotateOff ? '回転を有効にする' : '回転を無効にする',
+        action: () => {
+          card.isRotateOffIndividually = !isRotateOff;
+          // クラスを更新
+          if (this._updateRotateOffClass) {
+            this._updateRotateOffClass();
+          }
+        }
+      });
+    }
+
+    return actions;
+  };
+};
+

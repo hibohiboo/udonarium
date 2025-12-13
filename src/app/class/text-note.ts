@@ -1,3 +1,4 @@
+import { extendTextNote } from 'src/plugins/extends/class/text-note';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { DataElement } from './data-element';
 import { TabletopObject } from './tabletop-object';
@@ -5,6 +6,10 @@ import { moveToTopmost } from './tabletop-object-util';
 
 @SyncObject('text-note')
 export class TextNote extends TabletopObject {
+  constructor(identifier?: string) {
+    super(identifier);
+    extendTextNote(this);
+  }
   @SyncVar() rotate: number = 0;
   @SyncVar() zindex: number = 0;
   @SyncVar() password: string = '';

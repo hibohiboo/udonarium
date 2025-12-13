@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
   Input,
   OnChanges,
@@ -21,6 +22,7 @@ import { ContextMenuAction, ContextMenuSeparator, ContextMenuService } from 'ser
 import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
+import { extendsGameCharacterComponent } from 'src/plugins/extends/component/game-character/game-character.component';
 
 @Component({
   selector: 'game-character',
@@ -71,8 +73,11 @@ export class GameCharacterComponent implements OnChanges, OnDestroy {
     private panelService: PanelService,
     private changeDetector: ChangeDetectorRef,
     private selectionService: TabletopSelectionService,
-    private pointerDeviceService: PointerDeviceService
-  ) { }
+    private pointerDeviceService: PointerDeviceService,
+    private elementRef: ElementRef<HTMLElement>, // extendsGameCharacterComponent で使用
+  ) {
+    extendsGameCharacterComponent(this);
+  }
 
   ngOnChanges(): void {
     EventSystem.unregister(this);

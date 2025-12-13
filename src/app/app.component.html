@@ -1,3 +1,8 @@
+<!-- ?mode=settings の場合は設定ページを表示 -->
+<app-plugin-settings *ngIf="isSettingsRoute"></app-plugin-settings>
+
+<!-- それ以外はゲーム画面を表示 -->
+<ng-container *ngIf="!isSettingsRoute">
 <div id="app-table-layer" style="position: absolute; width: 100%; height: 100%; overflow: hidden;">
   <game-table></game-table>
 </div>
@@ -65,5 +70,7 @@
     </ul>
   </nav>
 </ui-panel>
+</ng-container>
 <div #modalLayer></div>
 <network-indicator class="networkIndicator"></network-indicator>
+

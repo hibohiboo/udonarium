@@ -70,6 +70,3 @@ export const onKeyDownKeyboardShortcutCard = (that, e: KeyboardEvent) => {
   }
 };
 
-export const initKeyboardShortcutCard = (that) => {
-  that.tabIndex = '0'; //TabIndexを付与。これをしないとフォーカスできないのでコンポーネントに対するキーイベントを取得できない。
-};

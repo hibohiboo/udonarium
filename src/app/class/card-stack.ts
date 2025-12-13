@@ -1,3 +1,4 @@
+import { extendCardStack } from 'src/plugins/extends/class/card-stack';
 import { Card } from './card';
 import { ImageFile } from './core/file-storage/image-file';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
@@ -9,6 +10,10 @@ import { moveToBackmost, moveToTopmost } from './tabletop-object-util';
 
 @SyncObject('card-stack')
 export class CardStack extends TabletopObject {
+  constructor(identifier?: string) {
+    super(identifier);
+    extendCardStack(this);
+  }
   @SyncVar() rotate: number = 0;
   @SyncVar() zindex: number = 0;
   @SyncVar() owner: string = '';

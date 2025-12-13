@@ -5,7 +5,6 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  HostBinding,
   HostListener,
   Input,
   NgZone,
@@ -31,8 +30,7 @@ import { PanelOption, PanelService } from 'service/panel.service';
 import { PointerDeviceService } from 'service/pointer-device.service';
 import { SelectionState, TabletopSelectionService } from 'service/tabletop-selection.service';
 import { cardShuffleNormalPosition } from 'src/plugins/card-shuffle-normal-position/extend/component/card-stack/card-stack.component';
-import { initKeyboardShortcutCardStack, onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
-import { tapCardStackContextMenu, tapCardStackEnter, tapCardStackSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
+import { extendsCardStackComponent } from 'src/plugins/extends/component/card-stack/card-stack.component';
 
 @Component({
   selector: 'card-stack',
@@ -91,7 +89,6 @@ export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
 
   private interactGesture: ObjectInteractGesture = null;
 
-  @HostBinding('tabIndex') tabIndex:string;
   constructor(
     private ngZone: NgZone,
     private contextMenuService: ContextMenuService,
@@ -102,16 +99,8 @@ export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
     private imageService: ImageService,
     private pointerDeviceService: PointerDeviceService
   ) {
-    initKeyboardShortcutCardStack(this);
+    extendsCardStackComponent(this);
    }
-
-  @HostListener("keydown", ["$event"])
-  onKeydown(e: KeyboardEvent) { onKeyDownKeyboardShortcutCardStack(this,e); }
-
-  @HostListener("pointerenter", ["$event"])
-  onPointerenter(e: MouseEvent) {
-     tapCardStackEnter(this, e);
-  }
 
   ngOnChanges(): void {
     EventSystem.unregister(this);
@@ -360,7 +349,6 @@ export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
                 SoundEffect.play(PresetSound.cardDraw);
               }
             },
-            ...tapCardStackSelectedContextMenu(this),
             ContextMenuSeparator,
             {
               name: 'すべてシャッフル', action: () => {
@@ -422,7 +410,6 @@ export class CardStackComponent implements OnChanges, AfterViewInit, OnDestroy {
         SoundEffect.play(PresetSound.cardDraw);
       }
     });
-    actions.push(...tapCardStackContextMenu(this));
     actions.push(ContextMenuSeparator);
     actions.push({
       name: 'シャッフル', action: () => {

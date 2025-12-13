@@ -56,6 +56,7 @@ import {
 import { cardBackImageAllChangeContextMenuHandStorage } from 'src/plugins/card-back-image-all-change/extend/component/hand-storage/hand-storage.component';
 import { ModalService } from 'service/modal.service';
 import { handStorageAlignmentContextMenu } from 'src/plugins/hand-storage-alignment/extend/component/hand-storage/hand-storage.component';
+import { keepBoardOnLoadContextMenu } from 'src/plugins/keep-board-on-load/extend/component/hand-storage/hand-storage.component';
 
 interface TopOfObject {
   obj: TabletopObject;
@@ -300,6 +301,7 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
           },
         },
         ...rotateOffContextMenuHandStorage(this),
+        ...keepBoardOnLoadContextMenu(this),
         ContextMenuSeparator,
         {
           name: 'ボード上のオブジェクトを一括削除',
@@ -373,8 +375,12 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
     const objects = [
       ...this.tabletopService.cards,
       ...this.tabletopService.cardStacks,
+      ...(this.tabletopService as any).blankCards || [],
+      ...(this.tabletopService as any).blankCardStacks || [],
       ...this.tabletopService.characters,
       ...this.tabletopService.terrains,
+      ...this.tabletopService.tableMasks,
+      ...this.tabletopService.textNotes,
       ...this.tabletopService.diceSymbols,
     ];
     const topOfObjects = this._calcTopObjects(objects);

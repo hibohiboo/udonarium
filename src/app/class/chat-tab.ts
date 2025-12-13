@@ -1,4 +1,4 @@
-import { useChatCommand } from 'src/plugins/use-chat-command';
+import { extendsChatTab } from 'src/plugins/extends/class/chat-tab';
 import { ChatMessage, ChatMessageContext } from './chat-message';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { ObjectNode } from './core/synchronize-object/object-node';
@@ -7,6 +7,11 @@ import { EventSystem } from './core/system';
 
 @SyncObject('chat-tab')
 export class ChatTab extends ObjectNode implements InnerXml {
+  constructor(identifier?: string) {
+    super(identifier);
+    extendsChatTab(this);
+  }
+
   @SyncVar() name: string = 'タブ';
   get chatMessages(): ChatMessage[] { return <ChatMessage[]>this.children; }
 
@@ -45,7 +50,6 @@ export class ChatTab extends ObjectNode implements InnerXml {
     chat.initialize();
     EventSystem.trigger('SEND_MESSAGE', { tabIdentifier: this.identifier, messageIdentifier: chat.identifier });
     this.appendChild(chat);
-    useChatCommand(message?.text);
     return chat;
   }
 

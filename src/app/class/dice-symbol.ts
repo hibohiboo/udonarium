@@ -1,3 +1,4 @@
+import { extendDiceSymbol } from 'src/plugins/extends/class/dice-symbol';
 import { ImageFile } from './core/file-storage/image-file';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { Network } from './core/system';
@@ -18,6 +19,10 @@ export enum DiceType {
 
 @SyncObject('dice-symbol')
 export class DiceSymbol extends TabletopObject {
+  constructor(identifier?: string) {
+    super(identifier);
+    extendDiceSymbol(this);
+  }
   @SyncVar() face: string = '0';
   @SyncVar() owner: string = '';
   @SyncVar() rotate: number = 0;

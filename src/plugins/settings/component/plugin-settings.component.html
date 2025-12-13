@@ -1,0 +1,62 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>ユドナリウム プラグイン設定</h1>
+    <p>各種機能を有効化してゲームを起動できます</p>
+  </div>
+
+  <div class="settings-content">
+    <!-- プリセット選択 -->
+    <section class="settings-section">
+      <h2>プリセット</h2>
+      <div class="form-group">
+        <label for="room-type">部屋タイプ:</label>
+        <select id="room-type" [(ngModel)]="roomType" (change)="onPresetChange()">
+          <option *ngFor="let preset of presets" [value]="preset.value">
+            {{ preset.label }}
+          </option>
+        </select>
+      </div>
+    </section>
+
+    <!-- 動的セクション生成（スキーマベース） -->
+    <section class="settings-section" *ngFor="let category of categories">
+      <h2>{{ category.title }}</h2>
+      <div class="form-group" *ngFor="let setting of getSettingsByCategory(category.id)">
+        <label>
+          <input type="checkbox" [(ngModel)]="settings[setting.key]">
+          {{ setting.label }}
+        </label>
+      </div>
+    </section>
+
+    <!-- カメラ座標（動的生成） -->
+    <section class="settings-section">
+      <h2>カメラ初期位置（オプション）</h2>
+      <div class="form-row">
+        <div class="form-group" *ngFor="let setting of cameraSettings">
+          <label [attr.for]="'camera-' + setting.key">{{ setting.label }}:</label>
+          <input
+            [id]="'camera-' + setting.key"
+            type="text"
+            [(ngModel)]="settings[setting.key]"
+            placeholder="0">
+        </div>
+      </div>
+    </section>
+
+    <!-- 生成URL -->
+    <section class="settings-section url-section">
+      <h2>生成されるURL</h2>
+      <div class="url-display">
+        <code>{{ window.location.origin }}/{{ generateQueryString() ? '?' + generateQueryString() : '' }}</code>
+      </div>
+    </section>
+
+    <!-- アクションボタン -->
+    <div class="settings-actions">
+      <button class="btn btn-primary" (click)="launchGame()">ゲームを起動</button>
+      <button class="btn btn-secondary" (click)="copyUrl()">URLをコピー</button>
+      <button class="btn btn-tertiary" (click)="reset()">リセット</button>
+    </div>
+  </div>
+</div>

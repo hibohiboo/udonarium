@@ -1,3 +1,4 @@
+import { extendTerrain } from 'src/plugins/extends/class/terrain';
 import { ImageFile } from './core/file-storage/image-file';
 import { SyncObject, SyncVar } from './core/synchronize-object/decorator';
 import { DataElement } from './data-element';
@@ -12,6 +13,10 @@ export enum TerrainViewState {
 
 @SyncObject('terrain')
 export class Terrain extends TabletopObject {
+  constructor(identifier?: string) {
+    super(identifier);
+    extendTerrain(this);
+  }
   @SyncVar() isLocked: boolean = false;
   @SyncVar() mode: TerrainViewState = TerrainViewState.ALL;
   @SyncVar() rotate: number = 0;

@@ -1,0 +1,110 @@
+<div class="component is-pointer-events-none" [@fadeInOut]="'in'" appDraggable #draggablePanel>
+  <div class="component-content is-small-size"
+    [ngClass]="{ 'is-pointer-events-auto': !this.isPointerDragging, 'pointer-events-none': this.isPointerDragging }">
+    <div *ngIf="hasImage" style="position: relative;">
+      <img class="card-image" [src]="imageUrl | safe: 'resourceUrl'" />
+      <div *ngIf="displayCard && displayCard.isFront && displayCard.text" style="position: absolute; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+        <div [style.font-size.px]="displayCard.fontsize" [style.color]="displayCard.color" [innerHTML]="displayCard.text | safe: 'html'" style="white-space: pre-wrap; word-wrap: break-word;"></div>
+      </div>
+      <button class="zoom-button" (click)="chanageImageView(true)">
+        <i class="material-icons">zoom_in</i>
+      </button>
+      <div *ngIf="displayCard && displayCard.hasOwner && 0 < displayCard.ownerName.length" class="component-owner position-right-bottom"
+        [ngClass]="{'with-button-marign': hasImage}">
+        <div class="owner-tag">{{displayCard.ownerName}}</div>
+      </div>
+    </div>
+    <div *ngIf="card && 0 < card?.name?.length" class="component-title title-background"
+      [ngClass]="{'with-button-marign': hasImage}">
+      <ng-container *ngIf="displayCard?.isVisible == null || displayCard?.isVisible">{{card.name}}</ng-container>
+      <ng-container *ngIf="displayCard?.isVisible != null && !displayCard?.isVisible">ブランクカード</ng-container>
+    </div>
+    <div *ngIf="displayCard && displayCard.isVisible && displayCard.isFront" class="component-background">
+      <div class="section" style="padding: 8px;">
+        <div class="section-text">テキスト</div>
+        <div class="note" style="position: relative;">
+          <div class="is-fill">
+            <textarea  class="textarea" [(ngModel)]="displayCard.text" spellcheck="false"></textarea>
+          </div>
+          <div class="textarea-spacer">{{displayCard.text}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="component-background">
+      <div class="grid-container-root" *ngIf="hasDataElms && displayCard && displayCard.isVisible">
+        <div class="grid-container">
+          <ng-container *ngFor="let dataElm of dataElms">
+            <ng-container *ngTemplateOutlet="dataElement; context: { dataElm: dataElm }"></ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="isOpenImageView">
+  <ng-container *ngTemplateOutlet="imageView"></ng-container>
+</ng-container>
+
+<ng-template #dataElement let-dataElm="dataElm">
+  <ng-container *ngIf="0 < dataElm.children.length; then thenBlock; else elseBlock"></ng-container>
+  <ng-template #thenBlock>
+    <div class="section" style="padding-top: 0.5em;">
+      <div class="section-text" *ngIf="0 < dataElm.name.trim().length">{{dataElm.name}}</div>
+      <div class="grid-container indetnt">
+        <ng-container *ngFor="let childElm of dataElm.children">
+          <ng-container *ngTemplateOutlet="dataElement; context: { dataElm: childElm }"></ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #elseBlock>
+    <ng-container [ngSwitch]="dataElm.type">
+      <ng-container *ngSwitchCase="'note'">
+        <div class="section">
+          <div>{{dataElm.name}}</div>
+          <div class="note" style="position: relative;">
+            <div class="is-fill">
+              <textarea class="textarea" [(ngModel)]="dataElm.value" spellcheck="false"></textarea>
+            </div>
+            <div class="textarea-spacer">{{dataElm.value}}</div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="'numberResource'">
+        <div class="tag">{{dataElm.name}}</div>
+        <div class="value">
+          <div style="display: inline-block; width: min-content;">
+            <div class="hidden-spacer" style="margin-right: 2em;">{{dataElm.currentValue}}</div>
+            <input class="input" type="number" size="1" [(ngModel)]="dataElm.currentValue" />
+          </div>
+          <div style="display: inline;"> / {{dataElm.value}}</div>
+        </div>
+        <div class="section" style="line-height: 1em;">
+          <input type="range"
+            [style]="'font-size: 0.8em; width: 100%; --min: 0; --max:' + dataElm.value + '; --val:' + dataElm.currentValue +';' | safe: 'style'"
+            min="0" max="{{dataElm.value}}" [(ngModel)]="dataElm.currentValue" />
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <div class="tag">{{dataElm.name}}</div>
+        <div class="value">
+          <div class="hidden-spacer">{{dataElm.value}}</div>
+          <input class="input" size="1" [(ngModel)]="dataElm.value" />
+        </div>
+      </ng-container>
+    </ng-container>
+    <div class="section border"></div>
+  </ng-template>
+</ng-template>
+
+<ng-template #imageView>
+  <div class="image-view-background is-fill" (click)="chanageImageView(false)" [@fadeInOut]="'in'">
+    <div class="close-button is-pointer-events-none"><i class="material-icons">close</i></div>
+    <img class="contain-image" [src]="imageUrl | safe: 'resourceUrl'" />
+
+    <div *ngIf="displayCard && displayCard.isFront && displayCard.text" style="position: absolute; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+      <div [style.font-size.px]="displayCard.fontsize * 3" [style.color]="displayCard.color" [innerHTML]="displayCard.text | safe: 'html'" style="white-space: pre-wrap; word-wrap: break-word;"></div>
+    </div>
+  </div>
+</ng-template>
