@@ -251,6 +251,21 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
                 SoundEffect.play(PresetSound.cardDraw);
               },
             },
+            {
+              name: '反転する',
+              action: () => {
+                this._calcTopObjects(this.tabletopService.cards).forEach(
+                  ({ obj: card }) => {
+                    if (card.isFront) {
+                      card.faceDown();
+                    } else {
+                      card.faceUp();
+                    }
+                  },
+                );
+                SoundEffect.play(PresetSound.cardDraw);
+              },
+            },
             ...handCardContextMenuHandStorage(this),
             ...tapCardContextMenuHandStorage(this),
             ...cardBackImageAllChangeContextMenuHandStorage(this),

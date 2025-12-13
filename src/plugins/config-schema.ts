@@ -34,6 +34,9 @@ export type Category = typeof CATEGORIES[number]['id'];
 
 /** Boolean型の設定項目 */
 export const BOOLEAN_SETTINGS: SettingItem[] = [
+  // 機能拡張
+  { key: 'isKeepBoardOnLoad', param: 'keep-board-on-load', label: 'ルームデータロード時にボード上のオブジェクトを更新せずに残す', type: 'boolean', category: 'extend' },
+
   // 表示モード
   { key: 'is2d', param: '2d', label: '2Dモード', type: 'boolean', category: 'display' },
   { key: 'isTutorial', param: 'tutorial', label: 'チュートリアル', type: 'boolean', category: 'display' },
@@ -53,7 +56,7 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   // チャット・手札
   { key: 'useChatCommand', param: 'use-chat-command', label: 'チャットコマンド', type: 'boolean', category: 'chat' },
   { key: 'isUseHandStorage', param: 'use-hand-storage', label: '手札ストレージ', type: 'boolean', category: 'chat' },
-  { key: 'isKeepBoardOnLoad', param: 'keep-board-on-load', label: 'ボード上に残す機能', type: 'boolean', category: 'chat' },
+
 
   // メモ
   { key: 'isTextNoteSelectableUprightFlat', param: 'text-note-upright-flat', label: '共有メモの直立と並行の切り替え', type: 'boolean', category: 'note' },
