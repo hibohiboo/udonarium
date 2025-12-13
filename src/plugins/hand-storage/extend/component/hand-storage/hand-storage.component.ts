@@ -220,7 +220,11 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
             {
               name: '全て表にする',
               action: () => {
-                this._calcTopObjects(this.tabletopService.cards).forEach(
+                const allCards = [
+                  ...this.tabletopService.cards,
+                  ...(this.tabletopService as any).blankCards || [],
+                ];
+                this._calcTopObjects(allCards).forEach(
                   ({ obj: card }) => {
                     card.faceUp();
                   },
@@ -231,7 +235,11 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
             {
               name: '全て裏にする',
               action: () => {
-                this._calcTopObjects(this.tabletopService.cards).forEach(
+                const allCards = [
+                  ...this.tabletopService.cards,
+                  ...(this.tabletopService as any).blankCards || [],
+                ];
+                this._calcTopObjects(allCards).forEach(
                   ({ obj: card }) => {
                     card.faceDown();
                   },
@@ -242,10 +250,15 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
             {
               name: '全て自分だけ見る',
               action: () => {
-                this._calcTopObjects(this.tabletopService.cards).forEach(
+                const allCards = [
+                  ...this.tabletopService.cards,
+                  ...(this.tabletopService as any).blankCards || [],
+                ];
+                this._calcTopObjects(allCards).forEach(
                   ({ obj: card }) => {
                     card.faceDown();
                     card.owner = PeerCursor.myCursor.userId;
+                    card.update();
                   },
                 );
                 SoundEffect.play(PresetSound.cardDraw);
@@ -254,7 +267,11 @@ export class HandStorageComponent implements OnInit, OnDestroy, AfterViewInit {
             {
               name: '反転する',
               action: () => {
-                this._calcTopObjects(this.tabletopService.cards).forEach(
+                const allCards = [
+                  ...this.tabletopService.cards,
+                  ...(this.tabletopService as any).blankCards || [],
+                ];
+                this._calcTopObjects(allCards).forEach(
                   ({ obj: card }) => {
                     if (card.isFront) {
                       card.faceDown();
