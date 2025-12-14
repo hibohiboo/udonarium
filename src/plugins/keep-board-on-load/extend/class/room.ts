@@ -2,6 +2,7 @@ import { GameObject } from '@udonarium/core/synchronize-object/game-object';
 import { DataElement } from '@udonarium/data-element';
 import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
 import { TabletopObject } from '@udonarium/tabletop-object';
+import { pluginConfig } from 'src/plugins/config';
 
 /**
  * detailElement配下の設定から「ロード時に残すか」フラグをチェックする
@@ -145,6 +146,9 @@ export function getExtensionIdFromXmlElement(xmlElement: Element): string | null
 export const getExtensionIdsForKeepOnLoad = (objects: GameObject[]) =>{
     const keepExtensionIds = new Set<string>();
     const keepObjectIdentifiers = new Set<string>();
+
+    if (!pluginConfig.isKeepBoardOnLoad) return [keepExtensionIds, keepObjectIdentifiers];
+
     for (let object of objects) {
       if (shouldKeepOnXmlLoad(object)) {
         const extensionId = getExtensionIdFromObject(object);
