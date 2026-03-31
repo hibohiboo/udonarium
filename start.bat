@@ -3,10 +3,10 @@ chcp 65001 > nul
 echo Starting development environment...
 
 REM フロントエンド起動（新しいウィンドウ）
-start "Frontend" cmd /k "npm run start"
+start "Frontend" cmd /k "npm i && npm run start"
 
 REM バックエンド起動（新しいウィンドウ）
-start "Backend" cmd /k "cd backend && npm run dev"
+start "Backend" cmd /k "cd backend && npm i && npm run dev"
 
 echo Waiting for frontend to start...
 timeout /t 5 /nobreak > nul

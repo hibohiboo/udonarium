@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "tsx watch --env-file=.env --env-file=.env.local src/index.ts"
+    "dev": "tsx watch --env-file=.env src/index.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.12",
