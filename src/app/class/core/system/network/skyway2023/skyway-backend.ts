@@ -13,9 +13,13 @@ export class SkyWayBackend {
   }
 }
 
+function resolveApiBase(url: string): string {
+  return url.startsWith('http') ? url : window.location.origin;
+}
+
 async function fetchStatus(url: string): Promise<boolean> {
   try {
-    let api = new URL('/v1/status', url);
+    let api = new URL('/v1/status', resolveApiBase(url));
     let response = await fetch(api);
 
     return response.status === 200
@@ -27,7 +31,7 @@ async function fetchStatus(url: string): Promise<boolean> {
 
 async function fetchSkyWayAuthToken(url: string, channelName: string, peerId: string): Promise<string> {
   try {
-    let api = new URL('/v1/skyway2023/token', url);
+    let api = new URL('/v1/skyway2023/token', resolveApiBase(url));
 
     let body = JSON.stringify({
       formatVersion: 1,

@@ -24,13 +24,15 @@ export function routing(app: Hono) {
     c.res.headers.set('Access-Control-Allow-Origin', requestOrigin);
   });
 
+  const routes = new Hono();
+
   // Routing
-  app.get('/v1/status', (c) => {
+  routes.get('/v1/status', (c) => {
     return c.text('OK');
   });
 
   // Routing
-  app.post('/v1/skyway2023/token', async (c) => {
+  routes.post('/v1/skyway2023/token', async (c) => {
     const {
       SKYWAY_APP_ID,
       SKYWAY_SECRET,
@@ -67,6 +69,9 @@ export function routing(app: Hono) {
       return c.text('Bad Request', 400);
     }
   });
+
+  app.route('/', routes);
+  app.route('/api', routes);
 
   return app;
 }
