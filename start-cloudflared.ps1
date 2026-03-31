@@ -33,7 +33,8 @@ $elapsed = 0
 while ($elapsed -lt $timeout) {
     $content = Get-Content $logFile -ErrorAction SilentlyContinue
     if ($content) {
-        Write-Host "Opening: $content"
+        Write-Host "Opening in 10 seconds: $content"
+        Start-Sleep -Seconds 10
         Start-Process $content
         break
     }
