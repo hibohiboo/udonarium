@@ -71,7 +71,6 @@ export function routing(app: Hono) {
   });
 
   app.route('/', routes);
-  app.route('/api', routes);
 
   return app;
 }
