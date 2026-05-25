@@ -232,7 +232,6 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
 
-    this.onDoubleClick(e);
     this.card.toTopmost();
     if (e instanceof MouseEvent) this.startIconHiddenTimer();
   }
