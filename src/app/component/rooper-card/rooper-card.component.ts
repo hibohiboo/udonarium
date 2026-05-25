@@ -20,7 +20,6 @@ import { EventSystem, Network } from "@udonarium/core/system";
 import { PeerCursor } from "@udonarium/peer-cursor";
 import { PresetSound, SoundEffect } from "@udonarium/sound-effect";
 import { GameCharacterSheetComponent } from "component/game-character-sheet/game-character-sheet.component";
-import { InputHandler } from "directive/input-handler";
 import { MovableOption } from "directive/movable.directive";
 import { RotableOption } from "directive/rotable.directive";
 import {
@@ -32,6 +31,7 @@ import { PointerDeviceService } from "service/pointer-device.service";
 import { TabletopService } from "service/tabletop.service";
 import { RooperCard } from "@udonarium/rooper-card";
 import { ObjectInteractGesture } from 'component/game-table/object-interact-gesture';
+import { pluginConfig } from 'src/plugins/config';
 interface TopOfCard {
   card: Card
   distanceX: number
@@ -114,8 +114,6 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
   movableOption: MovableOption = {};
   rotableOption: RotableOption = {};
 
-  private input: InputHandler = null;
-
   @HostBinding("tabIndex") tabIndex: string; //tabIndexを付与するため、ComponentにtabIndexをバインドするメンバを用意
   constructor(
     private ngZone: NgZone,
@@ -173,7 +171,7 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnDestroy() {
-    this.input.destroy();
+    this.interactGesture.destroy();
     EventSystem.unregister(this);
   }
 
@@ -219,18 +217,18 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onInputStart(e: MouseEvent | TouchEvent) {
-    this.input.cancel();
-
     this.topOfCards = []
-    for (const card of this.tabletopService.cards) {
-      if(card.frontImage.url.indexOf('action_cards') === -1) continue;
-      const distanceX = card.location.x - this.card.location.x
-      const distanceY = card.location.y - this.card.location.y
-      const distanceZ = card.posZ - this.card.posZ
-      const distance: number = distanceX ** 2 + distanceY ** 2 + distanceZ ** 2
+    if (pluginConfig.isMoveStackedCard) {
+      for (const card of this.tabletopService.cards) {
+        if(card.frontImage.url.indexOf('action_cards') === -1) continue;
+        const distanceX = card.location.x - this.card.location.x
+        const distanceY = card.location.y - this.card.location.y
+        const distanceZ = card.posZ - this.card.posZ
+        const distance: number = distanceX ** 2 + distanceY ** 2 + distanceZ ** 2
 
-      if (distance < 200 ** 2 && this.zindex < card.zindex) {
-        this.topOfCards.push({ card, distanceX, distanceY, distanceZ })
+        if (distance < 200 ** 2 && this.zindex < card.zindex) {
+          this.topOfCards.push({ card, distanceX, distanceY, distanceZ })
+        }
       }
     }
 
