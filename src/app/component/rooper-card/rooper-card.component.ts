@@ -31,7 +31,7 @@ import { PointerDeviceService } from "service/pointer-device.service";
 import { TabletopService } from "service/tabletop.service";
 import { RooperCard } from "@udonarium/rooper-card";
 import { ObjectInteractGesture } from 'component/game-table/object-interact-gesture';
-import { pluginConfig } from 'src/plugins/config';
+
 interface TopOfCard {
   card: Card
   distanceX: number
@@ -218,19 +218,19 @@ export class RooperCardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onInputStart(e: MouseEvent | TouchEvent) {
     this.topOfCards = []
-    if (pluginConfig.isMoveStackedCard) {
-      for (const card of this.tabletopService.cards) {
-        if(card.frontImage.url.indexOf('action_cards') === -1) continue;
-        const distanceX = card.location.x - this.card.location.x
-        const distanceY = card.location.y - this.card.location.y
-        const distanceZ = card.posZ - this.card.posZ
-        const distance: number = distanceX ** 2 + distanceY ** 2 + distanceZ ** 2
 
-        if (distance < 200 ** 2 && this.zindex < card.zindex) {
-          this.topOfCards.push({ card, distanceX, distanceY, distanceZ })
-        }
+    for (const card of this.tabletopService.cards) {
+      if(card.frontImage.url.indexOf('action_cards') === -1) continue;
+      const distanceX = card.location.x - this.card.location.x
+      const distanceY = card.location.y - this.card.location.y
+      const distanceZ = card.posZ - this.card.posZ
+      const distance: number = distanceX ** 2 + distanceY ** 2 + distanceZ ** 2
+
+      if (distance < 200 ** 2 && this.zindex < card.zindex) {
+        this.topOfCards.push({ card, distanceX, distanceY, distanceZ })
       }
     }
+
 
     this.card.toTopmost();
     if (e instanceof MouseEvent) this.startIconHiddenTimer();
