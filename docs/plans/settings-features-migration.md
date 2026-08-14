@@ -3,7 +3,18 @@
 移行元: https://d3snr6xc5uvnuy.cloudfront.net/cartagraph-udonarium-plus/?settings
 （ソース: `D:\projects\udonarium\udonarium-boardgame`）
 
-移行先: 本リポジトリ（`/settings` ルート、`src/plugins/settings/component/plugin-settings.component.*`）
+移行先: 本リポジトリ（`src/plugins/settings/component/plugin-settings.component.*`）
+
+> **⚠️ アクセスURLの注意（移行元との差異）**
+> 移行元は `?settings`（値なしフラグ）で設定画面が開くが、移行先は
+> `?mode=settings`（`mode` パラメータに `settings` という値を指定）で開く仕様になっている
+> （[src/plugins/settings/extend/app.component.ts](../../src/plugins/settings/extend/app.component.ts) の
+> `isSettingsRoute()` 参照）。他のプラグインフラグ（`?2d` 等の値なしフラグ）とは命名方式が異なるため
+> 混同しやすい。例: 本番 https://yakumi.pages.dev/?mode=settings （`?settings` だけでは表示されない）。
+> なお `src/plugins/settings/routing.ts` に `path: 'settings'` のAngular Routeも定義されているが、
+> `RouterModule` 自体がアプリに組み込まれていないため**未使用のデッドコード**（`/settings` という
+> パスでアクセスしても機能しない）。紛らわしいので将来的に削除するか、`isSettingsRoute()` 側の実装に
+> 統一することを検討したい。
 
 ## 0. 前提: 移行先の現状把握
 
@@ -214,14 +225,19 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 ## 5. チェックリスト
 
 ### 区分A（配線のみ）
-- [ ] `virtual-screen`（ボード・ついたて）
-- [ ] `hand-storage-self-only`（ボードを自分のものだけ触れる）
-- [ ] `return-the-hand`（手札を回収する）
-- [ ] `hand-card-self-hand-storage`（自分のボード→手札化）
-- [ ] `card-back-image-all-change`（カード裏画像一括変更）
-- [ ] `auto-self-view-mode`（ついたてカード自動自分だけ見る）
-- [ ] `auto-self-view-mode-from-stack`（山札から引いたカード自動自分だけ見る）
-- [ ] `add-stack-context-auto-self-view-mode`（山札コンテキストメニューに追加）
+- [x] `virtual-screen`（ボード・ついたて）
+- [x] `hand-storage-self-only`（ボードを自分のものだけ触れる）
+- [x] `return-the-hand`（手札を回収する）
+- [x] `hand-card-self-hand-storage`（自分のボード→手札化）
+- [x] `card-back-image-all-change`（カード裏画像一括変更）
+- [x] `auto-self-view-mode`（ついたてカード自動自分だけ見る）
+- [x] `auto-self-view-mode-from-stack`（山札から引いたカード自動自分だけ見る）
+- [x] `add-stack-context-auto-self-view-mode`（山札コンテキストメニューに追加）
+
+`config-schema.ts` の `BOOLEAN_SETTINGS` に新カテゴリ `board`（ボード・ついたて）として8項目を追加し、
+`config.ts` の `UNIMPLEMENTED_FLAGS` / `UnimplementedFeatureFlags` を撤去してクエリパラメータ駆動に
+切り替え済み（`tsc --noEmit` / `ng build` とも成功、コアの `src/app/**` は無変更）。実機での目視動作確認
+（各クエリパラメータ付きURLでの起動確認、特に `virtual-screen` 関連8コンポーネント）は未実施。
 
 ### 区分A'
 - [ ] 設定間の依存関係・排他制御の仕組み導入

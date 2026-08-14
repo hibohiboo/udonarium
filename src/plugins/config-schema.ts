@@ -25,6 +25,7 @@ export const CATEGORIES = [
   { id: 'card', title: 'カード操作' },
   { id: 'ui', title: 'UI機能' },
   { id: 'chat', title: 'チャット・手札' },
+  { id: 'board', title: 'ボード・ついたて' },
   { id: 'note', title: 'メモ' },
   { id: 'restriction', title: '機能制限' },
 ] as const satisfies readonly CategoryInfo[];
@@ -57,6 +58,15 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   { key: 'useChatCommand', param: 'use-chat-command', label: 'チャットコマンド', type: 'boolean', category: 'chat' },
   { key: 'isUseHandStorage', param: 'use-hand-storage', label: '手札ストレージ', type: 'boolean', category: 'chat' },
 
+  // ボード・ついたて
+  { key: 'isUseVirtualScreen', param: 'virtual-screen', label: 'ボード（ついたて）', type: 'boolean', category: 'board' },
+  { key: 'isUseHandStorageSelfOnly', param: 'hand-storage-self-only', label: 'ボードを自分のものだけ触れるようにする', type: 'boolean', category: 'board' },
+  { key: 'canReturnHandToIndividualBoard', param: 'return-the-hand', label: '手札を回収する', type: 'boolean', category: 'board' },
+  { key: 'isHandCardSelfHandStorage', param: 'hand-card-self-hand-storage', label: '自分のボードにしたときにボード上のカードを手札にする', type: 'boolean', category: 'board' },
+  { key: 'isCardBackImageAllChangeMenu', param: 'card-back-image-all-change', label: 'カード裏画像の一括変更', type: 'boolean', category: 'board' },
+  { key: 'isAutoSelfViewCard', param: 'auto-self-view-mode', label: 'ついたてに入れたカードを自動的に自分だけ見るモードにする', type: 'boolean', category: 'board' },
+  { key: 'isAutoSelfViewCardFromDeck', param: 'auto-self-view-mode-from-stack', label: '山札から引いたカードを自動的に自分だけ見るモードにする', type: 'boolean', category: 'board' },
+  { key: 'isContextMenuAutoSelfViewCardFromDeck', param: 'add-stack-context-auto-self-view-mode', label: '「自分だけ見る」を山札のコンテキストメニューに追加', type: 'boolean', category: 'board' },
 
   // メモ
   { key: 'isTextNoteSelectableUprightFlat', param: 'text-note-upright-flat', label: '共有メモの直立と並行の切り替え', type: 'boolean', category: 'note' },

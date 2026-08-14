@@ -35,6 +35,16 @@ interface QueryParamConfig {
   isOffObjectRotateIndividually: boolean;
   isOffObjectRotateAll: boolean;
 
+  // ボード・ついたて
+  isUseVirtualScreen: boolean;
+  isUseHandStorageSelfOnly: boolean;
+  canReturnHandToIndividualBoard: boolean;
+  isHandCardSelfHandStorage: boolean;
+  isCardBackImageAllChangeMenu: boolean;
+  isAutoSelfViewCard: boolean;
+  isAutoSelfViewCardFromDeck: boolean;
+  isContextMenuAutoSelfViewCardFromDeck: boolean;
+
   // カメラ座標（オプショナル）
   z: string | null;
   x: string | null;
@@ -44,38 +54,11 @@ interface QueryParamConfig {
   rz: string | null;
 }
 
-/** 未実装フラグ（将来の拡張用） */
-interface UnimplementedFeatureFlags {
-  isUseHandStorageSelfOnly: boolean;
-  isCardBackImageAllChangeMenu: boolean;
-
-  isUseVirtualScreen: boolean;
-  canReturnHandToIndividualBoard: boolean;
-  isAutoSelfViewCardFromDeck: boolean;
-  isContextMenuAutoSelfViewCardFromDeck: boolean;
-  isAutoSelfViewCard: boolean;
-  isHandCardSelfHandStorage: boolean;
-}
-
 /** 部屋別の設定オーバーライド */
-type RoomSpecificConfig = Partial<QueryParamConfig & UnimplementedFeatureFlags>;
+type RoomSpecificConfig = Partial<QueryParamConfig>;
 
 /** 最終的なプラグイン設定 */
-type PluginConfig = QueryParamConfig & UnimplementedFeatureFlags;
-
-/** 未実装フラグのデフォルト値 */
-const UNIMPLEMENTED_FLAGS: UnimplementedFeatureFlags = {
-  // NOTE: hand-storage機能のエラー回避のため、一時的にfalseで定義
-  // TODO: 各機能の実装予定を issue #XXX で管理
-  isUseHandStorageSelfOnly: false,
-  isCardBackImageAllChangeMenu: false,
-  isUseVirtualScreen: false,
-  canReturnHandToIndividualBoard: false,
-  isAutoSelfViewCardFromDeck: false,
-  isContextMenuAutoSelfViewCardFromDeck: false,
-  isAutoSelfViewCard: false,
-  isHandCardSelfHandStorage: false,
-} as const;
+type PluginConfig = QueryParamConfig;
 
 // ========================================
 // ヘルパー関数
@@ -134,7 +117,6 @@ const params = new URL(document.URL).searchParams;
 
 export const pluginConfig: Readonly<PluginConfig> = {
   ...buildBaseConfig(params),
-  ...UNIMPLEMENTED_FLAGS,
   ...getRoomConfig(params), // 部屋別設定で上書き
 } as const;
 
