@@ -20,6 +20,36 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
   （移行元の「機能をすべて有効化 / 最小限にする」ボタンに相当する仕組みが、こちらではプリセット
   という形で実装済み）。
 
+### 0-1. 移行方針: 本家udonariumへの追従を優先し、コア（`src/app/**`）には触れない
+
+本プロジェクトは udonarium 本家の更新を継続的に取り込めるようにするため、**`src/app/**`（本家由来のコア
+コード）は極力変更しない**方針を取っている。既存コードはこの方針に基づき、次の「拡張フック」パターンで
+統一されている。
+
+- コア側の各コンポーネントは、コンストラクタ／ライフサイクルフックの中で
+  `src/plugins/extends/...` の拡張関数を**1行だけ**呼び出す（例:
+  [card.component.ts:31](src/app/component/card/card.component.ts#L31) の
+  `import { extendsCardComponent } from 'src/plugins/extends/component/card/card.component'`、
+  [app.component.ts:189](src/app/component/app.component.ts#L189) の `extendsAppComponent(this)`、
+  [ui-panel.component.ts:60](src/app/component/ui-panel/ui-panel.component.ts#L60) の
+  `extendsUIPanelComponent(this)`）。
+- 実際のロジック（プロパティ注入 `Object.defineProperty`、`ngAfterViewInit`/`ngOnDestroy` などの
+  プロトタイプ上書き、クラス追加 `appRoot.classList.add(...)` によるCSS切り替え等）はすべて
+  `src/plugins/extends/**` および各プラグインの `extend/**` 側に置く。
+- テンプレート（`.html`）についても、既存で許容されている変更は
+  `<app-plugin-settings *ngIf="isSettingsRoute">`（[app.component.html:2](src/app/app.component.html#L2)）
+  のような**プラグインの有無で1コンポーネントを挿入/非挿入にする最小限の `*ngIf` 追加**にとどまっている。
+  既存要素の表示/非表示切り替えは、テンプレートに条件分岐を増やすのではなく、
+  `appRoot.classList.add('xxx')` のようにフック側からクラスを付与し、プラグイン側のCSSで
+  `display:none` 等を当てる手法（`is2d` / `object-rotate-off` クラスと同じやり方）を優先する。
+
+**注意**: 移行元（`udonarium-boardgame`）自体は、この観点では必ずしも模範ではない。例えば
+`hide-menu-*` 系機能は、`app.component.html` そのものを丸ごとフォークした
+`plugins/extend-menu/extends/app/app.component.html` を作り、そこに `*ngIf="!hideTable"` を
+直接書き込む実装になっている（本家の `app.component.html` を丸ごと複製して改変＝差分が広く
+本家追従コストが高い）。**移行時はこれをそのまま踏襲せず、本プロジェクトの「1行フック＋CSSクラス
+切り替え」方式に置き換えて移植する**（詳細は3-2節）。
+
 → 今回の移行作業の型は2種類に分かれる。
 
 | 区分 | 内容 |
