@@ -61,6 +61,33 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 本家追従コストが高い）。**移行時はこれをそのまま踏襲せず、本プロジェクトの「1行フック＋CSSクラス
 切り替え」方式に置き換えて移植する**（詳細は3-2節）。
 
+### 0-2. すでに移行済み・対応不要な機能
+
+以下は移行元の `?settings` にもある機能だが、本プロジェクトには**移行作業前から実装・配線済み**
+（`config-schema.ts` の `BOOLEAN_SETTINGS` に既に登録され、プラグイン本体も動作する）。移行元の
+一覧と見比べて「無いのでは？」と気になった場合はまずここを確認する。
+
+| ラベル | param | key |
+| --- | --- | --- |
+| 右クリックメニューでブランクカードを作成 | `add-blank-card-menu` | `addBlankCardAddContextMenu` |
+| 2Dモード | `2d` | `is2d` |
+| Zipから部屋情報読込 | `first-fetch-zip-room` | `isFirstFetchZipRoom` |
+| カードをタップ | `tap-card` | `isTapCard` |
+| カードを正位置のままシャッフル | `shuffle-normal` | `isCardShuffleNormalPosition` |
+| キーボードショートカット | `key-shortcut` | `isUseKeyboardShortcut` |
+| カウンターボード | `counter-board` | `isAddCounterBoard` |
+| デフォルト地形をCubeに変更 | `change-default-terrain` | `isChangeDefaultTerrain` |
+| メニュー最小化 | `mini-menu` | `isMinimizableMenu` |
+| 手札ストレージ（ボード） | `use-hand-storage` | `isUseHandStorage` |
+| 共有メモの直立と並行の切り替え | `text-note-upright-flat` | `isTextNoteSelectableUprightFlat` |
+| テーブル回転オフ | `table-rotate-off` | `isOffTableRotate` |
+| オブジェクト回転オフ | `object-rotate-off-all` | `isOffObjectRotateAll` |
+| オブジェクト回転オフ(個別設定可能) | `object-rotate-off-individually` | `isOffObjectRotateIndividually` |
+| ルームデータロード時にボード上のオブジェクトを更新せずに残す（移行先独自機能） | `keep-board-on-load` | `isKeepBoardOnLoad` |
+| チャットコマンド（移行先独自機能） | `use-chat-command` | `useChatCommand` |
+
+区分A（1章）の8項目を含めると、これで移行元の主要機能の大半が本プロジェクトでも利用可能になっている。
+
 → 今回の移行作業の型は2種類に分かれる。
 
 | 区分 | 内容 |
@@ -129,9 +156,8 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
   - `return-the-hand` ON → `use-hand-storage` ON
   - `hand-card-self-hand-storage` ON → `use-hand-storage` ON、`return-the-hand` ON
   - `return-the-hand` OFF → `hand-card-self-hand-storage` OFF
-  - `context-menu-add-icon`（区分B, 3章） ON → `use-hand-storage` ON、`change-default-terrain` ON、
-    `deck-from-spreadsheet` OFF
-  - `deck-from-spreadsheet` ON → `context-menu-add-icon` OFF
+  - `context-menu-add-icon`（区分B, 3章） ON → `use-hand-storage` ON、`change-default-terrain` ON
+    （移行元では合わせて `deck-from-spreadsheet` OFF も連動するが、当該機能は移行対象外のため不要）
   - `first-fetch-zip-room` ON → サンプルキャラクター非表示相当を ON
 
 この章はUXの質を上げる改善なので、区分Aの単純有効化が終わった後の着手でよい。
@@ -151,7 +177,8 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 | `add-card-text-writable` | カードに文字入力可能にする | `add-card-text-writable` | 中 |
 | `add-draw-n-cards` | 「カードをn枚引く」を山札のコンテキストメニューに追加 | `add-draw-n-cards` | 中 |
 | `move-stacked-card` | 重ねカード移動機能 | `move-stacked-card` | 低 |
-| `deck-from-spreadsheet` | スプレッドシートからデッキ読込 | `deck-from-spreadsheet` | 低（外部スプレッドシート仕様に依存、要相談） |
+
+> `deck-from-spreadsheet`（スプレッドシートからデッキ読込）は**移行対象外**（ユーザー判断により除外、6章参照）。
 
 ### 3-2. UI・メニュー系（`extend-menu` プラグインの移植）
 移行先の `mini-menu` は移行元の「メニュー最小化」相当のみ実装済み。以下は未移植。
@@ -218,8 +245,9 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 2. **区分A'（依存関係制御）** — 区分Aの一部が有効化された段階で、UXとして必要なら着手。
 3. **区分B** — 優先度順に着手。まずは3-2のメニュー系（`horizon-menu` / `hide-menu-*` /
    `add-reload-button`）と3-3の表示・初期化系（`hide-pedestal` / `empty-*` / `hide-first-*`）は
-   影響範囲が局所的で移植しやすい。`deck-from-spreadsheet` と `offline-mode` は外部依存や
-   本アプリの通信構成（Cloudflare Workers版）との整合性確認が必要なため後回しにする。
+   影響範囲が局所的で移植しやすい。`offline-mode` は外部依存や本アプリの通信構成
+   （Cloudflare Workers版）との整合性確認が必要なため後回しにする。
+   `deck-from-spreadsheet` は移行対象外（6章参照）。
 4. 各機能追加後、`docs/plans/` 内の本ファイルのチェックリスト（下記）を更新して進捗管理する。
 
 ## 5. チェックリスト
@@ -247,7 +275,6 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 - [ ] `add-card-text-writable`
 - [ ] `add-draw-n-cards`
 - [ ] `move-stacked-card`
-- [ ] `deck-from-spreadsheet`
 - [ ] `horizon-menu`
 - [ ] `mini-menu-first-open`
 - [ ] `hide-menu-table` / `image` / `music` / `inventory` / `zip` / `save`
@@ -270,8 +297,10 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 
 - `offline-mode` と `post-message` 連携は、Cloudflare Workers構成（本リポジトリ）と
   元のAWS/CloudFront構成とで通信方式が異なる可能性があるため、そのまま移植してよいか要確認。
-- `deck-from-spreadsheet` は移行元専用のGoogle Spreadsheetを参照する実装。本プロジェクト用の
-  スプレッドシートを別途用意するか、移行元のものを共用するか要確認。
 - 移行元の「機能をすべて有効化 / 最小限にする」ボタン相当は、移行先では `ROOM_PRESETS`
   （`?room=xxx`）で代替する設計になっている。ボタンUIとして別途復活させたいか、既存の
   プリセット方式のままでよいか確認したい。
+
+### 解決済み
+- `deck-from-spreadsheet`（スプレッドシートからデッキ読込）: **移行対象外**とすることに決定。
+  区分B・依存関係ルール（2章）から除外済み。
