@@ -61,6 +61,12 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 本家追従コストが高い）。**移行時はこれをそのまま踏襲せず、本プロジェクトの「1行フック＋CSSクラス
 切り替え」方式に置き換えて移植する**（詳細は3-2節）。
 
+> **既知の逸脱**: 本プロジェクトの「ブランクカード」機能（`add-blank-card`）は、この方針が
+> 明文化される前に実装されたため、コア [game-table.component.html](../../src/app/component/game-table/game-table.component.html)
+> に `<blank-card-stack>` / `<blank-card>` の描画行が直接追加されている（コミット
+> `8a140a8e fix ブランクカードにも対応`）。本方針に反する既存の例外として認識しておくこと
+> （詳細は0-3節）。
+
 ### 0-2. すでに移行済み・対応不要な機能
 
 以下は移行元の `?settings` にもある機能だが、本プロジェクトには**移行作業前から実装・配線済み**
@@ -69,7 +75,7 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 
 | ラベル | param | key |
 | --- | --- | --- |
-| 右クリックメニューでブランクカードを作成 | `add-blank-card-menu` | `addBlankCardAddContextMenu` |
+| 右クリックメニューでブランクカードを作成 ※1 | `add-blank-card-menu` | `addBlankCardAddContextMenu` |
 | 2Dモード | `2d` | `is2d` |
 | Zipから部屋情報読込 | `first-fetch-zip-room` | `isFirstFetchZipRoom` |
 | カードをタップ | `tap-card` | `isTapCard` |
@@ -87,6 +93,32 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 | チャットコマンド（移行先独自機能） | `use-chat-command` | `useChatCommand` |
 
 区分A（1章）の8項目を含めると、これで移行元の主要機能の大半が本プロジェクトでも利用可能になっている。
+
+※1 「対応不要」＝クエリパラメータと右クリックからのカード生成という**体験**は同じだが、内部実装は
+移行元とかなり異なる。詳細は0-3節を参照。
+
+### 0-3. 補足: 「ブランクカード」機能の移行元・移行先の実装差異
+
+同じ `add-blank-card-menu` という機能名・同じラベルだが、移行元と移行先で実装のレベルが大きく異なる。
+これから区分Bの機能（特に `add-card-text-writable`）を移植する際に混同しないよう、差異を明記しておく。
+
+| 観点 | 移行元（udonarium-boardgame） | 移行先（本プロジェクト） |
+| --- | --- | --- |
+| データモデル | 生成するのはただの `Card`（本家の標準クラス）。前面画像を `blank_card.png` に差し替えているだけで、型としては通常のトランプカードと区別がつかない。 | `Card` / `CardStack` をそれぞれ継承した**専用の同期オブジェクト型** `BlankCard`（`@SyncObject('blank-card')`）/ `BlankCardStack`（`@SyncObject('blank-card-stack')`）を新設。通常のカードとは別の型としてルーム内で管理される。 |
+| カードへの文字入力 | なし。文字入力は別プラグイン `add-card-text-writable`（区分B, 3-1節）が担当し、**あらゆるカード**を対象にする汎用機能。ブランクカードとは無関係。 | `BlankCard` 自身が `text` / `fontsize` / `color` プロパティを標準搭載。ブランクカード限定で、カード面に直接テキストを重ねて表示できる（フォントサイズ・色も指定可）。`add-blank-card-menu` を有効にした時点でこの機能も付いてくる。 |
+| 専用UI | なし。既存の `CardComponent` / `CardStackComponent` をそのまま利用（見た目・操作は通常カードと同じ）。 | `BlankCardComponent` / `BlankCardStackComponent` / `BlankCardOverviewPanelComponent`（ツールチップ相当、テキスト編集用テキストエリア付き）/ `BlankCardSheetComponent`（画像差し替え・XML保存等）という4つの専用コンポーネントを新設。 |
+| 統合箇所 | `TabletopActionService` に「右クリックメニューへの追加」と「生成処理」を足すのみ（1ファイル）。他のコアサービス・コンポーネントには一切手を入れていない。 | `TabletopService`（`blankCards`/`blankCardStacks` ゲッター追加）、`GameTableComponent`（同ゲッター追加）、`TooltipDirective`（`BlankCard`/`BlankCardStack` の場合に専用オーバービューパネルを開くよう `open()` をオーバーライド）の3箇所を拡張。加えて**コアの `game-table.component.html` に描画行を直接追加**（0-1節の「既知の逸脱」参照）。 |
+| 生成されるカードの名前 | `カード`（無名・通常カードと同じ命名） | `ブランクカード`（専用の名前） |
+
+**結論・注意点**:
+- 区分Bで `add-card-text-writable`（カードに文字入力可能にする）を移植する際は、「ブランクカードに
+  文字が書ける」機能とは**別物**として扱うこと。移行元の `add-card-text-writable` は通常のカード
+  （山札から引いたカード等）にも文字を書けるようにする汎用機能であり、本プロジェクトの `BlankCard`
+  限定のテキスト機能では代替できない。両方を実装する場合、UIの文言が重複・混同しないよう
+  ラベルを工夫する（例:「カードに文字入力可能にする（通常カード）」等）。
+- 今後 udonarium 本家で `game-table.component.html` に変更が入った場合、`<blank-card-stack>` /
+  `<blank-card>` の行がマージ競合の原因になり得る。区分Bの新規移植では同じ轍を踏まないよう、
+  0-1節の「1行フック＋CSSクラス切り替え」方式を徹底する。
 
 → 今回の移行作業の型は2種類に分かれる。
 
@@ -174,7 +206,7 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 ### 3-1. カード・山札操作系
 | 移行元プラグイン | ラベル | param（移行元） | 優先度 |
 | --- | --- | --- | --- |
-| `add-card-text-writable` | カードに文字入力可能にする | `add-card-text-writable` | 中 |
+| `add-card-text-writable` | カードに文字入力可能にする（通常カード全般が対象。ブランクカード限定の文字入力とは別機能。0-3節参照） | `add-card-text-writable` | 中 |
 | `add-draw-n-cards` | 「カードをn枚引く」を山札のコンテキストメニューに追加 | `add-draw-n-cards` | 中 |
 | `move-stacked-card` | 重ねカード移動機能 | `move-stacked-card` | 低 |
 
