@@ -149,7 +149,7 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 | --- | --- | --- | --- |
 | メニュー横並び | `horizon-menu` | `horizon-menu` | `ui-panel.component.ts` 拡張が必要 |
 | メニュー最小化を最初は開いておく | `mini-menu-first-open` | `mini-menu-first-open` | `mini-menu` と組み合わせ |
-| メニューから削除: テーブル設定/画像/音楽/インベントリ/ZIP読込/保存 | 各種 | `hide-menu-table` / `hide-menu-image` / `hide-menu-music` / `hide-menu-inventory` / `hide-menu-zip` / `hide-menu-save` | `app.component.ts` のメニュー項目描画部を要調査 |
+| メニューから削除: テーブル設定/画像/音楽/インベントリ/ZIP読込/保存 | 各種 | `hide-menu-table` / `hide-menu-image` / `hide-menu-music` / `hide-menu-inventory` / `hide-menu-zip` / `hide-menu-save` | **移行元は `app.component.html` を丸ごとフォークして `*ngIf` を追加している（0-1節参照）が、本プロジェクトではそれを踏襲せず、`extendsAppComponent` から `appRoot` に `hide-menu-table` 等のクラスを付与し、`extend-menu.css`（新規プラグインCSS）側で `.hide-menu-table li:nth-child(n) { display: none; }` のように非表示にする方式に置き換える。コアの `app.component.html` は無変更のまま実現する。** |
 | コンテキストメニューをアイコンに変更 | `context-menu-add-icon` | `context-menu-add-icon` | `game-table.component.ts` / `context-menu.service.ts` |
 | 退室ボタンを追加 | `add-reload-button` | `add-reload-button` | `extends/app.component.ts` |
 | ヘルプ表示 | `help` | `help` | 既存 `keyboard-help` プラグインと統合可能か要確認 |
@@ -176,16 +176,27 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 
 ### 移植手順（1機能あたりの共通フロー）
 1. 移行元 `src/plugins/<name>/` の実装を読み、対象コンポーネント／クラスを特定。
-2. 移行先の同名コンポーネントに対応する `extend/component/...` ディレクトリを作成し、
+2. **移行元の実装方式をそのまま輸入しない**。移行元は本家ファイルを丸ごとフォークして直接編集する
+   箇所が一部にある（0-1節）ため、移植時は必ず本プロジェクトの「コアは1行フックのみ、ロジックは
+   `extend/**` に隔離、表示切り替えはCSSクラスで行う」方式に**変換**する。
+   - コアの `.ts` に新しいフック（`extendsXxxComponent(this)` 呼び出し）が必要になる場合は、
+     既存のフック１行パターンに倣って最小の追加にとどめる。既にフックが存在するコンポーネントなら、
+     コア側は一切変更せず `src/plugins/extends/component/<component>/<component>.component.ts`
+     （集約フック）にロジックを足すだけで済む。
+   - コアの `.html` を直接編集する必要がある機能（新規要素の表示/非表示など）は、まずCSSクラス
+     切り替え（`appRoot.classList.add(...)` ＋ プラグインCSS）で実現できないか検討し、
+     できない場合のみ最小限の `*ngIf` を1箇所追加する。
+3. 移行先の同名コンポーネントに対応する `extend/component/...` ディレクトリを作成し、
    移行元ロジックを移行先の拡張関数パターン（`export const extendsXxxComponent = (that) => {...}`）
    に合わせて書き写す。移行先は独自に手札ストレージ/ボード機能などが再設計されているため、
    **単純コピーではなくAPI差分を都度確認する**（特に `hand-storage` 関連は移行先で構造が変わっている）。
    `keep-board-on-load` `hand-storage-alignment` など移行先独自プラグインとの副作用有無を確認。
-3. `config-schema.ts` に `BOOLEAN_SETTINGS`（必要なら新カテゴリ）を追加。
-4. `config.ts` の `pluginConfig` に自動反映される（スキーマ駆動のため追加コード不要）。
-5. プラグイン適用の呼び出し口（対象コンポーネントの `ngOnInit`／モジュール初期化部）に
-   `extendsXxxComponent(this)` 相当の呼び出しを追加。
-6. 該当クエリパラメータ付きでアプリを起動し、移行元と同じ挙動になることを目視確認。
+4. `config-schema.ts` に `BOOLEAN_SETTINGS`（必要なら新カテゴリ）を追加。
+5. `config.ts` の `pluginConfig` に自動反映される（スキーマ駆動のため追加コード不要）。
+6. プラグイン適用の呼び出し口（対象コンポーネントの `ngOnInit`／モジュール初期化部）に
+   `extendsXxxComponent(this)` 相当の呼び出しを追加（既存フックへの追記で足りる場合は追加不要）。
+7. 該当クエリパラメータ付きでアプリを起動し、移行元と同じ挙動になることを目視確認。
+8. `git diff -- src/app` が空（またはフック1行程度の最小差分のみ）であることを確認してからコミットする。
 
 ---
 
