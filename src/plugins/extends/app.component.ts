@@ -82,6 +82,15 @@ export const extendsAppComponent = (that: any) => {
       if(pluginConfig.isOffObjectRotateAll){
          appRoot.classList.add('object-rotate-off');
       }
+      if (pluginConfig.isHideMenuImage) {
+        appRoot.classList.add('hide-menu-image');
+      }
+      if (pluginConfig.isHideMenuInventory) {
+        appRoot.classList.add('hide-menu-inventory');
+      }
+      if (pluginConfig.isHideMenuSave) {
+        appRoot.classList.add('hide-menu-save');
+      }
     }
 
     // @HostListener('document:keydown', ['$event'])相当の処理

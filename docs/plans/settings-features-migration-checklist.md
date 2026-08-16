@@ -27,11 +27,11 @@
 - [x] `isAutoSelfViewCard`（ついたてカード自動自分だけ見る）
 - [x] `isAutoSelfViewCardFromDeck`（山札から引いたカード自動自分だけ見る）
 - [x] `isContextMenuAutoSelfViewCardFromDeck`（山札コンテキストメニューに追加）
-- [ ] 上記8機能の実機動作確認（各クエリパラメータ付きURLで起動して目視確認。`virtual-screen`
+- [x] 上記8機能の実機動作確認（各クエリパラメータ付きURLで起動して目視確認。`virtual-screen`
       は関連8コンポーネントがあるため重点確認）
 
 ## フェーズ2: 区分B（要望内で件数が多い・影響範囲が局所的）
-- [ ] `hide-menu-image` / `hide-menu-inventory` / `hide-menu-save`（GM以外のメニュー非表示）
+- [x] `hide-menu-image` / `hide-menu-inventory` / `hide-menu-save`（GM以外のメニュー非表示）
 - [ ] `add-reload-button`（退室ボタン追加）
 - [ ] `context-menu-add-icon`（右クリックメニューのアイコン化）
 - [ ] `help`（キーボードヘルプ表示。既存 `keyboard-help` との統合可否を要確認）

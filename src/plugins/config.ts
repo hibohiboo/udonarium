@@ -22,6 +22,11 @@ interface QueryParamConfig {
   isChangeDefaultTerrain: boolean;
   isMinimizableMenu: boolean;
 
+  // メニュー表示（GM以外のメニューから一部項目を非表示にする）
+  isHideMenuImage: boolean;
+  isHideMenuInventory: boolean;
+  isHideMenuSave: boolean;
+
   // チャット・手札
   useChatCommand: boolean;
   isUseHandStorage: boolean;

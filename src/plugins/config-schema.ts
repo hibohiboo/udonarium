@@ -24,6 +24,7 @@ export const CATEGORIES = [
   { id: 'display', title: '表示モード' },
   { id: 'card', title: 'カード操作' },
   { id: 'ui', title: 'UI機能' },
+  { id: 'menu', title: 'メニュー表示' },
   { id: 'chat', title: 'チャット・手札' },
   { id: 'board', title: 'ボード・ついたて' },
   { id: 'note', title: 'メモ' },
@@ -53,6 +54,11 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   { key: 'isAddCounterBoard', param: 'counter-board', label: 'カウンターボード', type: 'boolean', category: 'ui' },
   { key: 'isChangeDefaultTerrain', param: 'change-default-terrain', label: 'デフォルト地形をCubeに変更', type: 'boolean', category: 'ui' },
   { key: 'isMinimizableMenu', param: 'mini-menu', label: 'メニュー最小化', type: 'boolean', category: 'ui' },
+
+  // メニュー表示（GM以外のメニューから一部項目を非表示にする）
+  { key: 'isHideMenuImage', param: 'hide-menu-image', label: 'メニューから削除: 画像', type: 'boolean', category: 'menu' },
+  { key: 'isHideMenuInventory', param: 'hide-menu-inventory', label: 'メニューから削除: インベントリ', type: 'boolean', category: 'menu' },
+  { key: 'isHideMenuSave', param: 'hide-menu-save', label: 'メニューから削除: 保存', type: 'boolean', category: 'menu' },
 
   // チャット・手札
   { key: 'useChatCommand', param: 'use-chat-command', label: 'チャットコマンド', type: 'boolean', category: 'chat' },
