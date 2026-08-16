@@ -26,6 +26,7 @@ interface QueryParamConfig {
   isHideMenuImage: boolean;
   isHideMenuInventory: boolean;
   isHideMenuSave: boolean;
+  isAddReloadButton: boolean;
 
   // チャット・手札
   useChatCommand: boolean;

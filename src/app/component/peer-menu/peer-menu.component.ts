@@ -11,6 +11,7 @@ import { LobbyComponent } from 'component/lobby/lobby.component';
 import { AppConfig, AppConfigService } from 'service/app-config.service';
 import { ModalService } from 'service/modal.service';
 import { PanelService } from 'service/panel.service';
+import { extendsPeerMenuComponent } from 'src/plugins/extends/component/peer-menu/peer-menu.component';
 
 @Component({
   selector: 'peer-menu',
@@ -28,6 +29,10 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
   private interval: NodeJS.Timeout;
   get myPeer(): PeerCursor { return PeerCursor.myCursor; }
 
+  // 以下はプラグイン（extendsPeerMenuComponent）から注入されるプロパティ・メソッドの型宣言
+  isAddReloadButton: boolean;
+  reload: () => void;
+
   get config(): AppConfig { return AppConfigService.appConfig; }
   get canUsePrivateSession(): boolean { return this.config.backend.mode == 'skyway'; }
 
@@ -36,7 +41,9 @@ export class PeerMenuComponent implements OnInit, OnDestroy, AfterViewInit {
     private modalService: ModalService,
     private panelService: PanelService,
     public appConfigService: AppConfigService
-  ) { }
+  ) {
+    extendsPeerMenuComponent(this);
+  }
 
   ngOnInit() {
     Promise.resolve().then(() => this.panelService.title = '接続情報');

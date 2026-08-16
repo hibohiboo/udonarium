@@ -49,6 +49,9 @@
   </ng-container>
   <button *ngIf="networkService.peers.length < 1" (click)="showLobby()" [disabled]="!networkService.isOpen">ロビー（ルーム一覧）を表示</button>
 </div>
+<div *ngIf="isAddReloadButton">
+  <button (click)="reload()">退室</button>
+</div>
 <div><span style="font-size: 12px;">{{help}}</span></div>
 <ng-container *ngIf="!networkService.peer.isRoom">
   <div style="font-size: 12px;" *ngIf="networkService.peers.length < 1 && canUsePrivateSession">※プライベート接続を使用する場合は、お互いのIDをユドナリウム外で共有してください。</div>
