@@ -293,51 +293,14 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
    影響範囲が局所的で移植しやすい。`offline-mode` は外部依存や本アプリの通信構成
    （Cloudflare Workers版）との整合性確認が必要なため後回しにする。
    `deck-from-spreadsheet` は移行対象外（6章参照）。
-4. 各機能追加後、`docs/plans/` 内の本ファイルのチェックリスト（下記）を更新して進捗管理する。
+4. 各機能追加後、チェックリスト（別ファイル、下記参照）を更新して進捗管理する。
 
 ## 5. チェックリスト
 
-### 区分A（配線のみ）
-- [x] `virtual-screen`（ボード・ついたて）
-- [x] `hand-storage-self-only`（ボードを自分のものだけ触れる）
-- [x] `return-the-hand`（手札を回収する）
-- [x] `hand-card-self-hand-storage`（自分のボード→手札化）
-- [x] `card-back-image-all-change`（カード裏画像一括変更）
-- [x] `auto-self-view-mode`（ついたてカード自動自分だけ見る）
-- [x] `auto-self-view-mode-from-stack`（山札から引いたカード自動自分だけ見る）
-- [x] `add-stack-context-auto-self-view-mode`（山札コンテキストメニューに追加）
+進捗管理用のチェックリストは別ファイルに分離した。
 
-`config-schema.ts` の `BOOLEAN_SETTINGS` に新カテゴリ `board`（ボード・ついたて）として8項目を追加し、
-`config.ts` の `UNIMPLEMENTED_FLAGS` / `UnimplementedFeatureFlags` を撤去してクエリパラメータ駆動に
-切り替え済み（`tsc --noEmit` / `ng build` とも成功、コアの `src/app/**` は無変更）。実機での目視動作確認
-（各クエリパラメータ付きURLでの起動確認、特に `virtual-screen` 関連8コンポーネント）は未実施。
-
-### 区分A'
-- [ ] 設定間の依存関係・排他制御の仕組み導入
-- [ ] 依存関係ルールの移植
-
-### 区分B（新規移植）
-- [ ] `add-blank-card-menu-simple`（仮称。本家互換のシンプルなブランクカード。0-3節「機能B」）
-- [ ] `add-card-text-writable`
-- [ ] `add-draw-n-cards`
-- [ ] `move-stacked-card`
-- [ ] `horizon-menu`
-- [ ] `mini-menu-first-open`
-- [ ] `hide-menu-table` / `image` / `music` / `inventory` / `zip` / `save`
-- [ ] `context-menu-add-icon`
-- [ ] `add-reload-button`
-- [ ] `help`
-- [ ] `hide-pedestal`
-- [ ] `empty-display-items`
-- [ ] `empty-default-objects`
-- [ ] `empty-new-character`
-- [ ] `empty-default-table`
-- [ ] `hide-first-peer`
-- [ ] `hide-first-chat`
-- [ ] `toggle-sound-effect`
-- [ ] `reset-point-of-view`
-- [ ] `offline-mode`（要否確認）
-- [ ] `post-message` 連携（要否確認）
+→ [settings-features-migration-checklist.md](./settings-features-migration-checklist.md)
+（要望の優先順位順・フェーズ0〜6で整理。並び順の根拠は7章を参照）
 
 ## 6. 未確定事項（要ユーザー確認）
 
@@ -401,36 +364,15 @@ URLに反映する」設定ページが**既に存在する**（`src/plugins/set
 
 ### 7-2. 推奨着手フェーズ
 
-**フェーズ0: 実装済み・確認/初期値調整のみ（最短で「対応済み」を報告できるもの）**
-`mini-menu` / `object-rotate-off-individually` / `text-note-upright-flat` /
-`use-hand-storage` / `isTapCard`（本体） / `isUseKeyboardShortcut`（本体） の
-コンテンツ確認と、`shuffle-normal` のデフォルトON化。要望者への「既に使える」回答が
-主目的で、コスト最小。
+具体的なチェックボックスは [settings-features-migration-checklist.md](./settings-features-migration-checklist.md)
+にフェーズ0〜6として整理済み。各フェーズの位置づけは次の通り。
 
-**フェーズ1: 区分A残作業（実機動作確認）**
-チェックリスト上は配線済みの `virtual-screen` ほか8機能（疑似ついたて機能含む）を実際に
-クエリパラメータ付きURLで起動し、要望内容と一致するか確認する。
-
-**フェーズ2: 区分B・影響範囲が局所的なもの（要望内でも件数が多い実務系）**
-`hide-menu-*` / `add-reload-button` / `context-menu-add-icon` / `help` /
-`add-draw-n-cards` / `reset-point-of-view` / `toggle-sound-effect` /
-`empty-new-character` / `empty-default-objects`・`empty-default-table` /
-`add-card-text-writable`。3章の移植手順に沿って1機能ずつPRを分割する。
-
-**フェーズ3: 区分A'（依存関係・デフォルト値調整）**
-`object-rotate-off-individually` の相互排他ルール、地形デフォルト回転オフ、
-プリセット/初期値調整をまとめて着手。フェーズ2で有効化した機能同士の整合性も合わせて見る。
-
-**フェーズ4: 区分Bの残り（計画上も優先度低め）**
-`move-stacked-card` / `offline-mode`（要否確認が先）。
-
-**フェーズ5: 計画外・要件定義が先に必要なもの**
-回転オフ引き継ぎのバグ調査 / 手札置き場のZIP永続化 / コマンド操作＋所有権放棄コマンド
-（個人ボードの右クリックメニュー仕様設計）/ 個人ボード回転デフォルト /
-「ボード」への名称変更 / 複数選択移動・削除（カード優先）/ ポップアップHP非表示 /
-足元の黄色い丸枠（`hide-pedestal`と同一かの確認）。実装前に仕様を固める必要があるため、
-フェーズ2〜3と並行して要件整理だけ先行させるのが現実的。
-
-**フェーズ6: アセット待ちでブロック中**
-デフォルト地形データ差し替え / オリジナル初期画面。実装作業ではなく素材の準備待ちのため、
-依頼・進捗確認を別途行う。
+| フェーズ | 位置づけ |
+| --- | --- |
+| 0 | 実装済み・確認/初期値調整のみ。要望者に「既に使える」と即答できるもの。コスト最小で最優先。 |
+| 1 | 区分A（配線済み）の実機動作確認。実装自体は完了済みで、目視確認のみ残っている。 |
+| 2 | 区分B のうち要望内で件数が多く、影響範囲が局所的なもの。3章の移植手順に沿って1機能ずつPRを分割する。 |
+| 3 | 区分A'（依存関係・排他制御・デフォルト値調整）。フェーズ2で有効化した機能同士の整合性を合わせて見る。 |
+| 4 | 区分B の残り。要望との直接の紐付けが弱い、または計画上も優先度低めのもの。 |
+| 5 | 計画外・要件定義が先に必要なもの。実装前に仕様を固める必要があるため、フェーズ2〜3と並行して要件整理だけ先行させるのが現実的。 |
+| 6 | アセット待ちでブロック中。実装作業ではなく素材の準備待ちのため、依頼・進捗確認を別途行う。 |
