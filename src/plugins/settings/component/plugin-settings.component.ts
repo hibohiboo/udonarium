@@ -85,10 +85,14 @@ export class PluginSettingsComponent {
 
   /**
    * プリセット変更時（スキーマベース）
+   * 「なし」を選んだ場合も含め、切り替えのたびに一旦設定をリセットしてから
+   * 選択されたプリセットを反映する（前のプリセットの値が混ざらないようにする）
    */
   onPresetChange() {
+    this.initializeSettings();
+
     if (!this.roomType || !ROOM_PRESETS[this.roomType]) {
-      return; // プリセットなし - 現在の設定を維持
+      return; // 「なし」の場合はリセットのみ
     }
 
     // プリセット設定を適用
