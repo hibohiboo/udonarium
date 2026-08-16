@@ -7,13 +7,13 @@
 ## フェーズ0: 実装済み・動作確認/初期値調整のみ
 要望者に「既に使える」と回答できるものの最終確認と、初期値のみの変更。実装コスト最小。
 
-- [ ] `mini-menu`（メニュー最小化）動作確認
-- [ ] `object-rotate-off-individually`（回転オンオフの個別スイッチ）動作確認
-- [ ] `text-note-upright-flat`（共有メモの直立/並行切替）動作確認
-- [ ] `use-hand-storage`（手札置き場）動作確認
-- [ ] `isTapCard`（カードタップ）動作確認・右クリックメニュー項目の有無確認
-- [ ] `isUseKeyboardShortcut`（キーボードショートカット）動作確認・コピー/ペースト/デリートが含まれるか確認
-- [ ] `shuffle-normal`（正位置シャッフル）をデフォルトONにする
+- [x] `mini-menu`（メニュー最小化）動作確認
+- [x] `object-rotate-off-individually`（回転オンオフの個別スイッチ）動作確認
+- [x] `text-note-upright-flat`（共有メモの直立/並行切替）動作確認
+- [x] `use-hand-storage`（手札置き場）動作確認
+- [x] `isTapCard`（カードタップ）動作確認・右クリックメニュー項目の有無確認
+- [x] `isUseKeyboardShortcut`（キーボードショートカット）動作確認・コピー/ペースト/デリートが含まれるか確認
+- [x] `shuffle-normal`（正位置シャッフル）をデフォルトONにする
 
 ## フェーズ1: 区分A（配線済み・実機動作確認待ち）
 `config-schema.ts` への登録・配線は完了済み（`tsc --noEmit` / `ng build` とも成功、コアの
