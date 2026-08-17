@@ -31,6 +31,7 @@ import { TablePickGesture } from './table-pick-gesture';
 import { TableTouchGesture } from './table-touch-gesture';
 import { extendsGameTableComponent } from 'src/plugins/extends/component/game-table/game-table.component';
 import { HandStorageService } from 'src/plugins/hand-storage/extend/service/hand-storage.service';
+import { contextMenuAddIcon } from 'src/plugins/context-menu-add-icon/extend/component/game-table/game-table.component';
 
 @Component({
   selector: 'game-table',
@@ -296,6 +297,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         this.modalService.open(GameTableSettingComponent);
       }
     });
+    if (contextMenuAddIcon(this, menuPosition, menuActions)) return;
     this.contextMenuService.open(menuPosition, menuActions, this.currentTable.name);
   }
 

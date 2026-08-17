@@ -33,7 +33,7 @@
 ## フェーズ2: 区分B（要望内で件数が多い・影響範囲が局所的）
 - [x] `hide-menu-image` / `hide-menu-inventory` / `hide-menu-save`（GM以外のメニュー非表示）
 - [x] `add-reload-button`（退室ボタン追加）
-- [ ] `context-menu-add-icon`（右クリックメニューのアイコン化）
+- [x] `context-menu-add-icon`（右クリックメニューのアイコン化）
 - [ ] `help`（キーボードヘルプ表示。既存 `keyboard-help` との統合可否を要確認）
 - [ ] `add-draw-n-cards`（カードをn枚引く）
 - [ ] `reset-point-of-view`（視点リセット→2D表示切替）

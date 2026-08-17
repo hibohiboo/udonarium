@@ -1,0 +1,7 @@
+<div class="component is-max-limit" #root>
+  <ul>
+    <li class="hasHighlight" *ngFor="let item of iconItems" (click)="doAction(item.action)">
+      <div><i class="material-icons icon">{{item.icon}}</i>{{item.label}}</div>
+    </li>
+  </ul>
+</div>

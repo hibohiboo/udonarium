@@ -11,6 +11,7 @@ import { BlankCardComponent } from '../add-blank-card/component/blank-card/blank
 import { BlankCardStackComponent } from '../add-blank-card/component/blank-card-stack/blank-card-stack.component';
 import { BlankCardOverviewPanelComponent } from '../add-blank-card/component/blank-card-overview-panel/blank-card-overview-panel.component';
 import { BlankCardSheetComponent } from '../add-blank-card/component/blank-card-sheet/blank-card-sheet.component';
+import { IconContextMenuComponent } from '../context-menu-add-icon/component/icon-context-menu/icon-context-menu.component';
 
 
 const components = [
@@ -23,6 +24,7 @@ const components = [
   BlankCardStackComponent,
   BlankCardOverviewPanelComponent,
   BlankCardSheetComponent,
+  IconContextMenuComponent,
 ];
 const imports = [];
 const services = [CounterBoardService, HandStorageService];

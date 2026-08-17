@@ -60,6 +60,7 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   { key: 'isHideMenuInventory', param: 'hide-menu-inventory', label: 'メニューから削除: インベントリ', type: 'boolean', category: 'menu' },
   { key: 'isHideMenuSave', param: 'hide-menu-save', label: 'メニューから削除: 保存', type: 'boolean', category: 'menu' },
   { key: 'isAddReloadButton', param: 'add-reload-button', label: '「接続」内に退室ボタンを追加', type: 'boolean', category: 'menu' },
+  { key: 'isContextMenuIcon', param: 'context-menu-add-icon', label: '右クリックメニューをアイコン表示にする', type: 'boolean', category: 'menu' },
 
   // チャット・手札
   { key: 'useChatCommand', param: 'use-chat-command', label: 'チャットコマンド', type: 'boolean', category: 'chat' },

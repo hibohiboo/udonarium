@@ -10,6 +10,7 @@ import { openHelpEvent, openHelp, useHelp } from "../keyboard-help/app/app.compo
 import { extendTabletopActionService } from "./service/tabletop-action.service";
 import { extendTabletopServiceForBlankCard } from "../add-blank-card/extend/service/tabletop.service";
 import { extendTooltipDirectiveForBlankCard } from "../add-blank-card/extend/directive/tooltip.directive";
+import { extendContextMenuService } from "./service/context-menu.service";
 
 export const outerApp = {
   panelService: null,
@@ -26,6 +27,8 @@ export const extendsAppComponent = (that: any) => {
   extendTabletopServiceForBlankCard();
   // TooltipDirectiveのプロトタイプを拡張（BlankCard専用OverviewPanel対応）
   extendTooltipDirectiveForBlankCard();
+  // ContextMenuServiceのプロトタイプを拡張（context-menu-add-icon対応）
+  extendContextMenuService();
   // isSettingsRoute プロパティをプラグインから注入
   Object.defineProperty(that, 'isSettingsRoute', {
     get: function() {
