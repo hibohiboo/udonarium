@@ -1,5 +1,7 @@
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { getCreateBlankCardMenu } from 'src/plugins/add-blank-card/extends/servies/tabletop-action.service';
+import { pluginConfig } from 'src/plugins/config';
+import { createDefaultCubeTerrain } from 'src/plugins/default-terrain-cube/extend/service/tabletop-action.service';
 import { getCreateHandStorageMenu } from 'src/plugins/hand-storage/extend/service/tabletop-action.service';
 
 export const extendTabletopActionService = () => {
@@ -24,6 +26,17 @@ export const extendTabletopActionService = () => {
     actions.push(...getCreateBlankCardMenu(position));
 
     return actions;
+  };
+
+  // createTerrainをオーバーライドして、設定が有効な場合はCube地形を作成する
+  const originalCreateTerrain = TabletopActionService.prototype.createTerrain;
+
+  TabletopActionService.prototype.createTerrain = function(position) {
+    if (pluginConfig.isChangeDefaultTerrain) {
+      const cubeTerrain = createDefaultCubeTerrain(position);
+      if (cubeTerrain) return cubeTerrain;
+    }
+    return originalCreateTerrain.call(this, position);
   };
 };
 

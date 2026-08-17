@@ -1,5 +1,6 @@
 import { ContextMenuSeparator } from 'service/context-menu.service';
 import { pluginConfig } from 'src/plugins/config';
+import { blinkOffTerrain } from 'src/plugins/default-terrain-cube/extend/component/terrain/terrain.component';
 import { createClassUpdater } from '../utils';
 
 export const extendsTerrainComponent = (that: any) => {
@@ -37,6 +38,10 @@ export const extendsTerrainComponent = (that: any) => {
       updateRotateOffClass.call(this);
       this._updateRotateOffClass = updateRotateOffClass;
     }
+
+    // @HostBinding('class.blink-off')相当の処理：Cube地形の点滅アニメーションを止める
+    const updateBlinkOffClass = createClassUpdater('blink-off', blinkOffTerrain);
+    updateBlinkOffClass.call(this);
   };
 
   // makeSelectionContextMenuメソッドをオーバーライドして拡張メニューを追加

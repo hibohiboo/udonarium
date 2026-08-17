@@ -2,4 +2,5 @@
 @import '../mode2d/2d.css';
 @import '../mini-menu/mini-menu.css';
 @import '../text-note-upright-flat/text-note-upright-flat.css';
-@import '../hide-menu/hide-menu.css'
+@import '../hide-menu/hide-menu.css';
+@import '../default-terrain-cube/terrain-cube.css';
