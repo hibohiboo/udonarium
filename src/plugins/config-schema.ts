@@ -107,17 +107,31 @@ export const ALL_SETTINGS: SettingItem[] = [
 
 /**
  * 「全機能を有効化」プリセットで除外するキー。
- * 一括ONにすると自己矛盾を起こす・他の設定と衝突するものだけを明示的に除外する。
+ * 一括ONにすると自己矛盾を起こす・他の設定と衝突する・初期表示を壊すものを明示的に除外する。
  * - isHideMenuImage / isHideMenuInventory / isHideMenuSave: メニュー項目を非表示にする機能。
  *   「全機能を有効化」の趣旨（機能を隠さず使えるようにする）と矛盾するため除外。
  * - isOffObjectRotateAll: isOffObjectRotateIndividually（個別設定可能な回転オフ）と役割が重複・排他。
  *   個別設定可能な方を優先し、一括オフの方は除外する。
+ * - isFirstFetchZipRoom（Zipから部屋情報読込）: ONにすると GameTableComponent の初期テーブル生成処理
+ *   （デフォルトの地形・グリッド作成）が丸ごとスキップされ、代わりに `?room=<値>` をファイル名とみなして
+ *   `rooms/<値>.zip` を取得しようとする（src/plugins/first-fetch-zip-room/extend/app.component.ts の
+ *   getZipName()）。ROOM_PRESETSも同じ`room`パラメータを使う仕組みのため、プリセット名（例:
+ *   `room=all`）がそのままZIPファイル名として扱われてしまい、存在しないZIPの取得に失敗して
+ *   初期テーブルが何も表示されなくなる。vsrank/hollowプリセットは対応する専用ZIP
+ *   （rooms/vsrank.zip等）が用意されている前提でこのフラグをONにしているため問題ないが、
+ *   「全機能を有効化」は特定のZIPを前提としないプリセットなので除外する。
+ * - isTutorial（チュートリアル）: 対応する実装が未整備で、ONにすると AppComponent の
+ *   ngAfterViewInit が早期returnし、接続情報・チャット画面などの初期パネルが一切開かなくなる
+ *   （src/plugins/extends/app.component.ts）。テーブル自体は生成されるが起動直後の画面が
+ *   実質空になるため除外する。
  */
 const ALL_PRESET_EXCLUDED_KEYS: ReadonlySet<string> = new Set([
   'isHideMenuImage',
   'isHideMenuInventory',
   'isHideMenuSave',
   'isOffObjectRotateAll',
+  'isFirstFetchZipRoom',
+  'isTutorial',
 ]);
 
 /** 部屋別プリセット（設定キーの配列で定義） */
