@@ -105,6 +105,21 @@ export const ALL_SETTINGS: SettingItem[] = [
 // 部屋別プリセット設定
 // ========================================
 
+/**
+ * 「全機能を有効化」プリセットで除外するキー。
+ * 一括ONにすると自己矛盾を起こす・他の設定と衝突するものだけを明示的に除外する。
+ * - isHideMenuImage / isHideMenuInventory / isHideMenuSave: メニュー項目を非表示にする機能。
+ *   「全機能を有効化」の趣旨（機能を隠さず使えるようにする）と矛盾するため除外。
+ * - isOffObjectRotateAll: isOffObjectRotateIndividually（個別設定可能な回転オフ）と役割が重複・排他。
+ *   個別設定可能な方を優先し、一括オフの方は除外する。
+ */
+const ALL_PRESET_EXCLUDED_KEYS: ReadonlySet<string> = new Set([
+  'isHideMenuImage',
+  'isHideMenuInventory',
+  'isHideMenuSave',
+  'isOffObjectRotateAll',
+]);
+
 /** 部屋別プリセット（設定キーの配列で定義） */
 export const ROOM_PRESETS: Record<string, Partial<Record<string, boolean>>> = {
   vsrank: {
@@ -122,11 +137,19 @@ export const ROOM_PRESETS: Record<string, Partial<Record<string, boolean>>> = {
     isFirstFetchZipRoom: true,
     isChangeDefaultTerrain: false,
   },
+  // 全機能を有効化：ALL_PRESET_EXCLUDED_KEYSに挙げたもの以外のBoolean設定を全てONにする。
+  // BOOLEAN_SETTINGSから動的に生成するため、新しい設定項目を追加しても自動的に反映される。
+  all: Object.fromEntries(
+    BOOLEAN_SETTINGS
+      .filter(s => !ALL_PRESET_EXCLUDED_KEYS.has(s.key))
+      .map(s => [s.key, true])
+  ),
 };
 
 /** プリセット選択肢（UI用） */
 export const PRESET_OPTIONS = [
   { value: '', label: 'なし' },
+  { value: 'all', label: '全機能を有効化' },
   { value: 'vsrank', label: 'VSRank用設定' },
   { value: 'hollow', label: 'Hollow用設定' },
 ];
