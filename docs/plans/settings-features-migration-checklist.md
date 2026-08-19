@@ -34,7 +34,7 @@
 - [x] `hide-menu-image` / `hide-menu-inventory` / `hide-menu-save`（GM以外のメニュー非表示）
 - [x] `add-reload-button`（退室ボタン追加）
 - [x] `context-menu-add-icon`（右クリックメニューのアイコン化）
-- [ ] `help`（キーボードヘルプ表示。既存 `keyboard-help` との統合可否を要確認）
+- [x] `help`（キーボードヘルプ表示。既存 `keyboard-help` と統合、専用フラグは追加せず`isUseKeyboardShortcut`連動のまま）
 - [ ] `add-draw-n-cards`（カードをn枚引く）
 - [ ] `reset-point-of-view`（視点リセット→2D表示切替）
 - [ ] `toggle-sound-effect`（操作音オンオフ）

@@ -67,6 +67,12 @@
           <div>{{progresPercent}}%</div>
         </a>
       </li>
+      <li *ngIf="useHelp" (click)="openHelp()">
+        <a routerLink="/" routerLinkActive="active">
+          <div><i class="material-icons icon-size">help</i></div>
+          <div>ヘルプ</div>
+        </a>
+      </li>
     </ul>
   </nav>
 </ui-panel>
