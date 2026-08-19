@@ -12,6 +12,8 @@ import { extendTabletopActionService } from "./service/tabletop-action.service";
 import { extendTabletopServiceForBlankCard } from "../add-blank-card/extend/service/tabletop.service";
 import { extendTooltipDirectiveForBlankCard } from "../add-blank-card/extend/directive/tooltip.directive";
 import { extendContextMenuService } from "./service/context-menu.service";
+import { extendSoundEffect } from "./class/sound-effect";
+import { toggleMute, useMute, useMuteOff } from "../toggle-sound-effect/extend/class/sound-effect";
 
 export const outerApp = {
   panelService: null,
@@ -30,6 +32,8 @@ export const extendsAppComponent = (that: any) => {
   extendTooltipDirectiveForBlankCard();
   // ContextMenuServiceのプロトタイプを拡張（context-menu-add-icon対応）
   extendContextMenuService();
+  // SoundEffect.playを拡張（toggle-sound-effect対応）
+  extendSoundEffect();
   // isSettingsRoute プロパティをプラグインから注入
   Object.defineProperty(that, 'isSettingsRoute', {
     get: function() {
@@ -82,6 +86,27 @@ export const extendsAppComponent = (that: any) => {
   };
   that.switchToTopView = function() {
     switchToTopView();
+  };
+
+  // useMute / useMuteOff プロパティをプラグインから注入（効果音のミュート切り替えボタン用）
+  Object.defineProperty(that, 'useMute', {
+    get: function() {
+      return useMute();
+    },
+    enumerable: true,
+    configurable: true
+  });
+  Object.defineProperty(that, 'useMuteOff', {
+    get: function() {
+      return useMuteOff();
+    },
+    enumerable: true,
+    configurable: true
+  });
+
+  // toggleMute メソッドをプラグインから注入
+  that.toggleMute = function() {
+    toggleMute();
   };
 
   // Angularのライフサイクルフックは、クラスのプロトタイプメソッドとして定義されている

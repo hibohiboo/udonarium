@@ -37,11 +37,12 @@
 - [x] `help`（キーボードヘルプ表示。既存 `keyboard-help` と統合、専用フラグは追加せず`isUseKeyboardShortcut`連動のまま）
 - [x] `add-draw-n-cards`（カードをn枚引く）
 - [x] `reset-point-of-view`（視点リセット→2D表示切替。移行元は1ボタン+ポップアップ選択だったが、AppComponentにContextMenuService注入がないため2つの独立メニュー項目に変更）
-- [ ] `toggle-sound-effect`（操作音オンオフ）
+- [x] `toggle-sound-effect`（操作音オンオフ）
+- [ ] `add-card-text-writable`（カードに文字入力。0-3節参照、ブランクカード限定機能とは別物）
 - [ ] `empty-new-character`（新規キャラクターのステータス欄を空白に）
 - [ ] `empty-default-objects`（サンプルのキャラクターコマ非表示）
 - [ ] `empty-default-table`（初期テーブル設定をおこなわない）
-- [ ] `add-card-text-writable`（カードに文字入力。0-3節参照、ブランクカード限定機能とは別物）
+
 
 ## フェーズ3: 区分A'（依存関係・デフォルト値調整）
 - [ ] 設定間の依存関係・排他制御の仕組み導入（`config-schema.ts` への `DEPENDENCIES` 定義追加）

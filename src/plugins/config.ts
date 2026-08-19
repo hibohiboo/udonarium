@@ -23,6 +23,7 @@ interface QueryParamConfig {
   isAddCounterBoard: boolean;
   isChangeDefaultTerrain: boolean;
   isMinimizableMenu: boolean;
+  isToggleSoundEffect: boolean;
 
   // メニュー表示（GM以外のメニューから一部項目を非表示にする）
   isHideMenuImage: boolean;
