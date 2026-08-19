@@ -4,6 +4,7 @@ import { createClassUpdater } from '../utils';
 import { addTabIndex } from 'src/plugins/keyboard-shortcut/extend/component/addTabIndex';
 import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
 import { tapCardStackContextMenu, tapCardStackEnter, tapCardStackSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
+import { drawNCardsContextMenu } from 'src/plugins/add-draw-n-cards/extend/component/card-stack/card-stack.component';
 
 export const extendsCardStackComponent = (that: any) => {
   // keyboard-shortcut プラグインの初期化
@@ -108,6 +109,13 @@ export const extendsCardStackComponent = (that: any) => {
   constructor.prototype.makeContextMenu = function() {
     // 元のメソッドを呼び出して基本メニューを取得
     const actions = originalMakeContextMenu.call(this);
+
+    // add-draw-n-cards拡張は'１枚引く'の直後に挿入
+    const drawOneIndex = actions.findIndex((action: any) => action.name === '１枚引く');
+    const drawNCardsExtensions = drawNCardsContextMenu(this);
+    if (drawOneIndex !== -1 && drawNCardsExtensions.length > 0) {
+      actions.splice(drawOneIndex + 1, 0, ...drawNCardsExtensions);
+    }
 
     // 拡張メニューを適切な位置に挿入
     // tap-cardなどの拡張は'すべて正位置にする'の後に挿入

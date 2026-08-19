@@ -48,6 +48,7 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   { key: 'isTapCard', param: 'tap-card', label: 'カードをタップ', type: 'boolean', category: 'card' },
   { key: 'isCardShuffleNormalPosition', param: 'shuffle-normal', label: 'カードを正位置のままシャッフル', type: 'boolean', category: 'card' },
   { key: 'addBlankCardAddContextMenu', param: 'add-blank-card-menu', label: '右クリックメニューでブランクカードを作成', type: 'boolean', category: 'card' },
+  { key: 'isAddDrawNCards', param: 'add-draw-n-cards', label: '「カードをn枚引く」を山札のコンテキストメニューに追加', type: 'boolean', category: 'card' },
 
   // UI機能
   { key: 'isUseKeyboardShortcut', param: 'key-shortcut', label: 'キーボードショートカット', type: 'boolean', category: 'ui' },

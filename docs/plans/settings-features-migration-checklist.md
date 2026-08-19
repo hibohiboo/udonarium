@@ -35,7 +35,7 @@
 - [x] `add-reload-button`（退室ボタン追加）
 - [x] `context-menu-add-icon`（右クリックメニューのアイコン化）
 - [x] `help`（キーボードヘルプ表示。既存 `keyboard-help` と統合、専用フラグは追加せず`isUseKeyboardShortcut`連動のまま）
-- [ ] `add-draw-n-cards`（カードをn枚引く）
+- [x] `add-draw-n-cards`（カードをn枚引く）
 - [ ] `reset-point-of-view`（視点リセット→2D表示切替）
 - [ ] `toggle-sound-effect`（操作音オンオフ）
 - [ ] `empty-new-character`（新規キャラクターのステータス欄を空白に）
