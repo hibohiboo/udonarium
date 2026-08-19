@@ -43,6 +43,7 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   { key: 'is2d', param: '2d', label: '2Dモード', type: 'boolean', category: 'display' },
   { key: 'isTutorial', param: 'tutorial', label: 'チュートリアル', type: 'boolean', category: 'display' },
   { key: 'isFirstFetchZipRoom', param: 'first-fetch-zip-room', label: 'Zipから部屋情報読込', type: 'boolean', category: 'display' },
+  { key: 'isUseResetPointOfView', param: 'reset-point-of-view', label: '視点リセット→2D表示切替', type: 'boolean', category: 'display' },
 
   // カード操作
   { key: 'isTapCard', param: 'tap-card', label: 'カードをタップ', type: 'boolean', category: 'card' },

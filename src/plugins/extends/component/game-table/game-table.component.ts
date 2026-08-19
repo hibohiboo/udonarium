@@ -4,6 +4,7 @@ import { isEmptyDefaultTabletopObjects, transformDefault } from 'src/plugins/fir
 import { initCommandGameBoard } from 'src/plugins/use-chat-command/game-board';
 import { extendsGameTableComponentForHandStorage } from 'src/plugins/hand-storage/extend/component/game-table/game-table.component';
 import { extendsGameTableComponentForBlankCard } from 'src/plugins/add-blank-card/extend/component/game-table/game-table.component';
+import { resetViewHandler } from 'src/plugins/reset-point-of-view/extend/component/game-table/game-table.component';
 import { EventSystem } from '@udonarium/core/system';
 import { pluginConfig } from 'src/plugins/config';
 
@@ -16,6 +17,11 @@ export const extendsGameTableComponent = (that: any) => {
 
   // ngOnInitをオーバーライド
   constructor.prototype.ngOnInit = function() {
+    // reset-point-of-viewプラグイン: RESET_POINT_OF_VIEWイベントを購読
+    // （isEmptyDefaultTabletopObjectsの分岐に関わらず必要なため、分岐の前で登録する）
+    EventSystem.register(this)
+      .on('RESET_POINT_OF_VIEW', event => resetViewHandler(this, event));
+
     // 初期テーブル設定を呼び出さない場合
     if(isEmptyDefaultTabletopObjects){
         EventSystem.register(this)

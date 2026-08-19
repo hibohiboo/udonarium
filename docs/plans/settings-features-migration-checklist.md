@@ -36,7 +36,7 @@
 - [x] `context-menu-add-icon`（右クリックメニューのアイコン化）
 - [x] `help`（キーボードヘルプ表示。既存 `keyboard-help` と統合、専用フラグは追加せず`isUseKeyboardShortcut`連動のまま）
 - [x] `add-draw-n-cards`（カードをn枚引く）
-- [ ] `reset-point-of-view`（視点リセット→2D表示切替）
+- [x] `reset-point-of-view`（視点リセット→2D表示切替。移行元は1ボタン+ポップアップ選択だったが、AppComponentにContextMenuService注入がないため2つの独立メニュー項目に変更）
 - [ ] `toggle-sound-effect`（操作音オンオフ）
 - [ ] `empty-new-character`（新規キャラクターのステータス欄を空白に）
 - [ ] `empty-default-objects`（サンプルのキャラクターコマ非表示）

@@ -10,6 +10,7 @@ interface QueryParamConfig {
   is2d: boolean;
   isTutorial: boolean;
   isFirstFetchZipRoom: boolean;
+  isUseResetPointOfView: boolean;
 
   // カード操作
   isTapCard: boolean;

@@ -67,6 +67,18 @@
           <div>{{progresPercent}}%</div>
         </a>
       </li>
+      <li *ngIf="useResetPointOfView" (click)="resetPointOfView()">
+        <a routerLink="/" routerLinkActive="active">
+          <div><i class="material-icons icon-size">remove_red_eye</i></div>
+          <div>視点リセット</div>
+        </a>
+      </li>
+      <li *ngIf="useResetPointOfView" (click)="switchToTopView()">
+        <a routerLink="/" routerLinkActive="active">
+          <div><i class="material-icons icon-size">grid_view</i></div>
+          <div>2Dモード表示</div>
+        </a>
+      </li>
       <li *ngIf="useHelp" (click)="openHelp()">
         <a routerLink="/" routerLinkActive="active">
           <div><i class="material-icons icon-size">help</i></div>

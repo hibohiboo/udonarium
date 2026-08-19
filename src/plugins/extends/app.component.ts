@@ -7,6 +7,7 @@ import { fetchZipRoom } from "../first-fetch-zip-room/extend/app.component";
 import * as counterBoard from 'src/plugins/add-counter-board/extend/app.component';
 import { ContextMenuService } from "service/context-menu.service";
 import { openHelpEvent, openHelp, useHelp } from "../keyboard-help/app/app.component";
+import { resetPointOfView, switchToTopView } from "../reset-point-of-view/extend/app.component";
 import { extendTabletopActionService } from "./service/tabletop-action.service";
 import { extendTabletopServiceForBlankCard } from "../add-blank-card/extend/service/tabletop.service";
 import { extendTooltipDirectiveForBlankCard } from "../add-blank-card/extend/directive/tooltip.directive";
@@ -64,6 +65,23 @@ export const extendsAppComponent = (that: any) => {
   // onKeydown メソッドをプラグインから注入
   that.onKeydown = function(e: KeyboardEvent) {
     openHelpEvent(this.modalService, e);
+  };
+
+  // useResetPointOfView プロパティをプラグインから注入
+  Object.defineProperty(that, 'useResetPointOfView', {
+    get: function() {
+      return pluginConfig.isUseResetPointOfView;
+    },
+    enumerable: true,
+    configurable: true
+  });
+
+  // resetPointOfView / switchToTopView メソッドをプラグインから注入
+  that.resetPointOfView = function() {
+    resetPointOfView();
+  };
+  that.switchToTopView = function() {
+    switchToTopView();
   };
 
   // Angularのライフサイクルフックは、クラスのプロトタイプメソッドとして定義されている

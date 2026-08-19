@@ -15,5 +15,17 @@ declare module 'src/app/app.component' {
      * ヘルプモーダルを開くメソッド（プラグインから注入）
      */
     openHelp: () => void;
+    /**
+     * 「視点リセット」「2Dモードに切り替える」メニュー項目を表示するかどうか（プラグインから注入）
+     */
+    useResetPointOfView: boolean;
+    /**
+     * テーブルの視点を初期の3D斜め視点に戻すメソッド（プラグインから注入）
+     */
+    resetPointOfView: () => void;
+    /**
+     * テーブルを真上から見た2D表示に切り替えるメソッド（プラグインから注入）
+     */
+    switchToTopView: () => void;
   }
 }
