@@ -17,6 +17,7 @@ interface QueryParamConfig {
   isCardShuffleNormalPosition: boolean;
   addBlankCardAddContextMenu: boolean;
   isAddDrawNCards: boolean;
+  isCardWritable: boolean;
 
   // UI機能
   isUseKeyboardShortcut: boolean;

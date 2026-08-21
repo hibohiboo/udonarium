@@ -4,10 +4,14 @@ import { createClassUpdater } from '../utils';
 import { addTabIndex } from 'src/plugins/keyboard-shortcut/extend/component/addTabIndex';
 import {  onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
 import { tapCardContextMenu, tapCardEnter, tapCardSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
+import { isCardWritable } from 'src/plugins/add-card-text-writable/extend/component/card/card.component';
 
 export const extendsCardComponent = (that: any) => {
   // keyboard-shortcut プラグインの初期化
   addTabIndex(that);
+
+  // add-card-text-writable プラグイン: isCardWritable プロパティをテンプレートから使えるように注入
+  that.isCardWritable = isCardWritable;
 
   // Angularのライフサイクルフックをプロトタイプレベルでオーバーライド
   const constructor = that.constructor;

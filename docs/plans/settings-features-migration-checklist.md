@@ -38,8 +38,7 @@
 - [x] `add-draw-n-cards`（カードをn枚引く）
 - [x] `reset-point-of-view`（視点リセット→2D表示切替。移行元は1ボタン+ポップアップ選択だったが、AppComponentにContextMenuService注入がないため2つの独立メニュー項目に変更）
 - [x] `toggle-sound-effect`（操作音オンオフ）
-- [ ] `add-card-text-writable`（カードに文字入力。0-3節参照、ブランクカード限定機能とは別物）
-- [ ] `empty-new-character`（新規キャラクターのステータス欄を空白に）
+- [x] `add-card-text-writable`（カードに文字入力。0-3節参照、ブランクカード限定機能とは別物。専用UIは作らず既存「カードを編集」パネルの汎用DataElement編集機能を利用）
 - [ ] `empty-default-objects`（サンプルのキャラクターコマ非表示）
 - [ ] `empty-default-table`（初期テーブル設定をおこなわない）
 
@@ -62,6 +61,7 @@
 - [ ] `hide-first-peer` / `hide-first-chat`（初期表示の接続情報・チャット非表示）
       ※要望一覧に直接の対応なし
 - [ ] `post-message` 連携 ※要望一覧に直接の対応なし、要否確認が先
+- [ ] `empty-new-character`（新規キャラクターのステータス欄を空白に。ユーザー指示により最優先度を最後尾に変更）
 
 ## フェーズ5: 計画外・要件定義が先に必要なもの
 コード移植ではなく、まず仕様を固める必要がある要望。
