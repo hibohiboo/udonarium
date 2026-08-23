@@ -64,8 +64,11 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   { key: 'isToggleSoundEffect', param: 'toggle-sound-effect', label: '操作音オンオフ', type: 'boolean', category: 'ui' },
 
   // メニュー表示（GM以外のメニューから一部項目を非表示にする）
+  { key: 'isHideMenuTable', param: 'hide-menu-table', label: 'メニューから削除: テーブル設定', type: 'boolean', category: 'menu' },
   { key: 'isHideMenuImage', param: 'hide-menu-image', label: 'メニューから削除: 画像', type: 'boolean', category: 'menu' },
+  { key: 'isHideMenuMusic', param: 'hide-menu-music', label: 'メニューから削除: 音楽', type: 'boolean', category: 'menu' },
   { key: 'isHideMenuInventory', param: 'hide-menu-inventory', label: 'メニューから削除: インベントリ', type: 'boolean', category: 'menu' },
+  { key: 'isHideMenuZip', param: 'hide-menu-zip', label: 'メニューから削除: ZIP読込', type: 'boolean', category: 'menu' },
   { key: 'isHideMenuSave', param: 'hide-menu-save', label: 'メニューから削除: 保存', type: 'boolean', category: 'menu' },
   { key: 'isAddReloadButton', param: 'add-reload-button', label: '「接続」内に退室ボタンを追加', type: 'boolean', category: 'menu' },
   { key: 'isContextMenuIcon', param: 'context-menu-add-icon', label: '右クリックメニューをアイコン表示にする', type: 'boolean', category: 'menu' },
@@ -116,8 +119,9 @@ export const ALL_SETTINGS: SettingItem[] = [
 /**
  * 「全機能を有効化」プリセットで除外するキー。
  * 一括ONにすると自己矛盾を起こす・他の設定と衝突する・初期表示を壊すものを明示的に除外する。
- * - isHideMenuImage / isHideMenuInventory / isHideMenuSave: メニュー項目を非表示にする機能。
- *   「全機能を有効化」の趣旨（機能を隠さず使えるようにする）と矛盾するため除外。
+ * - isHideMenuTable / isHideMenuImage / isHideMenuMusic / isHideMenuInventory / isHideMenuZip /
+ *   isHideMenuSave: メニュー項目を非表示にする機能。「全機能を有効化」の趣旨（機能を隠さず
+ *   使えるようにする）と矛盾するため除外。
  * - isOffObjectRotateAll: isOffObjectRotateIndividually（個別設定可能な回転オフ）と役割が重複・排他。
  *   個別設定可能な方を優先し、一括オフの方は除外する。
  * - isFirstFetchZipRoom（Zipから部屋情報読込）: ONにすると GameTableComponent の初期テーブル生成処理
@@ -137,8 +141,11 @@ export const ALL_SETTINGS: SettingItem[] = [
  *   サンプルオブジェクトやテーブルそのものが消えてしまうこれらは除外する。
  */
 const ALL_PRESET_EXCLUDED_KEYS: ReadonlySet<string> = new Set([
+  'isHideMenuTable',
   'isHideMenuImage',
+  'isHideMenuMusic',
   'isHideMenuInventory',
+  'isHideMenuZip',
   'isHideMenuSave',
   'isOffObjectRotateAll',
   'isFirstFetchZipRoom',

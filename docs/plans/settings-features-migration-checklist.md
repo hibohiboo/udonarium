@@ -77,8 +77,11 @@
 - [ ] `offline-mode`（オフラインモード。Cloudflare構成での要否確認が先）
 - [ ] `horizon-menu`（メニュー横並び）※要望一覧に直接の対応なし
 - [ ] `mini-menu-first-open`（メニュー最小化を最初から開く）※要望一覧に直接の対応なし
-- [ ] `hide-menu-table` / `hide-menu-music` / `hide-menu-zip`（GM以外メニュー非表示の残り項目。
-      要望で名指しされたのは image/inventory/save のみ）
+- [x] `hide-menu-table` / `hide-menu-music` / `hide-menu-zip`（GM以外メニュー非表示の残り項目。
+      要望で名指しされたのは image/inventory/save のみ。既存の`hide-menu-image`等と同じ
+      `hide-menu.css`のnth-childパターンで追加、コア（`src/app/app.component.html`）は無変更。
+      「全機能を有効化」プリセットからは既存3項目と同様の理由で除外。実機確認は各liの
+      `display`計算値を確認する形で実施し、対象以外の項目に影響がないことも確認済み）
 - [ ] `empty-display-items`（表示項目の初期値を空にする）※要望一覧に直接の対応なし
 - [ ] `hide-first-peer` / `hide-first-chat`（初期表示の接続情報・チャット非表示）
       ※要望一覧に直接の対応なし

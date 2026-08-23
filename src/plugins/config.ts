@@ -31,8 +31,11 @@ interface QueryParamConfig {
   isToggleSoundEffect: boolean;
 
   // メニュー表示（GM以外のメニューから一部項目を非表示にする）
+  isHideMenuTable: boolean;
   isHideMenuImage: boolean;
+  isHideMenuMusic: boolean;
   isHideMenuInventory: boolean;
+  isHideMenuZip: boolean;
   isHideMenuSave: boolean;
   isAddReloadButton: boolean;
   isContextMenuIcon: boolean;

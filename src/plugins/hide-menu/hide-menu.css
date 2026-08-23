@@ -3,11 +3,23 @@
  * nav > ul > li の並び順（接続/チャット画面/テーブル設定/画像/音楽/インベントリ/ZIP読込/保存）
  * を前提にした nth-child で対象の項目だけを消す。
  */
+.hide-menu-table nav ul li:nth-child(3) {
+  display: none;
+}
+
 .hide-menu-image nav ul li:nth-child(4) {
   display: none;
 }
 
+.hide-menu-music nav ul li:nth-child(5) {
+  display: none;
+}
+
 .hide-menu-inventory nav ul li:nth-child(6) {
+  display: none;
+}
+
+.hide-menu-zip nav ul li:nth-child(7) {
   display: none;
 }
 

@@ -137,6 +137,15 @@ export const extendsAppComponent = (that: any) => {
       if (pluginConfig.isHideMenuSave) {
         appRoot.classList.add('hide-menu-save');
       }
+      if (pluginConfig.isHideMenuTable) {
+        appRoot.classList.add('hide-menu-table');
+      }
+      if (pluginConfig.isHideMenuMusic) {
+        appRoot.classList.add('hide-menu-music');
+      }
+      if (pluginConfig.isHideMenuZip) {
+        appRoot.classList.add('hide-menu-zip');
+      }
     }
 
     // @HostListener('document:keydown', ['$event'])相当の処理
