@@ -21,6 +21,7 @@ interface QueryParamConfig {
   isAddDrawNCards: boolean;
   isCardWritable: boolean;
   isMoveStackedCard: boolean;
+  isAddBlankCardMenuSimple: boolean;
 
   // UI機能
   isUseKeyboardShortcut: boolean;

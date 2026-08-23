@@ -54,6 +54,7 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   { key: 'isAddDrawNCards', param: 'add-draw-n-cards', label: '「カードをn枚引く」を山札のコンテキストメニューに追加', type: 'boolean', category: 'card' },
   { key: 'isCardWritable', param: 'add-card-text-writable', label: 'カードに文字入力可能にする', type: 'boolean', category: 'card' },
   { key: 'isMoveStackedCard', param: 'move-stacked-card', label: '重ねたカードをまとめて移動', type: 'boolean', category: 'card' },
+  { key: 'isAddBlankCardMenuSimple', param: 'add-blank-card-menu-simple', label: '右クリックメニューでブランクカードを作成（本家互換・シンプル版、文字入力なし）', type: 'boolean', category: 'card' },
 
   // UI機能
   { key: 'isUseKeyboardShortcut', param: 'key-shortcut', label: 'キーボードショートカット', type: 'boolean', category: 'ui' },

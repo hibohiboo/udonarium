@@ -1,5 +1,6 @@
 import { TabletopActionService } from 'service/tabletop-action.service';
 import { getCreateBlankCardMenu } from 'src/plugins/add-blank-card/extends/servies/tabletop-action.service';
+import { getCreateBlankCardSimpleMenu } from 'src/plugins/add-blank-card-simple/extend/service/tabletop-action.service';
 import { pluginConfig } from 'src/plugins/config';
 import { createDefaultCubeTerrain } from 'src/plugins/default-terrain-cube/extend/service/tabletop-action.service';
 import { getCreateHandStorageMenu } from 'src/plugins/hand-storage/extend/service/tabletop-action.service';
@@ -24,6 +25,9 @@ export const extendTabletopActionService = () => {
 
     // add-blank-card プラグインのメニューを追加
     actions.push(...getCreateBlankCardMenu(position));
+
+    // add-blank-card-simple プラグイン（本家互換・シンプル版）のメニューを追加
+    actions.push(...getCreateBlankCardSimpleMenu(position));
 
     return actions;
   };
