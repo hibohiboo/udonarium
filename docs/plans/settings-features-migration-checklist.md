@@ -47,9 +47,19 @@
 
 
 ## フェーズ3: 区分A'（依存関係・デフォルト値調整）
-- [ ] 設定間の依存関係・排他制御の仕組み導入（`config-schema.ts` への `DEPENDENCIES` 定義追加）
-- [ ] 依存関係ルールの移植（移行計画2章の組み合わせ一覧を実装）
-- [ ] 地形作成時「回転オフ・点滅なし」をデフォルト値として反映
+- [x] 設定間の依存関係・排他制御の仕組み導入（`config-schema.ts` に `DEPENDENCIES` 定義＋
+      変更起点からのBFSで連鎖を解決する `applySettingDependencies()` を追加。設定画面
+      （`plugin-settings.component.ts`）のチェックボックス変更時・プリセット適用時にのみ適用され、
+      URLから直接クエリパラメータを指定した場合の実行時挙動には影響しない＝移行元と同じ適用範囲）
+- [x] 依存関係ルールの移植（移行計画2章の組み合わせ一覧を実装。「2Dモード」⇔「視点リセット」の
+      相互排他は本プロジェクトの設計変更により対象外、`deck-from-spreadsheet` 関連は機能自体が
+      対象外のため除外。加えて、`isContextMenuIcon` の前提3項目それぞれにOFF→`isContextMenuIcon`も
+      OFFにする逆方向ルールを追加＝ユーザー確認済み。詳細は `config-schema.ts` の `DEPENDENCIES`
+      コメント参照）
+- [x] 地形作成時「回転オフ・点滅なし」をデフォルト値として反映（「点滅なし」は既存の
+      `isChangeDefaultTerrain`→`blinkOffTerrain` で実装済みだった。「回転オフ」は
+      `isOffObjectRotateIndividually` も併せてONでないと効果が出ないため、依存関係ルールとして
+      `isChangeDefaultTerrain` ON → `isOffObjectRotateIndividually` ON を追加）
 
 ## フェーズ4: 区分Bの残り（要望との直接の紐付けが弱い・優先度低め）
 - [ ] `move-stacked-card`（重ねカード移動）

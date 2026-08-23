@@ -5,7 +5,8 @@ import {
   ROOM_PRESETS,
   PRESET_OPTIONS,
   CATEGORIES,
-  SettingItem
+  SettingItem,
+  applySettingDependencies,
 } from '../../config-schema';
 
 /**
@@ -46,6 +47,15 @@ export class PluginSettingsComponent {
    */
   getSettingsByCategory(categoryId: string): SettingItem[] {
     return BOOLEAN_SETTINGS.filter(s => s.category === categoryId);
+  }
+
+  /**
+   * チェックボックス変更時（Boolean設定用）
+   * 値を反映した上で、設定間の依存関係（DEPENDENCIES）を連動させる
+   */
+  onBooleanSettingChange(key: string, value: boolean) {
+    this.settings[key] = value;
+    applySettingDependencies(this.settings, [key]);
   }
 
   /**
@@ -100,6 +110,9 @@ export class PluginSettingsComponent {
     for (const [key, value] of Object.entries(preset)) {
       this.settings[key] = value;
     }
+
+    // プリセット適用後も設定間の依存関係を反映する
+    applySettingDependencies(this.settings, Object.keys(preset));
   }
 
   /**

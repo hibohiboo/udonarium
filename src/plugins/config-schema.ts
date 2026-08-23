@@ -180,6 +180,129 @@ export const PRESET_OPTIONS = [
 ];
 
 // ========================================
+// 設定間の依存関係・排他制御
+// ========================================
+
+/**
+ * 設定項目間の依存関係定義。
+ * `key` が `when` の値になったとき、`setOn` のキーを true に、`setOff` のキーを false にする。
+ * 移行元 `settingApp/app.component.ts` の `changeSetting()` を移植したもの（`applySettingDependencies`
+ * 参照。設定画面（`plugin-settings.component.ts`）のチェックボックス変更時にのみ適用され、URLから
+ * 直接クエリパラメータを指定した場合の実行時挙動には影響しない＝移行元と同じ適用範囲）。
+ *
+ * 移行元との差分:
+ * - 「2Dモード」⇔「視点リセット」の相互排他は移植していない。本プロジェクトの
+ *   `isUseResetPointOfView` は「視点リセット/2D表示切替」の2つのメニュー項目を出すかどうかの
+ *   フラグであり、`is2d`（起動時に最初から2D表示にするか）とは独立に共存できる設計にしたため
+ *   （[[dont-touch-upstream-core]] 移行時の意図的な設計変更、詳細はチェックリスト参照）。
+ * - `deck-from-spreadsheet` 関連のルールは、当該機能が移行対象外のため除外。
+ * - `isFirstFetchZipRoom` → `isEmptyDefaultObjects`/`isEmptyDefaultTable` は移行元にない新規ルール。
+ *   移行元は「サンプルのキャラクターコマを非表示」1項目だけをONにしていたが、本プロジェクトでは
+ *   Zip読込時に初期テーブル生成処理自体が丸ごとスキップされる実装
+ *   （`first-fetch-zip-room/extend/components/game-table/game-table.components.ts`）のため、実態に
+ *   合わせて2項目ともONにする（このルール自体は表示上の整合性のためのものであり、Zip読込時の実際の
+ *   スキップ動作は元々このルールと無関係に働く）。
+ * - `isChangeDefaultTerrain` → `isOffObjectRotateIndividually` は移行元にない新規ルール。地形作成時の
+ *   「点滅なし」は `isChangeDefaultTerrain` 単体で既に有効になる（`blinkOffTerrain`）が、「回転オフ」は
+ *   `isOffObjectRotateIndividually` も併せてONでないと効果が出ない
+ *   （`default-terrain-cube/extend/service/tabletop-action.service.ts` の `createDefaultCubeTerrain`
+ *   参照）ため、依存関係として明示した。
+ * - `isContextMenuIcon` → `addBlankCardAddContextMenu` も移行元にない新規ルール。右クリックメニューを
+ *   アイコン化した際にカード用のアイコン項目（ブランクカード作成）が確実に出るようにするための
+ *   ユーザー確認済みの追加。
+ * - `isContextMenuIcon` の前提3項目（`isUseHandStorage`/`isChangeDefaultTerrain`/
+ *   `addBlankCardAddContextMenu`）それぞれについて、OFF→`isContextMenuIcon`もOFFという逆方向ルールも
+ *   追加している。移行元は「ボードOFF→関連4項目OFF」の逆方向は考慮しておらず（`isContextMenuIcon`
+ *   ONのままボードだけOFFにできてしまう＝前提が欠けた矛盾状態を許容する）、本実装は全ルールを
+ *   固定点まで適用する都合上、逆方向ルールがないと「前提をOFFにしたはずが、`isContextMenuIcon`が
+ *   まだONなので次のループで即座に前提がONへ押し戻される」という無反応に見える挙動になるため。
+ */
+export interface SettingDependency {
+  key: string;
+  when: boolean;
+  setOn?: string[];
+  setOff?: string[];
+}
+
+export const DEPENDENCIES: SettingDependency[] = [
+  // オブジェクト回転オフ「一括」と「個別設定可能」は相互排他
+  { key: 'isOffObjectRotateIndividually', when: true, setOff: ['isOffObjectRotateAll'] },
+  { key: 'isOffObjectRotateAll', when: true, setOff: ['isOffObjectRotateIndividually'] },
+
+  // ボード（ついたて）系設定は「ボード」(isUseHandStorage) に依存する
+  { key: 'isUseVirtualScreen', when: true, setOn: ['isUseHandStorage'] },
+  { key: 'isUseHandStorageSelfOnly', when: true, setOn: ['isUseHandStorage'] },
+  { key: 'canReturnHandToIndividualBoard', when: true, setOn: ['isUseHandStorage'] },
+  { key: 'isHandCardSelfHandStorage', when: true, setOn: ['isUseHandStorage', 'canReturnHandToIndividualBoard'] },
+  { key: 'canReturnHandToIndividualBoard', when: false, setOff: ['isHandCardSelfHandStorage'] },
+  { key: 'isUseHandStorage', when: false, setOff: [
+    'isUseVirtualScreen', 'isUseHandStorageSelfOnly', 'canReturnHandToIndividualBoard', 'isHandCardSelfHandStorage',
+    'isContextMenuIcon', // isContextMenuIconの前提が欠けるため道連れでOFF（上記コメント参照）
+  ] },
+
+  // 右クリックメニューのアイコン化は、ボード・デフォルト地形(Cube)・ブランクカード作成を前提とする
+  // （アイコン表示対象のメニュー項目が一通り揃うようにするため）。前提のいずれかがOFFになったら
+  // isContextMenuIcon自体もOFFにする逆方向ルールも併せて定義する（上記コメント参照）。
+  { key: 'isContextMenuIcon', when: true, setOn: ['isUseHandStorage', 'isChangeDefaultTerrain', 'addBlankCardAddContextMenu'] },
+  { key: 'isChangeDefaultTerrain', when: false, setOff: ['isContextMenuIcon'] },
+  { key: 'addBlankCardAddContextMenu', when: false, setOff: ['isContextMenuIcon'] },
+
+  // Zipから部屋情報読込時は初期テーブル生成処理自体がスキップされるため、設定画面上もそれに合わせる
+  { key: 'isFirstFetchZipRoom', when: true, setOn: ['isEmptyDefaultObjects', 'isEmptyDefaultTable'] },
+
+  // デフォルト地形をCubeに変更時は、回転オフ（個別設定可能）も併せてONにしないと地形作成時の
+  // 「回転オフ」が効かない
+  { key: 'isChangeDefaultTerrain', when: true, setOn: ['isOffObjectRotateIndividually'] },
+];
+
+/**
+ * DEPENDENCIESを、実際に変更されたキーを起点に連鎖的（BFS）に適用する。
+ * `changedKeys` に渡したキー（呼び出し側で既に新しい値をsettingsへ反映済みのもの）から
+ * 依存関係を辿り、値が変化したキーだけを次の伝播元としてキューに積んでいく。
+ *
+ * 「全ルールを毎回総当たりして固定点まで回す」素朴な実装は避けている。isUseHandStorage(false)
+ * → isContextMenuIcon(false) のような逆方向ルールを追加すると、isContextMenuIcon(true) →
+ * isUseHandStorage(true) という順方向ルールとの間で「まだisUseHandStorageがfalseのうちに
+ * 逆方向ルールが先に評価され、直前にtrueにしたisContextMenuIconを同じ総当たりパス内で
+ * false に巻き戻してしまう」というルール定義順に依存したバグが実際に発生したため
+ * （DEPENDENCIES配列内のコメント参照）。
+ * 変更起点からのBFSであれば、各キーはその時点で確定済みの値に基づいてのみ次の連鎖を
+ * 決定するため、この種の巻き戻りが起きない。
+ */
+export function applySettingDependencies(
+  settings: Record<string, boolean | string>,
+  changedKeys: string[],
+): void {
+  const MAX_STEPS = 1000; // 想定外の循環定義があっても無限ループにしないための安全弁
+  const queue: string[] = [...changedKeys];
+  const queued = new Set(queue);
+  let steps = 0;
+
+  const enqueue = (key: string) => {
+    if (queued.has(key)) return;
+    queued.add(key);
+    queue.push(key);
+  };
+
+  while (queue.length > 0 && steps < MAX_STEPS) {
+    steps++;
+    const key = queue.shift();
+    queued.delete(key);
+    const currentValue = settings[key];
+
+    for (const dep of DEPENDENCIES) {
+      if (dep.key !== key || currentValue !== dep.when) continue;
+      for (const target of dep.setOn ?? []) {
+        if (settings[target] !== true) { settings[target] = true; enqueue(target); }
+      }
+      for (const target of dep.setOff ?? []) {
+        if (settings[target] !== false) { settings[target] = false; enqueue(target); }
+      }
+    }
+  }
+}
+
+// ========================================
 // ヘルパー関数
 // ========================================
 

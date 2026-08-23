@@ -23,7 +23,7 @@
       <h2>{{ category.title }}</h2>
       <div class="form-group" *ngFor="let setting of getSettingsByCategory(category.id)">
         <label>
-          <input type="checkbox" [(ngModel)]="settings[setting.key]">
+          <input type="checkbox" [ngModel]="settings[setting.key]" (ngModelChange)="onBooleanSettingChange(setting.key, $event)">
           {{ setting.label }}
         </label>
       </div>
