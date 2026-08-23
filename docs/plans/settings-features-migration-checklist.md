@@ -62,7 +62,12 @@
       `isChangeDefaultTerrain` ON → `isOffObjectRotateIndividually` ON を追加）
 
 ## フェーズ4: 区分Bの残り（要望との直接の紐付けが弱い・優先度低め）
-- [ ] `move-stacked-card`（重ねカード移動）
+- [x] `move-stacked-card`（重ねカード移動。`src/plugins/move-stacked-card/` に移植。カードの
+      `onInputStart`/`onMoved` をオーバーライドし、ドラッグ開始時に上に重なっているカードを記録、
+      ドラッグ終了時に同じ移動量で追従させて `toTopmost()` する。実機確認はUIの右クリック操作では
+      なくAngularコンポーネントAPIを直接叩く形で実施：カードを2枚同じ座標に重ね、下のカードを
+      `onInputStart`→座標変更→`onMoved`で「ドラッグ」し、上のカードが追従することを確認。フラグOFF
+      時は追従しないことも確認済み）
 - [ ] `add-blank-card-menu-simple`（本家互換のシンプルなブランクカード。既存「拡張ブランクカード」
       とは別機能、0-3節参照）
 - [ ] `offline-mode`（オフラインモード。Cloudflare構成での要否確認が先）

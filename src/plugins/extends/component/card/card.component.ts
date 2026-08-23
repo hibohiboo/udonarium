@@ -5,6 +5,7 @@ import { addTabIndex } from 'src/plugins/keyboard-shortcut/extend/component/addT
 import {  onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/extend/component/card/card.component';
 import { tapCardContextMenu, tapCardEnter, tapCardSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
 import { isCardWritable } from 'src/plugins/add-card-text-writable/extend/component/card/card.component';
+import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card/card.component';
 
 export const extendsCardComponent = (that: any) => {
   // keyboard-shortcut プラグインの初期化
@@ -67,6 +68,25 @@ export const extendsCardComponent = (that: any) => {
       updateRotateOffClass.call(this);
       this._updateRotateOffClass = updateRotateOffClass;
     }
+  };
+
+  // move-stacked-card プラグイン: onInputStartをオーバーライドして、toTopmost()より先に
+  // 重なっているカードを判定・記録する
+  const originalOnInputStart = constructor.prototype.onInputStart;
+  constructor.prototype.onInputStart = function(e: MouseEvent | TouchEvent) {
+    startMoveStackedCard(this); // 上に乗っているカードを判定するため toTopmost() よりも先に実行
+    if (originalOnInputStart) {
+      originalOnInputStart.call(this, e);
+    }
+  };
+
+  // move-stacked-card プラグイン: onMovedをオーバーライドして、記録した重なりカードを追従移動させる
+  const originalOnMoved = constructor.prototype.onMoved;
+  constructor.prototype.onMoved = function() {
+    if (originalOnMoved) {
+      originalOnMoved.call(this);
+    }
+    endMoveStackedCard(this);
   };
 
   // ngOnDestroyもオーバーライドしてイベントリスナーをクリーンアップ
