@@ -39,8 +39,11 @@
 - [x] `reset-point-of-view`（視点リセット→2D表示切替。移行元は1ボタン+ポップアップ選択だったが、AppComponentにContextMenuService注入がないため2つの独立メニュー項目に変更）
 - [x] `toggle-sound-effect`（操作音オンオフ）
 - [x] `add-card-text-writable`（カードに文字入力。0-3節参照、ブランクカード限定機能とは別物。専用UIは作らず既存「カードを編集」パネルの汎用DataElement編集機能を利用）
-- [ ] `empty-default-objects`（サンプルのキャラクターコマ非表示）
-- [ ] `empty-default-table`（初期テーブル設定をおこなわない）
+- [x] `empty-default-objects`（サンプルのキャラクターコマ非表示）
+- [x] `empty-default-table`（初期テーブル設定をおこなわない。移行元と同名の既存フラグ
+      `isEmptyDefaultTabletopObjects`（first-fetch-zip-room由来、別物）との衝突を避けるため、
+      新フラグは `isEmptyDefaultObjects`/`isEmptyDefaultTable` と命名。2つは完全に独立して
+      ON/OFFでき、「全機能を有効化」プリセットでは初期表示が壊れるため除外）
 
 
 ## フェーズ3: 区分A'（依存関係・デフォルト値調整）

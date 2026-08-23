@@ -15,6 +15,25 @@ export const extendsGameTableComponent = (that: any) => {
   const originalNgAfterViewInit = constructor.prototype.ngAfterViewInit;
   const originalSetTransform = constructor.prototype.setTransform;
 
+  // originalNgOnInit中のイベント登録部分（UPDATE_GAME_OBJECT / DRAG_LOCKED_OBJECT）を
+  // 呼び出し元を丸ごとスキップする分岐でも再現するための共通処理
+  // （empty-default-objects/empty-default-table, first-fetch-zip-room の両方から使う）
+  const registerTableGridEvents = (that: any) => {
+    EventSystem.register(that)
+      .on('UPDATE_GAME_OBJECT', event => {
+        if (event.data.identifier !== that.currentTable.identifier && event.data.identifier !== that.tableSelecter.identifier) return;
+        console.log('UPDATE_GAME_OBJECT GameTableComponent ' + that.currentTable.identifier);
+
+        that.setGameTableGrid(that.currentTable.width, that.currentTable.height, that.currentTable.gridSize, that.currentTable.gridType, that.currentTable.gridColor);
+      })
+      .on('DRAG_LOCKED_OBJECT', event => {
+        that.isTableTransformMode = true;
+        that.pointerDeviceService.isDragging = false;
+        let opacity: number = that.tableSelecter.gridShow ? 1.0 : 0.0;
+        that.gridCanvas.nativeElement.style.opacity = opacity + '';
+      });
+  };
+
   // ngOnInitをオーバーライド
   constructor.prototype.ngOnInit = function() {
     // reset-point-of-viewプラグイン: RESET_POINT_OF_VIEWイベントを購読
@@ -22,27 +41,24 @@ export const extendsGameTableComponent = (that: any) => {
     EventSystem.register(this)
       .on('RESET_POINT_OF_VIEW', event => resetViewHandler(this, event));
 
-    // 初期テーブル設定を呼び出さない場合
+    // 初期テーブル設定を呼び出さない場合（Zipから部屋情報を読み込む場合）
     if(isEmptyDefaultTabletopObjects){
-        EventSystem.register(this)
-          .on('UPDATE_GAME_OBJECT', event => {
-            if (event.data.identifier !== this.currentTable.identifier && event.data.identifier !== this.tableSelecter.identifier) return;
-            console.log('UPDATE_GAME_OBJECT GameTableComponent ' + this.currentTable.identifier);
-
-            this.setGameTableGrid(this.currentTable.width, this.currentTable.height, this.currentTable.gridSize, this.currentTable.gridType, this.currentTable.gridColor);
-          })
-          .on('DRAG_LOCKED_OBJECT', event => {
-            this.isTableTransformMode = true;
-            this.pointerDeviceService.isDragging = false;
-            let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
-            this.gridCanvas.nativeElement.style.opacity = opacity + '';
-          });
+        registerTableGridEvents(this);
         init2d(this);
         return;
     }
 
-    // 元のngOnInitを呼び出し
-    if (originalNgOnInit) {
+    // empty-default-objects / empty-default-table: makeDefaultTable() /
+    // makeDefaultTabletopObjects() を個別にスキップできるようにする。
+    // originalNgOnInitは2つの呼び出しをまとめて実行してしまうため、
+    // どちらか一方でもスキップしたい場合はoriginalNgOnInitを呼ばず、
+    // イベント登録部分だけ再現した上で個別にガードする。
+    if (pluginConfig.isEmptyDefaultObjects || pluginConfig.isEmptyDefaultTable) {
+      registerTableGridEvents(this);
+      if (!pluginConfig.isEmptyDefaultTable) this.tabletopActionService.makeDefaultTable();
+      if (!pluginConfig.isEmptyDefaultObjects) this.tabletopActionService.makeDefaultTabletopObjects();
+    } else if (originalNgOnInit) {
+      // 元のngOnInitを呼び出し
       originalNgOnInit.call(this);
     }
 

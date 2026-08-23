@@ -44,6 +44,8 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   { key: 'isTutorial', param: 'tutorial', label: 'チュートリアル', type: 'boolean', category: 'display' },
   { key: 'isFirstFetchZipRoom', param: 'first-fetch-zip-room', label: 'Zipから部屋情報読込', type: 'boolean', category: 'display' },
   { key: 'isUseResetPointOfView', param: 'reset-point-of-view', label: '視点リセット→2D表示切替', type: 'boolean', category: 'display' },
+  { key: 'isEmptyDefaultObjects', param: 'empty-default-objects', label: 'サンプルのキャラクターコマを非表示', type: 'boolean', category: 'display' },
+  { key: 'isEmptyDefaultTable', param: 'empty-default-table', label: '初期テーブル設定をおこなわない', type: 'boolean', category: 'display' },
 
   // カード操作
   { key: 'isTapCard', param: 'tap-card', label: 'カードをタップ', type: 'boolean', category: 'card' },
@@ -128,6 +130,9 @@ export const ALL_SETTINGS: SettingItem[] = [
  *   ngAfterViewInit が早期returnし、接続情報・チャット画面などの初期パネルが一切開かなくなる
  *   （src/plugins/extends/app.component.ts）。テーブル自体は生成されるが起動直後の画面が
  *   実質空になるため除外する。
+ * - isEmptyDefaultObjects / isEmptyDefaultTable（サンプルのキャラクターコマ非表示／初期テーブル設定を
+ *   おこなわない）: 「全機能を有効化」プリセットは機能を体験できるようにする趣旨のため、起動直後の
+ *   サンプルオブジェクトやテーブルそのものが消えてしまうこれらは除外する。
  */
 const ALL_PRESET_EXCLUDED_KEYS: ReadonlySet<string> = new Set([
   'isHideMenuImage',
@@ -136,6 +141,8 @@ const ALL_PRESET_EXCLUDED_KEYS: ReadonlySet<string> = new Set([
   'isOffObjectRotateAll',
   'isFirstFetchZipRoom',
   'isTutorial',
+  'isEmptyDefaultObjects',
+  'isEmptyDefaultTable',
 ]);
 
 /** 部屋別プリセット（設定キーの配列で定義） */

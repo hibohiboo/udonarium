@@ -11,6 +11,8 @@ interface QueryParamConfig {
   isTutorial: boolean;
   isFirstFetchZipRoom: boolean;
   isUseResetPointOfView: boolean;
+  isEmptyDefaultObjects: boolean;
+  isEmptyDefaultTable: boolean;
 
   // カード操作
   isTapCard: boolean;
