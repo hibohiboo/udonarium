@@ -39,6 +39,8 @@ interface QueryParamConfig {
   isHideMenuSave: boolean;
   isAddReloadButton: boolean;
   isContextMenuIcon: boolean;
+  isHideFirstPeer: boolean;
+  isHideFirstChat: boolean;
 
   // チャット・手札
   useChatCommand: boolean;

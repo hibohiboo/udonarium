@@ -14,6 +14,7 @@ import { extendTooltipDirectiveForBlankCard } from "../add-blank-card/extend/dir
 import { extendContextMenuService } from "./service/context-menu.service";
 import { extendSoundEffect } from "./class/sound-effect";
 import { toggleMute, useMute, useMuteOff } from "../toggle-sound-effect/extend/class/sound-effect";
+import { extendPanelServiceForHideFirstOpen } from "../hide-first-open/extend/service/panel.service";
 
 export const outerApp = {
   panelService: null,
@@ -34,6 +35,8 @@ export const extendsAppComponent = (that: any) => {
   extendContextMenuService();
   // SoundEffect.playを拡張（toggle-sound-effect対応）
   extendSoundEffect();
+  // PanelService.openを拡張（hide-first-peer/hide-first-chat対応）
+  extendPanelServiceForHideFirstOpen();
   // isSettingsRoute プロパティをプラグインから注入
   Object.defineProperty(that, 'isSettingsRoute', {
     get: function() {

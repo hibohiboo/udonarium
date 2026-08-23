@@ -72,6 +72,8 @@ export const BOOLEAN_SETTINGS: SettingItem[] = [
   { key: 'isHideMenuSave', param: 'hide-menu-save', label: 'メニューから削除: 保存', type: 'boolean', category: 'menu' },
   { key: 'isAddReloadButton', param: 'add-reload-button', label: '「接続」内に退室ボタンを追加', type: 'boolean', category: 'menu' },
   { key: 'isContextMenuIcon', param: 'context-menu-add-icon', label: '右クリックメニューをアイコン表示にする', type: 'boolean', category: 'menu' },
+  { key: 'isHideFirstPeer', param: 'hide-first-peer', label: '初期表示に接続情報を表示しない', type: 'boolean', category: 'menu' },
+  { key: 'isHideFirstChat', param: 'hide-first-chat', label: '初期表示にチャットウィンドウを表示しない', type: 'boolean', category: 'menu' },
 
   // チャット・手札
   { key: 'useChatCommand', param: 'use-chat-command', label: 'チャットコマンド', type: 'boolean', category: 'chat' },
@@ -139,6 +141,9 @@ export const ALL_SETTINGS: SettingItem[] = [
  * - isEmptyDefaultObjects / isEmptyDefaultTable（サンプルのキャラクターコマ非表示／初期テーブル設定を
  *   おこなわない）: 「全機能を有効化」プリセットは機能を体験できるようにする趣旨のため、起動直後の
  *   サンプルオブジェクトやテーブルそのものが消えてしまうこれらは除外する。
+ * - isHideFirstPeer / isHideFirstChat（初期表示に接続情報／チャットウィンドウを表示しない）:
+ *   isTutorialと同様、起動直後のパネルが一切開かなくなり「機能を体験できるようにする」という
+ *   趣旨と矛盾するため除外する。
  */
 const ALL_PRESET_EXCLUDED_KEYS: ReadonlySet<string> = new Set([
   'isHideMenuTable',
@@ -152,6 +157,8 @@ const ALL_PRESET_EXCLUDED_KEYS: ReadonlySet<string> = new Set([
   'isTutorial',
   'isEmptyDefaultObjects',
   'isEmptyDefaultTable',
+  'isHideFirstPeer',
+  'isHideFirstChat',
 ]);
 
 /** 部屋別プリセット（設定キーの配列で定義） */
