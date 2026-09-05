@@ -74,15 +74,11 @@
       作成（シンプル版）」という別ラベルの独立項目として追加、既存の「ブランクカードを作成」とは
       共存可能。実機確認はコンテキストメニューactionを直接呼び出す形で実施し、生成されたオブジェクトの
       `aliasName`が`card`（`blank-card`ではない）であることを確認）
-- [ ] `offline-mode`（オフラインモード。Cloudflare構成での要否確認が先）
-- [ ] `horizon-menu`（メニュー横並び）※要望一覧に直接の対応なし
-- [ ] `mini-menu-first-open`（メニュー最小化を最初から開く）※要望一覧に直接の対応なし
 - [x] `hide-menu-table` / `hide-menu-music` / `hide-menu-zip`（GM以外メニュー非表示の残り項目。
       要望で名指しされたのは image/inventory/save のみ。既存の`hide-menu-image`等と同じ
       `hide-menu.css`のnth-childパターンで追加、コア（`src/app/app.component.html`）は無変更。
       「全機能を有効化」プリセットからは既存3項目と同様の理由で除外。実機確認は各liの
       `display`計算値を確認する形で実施し、対象以外の項目に影響がないことも確認済み）
-- [ ] `empty-display-items`（表示項目の初期値を空にする）※要望一覧に直接の対応なし
 - [x] `hide-first-peer` / `hide-first-chat`（初期表示の接続情報・チャット非表示）
       ※要望一覧に直接の対応なし。移行元では`config.ts`にフラグ定義があるだけで実装が
       存在しなかった（未実装のまま放置されたフラグ）ため、本プロジェクトで新規に設計・実装。
@@ -92,8 +88,12 @@
       （`src/plugins/hide-first-open/`）。2回目以降＝メニューからの手動オープンは通常通り動作する。
       実機確認は起動直後に両パネルが開かないこと、メニュー操作（`AppComponent.open()`経由）で
       手動オープンすると正常に開くこと、フラグ無指定時は従来通り両パネルが自動で開くことを確認済み
-- [ ] `post-message` 連携 ※要望一覧に直接の対応なし、要否確認が先
 - [ ] `empty-new-character`（新規キャラクターのステータス欄を空白に。ユーザー指示により最優先度を最後尾に変更）
+
+> `offline-mode` / `horizon-menu` / `mini-menu-first-open` / `empty-display-items` /
+> `post-message` 連携は、2026-08-31時点でユーザー判断によりスコープ外とし
+> [settings-features-migration-deferred.md](./settings-features-migration-deferred.md) に
+> 移動した。着手を決めたらそちらを参照の上、本リストに戻すこと。
 
 ## フェーズ5: 計画外・要件定義が先に必要なもの
 コード移植ではなく、まず仕様を固める必要がある要望。
