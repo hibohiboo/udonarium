@@ -49,3 +49,22 @@
 - 未調査（移行元の実装内容・「表示項目」が何を指すか、具体的にまだ確認していない）。
 - 検討したいこと: 何を指すか（キャラクターシートの表示項目？ ゲームテーブルの表示オブジェクト？）
   を確認してから着手要否を判断する。
+
+## 6. `empty-new-character`（新規キャラクターのステータス欄を空白に）
+- 要望一覧に直接対応する項目（唯一、他の5項目と違い要望との紐付けあり）。ただし以前のセッションで
+  ユーザー指示によりフェーズ4内で最優先度を最後尾に変更済みで、今回さらにスコープ外として保留にした。
+- 調査結果: 移行元は `GameCharacter.static create()`
+  （`udonarium-boardgame/src/app/class/game-character.ts`）の中で
+  `if (createEmptyNewCharacter(...)) return gameCharacter;` という分岐を**コアに直接追加**しており、
+  `isEmptyNewCharacter` ON時はキャラクター名・サイズだけを設定して早期return、OFF時は
+  `createTestGameDataElement()`（HP/MP・能力値・説明などのテスト用ダミーデータ一式を作る既存メソッド）
+  を呼ぶ、という実装。本プロジェクトの [[dont-touch-upstream-core]] 方針（コア無変更）に反する
+  移植元特有の実装で、素直に移すならコアを直接編集することになる。
+- 本プロジェクトでの実装方針の候補: `GameCharacter.create` はstaticメソッドなので、
+  [[dont-touch-upstream-core]] の「staticメソッドの拡張」パターン
+  （`extendXxx()`という冪等ガード付き関数でstaticメソッド自体を一度だけ差し替える。
+  `src/plugins/extends/class/sound-effect.ts` が実例）を使えば、コアを無変更のまま
+  `isEmptyNewCharacter` ON時に `createTestGameDataElement()` 呼び出しをスキップする形で
+  移植できる見込み（未着手・未検証）。
+- 対象コアファイル: `src/app/class/game-character.ts` の `static create()` /
+  `createTestGameDataElement()`（本プロジェクト側は移行元と同じ構造を確認済み）。

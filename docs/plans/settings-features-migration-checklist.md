@@ -88,10 +88,11 @@
       （`src/plugins/hide-first-open/`）。2回目以降＝メニューからの手動オープンは通常通り動作する。
       実機確認は起動直後に両パネルが開かないこと、メニュー操作（`AppComponent.open()`経由）で
       手動オープンすると正常に開くこと、フラグ無指定時は従来通り両パネルが自動で開くことを確認済み
-- [ ] `empty-new-character`（新規キャラクターのステータス欄を空白に。ユーザー指示により最優先度を最後尾に変更）
+
+フェーズ4はここまでで実装対象を一通り完了（残りは全てスコープ外として保留、下記参照）。
 
 > `offline-mode` / `horizon-menu` / `mini-menu-first-open` / `empty-display-items` /
-> `post-message` 連携は、2026-08-31時点でユーザー判断によりスコープ外とし
+> `post-message` 連携 / `empty-new-character` は、2026-08-31時点でユーザー判断によりスコープ外とし
 > [settings-features-migration-deferred.md](./settings-features-migration-deferred.md) に
 > 移動した。着手を決めたらそちらを参照の上、本リストに戻すこと。
 
