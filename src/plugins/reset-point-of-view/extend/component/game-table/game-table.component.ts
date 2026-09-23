@@ -4,6 +4,21 @@ import { pluginConfig } from 'src/plugins/config';
 let viewPoint2d = false;
 
 /**
+ * resetViewHandlerがsetTransform()を呼び出している最中かどうかを示すフラグ。
+ *
+ * `table-rotate-off`（isOffTableRotate）はGameTableComponent.setTransformをオーバーライドし、
+ * ドラッグ操作による意図しない回転を打ち消す実装になっているが、その打ち消し処理は
+ * 「ドラッグ由来の変更か、明示的な呼び出しか」を区別せず、setTransformへのあらゆる回転変更を
+ * 一律キャンセルしてしまう（src/plugins/extends/component/game-table/game-table.component.ts）。
+ * そのためisOffTableRotateが有効な状態で「視点リセット」「2Dモード表示」を押すと、
+ * resetViewHandlerが設定しようとした回転（rotateX=50等）が直後に打ち消され、常にフラット
+ * （2D風）な見た目になってしまう不具合があった。
+ * このフラグを見て、resetViewHandlerからの呼び出し中はisOffTableRotateの打ち消しを
+ * 適用しないようにすることで、「テーブル回転オフ」と「視点リセット」を独立して動作させる。
+ */
+export let isResettingViewByButton = false;
+
+/**
  * RESET_POINT_OF_VIEW イベントのハンドラ（GameTableComponentから呼ばれる）。
  * event.data === 'top' の場合はテーブルを真上から見た2D表示に、
  * それ以外の場合は初期の3D斜め視点に戻す。
@@ -31,11 +46,16 @@ export const resetViewHandler = (that: any, event: any) => {
   }
 
   setTimeout(() => {
-    if (event?.data !== 'top' && event?.data !== 'rotate') {
-      that.setTransform(100, 0, 0, 50, 0, 10);
-      return;
+    isResettingViewByButton = true;
+    try {
+      if (event?.data !== 'top' && event?.data !== 'rotate') {
+        that.setTransform(100, 0, 0, 50, 0, 10);
+        return;
+      }
+      that.setTransform(0, 0, 0, 0, 0, 0);
+    } finally {
+      isResettingViewByButton = false;
     }
-    that.setTransform(0, 0, 0, 0, 0, 0);
   }, 50);
   that.removeFocus();
 };

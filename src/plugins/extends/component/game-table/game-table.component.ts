@@ -4,7 +4,7 @@ import { isEmptyDefaultTabletopObjects, transformDefault } from 'src/plugins/fir
 import { initCommandGameBoard } from 'src/plugins/use-chat-command/game-board';
 import { extendsGameTableComponentForHandStorage } from 'src/plugins/hand-storage/extend/component/game-table/game-table.component';
 import { extendsGameTableComponentForBlankCard } from 'src/plugins/add-blank-card/extend/component/game-table/game-table.component';
-import { resetViewHandler } from 'src/plugins/reset-point-of-view/extend/component/game-table/game-table.component';
+import { resetViewHandler, isResettingViewByButton } from 'src/plugins/reset-point-of-view/extend/component/game-table/game-table.component';
 import { EventSystem } from '@udonarium/core/system';
 import { pluginConfig } from 'src/plugins/config';
 
@@ -84,7 +84,11 @@ export const extendsGameTableComponent = (that: any) => {
 
   // setTransformをオーバーライド（mode2dプラグイン対応）
   constructor.prototype.setTransform = function(transformX: number, transformY: number, transformZ: number, rotateX: number, rotateY: number, rotateZ: number) {
-    if (pluginConfig.isOffTableRotate){
+    // isOffTableRotate（テーブル回転オフ）は本来ドラッグ操作による意図しない回転を防ぐための
+    // 機能だが、resetViewHandler（視点リセット/2Dモード表示）からの明示的な呼び出し中は
+    // 適用しない。適用してしまうと、視点リセットが設定しようとした回転が直後に打ち消され、
+    // 常にフラット（2D風）な見た目になってしまう不具合があった。
+    if (pluginConfig.isOffTableRotate && !isResettingViewByButton){
       originalSetTransform.call(this, transformX, transformY, transformZ, rotateX, rotateY, rotateZ);
       originalSetTransform.call(this, 0, 0, 0, -rotateX,  -rotateY, -rotateZ);
     }
