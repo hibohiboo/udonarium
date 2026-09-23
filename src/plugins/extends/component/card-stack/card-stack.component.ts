@@ -5,6 +5,7 @@ import { addTabIndex } from 'src/plugins/keyboard-shortcut/extend/component/addT
 import { onKeyDownKeyboardShortcutCardStack } from 'src/plugins/keyboard-shortcut/extend/component/card-stack/card-stack.component';
 import { tapCardStackContextMenu, tapCardStackEnter, tapCardStackSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card-stack/card-stack.component';
 import { drawNCardsContextMenu } from 'src/plugins/add-draw-n-cards/extend/component/card-stack/card-stack.component';
+import { handCardStackContextMenu } from 'src/plugins/return-the-hand/extend/component/card-stack/card-stack.component';
 
 export const extendsCardStackComponent = (that: any) => {
   // keyboard-shortcut プラグインの初期化
@@ -118,11 +119,11 @@ export const extendsCardStackComponent = (that: any) => {
     }
 
     // 拡張メニューを適切な位置に挿入
-    // tap-cardなどの拡張は'すべて正位置にする'の後に挿入
+    // return-the-hand/tap-cardなどの拡張は'すべて正位置にする'の後に挿入
     const uprightIndex = actions.findIndex((action: any) => action.name === 'すべて正位置にする');
-    const tapCardExtensions = tapCardStackContextMenu(this);
-    if (uprightIndex !== -1 && tapCardExtensions.length > 0) {
-      actions.splice(uprightIndex + 1, 0, ...tapCardExtensions);
+    const contextMenuExtensions = [...handCardStackContextMenu(this), ...tapCardStackContextMenu(this)];
+    if (uprightIndex !== -1 && contextMenuExtensions.length > 0) {
+      actions.splice(uprightIndex + 1, 0, ...contextMenuExtensions);
     }
 
     // 回転オフメニューは最後に追加

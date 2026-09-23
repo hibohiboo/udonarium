@@ -6,6 +6,7 @@ import {  onKeyDownKeyboardShortcutCard } from 'src/plugins/keyboard-shortcut/ex
 import { tapCardContextMenu, tapCardEnter, tapCardSelectedContextMenu } from 'src/plugins/tap-card/extend/component/card/card.component';
 import { isCardWritable } from 'src/plugins/add-card-text-writable/extend/component/card/card.component';
 import { endMoveStackedCard, startMoveStackedCard } from 'src/plugins/move-stacked-card/extend/component/card/card.component';
+import { handCardContextMenu, selectedHandCardContextMenu } from 'src/plugins/return-the-hand/extend/component/card/card.component';
 
 export const extendsCardComponent = (that: any) => {
   // keyboard-shortcut プラグインの初期化
@@ -117,6 +118,10 @@ export const extendsCardComponent = (that: any) => {
       // '選択したカード'のsubActionsを探して拡張
       const selectionMenu = actions.find((action: any) => action.name === '選択したカード');
       if (selectionMenu && selectionMenu.subActions) {
+        // return-the-handプラグイン: 選択中のカードをまとめて手札化/共用化するメニュー
+        // （元のmakeSelectionContextMenu内のselectedCardsと同じ絞り込みロジックをここで再現）
+        const selectedCards = () => this.selectionService.objects.filter((object: any) => object.aliasName === this.card.aliasName);
+        selectionMenu.subActions.push(...selectedHandCardContextMenu(selectedCards));
         // 拡張メニューをsubActionsの最後に追加
         selectionMenu.subActions.push(...tapCardSelectedContextMenu(this));
       }
@@ -132,11 +137,11 @@ export const extendsCardComponent = (that: any) => {
     const actions = originalMakeContextMenu.call(this);
 
     // 拡張メニューを適切な位置に挿入
-    // tap-cardなどの拡張は'重なったカードで山札を作る'の後に挿入
+    // return-the-hand/tap-cardなどの拡張は'重なったカードで山札を作る'の後に挿入
     const createStackIndex = actions.findIndex((action: any) => action.name === '重なったカードで山札を作る');
-    const tapCardExtensions = tapCardContextMenu(this);
-    if (createStackIndex !== -1 && tapCardExtensions.length > 0) {
-      actions.splice(createStackIndex + 1, 0, ...tapCardExtensions);
+    const contextMenuExtensions = [...handCardContextMenu(this), ...tapCardContextMenu(this)];
+    if (createStackIndex !== -1 && contextMenuExtensions.length > 0) {
+      actions.splice(createStackIndex + 1, 0, ...contextMenuExtensions);
     }
 
     // 回転オフメニューは最後に追加
