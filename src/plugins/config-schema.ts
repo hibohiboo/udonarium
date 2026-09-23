@@ -144,6 +144,11 @@ export const ALL_SETTINGS: SettingItem[] = [
  * - isHideFirstPeer / isHideFirstChat（初期表示に接続情報／チャットウィンドウを表示しない）:
  *   isTutorialと同様、起動直後のパネルが一切開かなくなり「機能を体験できるようにする」という
  *   趣旨と矛盾するため除外する。
+ * - is2d（2Dモード）: ONにすると部屋全体が常時2D固定になり、ユーザー確認の結果「2Dモード表示」
+ *   ボタン（isUseResetPointOfView）で事足りるため除外することにした。「全機能を有効化」で
+ *   両方ONにすると、is2dが常時有効になり「視点リセット」で3D表示に戻せなくなってしまう
+ *   （2Dモード表示ボタンで一時的に2D/3Dを切り替えられる方が柔軟なため、is2d自体は個別に
+ *   ONにしたい場合のみ手動で選択する）。
  */
 const ALL_PRESET_EXCLUDED_KEYS: ReadonlySet<string> = new Set([
   'isHideMenuTable',
@@ -159,6 +164,7 @@ const ALL_PRESET_EXCLUDED_KEYS: ReadonlySet<string> = new Set([
   'isEmptyDefaultTable',
   'isHideFirstPeer',
   'isHideFirstChat',
+  'is2d',
 ]);
 
 /** 部屋別プリセット（設定キーの配列で定義） */
