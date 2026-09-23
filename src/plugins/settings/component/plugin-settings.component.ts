@@ -28,6 +28,9 @@ export class PluginSettingsComponent {
   // 部屋設定
   roomType = '';
 
+  // 直近でプリセット適用直後の設定値スナップショット（プリセット未編集かどうかの判定に使う）
+  private presetSnapshot: Record<string, boolean | string> | null = null;
+
   // プリセット設定（スキーマから取得）
   presets = PRESET_OPTIONS;
 
@@ -91,6 +94,28 @@ export class PluginSettingsComponent {
 
     // 部屋設定
     this.roomType = params.get('room') ?? '';
+    // 読み込んだ設定がプリセットそのまま（未編集）かどうかを判定するためのスナップショットを再計算
+    this.presetSnapshot = this.computePresetSettings(this.roomType);
+  }
+
+  /**
+   * 指定した部屋タイプについて、プリセット適用＋依存関係解決後の設定値を計算する
+   * （空の状態から適用するため、現在編集中の `this.settings` には影響しない）
+   */
+  private computePresetSettings(roomType: string): Record<string, boolean | string> | null {
+    if (!roomType || !ROOM_PRESETS[roomType]) return null;
+
+    const settings: Record<string, boolean | string> = {};
+    for (const setting of BOOLEAN_SETTINGS) settings[setting.key] = false;
+    for (const setting of STRING_SETTINGS) settings[setting.key] = '';
+
+    const preset = ROOM_PRESETS[roomType];
+    for (const [key, value] of Object.entries(preset)) {
+      settings[key] = value;
+    }
+    applySettingDependencies(settings, Object.keys(preset));
+
+    return settings;
   }
 
   /**
@@ -101,18 +126,14 @@ export class PluginSettingsComponent {
   onPresetChange() {
     this.initializeSettings();
 
-    if (!this.roomType || !ROOM_PRESETS[this.roomType]) {
+    const presetSettings = this.computePresetSettings(this.roomType);
+    this.presetSnapshot = presetSettings;
+
+    if (!presetSettings) {
       return; // 「なし」の場合はリセットのみ
     }
 
-    // プリセット設定を適用
-    const preset = ROOM_PRESETS[this.roomType];
-    for (const [key, value] of Object.entries(preset)) {
-      this.settings[key] = value;
-    }
-
-    // プリセット適用後も設定間の依存関係を反映する
-    applySettingDependencies(this.settings, Object.keys(preset));
+    Object.assign(this.settings, presetSettings);
   }
 
   /**
@@ -136,10 +157,28 @@ export class PluginSettingsComponent {
       }
     }
 
-    // 部屋設定
-    if (this.roomType) params.set('room', this.roomType);
+    // 部屋設定: `room=<プリセット名>` は起動時にconfig.ts側で個々のクエリパラメータより
+    // 優先して上書きされる（部屋別設定で上書き、参照: config.tsのpluginConfig定義）。
+    // そのため、プリセット選択後にチェックボックスを個別に編集した状態のまま room を
+    // 付けてしまうと、その編集が起動時に無効化されてしまう（例: 「全機能を有効化」から
+    // 「カウンターボード」だけ外しても、room=all が優先されて結局ONに戻る）。
+    // プリセットから一切変更していない場合のみ room を付与する
+    // （vsrank/hollowはfirst-fetch-zip-room機能がroomの値をZIPファイル名として使うため、
+    // 未編集時は room を残しておく必要がある）。
+    if (this.roomType && this.isUnmodifiedFromPreset()) {
+      params.set('room', this.roomType);
+    }
 
     return params.toString();
+  }
+
+  /**
+   * 現在の設定値が、選択中のプリセットから一切変更されていないかどうか
+   */
+  private isUnmodifiedFromPreset(): boolean {
+    if (!this.presetSnapshot) return false;
+    return BOOLEAN_SETTINGS.every(s => this.settings[s.key] === this.presetSnapshot![s.key])
+      && STRING_SETTINGS.every(s => this.settings[s.key] === this.presetSnapshot![s.key]);
   }
 
   /**
@@ -166,5 +205,6 @@ export class PluginSettingsComponent {
   reset() {
     this.initializeSettings();
     this.roomType = '';
+    this.presetSnapshot = null;
   }
 }
